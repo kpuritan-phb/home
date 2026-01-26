@@ -1666,15 +1666,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const date = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : '최근';
         const displayCategory = post.tags ? post.tags[0] : '자료';
         const seriesName = post.series || '';
-        // 기본 썸네일 대신 제목이 들어간 플레이스홀더 느낌의 카드 내용을 구성하거나
-        // 나중에 썸네일 필드가 생기면 그것을 사용.
-        // 여기서는 깔끔한 카드 UI를 생성.
 
+        // PDF 파일 감지
+        let isPdf = false;
+        let pdfUrl = null;
+        if (post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) {
+            isPdf = true;
+            pdfUrl = post.fileUrl;
+        }
+
+        // 썸네일 결정: coverUrl 우선, 없으면 PDF 렌더링
         const thumbUrl = post.coverUrl || '';
         const hasThumb = thumbUrl ? 'has-thumb' : '';
 
         const div = document.createElement('div');
         div.className = `carousel-card ${hasThumb}`;
+        const cardId = `carousel-card-${docId}`;
+        div.id = cardId;
 
         if (thumbUrl) {
             div.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url("${thumbUrl}")`;
@@ -1696,8 +1704,55 @@ document.addEventListener('DOMContentLoaded', () => {
         div.addEventListener('click', () => {
             window.openResourceModal(displayCategory, seriesName, docId);
         });
+
+        // coverUrl이 없고 PDF 파일인 경우 PDF 첫 페이지를 렌더링
+        if (!thumbUrl && isPdf && pdfUrl && typeof pdfjsLib !== 'undefined') {
+            renderPdfThumbnailToCard(pdfUrl, cardId);
+        }
+
         return div;
     };
+
+    // PDF 썸네일을 카드 배경으로 렌더링하는 함수
+    async function renderPdfThumbnailToCard(url, cardId) {
+        try {
+            const cardElement = document.getElementById(cardId);
+            if (!cardElement) return;
+
+            const loadingTask = pdfjsLib.getDocument(url);
+            const pdf = await loadingTask.promise;
+            const page = await pdf.getPage(1);
+
+            const viewport = page.getViewport({ scale: 1.5 });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            await page.render({ canvasContext: context, viewport: viewport }).promise;
+
+            const imageUrl = canvas.toDataURL('image/png');
+            cardElement.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url("${imageUrl}")`;
+            cardElement.style.backgroundSize = 'cover';
+            cardElement.style.backgroundPosition = 'center';
+            cardElement.style.color = 'white';
+            cardElement.classList.add('has-thumb');
+
+            // 태그와 버튼 스타일도 업데이트
+            const tag = cardElement.querySelector('.carousel-card-tag');
+            if (tag) tag.style.cssText = 'background: var(--secondary-color); color: white;';
+
+            const meta = cardElement.querySelector('.carousel-card-meta span');
+            if (meta) meta.style.color = 'rgba(255,255,255,0.8)';
+
+            const btn = cardElement.querySelector('.carousel-icon-btn');
+            if (btn) btn.style.cssText = 'background: white; color: var(--primary-color);';
+
+            console.log('✅ PDF 카드 썸네일 렌더링 성공:', url);
+        } catch (e) {
+            console.warn("⚠️ PDF 카드 썸네일 렌더링 실패:", e.message);
+        }
+    }
 
     // --- Mock Data Rendering for Carousel ---
     window.renderMockCarousels = () => {

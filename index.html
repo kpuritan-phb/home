@@ -940,12 +940,50 @@
         window.createCarouselCard = (post, docId) => {
             const date = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : '최근';
             const displayCategory = post.tags ? post.tags[0] : '자료';
-            const thumbUrl = post.coverUrl || '';
+            let thumbUrl = post.coverUrl || '';
 
             const div = document.createElement('div');
             div.className = 'carousel-card' + (thumbUrl ? ' has-thumb' : '');
 
-            if (thumbUrl) {
+            // coverUrl이 없지만 fileUrl(PDF)이 있는 경우 PDF 첫 페이지를 썸네일로 생성
+            if (!thumbUrl && post.fileUrl && post.fileUrl.toLowerCase().endsWith('.pdf')) {
+                // PDF 썸네일 생성 (비동기)
+                if (window.pdfjsLib) {
+                    const loadingTask = window.pdfjsLib.getDocument(post.fileUrl);
+                    loadingTask.promise.then(pdf => {
+                        pdf.getPage(1).then(page => {
+                            const scale = 0.5;
+                            const viewport = page.getViewport({ scale });
+                            const canvas = document.createElement('canvas');
+                            const context = canvas.getContext('2d');
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+
+                            page.render({
+                                canvasContext: context,
+                                viewport: viewport
+                            }).promise.then(() => {
+                                const thumbnailUrl = canvas.toDataURL();
+                                div.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url("${thumbnailUrl}")`;
+                                div.style.backgroundSize = 'cover';
+                                div.style.backgroundPosition = 'center';
+                                div.style.color = 'white';
+                                div.classList.add('has-thumb');
+
+                                // 태그와 버튼 스타일 업데이트
+                                const tag = div.querySelector('.carousel-card-tag');
+                                const dateSpan = div.querySelector('.carousel-card-meta span');
+                                const iconBtn = div.querySelector('.carousel-icon-btn');
+                                if (tag) tag.style.cssText = 'background: var(--secondary-color); color: white;';
+                                if (dateSpan) dateSpan.style.color = 'rgba(255,255,255,0.8)';
+                                if (iconBtn) iconBtn.style.cssText = 'background: white; color: var(--primary-color);';
+                            });
+                        });
+                    }).catch(err => {
+                        console.warn('PDF 썸네일 생성 실패:', err);
+                    });
+                }
+            } else if (thumbUrl) {
                 div.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url("${thumbUrl}")`;
                 div.style.backgroundSize = 'cover';
                 div.style.backgroundPosition = 'center';

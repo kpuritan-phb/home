@@ -2833,6 +2833,8 @@ footer {
     text-overflow: ellipsis;
     min-height: 2.8em;
     /* 2줄 높이 확보 */
+    padding: 5px;
+    margin: -5px;
 }
 
 .carousel-card-meta {

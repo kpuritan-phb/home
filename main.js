@@ -1730,7 +1730,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         div.innerHTML = `
             <div class="carousel-card-content">
-                <div class="carousel-card-tag" style="${thumbUrl ? 'background: var(--secondary-color); color: white;' : ''}">${displayCategory}</div>
+                <div class="carousel-card-tag">${displayCategory}</div>
                 <div class="carousel-card-title">${post.title}</div>
                 <div class="carousel-card-meta">
                     <span style="${thumbUrl ? 'color: rgba(255,255,255,0.8);' : ''}">${date}</span>
@@ -1776,7 +1776,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 태그와 버튼 스타일도 업데이트
             const tag = cardElement.querySelector('.carousel-card-tag');
-            if (tag) tag.style.cssText = 'background: var(--secondary-color); color: white;';
+            if (tag) tag.style.cssText = ''; // Rely on CSS class instead
 
             const meta = cardElement.querySelector('.carousel-card-meta span');
             if (meta) meta.style.color = 'rgba(255,255,255,0.8)';

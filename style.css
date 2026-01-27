@@ -2893,10 +2893,18 @@ footer {
 }
 
 .carousel-card.has-thumb .carousel-card-tag {
-    background: var(--secondary-color) !important;
+    background: rgba(10, 124, 104, 0.75) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: white !important;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
+    padding: 0.35rem 1rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    width: fit-content;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .carousel-card.has-thumb .carousel-card-meta span {

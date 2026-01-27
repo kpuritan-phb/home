@@ -2884,9 +2884,16 @@ footer {
 /* Carousel Card with Background Image Enhancement */
 .carousel-card.has-thumb .carousel-card-title {
     color: white !important;
-    text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.8);
-    -webkit-text-stroke: 0.5px black;
-    font-weight: 800;
+    text-shadow:
+        -1.5px -1.5px 0 #000,
+        1.5px -1.5px 0 #000,
+        -1.5px 1.5px 0 #000,
+        1.5px 1.5px 0 #000,
+        0px 1.5px 0 #000,
+        0px -1.5px 0 #000,
+        1.5px 0px 0 #000,
+        -1.5px 0px 0 #000;
+    font-weight: 900;
 }
 
 .carousel-card.has-thumb .carousel-card-tag {

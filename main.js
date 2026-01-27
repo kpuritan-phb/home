@@ -1109,7 +1109,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         const order = parseInt(document.getElementById('modal-post-order').value) || 0;
                         const content = document.getElementById('modal-post-content').value;
                         const fileEl = document.getElementById('modal-post-file');
+                        const coverEl = document.getElementById('modal-post-cover');
                         const file = fileEl ? fileEl.files[0] : null;
+                        const coverFile = coverEl ? coverEl.files[0] : null;
 
                         // 언어 태그 처리
                         let finalTags = [categoryName];
@@ -1130,7 +1132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         try {
                             submitBtn.disabled = true;
-                            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 업로드 중...';
                             if (progressContainer) progressContainer.style.display = 'block';
                             if (progressBar) progressBar.style.width = '0%';
 
@@ -1152,12 +1154,20 @@ document.addEventListener('DOMContentLoaded', () => {
                                 fileUrl = await storageRef.getDownloadURL();
                             }
 
+                            let coverUrl = "";
+                            if (coverFile) {
+                                const coverRef = storage.ref(`covers/${Date.now()}_${coverFile.name}`);
+                                await coverRef.put(coverFile);
+                                coverUrl = await coverRef.getDownloadURL();
+                            }
+
                             await db.collection("posts").add({
                                 title,
                                 series,
                                 order,
                                 content,
                                 fileUrl,
+                                coverUrl,
                                 tags: finalTags,
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });

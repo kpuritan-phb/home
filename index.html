@@ -784,11 +784,18 @@
                     </div>
                     <textarea id="modal-post-content" rows="3" placeholder="내용 또는 유튜브 링크"
                         style="width:100%; margin-bottom:10px;"></textarea>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <input type="file" id="modal-post-file" style="font-size: 0.8rem;">
-                        <button type="submit" class="cta-btn primary"
-                            style="flex-shrink: 0; padding: 8px 20px;">게시하기</button>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label style="font-size: 0.8rem; color: #666; width: 80px;">상세 파일</label>
+                            <input type="file" id="modal-post-file" style="font-size: 0.8rem; flex: 1;">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label style="font-size: 0.8rem; color: #666; width: 80px;">썸네일</label>
+                            <input type="file" id="modal-post-cover" accept="image/*"
+                                style="font-size: 0.8rem; flex: 1;">
+                        </div>
                     </div>
+                    <button type="submit" class="cta-btn primary" style="width: 100%; padding: 12px;">게시하기</button>
                     <div id="modal-upload-progress"
                         style="display:none; margin-top:10px; height:4px; background:#eee; border-radius:2px; overflow:hidden;">
                         <div id="modal-upload-bar"

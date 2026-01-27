@@ -1757,7 +1757,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             console.log('✅ PDF 카드 썸네일 렌더링 성공:', url);
         } catch (e) {
-            console.warn("⚠️ PDF 카드 썸네일 렌더링 실패:", e.message);
+            console.warn("⚠️ PDF 카드 썸네일 렌더링 실패 (CORS 가능성):", e.message);
+            // Fallback: Use a default placeholder or a subtle gradient if PDF rendering fails
+            cardElement.style.backgroundImage = `linear-gradient(rgba(42, 45, 50, 0.05), rgba(42, 45, 50, 0.1)), url("images/puritan-study.png")`;
+            cardElement.style.backgroundSize = 'cover';
+            cardElement.style.backgroundPosition = 'center';
+            cardElement.style.opacity = '0.8'; // Subtle look for placeholder
         }
     }
 

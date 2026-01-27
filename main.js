@@ -302,6 +302,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const editCloseBtn = document.getElementById('edit-close-btn');
+    if (editCloseBtn && editModal) {
+        editCloseBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.closeAllModals();
+        });
+    }
+
     // About Modal Logic
     const aboutCloseBtn = document.getElementById('about-close-btn');
     const aboutLinks = document.querySelectorAll('a[href="#about"]');
@@ -861,7 +870,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.openEditModal = async (id) => {
+        console.log("Opening edit modal for:", id);
         try {
+            if (typeof db === 'undefined' || !db) {
+                return alert("데이터베이스에 연결되지 않았습니다.");
+            }
             const doc = await db.collection("posts").doc(id).get();
             if (!doc.exists) return alert("자료를 찾을 수 없습니다.");
             const post = doc.data();
@@ -871,7 +884,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('edit-author').value = post.author || "";
             document.getElementById('edit-other-category').value = post.otherCategory || "";
 
-            document.getElementById('edit-title').value = post.title;
+            document.getElementById('edit-title').value = post.title || "";
             document.getElementById('edit-series').value = post.series || "";
             document.getElementById('edit-order').value = post.order || 0;
             document.getElementById('edit-price').value = post.price || "";
@@ -883,9 +896,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const fileStatus = document.getElementById('edit-file-status');
             if (fileStatus) fileStatus.textContent = post.fileUrl ? "기존 상세 파일이 있습니다 (교체 시 새로 선택)" : "첨부된 파일 없음";
 
-            if (editModal) editModal.classList.add('show');
+            if (editModal) {
+                window.openModal(editModal);
+            } else {
+                console.error("Edit modal element not found");
+                alert("수정 창을 찾을 수 없습니다.");
+            }
         } catch (error) {
             console.error("Error opening edit modal:", error);
+            alert("수정 창을 여는 중 오류가 발생했습니다: " + error.message);
         }
     };
 

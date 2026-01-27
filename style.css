@@ -570,12 +570,12 @@ nav ul li:hover a i {
 }
 
 .cta-btn.primary {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     color: #ffffff;
 }
 
 .cta-btn.primary:hover {
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }

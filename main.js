@@ -1675,8 +1675,16 @@ document.addEventListener('DOMContentLoaded', () => {
             pdfUrl = post.fileUrl;
         }
 
-        // 썸네일 결정: coverUrl 우선, 없으면 PDF 렌더링
-        const thumbUrl = post.coverUrl || '';
+        // 썸네일 결정: coverUrl 우선, 없으면 fileUrl (이미지인 경우)
+        let thumbUrl = post.coverUrl || '';
+
+        // coverUrl이 없고 fileUrl이 이미지인 경우 fileUrl을 썸네일로 사용
+        if (!thumbUrl && post.fileUrl && !isPdf) {
+            if (post.fileUrl.match(/\.(jpeg|jpg|gif|png|webp|svg)/i)) {
+                thumbUrl = post.fileUrl;
+            }
+        }
+
         const hasThumb = thumbUrl ? 'has-thumb' : '';
 
         const div = document.createElement('div');
@@ -1707,16 +1715,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // coverUrl이 없고 PDF 파일인 경우 PDF 첫 페이지를 렌더링
         if (!thumbUrl && isPdf && pdfUrl && typeof pdfjsLib !== 'undefined') {
-            renderPdfThumbnailToCard(pdfUrl, cardId);
+            renderPdfThumbnailToCard(pdfUrl, div);
         }
 
         return div;
     };
 
     // PDF 썸네일을 카드 배경으로 렌더링하는 함수
-    async function renderPdfThumbnailToCard(url, cardId) {
+    async function renderPdfThumbnailToCard(url, cardElement) {
         try {
-            const cardElement = document.getElementById(cardId);
             if (!cardElement) return;
 
             const loadingTask = pdfjsLib.getDocument(url);

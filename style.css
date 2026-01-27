@@ -2894,8 +2894,8 @@ footer {
 
 .carousel-card.has-thumb .carousel-card-tag {
     position: absolute;
-    top: 12px;
-    left: 12px;
+    top: 15px;
+    right: 15px;
     background: rgba(10, 124, 104, 0.85) !important;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -2910,6 +2910,14 @@ footer {
     z-index: 10;
 }
 
+.carousel-card.has-thumb .carousel-card-content {
+    background: transparent;
+    position: relative;
+    z-index: 1;
+    padding-top: 50px;
+    /* 태그 공간 확보 */
+}
+
 .carousel-card.has-thumb .carousel-card-meta span {
     color: rgba(255, 255, 255, 0.9) !important;
 }
@@ -2917,12 +2925,6 @@ footer {
 .carousel-card.has-thumb .carousel-icon-btn {
     background: white !important;
     color: var(--primary-color) !important;
-}
-
-.carousel-card.has-thumb .carousel-card-content {
-    background: transparent;
-    position: relative;
-    z-index: 1;
 }
 
 /* --- Book List & Book Card Styles --- */

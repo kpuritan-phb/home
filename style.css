@@ -2884,7 +2884,7 @@ footer {
 /* Carousel Card with Background Image Enhancement */
 .carousel-card.has-thumb .carousel-card-title {
     color: white !important;
-    -webkit-text-stroke: 3px black;
+    -webkit-text-stroke: 5px black;
     paint-order: stroke fill;
     text-shadow: none;
     font-weight: 900;

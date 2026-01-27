@@ -952,7 +952,8 @@
             div.className = 'carousel-card' + (thumbUrl ? ' has-thumb' : '');
 
             // coverUrl이 없지만 fileUrl(PDF)이 있는 경우 PDF 첫 페이지를 썸네일로 생성
-            if (!thumbUrl && post.fileUrl && post.fileUrl.toLowerCase().endsWith('.pdf')) {
+            // Firebase Storage URL은 ?alt=media&token=... 형식이므로 정규식으로 PDF 감지
+            if (!thumbUrl && post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) {
                 // PDF 썸네일 생성 (비동기)
                 if (window.pdfjsLib) {
                     const loadingTask = window.pdfjsLib.getDocument(post.fileUrl);
@@ -983,10 +984,12 @@
                                 if (tag) tag.style.cssText = 'background: var(--secondary-color); color: white;';
                                 if (dateSpan) dateSpan.style.color = 'rgba(255,255,255,0.8)';
                                 if (iconBtn) iconBtn.style.cssText = 'background: white; color: var(--primary-color);';
+
+                                console.log('✅ PDF 카드 썸네일 렌더링 성공:', post.title);
                             });
                         });
                     }).catch(err => {
-                        console.warn('PDF 썸네일 생성 실패:', err);
+                        console.warn('⚠️ PDF 썸네일 생성 실패:', post.title, err.message);
                     });
                 }
             } else if (thumbUrl) {

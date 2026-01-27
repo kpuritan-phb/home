@@ -1722,7 +1722,7 @@ document.addEventListener('DOMContentLoaded', () => {
         div.id = cardId;
 
         if (thumbUrl) {
-            div.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url("${thumbUrl}")`;
+            div.style.backgroundImage = `url("${thumbUrl}")`;
             div.style.backgroundSize = 'cover';
             div.style.backgroundPosition = 'center';
             div.style.color = 'white';
@@ -1768,7 +1768,7 @@ document.addEventListener('DOMContentLoaded', () => {
             await page.render({ canvasContext: context, viewport: viewport }).promise;
 
             const imageUrl = canvas.toDataURL('image/png');
-            cardElement.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url("${imageUrl}")`;
+            cardElement.style.backgroundImage = `url("${imageUrl}")`;
             cardElement.style.backgroundSize = 'cover';
             cardElement.style.backgroundPosition = 'center';
             cardElement.style.color = 'white';

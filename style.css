@@ -2905,7 +2905,7 @@ footer {
 }
 
 .carousel-card.has-thumb .carousel-card-content {
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.2) 100%);
+    background: transparent;
     position: relative;
     z-index: 1;
 }

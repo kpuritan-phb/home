@@ -1705,7 +1705,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 썸네일 결정: coverUrl 우선, 없으면 fileUrl (이미지인 경우)
-        let thumbUrl = post.coverUrl || '';
+        const thumbUrl = post.coverUrl || '';
 
         // coverUrl이 없고 fileUrl이 이미지인 경우 fileUrl을 썸네일로 사용
         if (!thumbUrl && post.fileUrl && !isPdf) {
@@ -1725,20 +1725,25 @@ document.addEventListener('DOMContentLoaded', () => {
             div.style.backgroundImage = `url("${thumbUrl}")`;
             div.style.backgroundSize = 'cover';
             div.style.backgroundPosition = 'center';
-            div.style.color = 'white';
         }
 
         div.innerHTML = `
             <div class="carousel-card-content">
                 <div class="carousel-card-tag">${displayCategory}</div>
-                <div class="carousel-card-title">${post.title}</div>
-                <div class="carousel-card-meta">
-                    <span style="${thumbUrl ? 'color: rgba(255,255,255,0.8);' : ''}">${date}</span>
-                    <div class="carousel-icon-btn" style="${thumbUrl ? 'background: white; color: var(--primary-color);' : ''}"><i class="fas fa-arrow-right"></i></div>
-                </div>
             </div>
         `;
-        div.addEventListener('click', () => {
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'carousel-item-wrapper';
+        wrapper.appendChild(div);
+
+        // 하단 제목 추가
+        const bottomTitle = document.createElement('div');
+        bottomTitle.className = 'carousel-bottom-title';
+        bottomTitle.textContent = post.title;
+        wrapper.appendChild(bottomTitle);
+
+        wrapper.addEventListener('click', () => {
             window.openResourceModal(displayCategory, seriesName, docId);
         });
 
@@ -1747,7 +1752,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPdfThumbnailToCard(pdfUrl, div);
         }
 
-        return div;
+        return wrapper;
     };
 
     // PDF 썸네일을 카드 배경으로 렌더링하는 함수

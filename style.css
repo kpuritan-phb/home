@@ -1080,6 +1080,10 @@ nav ul li:hover a i {
     opacity: 1;
 }
 
+#edit-modal {
+    z-index: 4000;
+}
+
 .about-modal-content {
     max-width: 1100px !important;
     /* 소개 모달은 넓게 */

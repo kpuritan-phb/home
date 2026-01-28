@@ -888,11 +888,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const langGroup = document.getElementById('edit-lang-group');
             const langSelect = document.getElementById('edit-lang');
             if (langGroup && langSelect) {
-                if (post.otherCategory === '전도 소책자') {
+                const isBooklet = (post.otherCategory === '전도 소책자') || (post.tags && post.tags.includes('전도 소책자'));
+                if (isBooklet) {
                     langGroup.style.display = 'block';
                     const languages = ['한국어', 'English', 'Spanish', 'Japanese', 'Arabic', 'Chinese'];
                     const currentLang = (post.tags || []).find(tag => languages.includes(tag));
                     langSelect.value = currentLang || '한국어';
+                    // 만약 otherCategory가 비어있다면 '전도 소책자'로 강제 설정 (수정 시 정합성 위해)
+                    if (!post.otherCategory) {
+                        document.getElementById('edit-other-category').value = '전도 소책자';
+                    }
                 } else {
                     langGroup.style.display = 'none';
                 }
@@ -1546,8 +1551,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isAdmin) {
             adminButtons = `
                 <div class="resource-admin-actions">
-                    <button onclick="openEditModal('${post.id}')" class="action-btn edit-small" title="수정"><i class="fas fa-edit"></i></button>
-                    <button onclick="deletePost('${post.id}')" class="action-btn delete-small" title="삭제"><i class="fas fa-trash"></i></button>
+                    <button onclick="window.openEditModal('${post.id}')" class="action-btn edit-small" title="수정"><i class="fas fa-edit"></i></button>
+                    <button onclick="window.deletePost('${post.id}')" class="action-btn delete-small" title="삭제"><i class="fas fa-trash"></i></button>
                 </div>
             `;
         }

@@ -270,7 +270,7 @@
 
             try {
                 const snapshot = await db.collection("posts")
-                    .where("tags", "array-contains", "전도 소책자")
+                    .where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"])
                     .get();
 
                 let booklets = [];

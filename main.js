@@ -1025,9 +1025,17 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.classList.add('show');
         }
 
+        // 카테고리 이름 정문화 (기존 태그와의 호환성 유지)
+        let queryTag = categoryName;
+        let displayTitle = categoryName;
+        if (categoryName === '전도 소책자' || categoryName === '전도 소책자 PDF') {
+            queryTag = '전도 소책자';
+            displayTitle = '전도 소책자 PDF';
+        }
+
         // 초기화
         listContainer.classList.remove('compact-view');
-        if (titleElem) titleElem.textContent = `${categoryName} 자료 목록`;
+        if (titleElem) titleElem.textContent = `${displayTitle} 자료 목록`;
         listContainer.innerHTML = '<li class="no-resource-msg">자료를 불러오는 중입니다...</li>';
 
         const sortAlphaBtn = document.getElementById('sort-alpha-btn');
@@ -1087,7 +1095,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 전도 소책자일 경우 언어 선택창 표시
                 const langSelect = document.getElementById('modal-post-lang');
                 if (langSelect) {
-                    langSelect.style.display = (categoryName === '전도 소책자') ? 'block' : 'none';
+                    langSelect.style.display = (queryTag === '전도 소책자') ? 'block' : 'none';
                 }
 
                 if (toggleBtn) {
@@ -1133,8 +1141,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         const coverFile = coverEl ? coverEl.files[0] : null;
 
                         // 언어 태그 처리
-                        let finalTags = [categoryName];
-                        if (categoryName === '전도 소책자') {
+                        let finalTags = [queryTag];
+                        if (queryTag === '전도 소책자') {
                             const langValue = document.getElementById('modal-post-lang').value;
                             if (langValue) finalTags.push(langValue);
                         }
@@ -1197,7 +1205,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (toggleBtn) toggleBtn.textContent = '업로드 창 열기';
 
                             // 다시 해당 카테고리 로드
-                            window.openResourceModal(categoryName, series || null);
+                            window.openResourceModal(displayTitle, series || null);
                         } catch (err) {
                             console.error("Upload Error:", err);
                             alert("업로드 실패: " + err.message);
@@ -1214,13 +1222,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // Updated Query Logic: Use "tags" array-contains
-            const snapshot = await db.collection("posts")
-                .where("tags", "array-contains", categoryName)
-                .get();
+            // Updated Query Logic: Use "tags" array-contains (or array-contains-any for booklets)
+            let q = db.collection("posts");
+            if (queryTag === '전도 소책자') {
+                q = q.where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"]);
+            } else {
+                q = q.where("tags", "array-contains", queryTag);
+            }
+            const snapshot = await q.get();
 
             if (snapshot.empty) {
-                resourceListContainer.innerHTML = '<li class="no-resource-msg">아직 등록된 자료가 없습니다.</li>';
+                listContainer.innerHTML = '<li class="no-resource-msg">아직 등록된 자료가 없습니다.</li>';
                 return;
             }
 
@@ -1242,7 +1254,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let sName = (post.series && post.series.trim()) ? post.series.trim() : '_none';
 
                 // 강해설교의 경우 시리즈가 없으면 '기타 단편 설교' 폴더로 자동 분류하여 폴더만 보이게 함
-                if (categoryName === '강해설교' && sName === '_none') {
+                if (queryTag === '강해설교' && sName === '_none') {
                     sName = '기타 단편 설교';
                 }
 
@@ -2026,6 +2038,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resourceListContainer.innerHTML = '<li class="no-resource-msg">자료를 불러오는 중에 오류가 발생했습니다.</li>';
         }
     };
+
 
     window.openAllTopicsModal = () => {
         if (!resourceModal) return;

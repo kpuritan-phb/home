@@ -1743,15 +1743,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const displayCategory = post.tags ? post.tags[0] : '자료';
         let thumbUrl = post.coverUrl || '';
 
-        // YouTube Thumbnail Logic
-        if (!thumbUrl) {
-            const youtubeRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            let match = (post.content || "").match(youtubeRegExp);
-            if (!match) match = (post.fileUrl || "").match(youtubeRegExp);
-            if (match && match[2].length === 11) {
-                thumbUrl = `https://img.youtube.com/vi/${match[2]}/mqdefault.jpg`;
-            }
-        }
+
 
         const card = document.createElement('div');
         card.className = 'carousel-card' + (thumbUrl ? ' has-thumb' : '');

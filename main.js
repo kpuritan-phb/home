@@ -1743,10 +1743,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const displayCategory = post.tags ? post.tags[0] : '자료';
         let thumbUrl = post.coverUrl || '';
 
+        // YouTube Thumbnail Logic
+        if (!thumbUrl) {
+            const youtubeRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            let match = (post.content || "").match(youtubeRegExp);
+            if (!match) match = (post.fileUrl || "").match(youtubeRegExp);
+            if (match && match[2].length === 11) {
+                thumbUrl = `https://img.youtube.com/vi/${match[2]}/mqdefault.jpg`;
+            }
+        }
+
         const card = document.createElement('div');
         card.className = 'carousel-card' + (thumbUrl ? ' has-thumb' : '');
+        if (thumbUrl) {
+            card.style.backgroundImage = `url("${thumbUrl}")`;
+        }
 
-        // PDF thumbnail logic (async)
+        // PDF thumbnail logic (async override)
         if (!thumbUrl && post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) {
             if (window.pdfjsLib) {
                 const loadingTask = window.pdfjsLib.getDocument(post.fileUrl);
@@ -1765,30 +1778,25 @@ document.addEventListener('DOMContentLoaded', () => {
                         }).promise.then(() => {
                             const thumbnailUrl = canvas.toDataURL();
                             card.style.backgroundImage = `url("${thumbnailUrl}")`;
-                            card.style.backgroundSize = 'cover';
-                            card.style.backgroundPosition = 'center';
                             card.classList.add('has-thumb');
                         });
                     });
                 }).catch(err => console.warn('PDF thumbnail failed:', err));
             }
-        } else if (thumbUrl) {
-            card.style.backgroundImage = `url("${thumbUrl}")`;
-            card.style.backgroundSize = 'cover';
-            card.style.backgroundPosition = 'center';
         }
 
         const wrapper = document.createElement('div');
         wrapper.className = 'carousel-item-wrapper';
 
-        // Removed tag and moved title/date below the card
-        wrapper.innerHTML = `
-            <div class="carousel-card ${thumbUrl ? 'has-thumb' : ''}" style="${thumbUrl ? `background-image: url('${thumbUrl}')` : ''}"></div>
-            <div class="carousel-bottom-content">
-                <div class="carousel-bottom-title">${post.title}</div>
-                <div class="carousel-bottom-meta">${date}</div>
-            </div>
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'carousel-bottom-content';
+        contentDiv.innerHTML = `
+            <div class="carousel-bottom-title">${post.title}</div>
+            <div class="carousel-bottom-meta">${date}</div>
         `;
+
+        wrapper.appendChild(card);
+        wrapper.appendChild(contentDiv);
 
         wrapper.addEventListener('click', () => {
             if (window.openResourceModal) {
@@ -1899,8 +1907,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // 한 번에 최근 100개를 가져와서 배분 (효율적 + 인덱스 문제 회피)
-            const snapshot = await window.db.collection("posts").orderBy("createdAt", "desc").limit(100).get();
+            // 한 번에 최근 300개를 가져와서 배분 (설교 부족 문제 해결 위해 상향)
+            const snapshot = await window.db.collection("posts").orderBy("createdAt", "desc").limit(300).get();
             if (snapshot.empty) {
                 console.log("No posts found");
                 return;
@@ -1957,7 +1965,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 설교가 부족하면 New Arrivals 제외한 나머지도 일부 포함
                 const displaySermons = sermonItems.length >= 4 ? sermonItems : allPosts;
 
-                displaySermons.slice(0, 12).forEach(item => {
+                displaySermons.slice(0, 20).forEach(item => {
                     sermonTrack.appendChild(createCarouselCard(item.data, item.id));
                 });
             }

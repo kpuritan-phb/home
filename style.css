@@ -2775,12 +2775,13 @@ footer {
     width: 350px;
     display: flex;
     flex-direction: column;
+    gap: 15px;
     cursor: pointer;
     transition: var(--transition);
 }
 
 .carousel-item-wrapper:hover {
-    transform: translateY(-8px);
+    transform: translateY(-5px);
 }
 
 .carousel-card {
@@ -2788,37 +2789,44 @@ footer {
     aspect-ratio: 16 / 9;
     height: auto;
     background: #ffffff;
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     border: 1px solid rgba(0, 0, 0, 0.05);
     background-size: cover;
     background-position: center;
 }
 
-/* Ensure no text-shadow or stroke overrides unless intended */
-.carousel-card * {
-    text-shadow: none;
-    -webkit-text-stroke: 0;
+.carousel-bottom-content {
+    padding: 0 5px;
+    text-align: center;
 }
 
+.carousel-bottom-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.1rem;
+    color: #333;
+    line-height: 1.4;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+}
+
+.carousel-bottom-meta {
+    font-size: 0.85rem;
+    color: #888;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Category tags removed from carousel cards as requested */
 .carousel-card-tag {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: var(--secondary-color) !important;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white !important;
-    padding: 0.3rem 0.8rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 800;
-    z-index: 10;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    display: none;
 }
 
 .carousel-card.has-thumb .carousel-card-title,
@@ -2848,43 +2856,9 @@ footer {
     }
 }
 
-.carousel-card.has-thumb .carousel-card-title {
-    color: white !important;
-    font-weight: 800;
-}
-
-.carousel-card.has-thumb .carousel-card-meta span {
-    color: rgba(255, 255, 255, 0.9) !important;
-}
-
-.carousel-card.has-thumb .carousel-icon-btn {
-    background: white !important;
-    color: var(--primary-color) !important;
-}
-
-.carousel-card.has-thumb .carousel-card-content {
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 1.5rem;
-    z-index: 5;
-}
-
+/* Traditional carousel content below card */
 .carousel-card-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    justify-content: flex-end;
-    padding: 1.5rem;
-    position: relative;
-    z-index: 2;
-    transition: var(--transition);
+    display: none;
 }
 
 .carousel-card-title {

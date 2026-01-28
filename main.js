@@ -1764,7 +1764,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             viewport: viewport
                         }).promise.then(() => {
                             const thumbnailUrl = canvas.toDataURL();
-                            card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url("${thumbnailUrl}")`;
+                            card.style.backgroundImage = `url("${thumbnailUrl}")`;
                             card.style.backgroundSize = 'cover';
                             card.style.backgroundPosition = 'center';
                             card.classList.add('has-thumb');
@@ -1773,25 +1773,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 }).catch(err => console.warn('PDF thumbnail failed:', err));
             }
         } else if (thumbUrl) {
-            card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url("${thumbUrl}")`;
+            card.style.backgroundImage = `url("${thumbUrl}")`;
             card.style.backgroundSize = 'cover';
             card.style.backgroundPosition = 'center';
         }
 
-        card.innerHTML = `
-            <div class="carousel-card-tag">${displayCategory}</div>
-            <div class="carousel-card-content">
-                <div class="carousel-card-title">${post.title}</div>
-                <div class="carousel-card-meta">
-                    <span>${date}</span>
-                    <div class="carousel-icon-btn"><i class="fas fa-arrow-right"></i></div>
-                </div>
-            </div>
-        `;
-
         const wrapper = document.createElement('div');
         wrapper.className = 'carousel-item-wrapper';
-        wrapper.appendChild(card);
+
+        // Removed tag and moved title/date below the card
+        wrapper.innerHTML = `
+            <div class="carousel-card ${thumbUrl ? 'has-thumb' : ''}" style="${thumbUrl ? `background-image: url('${thumbUrl}')` : ''}"></div>
+            <div class="carousel-bottom-content">
+                <div class="carousel-bottom-title">${post.title}</div>
+                <div class="carousel-bottom-meta">${date}</div>
+            </div>
+        `;
 
         wrapper.addEventListener('click', () => {
             if (window.openResourceModal) {

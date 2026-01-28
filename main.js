@@ -1979,10 +1979,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial Load
     // Initial Load
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log("DOM Ready, initializing carousels...");
-        setTimeout(loadMainCarousels, 100);
-    });
+    console.log("Initializing carousels directly...");
+    setTimeout(loadMainCarousels, 150);
 
     // Real Search Logic
     const searchInput = document.querySelector('.search-bar input');

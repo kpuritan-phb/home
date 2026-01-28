@@ -1743,10 +1743,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const displayCategory = post.tags ? post.tags[0] : '자료';
         let thumbUrl = post.coverUrl || '';
 
-        const div = document.createElement('div');
-        div.className = 'carousel-card' + (thumbUrl ? ' has-thumb' : '');
+        const card = document.createElement('div');
+        card.className = 'carousel-card' + (thumbUrl ? ' has-thumb' : '');
 
-        // coverUrl이 없지만 fileUrl(PDF)이 있는 경우 PDF 첫 페이지를 썸네일로 생성
+        // PDF thumbnail logic (async)
         if (!thumbUrl && post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) {
             if (window.pdfjsLib) {
                 const loadingTask = window.pdfjsLib.getDocument(post.fileUrl);
@@ -1764,45 +1764,41 @@ document.addEventListener('DOMContentLoaded', () => {
                             viewport: viewport
                         }).promise.then(() => {
                             const thumbnailUrl = canvas.toDataURL();
-                            div.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url("${thumbnailUrl}")`;
-                            div.style.backgroundSize = 'cover';
-                            div.style.backgroundPosition = 'center';
-                            div.style.color = 'white';
-                            div.classList.add('has-thumb');
-
-                            const tag = div.querySelector('.carousel-card-tag');
-                            const dateSpan = div.querySelector('.carousel-card-meta span');
-                            const iconBtn = div.querySelector('.carousel-icon-btn');
-                            if (tag) tag.style.cssText = 'background: var(--secondary-color); color: white;';
-                            if (dateSpan) dateSpan.style.color = 'rgba(255,255,255,0.8)';
-                            if (iconBtn) iconBtn.style.cssText = 'background: white; color: var(--primary-color);';
+                            card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url("${thumbnailUrl}")`;
+                            card.style.backgroundSize = 'cover';
+                            card.style.backgroundPosition = 'center';
+                            card.classList.add('has-thumb');
                         });
                     });
                 }).catch(err => console.warn('PDF thumbnail failed:', err));
             }
         } else if (thumbUrl) {
-            div.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url("${thumbUrl}")`;
-            div.style.backgroundSize = 'cover';
-            div.style.backgroundPosition = 'center';
-            div.style.color = 'white';
+            card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url("${thumbUrl}")`;
+            card.style.backgroundSize = 'cover';
+            card.style.backgroundPosition = 'center';
         }
 
-        div.innerHTML = `
+        card.innerHTML = `
+            <div class="carousel-card-tag">${displayCategory}</div>
             <div class="carousel-card-content">
-                <div class="carousel-card-tag" style="${thumbUrl ? 'background: var(--secondary-color); color: white;' : ''}">${displayCategory}</div>
                 <div class="carousel-card-title">${post.title}</div>
                 <div class="carousel-card-meta">
-                    <span style="${thumbUrl ? 'color: rgba(255,255,255,0.8);' : ''}">${date}</span>
-                    <div class="carousel-icon-btn" style="${thumbUrl ? 'background: white; color: var(--primary-color);' : ''}"><i class="fas fa-arrow-right"></i></div>
+                    <span>${date}</span>
+                    <div class="carousel-icon-btn"><i class="fas fa-arrow-right"></i></div>
                 </div>
             </div>
         `;
-        div.addEventListener('click', () => {
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'carousel-item-wrapper';
+        wrapper.appendChild(card);
+
+        wrapper.addEventListener('click', () => {
             if (window.openResourceModal) {
                 window.openResourceModal(displayCategory, post.series || '', docId);
             }
         });
-        return div;
+        return wrapper;
     };
 
     // PDF 썸네일을 카드 배경으로 렌더링하는 함수

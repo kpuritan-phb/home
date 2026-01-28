@@ -193,6 +193,7 @@
                     <button class="sub-tab-btn active" onclick="switchLang('English')">English</button>
                     <button class="sub-tab-btn" onclick="switchLang('Spanish')">Spanish</button>
                     <button class="sub-tab-btn" onclick="switchLang('Japanese')">Japanese</button>
+                    <button class="sub-tab-btn" onclick="switchLang('Arabic')">Arabic</button>
                     <button class="sub-tab-btn" onclick="switchLang('Chinese')">Chinese</button>
                 </div>
             </div>
@@ -264,7 +265,7 @@
         async function loadData() {
             grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 로딩 중...</div>';
 
-            const languages = ['English', 'Spanish', 'Japanese', 'Chinese'];
+            const languages = ['English', 'Spanish', 'Japanese', 'Arabic', 'Chinese'];
             const targetTag = currentMainCat === '한국어' ? '한국어' : currentLang;
 
             try {

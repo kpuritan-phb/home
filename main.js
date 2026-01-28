@@ -872,7 +872,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.openEditModal = async (id) => {
         console.log("Opening edit modal for:", id);
         try {
-            if (typeof db === 'undefined' || !db) {
+            if (!window.db) {
                 return alert("데이터베이스에 연결되지 않았습니다.");
             }
             const doc = await db.collection("posts").doc(id).get();
@@ -1739,68 +1739,70 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.createCarouselCard = (post, docId) => {
-        const date = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : '최근';
-        let displayCategory = post.tags ? post.tags[0] : '자료';
-        if (displayCategory === '전도 소책자' || displayCategory === '전도 소책자 PDF') displayCategory = '전도 소책자 PDF';
-        const seriesName = post.series || '';
-
-        // PDF 파일 감지
-        let isPdf = false;
-        let pdfUrl = null;
-        if (post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) {
-            isPdf = true;
-            pdfUrl = post.fileUrl;
-        }
-
-        // 썸네일 결정: coverUrl 우선, 없으면 fileUrl (이미지인 경우)
-        const thumbUrl = post.coverUrl || '';
-
-        // coverUrl이 없고 fileUrl이 이미지인 경우 fileUrl을 썸네일로 사용
-        if (!thumbUrl && post.fileUrl && !isPdf) {
-            if (post.fileUrl.match(/\.(jpeg|jpg|gif|png|webp|svg)/i)) {
-                thumbUrl = post.fileUrl;
-            }
-        }
-
-        const hasThumb = thumbUrl ? 'has-thumb' : '';
+        const date = post.createdAt ? (typeof post.createdAt.toDate === 'function' ? post.createdAt.toDate().toLocaleDateString() : '최근') : '최근';
+        const displayCategory = post.tags ? post.tags[0] : '자료';
+        let thumbUrl = post.coverUrl || '';
 
         const div = document.createElement('div');
-        div.className = `carousel-card ${hasThumb}`;
-        const cardId = `carousel-card-${docId}`;
-        div.id = cardId;
+        div.className = 'carousel-card' + (thumbUrl ? ' has-thumb' : '');
 
-        if (thumbUrl) {
-            div.style.backgroundImage = `url("${thumbUrl}")`;
+        // coverUrl이 없지만 fileUrl(PDF)이 있는 경우 PDF 첫 페이지를 썸네일로 생성
+        if (!thumbUrl && post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) {
+            if (window.pdfjsLib) {
+                const loadingTask = window.pdfjsLib.getDocument(post.fileUrl);
+                loadingTask.promise.then(pdf => {
+                    pdf.getPage(1).then(page => {
+                        const scale = 0.5;
+                        const viewport = page.getViewport({ scale });
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+
+                        page.render({
+                            canvasContext: context,
+                            viewport: viewport
+                        }).promise.then(() => {
+                            const thumbnailUrl = canvas.toDataURL();
+                            div.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url("${thumbnailUrl}")`;
+                            div.style.backgroundSize = 'cover';
+                            div.style.backgroundPosition = 'center';
+                            div.style.color = 'white';
+                            div.classList.add('has-thumb');
+
+                            const tag = div.querySelector('.carousel-card-tag');
+                            const dateSpan = div.querySelector('.carousel-card-meta span');
+                            const iconBtn = div.querySelector('.carousel-icon-btn');
+                            if (tag) tag.style.cssText = 'background: var(--secondary-color); color: white;';
+                            if (dateSpan) dateSpan.style.color = 'rgba(255,255,255,0.8)';
+                            if (iconBtn) iconBtn.style.cssText = 'background: white; color: var(--primary-color);';
+                        });
+                    });
+                }).catch(err => console.warn('PDF thumbnail failed:', err));
+            }
+        } else if (thumbUrl) {
+            div.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url("${thumbUrl}")`;
             div.style.backgroundSize = 'cover';
             div.style.backgroundPosition = 'center';
+            div.style.color = 'white';
         }
 
         div.innerHTML = `
             <div class="carousel-card-content">
-                <div class="carousel-card-tag">${displayCategory}</div>
+                <div class="carousel-card-tag" style="${thumbUrl ? 'background: var(--secondary-color); color: white;' : ''}">${displayCategory}</div>
+                <div class="carousel-card-title">${post.title}</div>
+                <div class="carousel-card-meta">
+                    <span style="${thumbUrl ? 'color: rgba(255,255,255,0.8);' : ''}">${date}</span>
+                    <div class="carousel-icon-btn" style="${thumbUrl ? 'background: white; color: var(--primary-color);' : ''}"><i class="fas fa-arrow-right"></i></div>
+                </div>
             </div>
         `;
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'carousel-item-wrapper';
-        wrapper.appendChild(div);
-
-        // 하단 제목 추가
-        const bottomTitle = document.createElement('div');
-        bottomTitle.className = 'carousel-bottom-title';
-        bottomTitle.textContent = post.title;
-        wrapper.appendChild(bottomTitle);
-
-        wrapper.addEventListener('click', () => {
-            window.openResourceModal(displayCategory, seriesName, docId);
+        div.addEventListener('click', () => {
+            if (window.openResourceModal) {
+                window.openResourceModal(displayCategory, post.series || '', docId);
+            }
         });
-
-        // coverUrl이 없고 PDF 파일인 경우 PDF 첫 페이지를 렌더링
-        if (!thumbUrl && isPdf && pdfUrl && typeof pdfjsLib !== 'undefined') {
-            renderPdfThumbnailToCard(pdfUrl, div);
-        }
-
-        return wrapper;
+        return div;
     };
 
     // PDF 썸네일을 카드 배경으로 렌더링하는 함수
@@ -1898,14 +1900,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.loadMainCarousels = async () => {
         // DB Check & Fallback
-        if (typeof db === 'undefined' || !db) {
+        if (!window.db) {
             window.renderMockCarousels();
             return;
         }
 
         try {
             // 한 번에 최근 100개를 가져와서 배분 (효율적 + 인덱스 문제 회피)
-            const snapshot = await db.collection("posts").orderBy("createdAt", "desc").limit(100).get();
+            const snapshot = await window.db.collection("posts").orderBy("createdAt", "desc").limit(100).get();
             if (snapshot.empty) {
                 console.log("No posts found");
                 return;

@@ -884,6 +884,20 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('edit-author').value = post.author || "";
             document.getElementById('edit-other-category').value = post.otherCategory || "";
 
+            // [추가] 소책자 언어 처리
+            const langGroup = document.getElementById('edit-lang-group');
+            const langSelect = document.getElementById('edit-lang');
+            if (langGroup && langSelect) {
+                if (post.otherCategory === '전도 소책자') {
+                    langGroup.style.display = 'block';
+                    const languages = ['한국어', 'English', 'Spanish', 'Japanese', 'Arabic', 'Chinese'];
+                    const currentLang = (post.tags || []).find(tag => languages.includes(tag));
+                    langSelect.value = currentLang || '한국어';
+                } else {
+                    langGroup.style.display = 'none';
+                }
+            }
+
             document.getElementById('edit-title').value = post.title || "";
             document.getElementById('edit-series').value = post.series || "";
             document.getElementById('edit-order').value = post.order || 0;
@@ -920,6 +934,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const editForm = document.getElementById('edit-form');
+    // [추가] 기타 분류 변경 시 언어 선택창 노출 제어
+    const editOtherCat = document.getElementById('edit-other-category');
+    if (editOtherCat) {
+        editOtherCat.addEventListener('change', (e) => {
+            const langGroup = document.getElementById('edit-lang-group');
+            if (langGroup) {
+                langGroup.style.display = (e.target.value === '전도 소책자') ? 'block' : 'none';
+            }
+        });
+    }
     if (editForm) {
         editForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -929,6 +953,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const author = document.getElementById('edit-author').value;
             const other = document.getElementById('edit-other-category').value;
             const tags = [topic, author, other].filter(t => t !== "");
+
+            // [추가] 소책자 언어 태그 추가
+            if (other === '전도 소책자') {
+                const lang = document.getElementById('edit-lang').value;
+                if (lang) tags.push(lang);
+            }
 
             const title = document.getElementById('edit-title').value.trim();
             const series = document.getElementById('edit-series').value.trim() || "";

@@ -1706,7 +1706,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.createCarouselCard = (post, docId) => {
         const date = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : '최근';
         let displayCategory = post.tags ? post.tags[0] : '자료';
-        if (displayCategory === '전도 소책자') displayCategory = '전도 소책자 PDF';
+        if (displayCategory === '전도 소책자' || displayCategory === '전도 소책자 PDF') displayCategory = '전도 소책자 PDF';
         const seriesName = post.series || '';
 
         // PDF 파일 감지

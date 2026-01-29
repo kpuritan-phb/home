@@ -396,10 +396,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof topics !== 'undefined') {
         populateSelect('post-topic', topics);
         populateSelect('edit-topic', topics);
+        populateSelect('modal-post-topic', topics);
+        populateSelect('modal-filter-topic', topics);
     }
     if (typeof authors !== 'undefined') {
         populateSelect('post-author', authors);
         populateSelect('edit-author', authors);
+        populateSelect('modal-post-author', authors);
+        populateSelect('modal-filter-author', authors);
     }
 
     // Real Database Upload Logic
@@ -1127,10 +1131,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 adminHeader.style.display = 'block';
                 if (modalUploadForm) modalUploadForm.style.display = 'none';
 
-                // 전도 소책자일 경우 언어 선택창 표시
+                // 전도 소책자일 경우 언어 선택창 및 주제/저자 필드 표시
                 const langSelect = document.getElementById('modal-post-lang');
+                const categoryFields = document.getElementById('modal-post-category-fields');
                 if (langSelect) {
                     langSelect.style.display = (queryTag === '전도 소책자') ? 'block' : 'none';
+                }
+                if (categoryFields) {
+                    categoryFields.style.display = (queryTag === '전도 소책자') ? 'grid' : 'none';
                 }
 
                 if (toggleBtn) {
@@ -1175,8 +1183,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         const file = fileEl ? fileEl.files[0] : null;
                         const coverFile = coverEl ? coverEl.files[0] : null;
 
-                        // 언어 태그 처리
+                        const topic = document.getElementById('modal-post-topic').value;
+                        const author = document.getElementById('modal-post-author').value;
+
+                        // 언어 및 분류 태그 처리
                         let finalTags = [queryTag];
+                        if (topic) finalTags.push(topic);
+                        if (author) finalTags.push(author);
+
                         if (queryTag === '전도 소책자') {
                             const langValue = document.getElementById('modal-post-lang').value;
                             if (langValue) finalTags.push(langValue);
@@ -1283,19 +1297,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
             });
 
-            // Group items by series
-            const groupedPosts = {};
-            posts.forEach(post => {
-                let sName = (post.series && post.series.trim()) ? post.series.trim() : '_none';
+            // 필터링 컨트롤 노출 및 초기화
+            const filterTopic = document.getElementById('modal-filter-topic');
+            const filterAuthor = document.getElementById('modal-filter-author');
+            const filterSection = document.getElementById('modal-filter-section');
 
-                // 강해설교의 경우 시리즈가 없으면 '기타 단편 설교' 폴더로 자동 분류하여 폴더만 보이게 함
-                if (queryTag === '강해설교' && sName === '_none') {
-                    sName = '기타 단편 설교';
-                }
-
-                if (!groupedPosts[sName]) groupedPosts[sName] = [];
-                groupedPosts[sName].push(post);
-            });
+            if (filterSection) {
+                // 전도 소책자나 강해설교 등 자료가 많을 수 있는 곳에서 노출
+                const needsFilter = ['전도 소책자', '강해설교', '도서 목록'].includes(queryTag);
+                filterSection.style.display = needsFilter ? 'flex' : 'none';
+            }
+            if (filterTopic) filterTopic.value = "";
+            if (filterAuthor) filterAuthor.value = "";
 
             // Render View
             const renderListView = (currentGroupedData) => {
@@ -1480,11 +1493,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
 
+            // Group items by series (필터 적용 함수 내부에서 처리하기 위해 변수로 분리)
+            let groupedPosts = {};
+
+            const groupAndRender = (postsToProcess) => {
+                groupedPosts = {};
+                postsToProcess.forEach(post => {
+                    let sName = (post.series && post.series.trim()) ? post.series.trim() : '_none';
+                    if (queryTag === '강해설교' && sName === '_none') {
+                        sName = '기타 단편 설교';
+                    }
+                    if (!groupedPosts[sName]) groupedPosts[sName] = [];
+                    groupedPosts[sName].push(post);
+                });
+                renderListView(groupedPosts);
+            };
+
+            const applyModalFilters = () => {
+                const selectedTopic = filterTopic ? filterTopic.value : "";
+                const selectedAuthor = filterAuthor ? filterAuthor.value : "";
+
+                let filtered = posts;
+                if (selectedTopic) {
+                    filtered = filtered.filter(p => p.tags && p.tags.includes(selectedTopic));
+                }
+                if (selectedAuthor) {
+                    filtered = filtered.filter(p => p.tags && p.tags.includes(selectedAuthor));
+                }
+                groupAndRender(filtered);
+            };
+
+            if (filterTopic) filterTopic.onchange = applyModalFilters;
+            if (filterAuthor) filterAuthor.onchange = applyModalFilters;
+
+            // 초기 렌더링
+            groupAndRender(posts);
+
             // If targetSeries is provided, go straight to detail view
             if (targetSeries && groupedPosts[targetSeries]) {
                 renderDetailView(targetSeries, groupedPosts[targetSeries]);
             } else {
-                renderListView(groupedPosts);
+                // 이미 groupAndRender(posts)에서 초기 렌더링됨
             }
 
             // 만약 특정 게시물 ID가 있다면 해당 위치로 스크롤
@@ -1655,8 +1704,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="resource-content-padding">
                     <div class="resource-header-modern">
                         <div class="resource-tag-row">
-                            <span class="resource-type-badge">${post.tags && post.tags[0] ? post.tags[0] : '자료'}</span>
-                            <span class="resource-date-modern">${date}</span>
+                            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                ${post.tags ? post.tags.map(tag => `<span class="resource-type-badge">${tag}</span>`).join('') : '<span class="resource-type-badge">자료</span>'}
+                            </div>
+                            <span class="resource-date-modern" style="margin-left: auto;">${date}</span>
                         </div>
                         <h4 class="resource-title-modern">
                             ${titleHtml}

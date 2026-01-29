@@ -456,6 +456,7 @@
                                     <option value="기타">기타 자료</option>
                                     <option value="도서 목록">도서 목록</option>
                                     <option value="전도 소책자">전도 소책자</option>
+                                    <option value="강해설교">강해설교</option>
                                 </select>
                             </div>
                         </div>
@@ -814,11 +815,13 @@
                             <option value="Chinese">Chinese</option>
                         </select>
                         <input type="number" id="modal-post-order" value="0" style="flex: 1;" placeholder="순서">
+                        <input type="text" id="modal-post-price" placeholder="가격 (도서 전용)"
+                            style="flex: 1; display: none;">
                     </div>
                     <textarea id="modal-post-content" rows="3" placeholder="내용 또는 유튜브 링크"
                         style="width:100%; margin-bottom:10px;"></textarea>
                     <div id="modal-post-category-fields"
-                        style="display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        style="display: none; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
                         <div class="input-group">
                             <label style="font-size: 0.8rem; color: #666; display: block; margin-bottom: 5px;">주제별
                                 분류</label>
@@ -831,6 +834,17 @@
                                 분류</label>
                             <select id="modal-post-author" style="width: 100%;">
                                 <option value="">-- 선택 안함 --</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label style="font-size: 0.8rem; color: #666; display: block; margin-bottom: 5px;">기타
+                                분류</label>
+                            <select id="modal-post-other-category" style="width: 100%;">
+                                <option value="">-- 선택 안함 --</option>
+                                <option value="기타">기타 자료</option>
+                                <option value="도서 목록">도서 목록</option>
+                                <option value="전도 소책자">전도 소책자</option>
+                                <option value="강해설교">강해설교</option>
                             </select>
                         </div>
                     </div>

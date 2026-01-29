@@ -1131,15 +1131,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 adminHeader.style.display = 'block';
                 if (modalUploadForm) modalUploadForm.style.display = 'none';
 
-                // 전도 소책자일 경우 언어 선택창 및 주제/저자 필드 표시
+                // 언어 선택창 및 주제/저자/기타 분류 필드 표시 및 초기화
                 const langSelect = document.getElementById('modal-post-lang');
+                const priceInput = document.getElementById('modal-post-price');
                 const categoryFields = document.getElementById('modal-post-category-fields');
+                const modalTopic = document.getElementById('modal-post-topic');
+                const modalAuthor = document.getElementById('modal-post-author');
+                const modalOther = document.getElementById('modal-post-other-category');
+                const modalSeries = document.getElementById('modal-post-series');
+
                 if (langSelect) {
                     langSelect.style.display = (queryTag === '전도 소책자') ? 'block' : 'none';
+                    if (queryTag === '전도 소책자') langSelect.value = "한국어";
+                }
+                if (priceInput) {
+                    priceInput.style.display = (queryTag === '도서 목록') ? 'block' : 'none';
+                    priceInput.value = "";
                 }
                 if (categoryFields) {
-                    categoryFields.style.display = (queryTag === '전도 소책자') ? 'grid' : 'none';
+                    categoryFields.style.display = 'grid'; // 교차 분류를 위해 항상 유지
                 }
+
+                // --- 초기값 자동 매칭 및 세팅 ---
+                if (modalTopic) modalTopic.value = topics.includes(queryTag) ? queryTag : "";
+                if (modalAuthor) modalAuthor.value = authors.includes(queryTag) ? queryTag : "";
+                if (modalOther) {
+                    const otherCats = ['기타', '도서 목록', '전도 소책자', '강해설교'];
+                    modalOther.value = otherCats.includes(queryTag) ? queryTag : "";
+                }
+                if (modalSeries) modalSeries.value = targetSeries || "";
 
                 if (toggleBtn) {
                     toggleBtn.textContent = '업로드 창 열기';
@@ -1177,6 +1197,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const title = document.getElementById('modal-post-title').value.trim();
                         const series = document.getElementById('modal-post-series').value.trim();
                         const order = parseInt(document.getElementById('modal-post-order').value) || 0;
+                        const price = document.getElementById('modal-post-price').value.trim() || "";
                         const content = document.getElementById('modal-post-content').value;
                         const fileEl = document.getElementById('modal-post-file');
                         const coverEl = document.getElementById('modal-post-cover');
@@ -1185,15 +1206,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         const topic = document.getElementById('modal-post-topic').value;
                         const author = document.getElementById('modal-post-author').value;
+                        const otherCategory = document.getElementById('modal-post-other-category').value;
 
                         // 언어 및 분류 태그 처리
                         let finalTags = [queryTag];
-                        if (topic) finalTags.push(topic);
-                        if (author) finalTags.push(author);
+                        if (topic && !finalTags.includes(topic)) finalTags.push(topic);
+                        if (author && !finalTags.includes(author)) finalTags.push(author);
+                        if (otherCategory && !finalTags.includes(otherCategory)) finalTags.push(otherCategory);
 
-                        if (queryTag === '전도 소책자') {
+                        if (queryTag === '전도 소책자' || otherCategory === '전도 소책자') {
                             const langValue = document.getElementById('modal-post-lang').value;
-                            if (langValue) finalTags.push(langValue);
+                            if (langValue && !finalTags.includes(langValue)) finalTags.push(langValue);
                         }
 
                         if (!title) {
@@ -1238,9 +1261,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
 
                             await db.collection("posts").add({
+                                topic,
+                                author,
+                                otherCategory,
                                 title,
                                 series,
                                 order,
+                                price,
                                 content,
                                 fileUrl,
                                 coverUrl,

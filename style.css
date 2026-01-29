@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@300;400;500;600&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@300;400;500;600&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nanum+Myeongjo:wght@400;700;800&display=swap');
 
 :root {
     --primary-color: #2a2d32;
@@ -23,9 +23,9 @@
 }
 
 body {
-    font-family: 'Noto Sans KR', 'Inter', sans-serif;
+    font-family: 'Nanum Myeongjo', serif;
     color: var(--text-color);
-    line-height: 1.7;
+    line-height: 1.8;
     background-color: var(--bg-warm);
     overflow-x: hidden;
 }
@@ -34,12 +34,11 @@ h1,
 h2,
 h3,
 h4 {
-    font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+    font-family: 'Nanum Myeongjo', serif;
     color: var(--primary-color);
-    font-weight: 900;
-    /* Extra bold for titles */
-    text-transform: uppercase;
-    letter-spacing: -0.03em;
+    font-weight: 800;
+    text-transform: none;
+    letter-spacing: -0.01em;
 }
 
 /* Header & Navigation */
@@ -834,7 +833,7 @@ nav ul li:hover a i {
     font-size: 1.2rem;
     margin-bottom: 1rem;
     color: var(--primary-color);
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Nanum Myeongjo', serif;
 }
 
 .about-goals {
@@ -2821,7 +2820,7 @@ footer {
 }
 
 .carousel-bottom-title {
-    font-family: 'Noto Serif KR', serif;
+    font-family: 'Nanum Myeongjo', serif;
     font-size: 1.1rem;
     color: #333;
     line-height: 1.4;

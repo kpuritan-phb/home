@@ -23,9 +23,9 @@
 }
 
 body {
-    font-family: 'Nanum Myeongjo', serif;
+    font-family: 'Noto Sans KR', 'Inter', sans-serif;
     color: var(--text-color);
-    line-height: 1.8;
+    line-height: 1.7;
     background-color: var(--bg-warm);
     overflow-x: hidden;
 }
@@ -34,11 +34,12 @@ h1,
 h2,
 h3,
 h4 {
-    font-family: 'Nanum Myeongjo', serif;
+    font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
     color: var(--primary-color);
-    font-weight: 800;
-    text-transform: none;
-    letter-spacing: -0.01em;
+    font-weight: 900;
+    /* Extra bold for titles */
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
 }
 
 /* Header & Navigation */
@@ -627,6 +628,18 @@ nav ul li:hover a i {
     border-top: 8px solid var(--primary-color);
     padding-top: 1rem;
     /* Reduced padding */
+}
+
+.about-modal-content .about-container {
+    font-family: 'Nanum Myeongjo', serif !important;
+}
+
+.about-modal-content .about-container h2,
+.about-modal-content .about-container h4,
+.about-modal-content .about-container .team-name {
+    font-family: 'Nanum Myeongjo', serif !important;
+    text-transform: none !important;
+    letter-spacing: -0.01em !important;
 }
 
 .section-title h2 {
@@ -2820,7 +2833,7 @@ footer {
 }
 
 .carousel-bottom-title {
-    font-family: 'Nanum Myeongjo', serif;
+    font-family: 'Noto Serif KR', serif;
     font-size: 1.1rem;
     color: #333;
     line-height: 1.4;

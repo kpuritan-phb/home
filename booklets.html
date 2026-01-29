@@ -7,7 +7,7 @@
     <title>전도 소책자 PDF | 한국 청교도 연구소 PHB</title>
     <meta name="description" content="다양한 언어로 제작된 전도 소책자 목록을 확인하세요.">
 
-    <link rel="stylesheet" href="style.css?v=103">
+    <link rel="stylesheet" href="style.css?v=104">
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link
@@ -318,9 +318,9 @@
 
                         await page.render({ canvasContext: context, viewport: viewport }).promise;
 
-                        if (img) {
-                            img.src = canvas.toDataURL();
-                            img.style.objectFit = 'contain';
+                        if (container) {
+                            container.style.backgroundImage = `url("${canvas.toDataURL()}")`;
+                            container.classList.add('has-thumb');
                         }
                     } catch (e) {
                         console.warn("PDF Thumb Error (CORS likely), falling back to embed:", e);
@@ -340,7 +340,7 @@
 
                 booklets.forEach(item => {
                     const card = document.createElement('div');
-                    card.className = 'book-card-premium';
+                    card.className = 'carousel-item-wrapper';
                     card.style.cursor = 'pointer';
 
                     let thumbUrl = item.coverUrl;
@@ -360,16 +360,13 @@
                     const containerId = `book-cover-wrap-${item.id}`;
 
                     card.innerHTML = `
-                        <div id="${containerId}" class="book-cover-wrapper" style="position:relative;">
-                            <img id="${imgId}" src="${finalSrc}" alt="${item.title}" onerror="this.onerror=null; this.src='images/puritan-study.png';">
+                        <div id="${containerId}" class="carousel-card ${thumbUrl ? 'has-thumb' : ''}" style="height: auto; aspect-ratio: 16/9; ${thumbUrl ? `background-image: url('${thumbUrl}');` : ''}">
+                            <img id="${imgId}" src="${finalSrc}" alt="${item.title}" style="display:none;">
+                            ${thumbUrl ? '' : `<div class="no-thumb-placeholder"><i class="fas fa-book-open"></i></div>`}
                         </div>
-                        <div class="book-info">
-                            <div class="book-tag">${item.series || '전도 소책자'}</div>
-                            <h3 class="book-title">${item.title}</h3>
-                            <div class="book-description">${item.content ? item.content.substring(0, 80) + '...' : ''}</div>
-                            <div class="book-footer">
-                                <span class="book-buy-btn">자료 보기</span>
-                            </div>
+                        <div class="carousel-bottom-content" style="margin-top: 15px;">
+                            <div class="carousel-bottom-title">${item.title}</div>
+                            <div class="carousel-bottom-meta">${item.createdAt ? (typeof item.createdAt.toDate === 'function' ? item.createdAt.toDate().toLocaleDateString() : '최근') : '최근'}</div>
                         </div>
                     `;
                     card.onclick = (e) => {

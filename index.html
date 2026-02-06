@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한국 청교도 연구소 | Korea Puritan Institute</title>
+    <meta name="description" content="청교도 신학과 개혁주의 신념을 연구하고 성경적인 자료를 제공하는 한국 청교도 연구소입니다.">
+
+    <!-- Open Graph / KakaoTalk / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kpuritan.com/">
+    <meta property="og:title" content="한국 청교도 연구소 | Korea Puritan Institute">
+    <meta property="og:description" content="청교도 신학과 개혁주의 신념을 연구하고 성경적인 자료를 제공하는 한국 청교도 연구소입니다.">
+    <meta property="og:image" content="og-image.png?v=4">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://kpuritan.com/">
+    <meta property="twitter:title" content="한국 청교도 연구소 | Korea Puritan Institute">
+    <meta property="twitter:description" content="청교도 신학과 개혁주의 신념을 연구하고 성경적인 자료를 제공하는 한국 청교도 연구소입니다.">
+    <meta property="twitter:image" content="og-image.png?v=4">
+
+    <link rel="stylesheet" href="style.css?v=105">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+    <link rel="icon" type="image/x-icon" href="favicon.ico?v=2">
+    <link rel="icon" type="image/png" href="favicon.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2">
+    <!-- Font Awesome for Search Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- PDF.js for PDF thumbnail rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>
+        // PDF.js worker 설정
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+        }
+    </script>
+</head>
+
+<body>
+    <div class="nav-overlay"></div>
+
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span class="logo-eng">KPI</span>
+                <span class="logo-kor">한국 청교도 연구소</span>
+                <span class="logo-since">Since 2001</span>
+            </a>
+            <button class="mobile-menu-toggle" aria-label="메뉴 열기">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="#about">About</a></li>
+
+                    <li class="dropdown">
+                        <a href="resources.html?type=topic">주제별 자료 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content mega-menu" id="topic-dropdown">
+                            <!-- Topics injected here -->
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="resources.html?type=author">저자별 자료 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content mega-menu" id="author-dropdown">
+                            <div class="author-search-container">
+                                <input type="text" id="author-dropdown-search" placeholder="저자 이름 검색...">
+                            </div>
+                            <div class="author-grid-dropdown" id="author-dropdown-grid">
+                                <!-- Authors injected here -->
+                            </div>
+                        </div>
+                    </li>
+                    <li><a href="javascript:void(0)" onclick="openResourceModal('강해설교')">강해설교</a></li>
+                    <li><a href="booklets.html">전도 소책자 PDF</a></li>
+                    <li class="dropdown">
+                        <a href="javascript:void(0)">퓨리탄헤리티지북스(PHB) <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="publisher-dropdown">
+                            <ul class="dropdown-list">
+                                <li><a href="books.html">도서 목록</a></li>
+                                <li><a href="mailto:kpuritan.phb@gmail.com">메일 문의</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <div class="header-right">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="검색어를 입력하세요...">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>KOREA PURITAN <br>INSTITUTE</h1>
+            </div>
+            <div class="ticker-banner">
+                <div class="ticker-track">
+                    <div class="ticker-item">이 시대에 한국교회의 갱신과 회복을 위해서는 바른 교리의 가르침과 전도 그리고 성경 본문을 깊이 강해하는 설교가 필요합니다.</div>
+                    <div class="ticker-item">이 시대에 한국교회의 갱신과 회복을 위해서는 바른 교리의 가르침과 전도 그리고 성경 본문을 깊이 강해하는 설교가 필요합니다.</div>
+                    <div class="ticker-item">이 시대에 한국교회의 갱신과 회복을 위해서는 바른 교리의 가르침과 전도 그리고 성경 본문을 깊이 강해하는 설교가 필요합니다.</div>
+                    <div class="ticker-item">이 시대에 한국교회의 갱신과 회복을 위해서는 바른 교리의 가르침과 전도 그리고 성경 본문을 깊이 강해하는 설교가 필요합니다.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="recent-updates">
+            <div class="section-title modern-flex" style="margin-bottom: 2rem; border-bottom: none;">
+                <div class="title-text-group">
+                    <h2>EXPLORE RESOURCES</h2>
+                    <p>Discover our curated library of Reformed theology.</p>
+                </div>
+            </div>
+
+            <!-- 1. New Arrivals Carousel -->
+            <div class="carousel-section">
+                <div class="carousel-header">
+                    <h3 class="carousel-title">최신 업데이트 <span
+                            style="font-size:0.5em; color:#999; font-weight:500; margin-left:10px;">New Arrivals</span>
+                    </h3>
+                    <a href="javascript:void(0)" onclick="openAllRecentModal()" class="carousel-view-all">전체보기 <i
+                            class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="carousel-container-wrapper">
+                    <button class="carousel-nav-btn prev" onclick="scrollCarousel('carousel-new', -300)"><i
+                            class="fas fa-chevron-left"></i></button>
+                    <div class="carousel-track" id="carousel-new">
+                        <!-- JS injected cards -->
+                        <div class="loading-msg" style="padding:2rem;">최신 자료를 불러오는 중...</div>
+                    </div>
+                    <button class="carousel-nav-btn next" onclick="scrollCarousel('carousel-new', 300)"><i
+                            class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <!-- 2. Featured Topics Carousel -->
+            <div class="carousel-section">
+                <div class="carousel-header">
+                    <h3 class="carousel-title">주제별 추천 자료 <span
+                            style="font-size:0.5em; color:#999; font-weight:500; margin-left:10px;">Featured
+                            Topics</span></h3>
+                    <a href="resources.html?type=topic" class="carousel-view-all">주제 목록 더보기 <i
+                            class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="carousel-container-wrapper">
+                    <button class="carousel-nav-btn prev" onclick="scrollCarousel('carousel-topic', -300)"><i
+                            class="fas fa-chevron-left"></i></button>
+                    <div class="carousel-track" id="carousel-topic">
+                        <!-- JS injected cards -->
+                        <div class="loading-msg" style="padding:2rem;">추천 자료를 불러오는 중...</div>
+                    </div>
+                    <button class="carousel-nav-btn next" onclick="scrollCarousel('carousel-topic', 300)"><i
+                            class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <!-- 3. Expository Sermons Carousel -->
+            <div class="carousel-section">
+                <div class="carousel-header">
+                    <h3 class="carousel-title">강해설교 시리즈 <span
+                            style="font-size:0.5em; color:#999; font-weight:500; margin-left:10px;">Sermon Series</span>
+                    </h3>
+                    <a href="javascript:void(0)" onclick="openResourceModal('강해설교')" class="carousel-view-all">시리즈 전체보기
+                        <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="carousel-container-wrapper">
+                    <button class="carousel-nav-btn prev" onclick="scrollCarousel('carousel-sermon', -300)"><i
+                            class="fas fa-chevron-left"></i></button>
+                    <div class="carousel-track" id="carousel-sermon">
+                        <!-- JS injected cards -->
+                        <div class="loading-msg" style="padding:2rem;">설교 시리즈를 불러오는 중...</div>
+                    </div>
+                    <button class="carousel-nav-btn next" onclick="scrollCarousel('carousel-sermon', 300)"><i
+                            class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+        </section>
+        </section>
+
+        <script>
+            // Emergency Fallback for Carousels
+            setTimeout(() => {
+                const checkAndFill = (id) => {
+                    const track = document.getElementById(id);
+                    // 내용이 없거나 loading-msg만 있으면 fallback 실행
+                    if (track && (track.children.length === 0 || track.querySelector('.loading-msg'))) {
+                        console.warn(`Fallback triggered for ${id}`);
+                        track.innerHTML = '';
+                        const mockData = [
+                            { title: "[샘플] 청교도 신학의 정수", cat: "청교도 신학", date: "2026.01.15" },
+                            { title: "[샘플] 웨스트민스터 신앙고백 해설", cat: "신앙고백", date: "2026.01.12" },
+                            { title: "[샘플] 리처드 십스의 상한 갈대", cat: "경건 서적", date: "2026.01.10" },
+                            { title: "[샘플] 가정 예배 지침서", cat: "신자의 삶", date: "2026.01.05" },
+                            { title: "[샘플] 은혜의 수단으로서의 기도", cat: "청교도 신학", date: "2026.01.03" },
+                            { title: "[샘플] 참된 회심의 성경적 표지", cat: "회심", date: "2026.01.01" },
+                            { title: "[샘플] 그리스도의 위격과 사역", cat: "기독론", date: "2025.12.28" },
+                            { title: "[샘플] 성화의 신비와 능력", cat: "성화", date: "2025.12.25" }
+                        ];
+
+                        mockData.forEach(item => {
+                            const div = document.createElement('div');
+                            div.className = 'carousel-card';
+                            div.innerHTML = `
+                                <div class="carousel-card-content">
+                                    <div class="carousel-card-tag">${item.cat}</div>
+                                    <div class="carousel-card-title">${item.title}</div>
+                                    <div class="carousel-card-meta">
+                                        <span>${item.date}</span>
+                                        <div class="carousel-icon-btn"><i class="fas fa-arrow-right"></i></div>
+                                    </div>
+                                </div>
+                            `;
+                            div.onclick = () => {
+                                try {
+                                    if (window.openResourceModal) {
+                                        window.openResourceModal(item.cat);
+                                    } else {
+                                        // 급한대로 제목만이라도 보여주는 fallback
+                                        console.warn("Main Script Not Loaded - Basic Alert");
+                                        // alert("상세 보기 기능 로딩 중... (Main Script Not Loaded)\n제목: " + post.title); // post.title이 아니라 item.title이 맞음
+                                        openLocalMockModal(item.cat, item.title); // Fallback to local mock modal
+                                    }
+                                } catch (e) {
+                                    console.warn("Using local modal fallback:", e);
+                                    openLocalMockModal(item.cat, item.title);
+                                }
+                            };
+                            track.appendChild(div);
+                        });
+                    }
+                };
+
+                // 자체 로컬 모달 오픈 함수 (Main.js 의존성 제거)
+                const openLocalMockModal = (cat, clickedTitle) => {
+                    const modal = document.getElementById('resource-modal');
+                    const list = document.getElementById('resource-list-container');
+                    const title = document.getElementById('resource-modal-title');
+
+                    if (modal && list) {
+                        modal.classList.add('show');
+                        if (title) title.textContent = cat + " 자료 목록 (샘플)";
+                        list.innerHTML = '';
+
+                        // 클릭한 아이템을 최상단에 보여줌
+                        const li = document.createElement('li');
+                        li.className = 'resource-item';
+                        li.style.border = '2px solid var(--secondary-color)';
+                        li.innerHTML = `
+                            <div class="resource-header" style="margin-bottom:5px;">
+                                <span style="font-size:0.8rem; color:var(--secondary-color);">샘플 자료</span>
+                                <span style="font-size:0.8rem; color:#888;">2024.01.18</span>
+                            </div>
+                            <h3 style="margin:0 0 10px 0; font-size:1.1rem;">${clickedTitle || cat + ' 관련 자료'}</h3>
+                            <p style="font-size:0.9rem; color:#555; margin-bottom: 15px;">
+                                본 자료는 샘플 데이터입니다. (데이터베이스 연결 대기 중)<br>
+                                만약 계속 이 화면이 보인다면 아래 버튼을 눌러보세요.
+                            </p>
+                            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                                <button onclick="window.loadMainCarousels ? window.loadMainCarousels() : alert('메인 스크립트가 아직 로드되지 않았습니다.');" 
+                                    style="padding:8px 15px; background:var(--primary-color); color:white; border:none; border-radius:4px; cursor:pointer;">
+                                    <i class="fas fa-sync-alt"></i> 실제 데이터 불러오기 (강제 시도)
+                                </button>
+                                <a href="#" class="premium-btn" style="display:inline-block; text-decoration:none; color:var(--secondary-color); border:1px solid var(--secondary-color); padding:8px 15px; border-radius:4px; font-size:0.9rem;">
+                                    <i class="fas fa-file-pdf"></i> [샘플] PDF 디자인 예시
+                                </a>
+                            </div>
+                        `;
+                        list.appendChild(li);
+
+                        // 추가 샘플들
+                        const extras = ['심화 연구 자료', '관련 특강 영상', '참고 문헌 리스트'];
+                        extras.forEach(ex => {
+                            const eli = document.createElement('li');
+                            eli.className = 'resource-item';
+                            eli.innerHTML = `
+                                <h4 style="margin:0 0 5px 0;">[샘플] ${cat} ${ex}</h4>
+                                <p style="font-size:0.8rem; color:#999; margin-bottom:10px;">준비 중입니다.</p>
+                                <button style="background:#eee; border:none; padding:5px 10px; border-radius:4px; color:#aaa; cursor:not-allowed;">
+                                    <i class="fas fa-lock"></i> 접근 제한
+                                </button>
+                            `;
+                            list.appendChild(eli);
+                        });
+                    } else {
+                        alert("모달 요소를 찾을 수 없습니다. 페이지를 새로고침 해주세요.");
+                    }
+                };
+
+                if (window.isDataLoaded) return; // 실제 데이터가 로드되었으면 샘플 덮어쓰기 방지
+                checkAndFill('carousel-new');
+                checkAndFill('carousel-topic');
+                checkAndFill('carousel-sermon');
+            }, 8000); // 8초 대기
+        </script>
+
+        <style>
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .load-more-trigger {
+                width: 100%;
+            }
+        </style>
+
+        <script>
+            // Emergency Fallback: Standalone Mock Data Renderer
+            // This script runs if the main logic fails to populate the grid within 1.5 seconds.
+            setTimeout(() => {
+                const grid = document.getElementById('recent-posts-grid');
+                if (grid && grid.children.length === 0) {
+                    console.warn("Emergency Fallback Triggered: Rendering Standalone Mock Data");
+
+                    const mockData = [
+                        { title: "청교도 신학의 정수: 존 오웬의 성령론", cat: "청교도 신학", date: "2026.01.15" },
+                        { title: "현대 교회를 위한 웨스트민스터 신앙고백 해설", cat: "신앙고백", date: "2026.01.12" },
+                        { title: "고난 속의 위로: 리처드 십스의 상한 갈대", cat: "경건 서적", date: "2026.01.10" },
+                        { title: "설교란 무엇인가? 마틴 로이드 존스의 설교학", cat: "설교학", date: "2026.01.08" },
+                        { title: "가정 예배의 회복과 실제적인 지침", cat: "신자의 삶", date: "2026.01.05" },
+                        { title: "요한계시록 강해 시리즈 (1): 승리하신 그리스도", cat: "강해설교", date: "2026.01.01" }
+                    ];
+
+                    mockData.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'recent-card-premium';
+                        div.innerHTML = `
+                            <div class="recent-card-inner">
+                                <div class="recent-card-top">
+                                    <span class="recent-status-pill">SAMPLE</span>
+                                    <span class="recent-category-tag">${item.cat}</span>
+                                </div>
+                                <h3 class="recent-title-premium">${item.title}</h3>
+                                <div class="recent-card-footer">
+                                    <span class="recent-date-premium"><i class="far fa-calendar-alt"></i> ${item.date}</span>
+                                    <button class="recent-link-btn">
+                                        상세보기 <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        div.querySelector('.recent-card-inner').addEventListener('click', () => {
+                            if (window.openResourceModal) {
+                                window.openResourceModal(item.cat);
+                            } else {
+                                console.warn("Main Script Not Loaded - Basic Alert");
+                                // alert('자료 로딩 중입니다. 잠시만 기다려주세요.');
+                            }
+                        });
+                        grid.appendChild(div);
+                    });
+                }
+            }, 1500);
+        </script>
+        <section class="newsletter-section">
+            <div class="newsletter-container">
+                <div class="newsletter-text">
+                    <h2>최신 업데이트 정보를 메일로 받아보세요.</h2>
+                    <p>업데이트 및 주요 공지사항을 발송해 드립니다.</p>
+                </div>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); alert('신청되었습니다! (데모)');">
+                    <input type="email" placeholder="이메일 주소를 입력하세요" required>
+                    <button type="submit">구독하기</button>
+                </form>
+            </div>
+        </section>
+
+
+        <!-- Admin Dashboard (Initially Hidden) -->
+        <section id="admin-dashboard" class="admin-only section-hidden">
+            <div class="admin-container">
+                <div class="section-title left"
+                    style="display: flex; justify-content: space-between; align-items: flex-start; border-top: none;">
+                    <div>
+                        <h2 style="margin-bottom: 0.5rem;">자료 관리 대시보드</h2>
+                        <p>새로운 자료(글, 동영상, 파일)를 카테고리에 맞춰 업로드하세요.</p>
+                        <p id="firebase-status"
+                            style="font-size: 0.9em; margin-top: 0.5rem; color: var(--secondary-color);">연결 상태: 확인됨</p>
+                    </div>
+                    <button id="admin-logout-btn" class="cta-btn secondary"
+                        style="padding: 0.6rem 1.2rem; font-size: 0.9rem; border-color: #e74c3c; color: #e74c3c; background: transparent;">
+                        <i class="fas fa-sign-out-alt"></i> 로그아웃
+                    </button>
+                </div>
+
+                <!-- 관리자 메뉴 선택 (3단 분리 포털) -->
+                <div class="admin-portal-grid"
+                    style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 40px; margin-top: 20px;">
+                    <div class="admin-portal-card active" onclick="switchAdminTab('general')" id="tab-general"
+                        style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid var(--primary-color); text-align: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
+                        <i class="fas fa-book"
+                            style="font-size: 1.5rem; color: var(--primary-color); margin-bottom: 12px;"></i>
+                        <h3 style="margin-bottom: 5px; font-size: 1rem;">일반 자료 관리</h3>
+                    </div>
+                    <div class="admin-portal-card" onclick="switchAdminTab('bible-study')" id="tab-bible-study"
+                        style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
+                        <i class="fas fa-scroll"
+                            style="font-size: 1.5rem; color: var(--secondary-color); margin-bottom: 12px;"></i>
+                        <h3 style="margin-bottom: 5px; font-size: 1rem;">강해설교 관리</h3>
+                    </div>
+                    <div class="admin-portal-card" onclick="switchAdminTab('booklet')" id="tab-booklet"
+                        style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
+                        <i class="fas fa-bullhorn" style="font-size: 1.5rem; color: #e67e22; margin-bottom: 12px;"></i>
+                        <h3 style="margin-bottom: 5px; font-size: 1rem;">소책자 관리</h3>
+                    </div>
+                    <div class="admin-portal-card" onclick="switchAdminTab('stats')" id="tab-stats"
+                        style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
+                        <i class="fas fa-chart-line"
+                            style="font-size: 1.5rem; color: #9b59b6; margin-bottom: 12px;"></i>
+                        <h3 style="margin-bottom: 5px; font-size: 1rem;">통합 통계</h3>
+                    </div>
+                </div>
+
+                <!-- 1. 일반 자료 섹션 -->
+                <div class="admin-grid admin-tab-content" id="admin-general-section">
+                    <form id="post-upload-form" class="upload-form"
+                        style="background: #fff; border: 1px solid #eee; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                        <div
+                            style="background: var(--primary-color); color: white; padding: 15px 25px; border-radius: 12px 12px 0 0; margin: -25px -25px 25px -25px; display: flex; align-items: center; gap: 10px; margin-bottom: 25px;">
+                            <i class="fas fa-edit"></i>
+                            <h3 style="margin:0; font-size: 1.1rem; color: white;">일반 자료 관리하기</h3>
+                        </div>
+
+                        <div class="admin-form-tags-grid">
+
+                            <div class="input-group">
+                                <label>주제별 분류</label>
+                                <select id="post-topic">
+                                    <option value="">-- 선택 안함 --</option>
+                                    <!-- Injected via JS -->
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>저자별 분류</label>
+                                <select id="post-author">
+                                    <option value="">-- 선택 안함 --</option>
+                                    <!-- Injected via JS -->
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>기타 분류 (최신자료 전용)</label>
+                                <select id="post-other-category">
+                                    <option value="">-- 선택 안함 --</option>
+                                    <option value="기타">기타 자료</option>
+                                    <option value="도서 목록">도서 목록</option>
+                                    <option value="전도 소책자">전도 소책자</option>
+                                    <option value="강해설교">강해설교</option>
+                                </select>
+                            </div>
+                            <div class="input-group" id="post-booklet-topic-group" style="display: none;">
+                                <label>소책자 상세 분류</label>
+                                <select id="post-booklet-topic">
+                                    <option value="">-- 선택 안함 --</option>
+                                    <option value="기독교의 체계">기독교의 체계</option>
+                                    <option value="은혜의 방식">은혜의 방식</option>
+                                    <option value="구원 점검">구원 점검</option>
+                                    <option value="바른복음vs잘못된 복음">바른복음 vs 잘못된 복음</option>
+                                    <option value="영적전쟁">영적전쟁</option>
+                                    <option value="정통vs오류">정통vs오류</option>
+                                    <option value="경건생활">경건생활</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>제목</label>
+                            <input type="text" id="post-title" placeholder="자료 제목을 입력하세요" required>
+                        </div>
+
+                        <div class="input-row" style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+                            <div class="input-group">
+                                <label>시리즈/연재 이름 (폴더명 - 선택사항)</label>
+                                <input type="text" id="post-series" placeholder="예: 요한복음 강해 시리즈, 청교도 역사 강의 등">
+                            </div>
+                            <div class="input-group">
+                                <label>정렬 순서 (숫자)</label>
+                                <input type="number" id="post-order" value="0">
+                            </div>
+                            <div class="input-group">
+                                <label>가격 (도서 목록 전용)</label>
+                                <input type="text" id="post-price" placeholder="예: 18,000원">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>내용 (또는 유튜브 링크)</label>
+                            <textarea id="post-content" rows="6" placeholder="내용을 입력하거나 유튜브 주소를 넣어주세요"></textarea>
+                        </div>
+
+                        <div class="input-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="input-group">
+                                <label>도서 표지 이미지 (목록용)</label>
+                                <input type="file" id="post-cover" accept="image/*" style="margin-bottom: 5px;">
+                            </div>
+                            <div class="input-group">
+                                <label>도서 상세/내용 이미지 (본문용)</label>
+                                <input type="file" id="post-file" style="margin-bottom: 5px;">
+                            </div>
+                        </div>
+                        <p style="font-size: 0.8rem; color: #888; margin-bottom: 15px;">* 도서의 경우 '표지'와 '상세 이미지'를 각각 등록할
+                            수 있습니다. (상세 이미지는 PDF도 가능)</p>
+
+                        <div id="upload-progress-container"
+                            style="display: none; width: 100%; margin: 15px 0; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
+                            <div
+                                style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; font-weight: 700;">
+                                <span id="upload-status-text" style="color: var(--secondary-color);">업로드 준비 중...</span>
+                                <span id="upload-perc-text">0%</span>
+                            </div>
+                            <div class="progress-bar-bg"
+                                style="width: 100%; height: 10px; background: #eee; border-radius: 5px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
+                                <div id="upload-progress-bar"
+                                    style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--secondary-color), #d4af37); transition: width 0.3s; box-shadow: 0 0 10px rgba(201, 156, 94, 0.5);">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="cta-btn primary"
+                            style="width: 100%; padding: 15px; font-size: 1.1rem;">자료 게시하기</button>
+
+                    </form>
+                </div>
+
+                <!-- 2. 강해설교 시리즈 관리 섹션 -->
+                <div class="admin-tab-content" id="admin-bible-study-section" style="display: none;">
+                    <div
+                        style="background: #fff; padding: 30px; border-radius: 15px; border: 1px solid #eee; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
+                            <div>
+                                <h3 style="margin:0; color: var(--primary-color);"><i class="fas fa-scroll"></i> 강해설교
+                                    시리즈 관리</h3>
+                                <p style="font-size: 0.9rem; color: #777; margin-top: 5px;">시리즈 폴더를 생성하고 설교 자료를 체계적으로
+                                    관리하세요.</p>
+                            </div>
+                            <button class="cta-btn primary" onclick="createNewSeriesPrompt('강해설교')"
+                                style="padding: 12px 25px;">
+                                <i class="fas fa-folder-plus"></i> 새 시리즈(폴더) 만들기
+                            </button>
+                        </div>
+
+                        <div id="admin-series-list-container" class="series-management-grid"
+                            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                            <div class="loading-msg">시리즈 목록을 불러오는 중...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 전도 소책자 관리 섹션 -->
+                <div class="admin-tab-content" id="admin-booklet-section" style="display: none;">
+                    <div
+                        style="background: #fff; padding: 30px; border-radius: 15px; border: 1px solid #eee; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                            <h3 style="margin:0; color: #e67e22;"><i class="fas fa-bullhorn"></i> 전도 소책자 PDF 관리</h3>
+                            <button class="cta-btn primary" onclick="openResourceModal('전도 소책자')"
+                                style="background: #e67e22; border-color: #e67e22;">
+                                <i class="fas fa-plus-circle"></i> 소책자 목록 보기/편집
+                            </button>
+                        </div>
+                        <div id="admin-booklet-list-container">
+                            <p style="text-align:center; color:#999; padding: 40px;">소책자 카드를 클릭하여 관리하거나 새 소책자를 추가하세요.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. 통합 통계 섹션 -->
+                <div class="admin-tab-content" id="admin-stats-section" style="display: none;">
+                    <div
+                        style="background: #fff; padding: 30px; border-radius: 15px; border: 1px solid #eee; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+                            <h3 style="margin:0; color: #9b59b6;"><i class="fas fa-chart-bar"></i> 사이트 통합 통계 대시보드</h3>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <div class="stats-period-filter"
+                                    style="display: flex; gap: 5px; background: #f0f2f5; padding: 4px; border-radius: 8px;">
+                                    <button onclick="AdminStats.load('today')" class="period-btn active"
+                                        data-period="today"
+                                        style="padding: 6px 12px; border:none; background:transparent; cursor:pointer; font-size:0.85rem; border-radius:6px;">오늘</button>
+                                    <button onclick="AdminStats.load('7d')" class="period-btn" data-period="7d"
+                                        style="padding: 6px 12px; border:none; background:transparent; cursor:pointer; font-size:0.85rem; border-radius:6px;">7일</button>
+                                    <button onclick="AdminStats.load('30d')" class="period-btn" data-period="30d"
+                                        style="padding: 6px 12px; border:none; background:transparent; cursor:pointer; font-size:0.85rem; border-radius:6px;">30일</button>
+                                    <button onclick="AdminStats.load('all')" class="period-btn" data-period="all"
+                                        style="padding: 6px 12px; border:none; background:transparent; cursor:pointer; font-size:0.85rem; border-radius:6px;">전체</button>
+                                </div>
+                                <button onclick="AdminStats.exportCSV()" class="cta-btn secondary"
+                                    style="padding: 8px 15px; font-size: 0.8rem; border: 1px solid #ddd; background: #fff; margin:0;">
+                                    <i class="fas fa-file-csv"></i> CSV
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- KPI Cards -->
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+                            <div
+                                style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 5px solid #3498db;">
+                                <p style="font-size: 0.8rem; color: #666; margin-bottom: 5px;">총 방문객(세션)</p>
+                                <h2 id="stat-total-visitors" style="margin:0; color: #2c3e50;">0</h2>
+                            </div>
+                            <div
+                                style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 5px solid #2ecc71;">
+                                <p style="font-size: 0.8rem; color: #666; margin-bottom: 5px;">총 페이지뷰(조회)</p>
+                                <h2 id="stat-total-views" style="margin:0; color: #2c3e50;">0</h2>
+                            </div>
+                            <div
+                                style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 5px solid #f1c40f;">
+                                <p style="font-size: 0.8rem; color: #666; margin-bottom: 5px;">총 클릭수</p>
+                                <h2 id="stat-total-clicks" style="margin:0; color: #2c3e50;">0</h2>
+                            </div>
+                            <div
+                                style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 5px solid #e74c3c;">
+                                <p style="font-size: 0.8rem; color: #666; margin-bottom: 5px;">총 다운로드</p>
+                                <h2 id="stat-total-downloads" style="margin:0; color: #2c3e50;">0</h2>
+                            </div>
+                        </div>
+
+                        <!-- Ranking Table -->
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                                <thead>
+                                    <tr style="background: #f8f9fa; border-bottom: 2px solid #eee;">
+                                        <th style="padding: 12px; text-align: left; width: 60px;">순위</th>
+                                        <th style="padding: 12px; text-align: left;">콘텐츠 제목</th>
+                                        <th style="padding: 12px; text-align: left; width: 100px;">타입</th>
+                                        <th style="padding: 12px; text-align: center; width: 80px;">조회</th>
+                                        <th style="padding: 12px; text-align: center; width: 80px;">클릭</th>
+                                        <th style="padding: 12px; text-align: center; width: 80px;">다운</th>
+                                        <th style="padding: 12px; text-align: right; width: 120px;">최근 활동</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stats-ranking-body">
+                                    <tr>
+                                        <td colspan="7" style="padding: 40px; text-align: center; color: #999;">데이터를
+                                            불러오는 중입니다...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-status">
+                    <h3>최근 업로드 현황</h3>
+                    <ul id="admin-recent-posts">
+                        <li class="empty-msg">아직 업로드된 자료가 없습니다.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Korea Puritan Institute</h4>
+                <p>한국 청교도 연구소는 청교도 신학과 개혁주의 신념을 연구하고 성경적인 자료를 제공합니다.</p>
+                <div class="social-links">
+                    <a href="https://www.youtube.com/@kpuritan" title="YouTube" target="_blank"
+                        rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="Naver Blog" class="naver-link">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>Email: kpuritan.phb@gmail.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Korea Puritan Institute. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">
+                <a href="javascript:void(0)" onclick="document.getElementById('login-modal').classList.add('show')"
+                    style="color: #666; text-decoration: none;">관리자 로그인</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="login-close-btn">&times;</span>
+            <h2>관리자 로그인</h2>
+            <p>연구소 운영을 위한 관리자 계정으로 로그인해주세요.</p>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="admin-id">아이디</label>
+                    <input type="text" id="admin-id" placeholder="ID" required>
+                </div>
+                <div class="input-group">
+                    <label for="admin-pw">비밀번호</label>
+                    <input type="password" id="admin-pw" placeholder="Password" required>
+                </div>
+                <button type="submit" class="login-submit">로그인</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div id="about-modal" class="modal">
+        <div class="modal-content about-modal-content">
+            <span class="close-btn" id="about-close-btn">&times;</span>
+            <div class="about-container modal-style">
+                <div class="about-text">
+                    <div class="section-title left">
+                        <h2>연구소 소개</h2>
+                    </div>
+                    <p>한국 청교도 연구소는 성경의 절대적 권위와 하나님의 주권을 중심으로 한 개혁주의 신앙 전통 위에서, 청교도들의 신학과 경건, 그리고 목회적 유산을 연구하고 소개하기 위해
+                        설립되었습니다.</p>
+                    <p>청교도들은 단순한 과거의 신학자들이 아니라, 말씀에 의해 형성된 삶을 추구했던 신앙의 증인들이었습니다. 그들은 교리와 삶, 신학과 경건, 공적 예배와 개인의 신앙을 분리하지
+                        않았으며, 오직 하나님의 영광(Soli Deo Gloria)을 목적으로 교회와 성도의 삶을 개혁하고자 했습니다.</p>
+
+                    <p class="about-description-large">본 연구소는 청교도들의 설교, 신학 저작, 경건 문헌들을 번역·소개하고, 그 신학적 깊이와 목회적 통찰을 오늘의 한국
+                        교회와 성도들에게 바르게 전달하고자 합니다.</p>
+
+                    <p>우리는 청교도 신학이 단지 학문적 연구의 대상이 아니라, 오늘날에도 교회를 새롭게 하고 성도를 거룩으로 이끄는 살아 있는 유산임을 확신합니다.</p>
+                    <p>한국 청교도 연구소는 웨스트민스터 신앙고백과 대·소요리문답으로 대표되는 개혁주의 신앙 고백 전통을 존중하며, 성경 중심적 설교, 언약 신학, 구원의 은혜 교리, 성화와 경건의
+                        균형을 강조합니다.</p>
+                    <p>우리는 새로운 것을 만들어내기보다, 이미 하나님께서 교회를 위해 허락하신 신실한 신앙의 유산을 다시 발견하고 충실히 계승하는 일에 헌신하고자 합니다. 오직 성경으로 돌아가고,
+                        성경이 가르치는 바른 교리와 거룩한 삶을 회복하기를 소망합니다.</p>
+                </div>
+
+                <div class="about-right">
+                    <!-- Background Illustration (Grayscale, Transparent, Frameless via crop) -->
+                    <img src="images/puritan-study.png" class="about-bg-image" alt="Background Study Scene">
+
+                    <div class="about-goals-container">
+                        <h4>연구소의 지향점</h4>
+                        <ul class="about-goals">
+                            <li><i class="fas fa-check"></i> 설교자들이 성경을 더 깊이 이해하도록 돕습니다.</li>
+                            <li><i class="fas fa-check"></i> 성도들이 하나님 앞에 경건하게 살도록 격려합니다.</li>
+                            <li><i class="fas fa-check"></i> 한국 교회가 개혁주의 신앙의 뿌리를 회복하도록 섬깁니다.</li>
+                        </ul>
+                    </div>
+
+                    <div class="about-team">
+                        <span class="team-title">섬기는 이들</span>
+                        <p class="team-name">청교도 개혁교회 연합회 복음 사역자들</p>
+                        <span class="eng-team">The Alliance of Puritan and Reformed Churches</span>
+                    </div>
+
+                    <p
+                        style="text-align: right; margin-top: 10px; font-weight: bold; font-size: 1.1rem; color: var(--primary-color);">
+                        한국 청교도 연구소 소장 김홍만
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="edit-close-btn">&times;</span>
+            <h2>자료 수정</h2>
+            <form id="edit-form" class="upload-form">
+                <input type="hidden" id="edit-post-id">
+                <div class="admin-form-tags-grid">
+
+                    <div class="input-group">
+                        <label>주제별 분류</label>
+                        <select id="edit-topic">
+                            <option value="">-- 선택 안함 --</option>
+                            <!-- Injected via JS -->
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>저자별 분류</label>
+                        <select id="edit-author">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>기타 분류 (최신자료 전용)</label>
+                        <select id="edit-other-category">
+                            <option value="">-- 선택 안함 --</option>
+                            <option value="기타">기타 자료</option>
+                            <option value="도서 목록">도서 목록</option>
+                            <option value="전도 소책자">전도 소책자</option>
+                        </select>
+                    </div>
+                    <div class="input-group" id="edit-booklet-topic-group" style="display: none;">
+                        <label>소책자 상세 분류</label>
+                        <select id="edit-booklet-topic">
+                            <option value="">-- 선택 안함 --</option>
+                            <option value="기독교의 체계">기독교의 체계</option>
+                            <option value="은혜의 방식">은혜의 방식</option>
+                            <option value="구원 점검">구원 점검</option>
+                            <option value="바른복음vs잘못된 복음">바른복음 vs 잘못된 복음</option>
+                            <option value="영적전쟁">영적전쟁</option>
+                            <option value="정통vs오류">정통vs오류</option>
+                            <option value="경건생활">경건생활</option>
+                        </select>
+                    </div>
+                    <div class="input-group" id="edit-lang-group" style="display: none;">
+                        <label>언어 분류 (소책자 전용)</label>
+                        <select id="edit-lang">
+                            <option value="한국어">한국어</option>
+                            <option value="English">English</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="Japanese">Japanese</option>
+                            <option value="Arabic">Arabic</option>
+                            <option value="Chinese">Chinese</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>제목</label>
+                    <input type="text" id="edit-title" placeholder="자료 제목을 입력하세요">
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>시리즈/연재 이름 (폴더명)</label>
+                        <input type="text" id="edit-series" placeholder="예: 사도행전 강해 시리즈">
+                    </div>
+                    <div class="input-group">
+                        <label>정렬 순서</label>
+                        <input type="number" id="edit-order">
+                    </div>
+                    <div class="input-group">
+                        <label>가격 (도서 전용)</label>
+                        <input type="text" id="edit-price" placeholder="예: 15,000원">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>내용 (또는 유튜브 링크)</label>
+                    <textarea id="edit-content" rows="6" placeholder="내용을 입력하거나 유튜브 주소를 넣어주세요"></textarea>
+                </div>
+                <div class="input-row"
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 15px;">
+                    <div class="input-group">
+                        <label>도서 표지 교체</label>
+                        <input type="file" id="edit-cover" accept="image/*">
+                        <p id="edit-cover-status" style="font-size: 0.8em; color: var(--text-light); margin-top: 5px;">
+                        </p>
+                    </div>
+                    <div class="input-group">
+                        <label>상세 내용/파일 교체</label>
+                        <input type="file" id="edit-file">
+                        <p id="edit-file-status" style="font-size: 0.8em; color: var(--text-light); margin-top: 5px;">
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <button type="submit" class="cta-btn primary">수정 완료</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Resource List Modal -->
+    <div id="resource-modal" class="modal">
+        <div class="modal-content resource-modal-content">
+            <span class="close-btn" id="resource-close-btn">&times;</span>
+            <h2 id="resource-modal-title">자료 목록</h2>
+
+            <!-- 필터링 섹션 -->
+            <div id="modal-filter-section"
+                style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; background: #f8f9fa; padding: 12px; border-radius: 10px; border: 1px solid #eee;">
+                <div style="flex: 1; min-width: 150px;">
+                    <label style="font-size: 0.75rem; color: #888; display: block; margin-bottom: 4px;">주제별 필터</label>
+                    <select id="modal-filter-topic"
+                        style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ddd; font-size: 0.9rem;">
+                        <option value="">모든 주제</option>
+                    </select>
+                </div>
+                <div style="flex: 1; min-width: 150px;">
+                    <label style="font-size: 0.75rem; color: #888; display: block; margin-bottom: 4px;">저자별 필터</label>
+                    <select id="modal-filter-author"
+                        style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ddd; font-size: 0.9rem;">
+                        <option value="">모든 저자</option>
+                    </select>
+                </div>
+            </div>
+            <div id="resource-modal-admin-header"
+                style="display: none; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 700; color: var(--secondary-color);"><i class="fas fa-plus-circle"></i> 이
+                        폴더에 새 자료 추가</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="cta-btn" id="sort-alpha-btn"
+                            style="padding: 5px 15px; font-size: 0.8rem; background: #eee; color: #333; border: 1px solid #ddd;">
+                            <i class="fas fa-sort-alpha-down"></i> 가나다순 정렬</button>
+                        <button class="cta-btn primary" id="toggle-modal-upload"
+                            style="padding: 5px 15px; font-size: 0.8rem;">업로드 창 열기</button>
+                    </div>
+                </div>
+
+                <form id="modal-upload-form" class="upload-form"
+                    style="display: none; margin-top: 15px; background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                    <input type="text" id="modal-post-title" placeholder="자료 제목"
+                        style="width:100%; margin-bottom:10px;">
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" id="modal-post-series" placeholder="시리즈 이름 (자동 입력됨)" style="flex: 2;">
+                        <select id="modal-post-lang" style="flex: 1; display: none;">
+                            <option value="한국어">한국어</option>
+                            <option value="English">English</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="Japanese">Japanese</option>
+                            <option value="Arabic">Arabic</option>
+                            <option value="Chinese">Chinese</option>
+                        </select>
+                        <input type="number" id="modal-post-order" value="0" style="flex: 1;" placeholder="순서">
+                        <input type="text" id="modal-post-price" placeholder="가격 (도서 전용)"
+                            style="flex: 1; display: none;">
+                    </div>
+                    <textarea id="modal-post-content" rows="3" placeholder="내용 또는 유튜브 링크"
+                        style="width:100%; margin-bottom:10px;"></textarea>
+                    <div id="modal-post-category-fields"
+                        style="display: none; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        <div class="input-group">
+                            <label style="font-size: 0.8rem; color: #666; display: block; margin-bottom: 5px;">주제별
+                                분류</label>
+                            <select id="modal-post-topic" style="width: 100%;">
+                                <option value="">-- 선택 안함 --</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label style="font-size: 0.8rem; color: #666; display: block; margin-bottom: 5px;">저자별
+                                분류</label>
+                            <select id="modal-post-author" style="width: 100%;">
+                                <option value="">-- 선택 안함 --</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label style="font-size: 0.8rem; color: #666; display: block; margin-bottom: 5px;">기타
+                                분류</label>
+                            <select id="modal-post-other-category" style="width: 100%;">
+                                <option value="">-- 선택 안함 --</option>
+                                <option value="기타">기타 자료</option>
+                                <option value="도서 목록">도서 목록</option>
+                                <option value="전도 소책자">전도 소책자</option>
+                                <option value="강해설교">강해설교</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label style="font-size: 0.8rem; color: #666; width: 80px;">상세 파일</label>
+                            <input type="file" id="modal-post-file" style="font-size: 0.8rem; flex: 1;">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label style="font-size: 0.8rem; color: #666; width: 80px;">썸네일</label>
+                            <input type="file" id="modal-post-cover" accept="image/*"
+                                style="font-size: 0.8rem; flex: 1;">
+                        </div>
+                    </div>
+                    <button type="submit" class="cta-btn primary" style="width: 100%; padding: 12px;">게시하기</button>
+                    <div id="modal-upload-progress"
+                        style="display:none; margin-top:10px; height:4px; background:#eee; border-radius:2px; overflow:hidden;">
+                        <div id="modal-upload-bar"
+                            style="width:0%; height:100%; background:var(--secondary-color); transition:width 0.3s;">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="resource-list-wrapper">
+                <ul id="resource-list-container" class="resource-list">
+                    <!-- Content injected via JS -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Music Player Container (Left) -->
+    <div class="bgm-player" id="bgm-player"
+        style="position: fixed; bottom: 2rem; left: 2rem; z-index: 1500; pointer-events: none;">
+        <button id="bgm-toggle-btn" class="bgm-control" onclick="if(window.toggleBGM) window.toggleBGM(event)"
+            style="pointer-events: auto;">
+            <span class="music-icon"><i class="fas fa-music"></i></span>
+            <span class="music-text">배경음악 On/Off</span>
+        </button>
+        <div id="yt-player-container" style="display: none;"></div>
+    </div>
+
+    <!-- Admin Floating Button (Right) -->
+    <div id="admin-access-btn" class="login-trigger"
+        onclick="document.getElementById('login-modal').classList.add('show')"
+        style="position: fixed !important; bottom: 2rem !important; right: 2rem !important; z-index: 99999 !important; pointer-events: auto !important; cursor: pointer !important; display: flex !important;">
+        <i class="fas fa-user-lock"></i> <span>관리자</span>
+    </div>
+
+    <!-- Drag and Drop Library -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+
+    <!-- PortOne SDK for actual payments -->
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+    <script src="data.js?v=20240118_v2"></script>
+    <script>
+        // --- Firebase Configuration (Migrated to HTML for Safety) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJbOaiElCypwgtPgbwdnudn3VC737fMrs",
+            authDomain: "kpuritan-home.firebaseapp.com",
+            projectId: "kpuritan-home",
+            storageBucket: "kpuritan-home.firebasestorage.app",
+            messagingSenderId: "1071220455502",
+            appId: "1:1071220455502:web:7f6f59b48c48a73437f8f0"
+        };
+
+        // Initialize Firebase Global Variables
+        window.db = null;
+        window.storage = null;
+        window.isAdmin = localStorage.getItem('isAdmin') === 'true';
+        window.useMock = false;
+
+        try {
+            if (firebase.apps.length === 0) {
+                firebase.initializeApp(firebaseConfig);
+                window.db = firebase.firestore();
+                window.storage = firebase.storage();
+                console.log("✅ Firebase (HTML) 연결 성공!");
+                // alert("DEBUG: 1. Firebase (HTML) 연결 성공!"); 
+            }
+        } catch (e) {
+            console.error("❌ Firebase 초기화 실패:", e);
+            // alert("DEBUG: Firebase 초기화 실패: " + e.message);
+            window.useMock = true;
+        }
+
+        window.onerror = function (msg, url, lineNo, columnNo, error) {
+            alert('자바스크립트 에러 발생:\n' + msg + '\n라인: ' + lineNo);
+            return false;
+        };
+
+        // PDF.js worker 설정
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+        }
+
+        // --- Core Logic handled by main.js ---
+        console.log("Waiting for main.js to handle application logic...");
+
+        // Auto-run if DB connected
+        if (window.db) {
+            setTimeout(window.loadMainCarousels, 100);
+        }
+    </script>
+    <script src="bgm.js?v=1"></script>
+    <script src="stats.js?v=1"></script>
+    <script src="admin-stats.js?v=1"></script>
+    <script src="main.js?v=20260129_v8"></script>
+</body>
+
+</html>

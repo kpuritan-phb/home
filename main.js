@@ -775,6 +775,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     price,
                     content,
                     subBookletTopic: (other === "전도 소책자") ? subBookletTopic : null,
+                    isRecommend: document.getElementById('post-is-recommend').checked, // 메인 추천 여부
                     fileUrl,
                     coverUrl,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1893,69 +1894,70 @@ document.addEventListener('DOMContentLoaded', () => {
         let thumbUrl = post.coverUrl || 'images/puritan-study.png';
 
         const card = document.createElement('div');
-        // Always add 'has-thumb' since we now have a default
         card.className = 'carousel-card has-thumb';
-        card.style.backgroundImage = `url("${thumbUrl}")`;
+        card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5)), url("${thumbUrl}")`;
         card.style.backgroundSize = 'cover';
         card.style.backgroundPosition = 'center';
 
-        // PDF thumbnail logic (async override)
-        // Only try to generate PDF thumb if no explicit coverUrl was provided
-        if (!post.coverUrl && post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) {
-            if (window.pdfjsLib) {
-                const loadingTask = window.pdfjsLib.getDocument(post.fileUrl);
-                loadingTask.promise.then(pdf => {
-                    pdf.getPage(1).then(page => {
-                        const scale = 0.5;
-                        const viewport = page.getViewport({ scale });
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-
-                        page.render({
-                            canvasContext: context,
-                            viewport: viewport
-                        }).promise.then(() => {
-                            const thumbnailUrl = canvas.toDataURL();
-                            card.style.backgroundImage = `url("${thumbnailUrl}")`;
-                        });
-                    });
-                }).catch(err => {
-                    console.warn('PDF thumbnail failed, keeping default:', err);
-                    // Default image is already set, so no action needed, 
-                    // but we can ensure opacity/style if needed.
-                });
-            }
-        }
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'carousel-item-wrapper';
-
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'carousel-bottom-content';
-        contentDiv.innerHTML = `
-            <div class="carousel-bottom-title">${post.title}</div>
-            <div class="carousel-bottom-meta">${date}</div>
+        card.innerHTML = `
+            <div class="carousel-card-content">
+                <div class="carousel-card-tag">${displayCategory}</div>
+                <div class="carousel-card-title">${post.title}</div>
+                <div class="carousel-card-meta">
+                    <span>${date}</span>
+                    <div class="carousel-icon-btn"><i class="fas fa-arrow-right"></i></div>
+                </div>
+            </div>
         `;
 
-        wrapper.appendChild(card);
-        wrapper.appendChild(contentDiv);
+        // PDF thumbnail logic (async override)
+        if (!post.coverUrl && post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) {
+            renderPdfThumbnailToCard(post.fileUrl, card);
+        }
 
-        wrapper.addEventListener('click', () => {
+        card.addEventListener('click', () => {
             if (window.openResourceModal) {
                 window.openResourceModal(displayCategory, post.series || '', docId);
             }
         });
-        return wrapper;
+        return card;
+    };
+
+    window.createRecommendCard = (post, docId) => {
+        const displayCategory = post.tags ? post.tags[0] : '추천';
+        const thumbUrl = post.coverUrl || 'images/puritan-study.png';
+
+        const div = document.createElement('div');
+        div.className = 'recommend-card';
+        div.innerHTML = `
+            <img src="${thumbUrl}" alt="${post.title}">
+            <div class="recommend-content">
+                <span class="recommend-tag">${displayCategory}</span>
+                <h3 class="recommend-title">${post.title}</h3>
+                <div class="recommend-meta">
+                    <span>${post.createdAt && typeof post.createdAt.toDate === 'function' ? post.createdAt.toDate().toLocaleDateString() : '추천'}</span>
+                    <div class="recommend-btn">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+        `;
+        div.addEventListener('click', () => {
+            if (post.fileUrl && post.otherCategory === '전도 소책자') {
+                window.open(post.fileUrl, '_blank');
+            } else if (window.openResourceModal) {
+                window.openResourceModal(displayCategory, post.series || '', docId);
+            }
+        });
+        return div;
     };
 
     // PDF 썸네일을 카드 배경으로 렌더링하는 함수
     async function renderPdfThumbnailToCard(url, cardElement) {
         try {
-            if (!cardElement) return;
+            if (!cardElement || !window.pdfjsLib) return;
 
-            const loadingTask = pdfjsLib.getDocument(url);
+            const loadingTask = window.pdfjsLib.getDocument(url);
             const pdf = await loadingTask.promise;
             const page = await pdf.getPage(1);
 
@@ -1968,30 +1970,14 @@ document.addEventListener('DOMContentLoaded', () => {
             await page.render({ canvasContext: context, viewport: viewport }).promise;
 
             const imageUrl = canvas.toDataURL('image/png');
-            cardElement.style.backgroundImage = `url("${imageUrl}")`;
+            cardElement.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5)), url("${imageUrl}")`;
             cardElement.style.backgroundSize = 'cover';
             cardElement.style.backgroundPosition = 'center';
-            cardElement.style.color = 'white';
             cardElement.classList.add('has-thumb');
-
-            // 태그와 버튼 스타일도 업데이트
-            const tag = cardElement.querySelector('.carousel-card-tag');
-            if (tag) tag.style.cssText = ''; // Rely on CSS class instead
-
-            const meta = cardElement.querySelector('.carousel-card-meta span');
-            if (meta) meta.style.color = 'rgba(255,255,255,0.8)';
-
-            const btn = cardElement.querySelector('.carousel-icon-btn');
-            if (btn) btn.style.cssText = 'background: white; color: var(--primary-color);';
 
             console.log('✅ PDF 카드 썸네일 렌더링 성공:', url);
         } catch (e) {
-            console.warn("⚠️ PDF 카드 썸네일 렌더링 실패 (CORS 가능성):", e.message);
-            // Fallback: Use a default placeholder if PDF rendering fails
-            cardElement.style.backgroundImage = `url("images/puritan-study.png")`;
-            cardElement.style.backgroundSize = 'cover';
-            cardElement.style.backgroundPosition = 'center';
-            cardElement.style.opacity = '0.8'; // Subtle look for placeholder
+            console.warn("⚠️ PDF 카드 썸네일 렌더링 실패:", e.message);
         }
     }
 
@@ -2039,6 +2025,23 @@ document.addEventListener('DOMContentLoaded', () => {
         populateTrack('carousel-new', mockData);
         // "주제별 추천 자료"는 랜덤으로 섞어서 노출
         const shuffledMock = [...mockData].sort(() => 0.5 - Math.random());
+
+        // [추가] 메인 추천 자료 Mock 노출
+        const recommendGrid = document.getElementById('grid-recommend');
+        const recommendSection = document.getElementById('section-recommend');
+        if (recommendGrid && recommendSection) {
+            recommendSection.style.display = 'block';
+            recommendGrid.innerHTML = '';
+            shuffledMock.slice(0, 3).forEach(item => {
+                recommendGrid.appendChild(createRecommendCard({
+                    title: item.title,
+                    tags: [item.cat],
+                    createdAt: { toDate: () => new Date() },
+                    coverUrl: 'images/puritan-study.png'
+                }, item.id));
+            });
+        }
+
         populateTrack('carousel-topic', shuffledMock);
         populateTrack('carousel-sermon', extendedSermons);
     };
@@ -2051,6 +2054,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
+            // 메인 추천 자료 가져오기 (isRecommend 필드가 true인 자료 3개)
+            const recommendGrid = document.getElementById('grid-recommend');
+            const recommendSection = document.getElementById('section-recommend');
+            if (recommendGrid && recommendSection) {
+                const recSnapshot = await window.db.collection("posts")
+                    .where("isRecommend", "==", true)
+                    .orderBy("createdAt", "desc")
+                    .limit(3)
+                    .get();
+
+                if (!recSnapshot.empty) {
+                    recommendSection.style.display = 'block';
+                    recommendGrid.innerHTML = '';
+                    recSnapshot.forEach(doc => {
+                        recommendGrid.appendChild(createRecommendCard(doc.data(), doc.id));
+                    });
+                } else {
+                    recommendSection.style.display = 'none';
+                }
+            }
+
             // 한 번에 최근 300개를 가져와서 배분 (설교 부족 문제 해결 위해 상향)
             const snapshot = await window.db.collection("posts").orderBy("createdAt", "desc").limit(300).get();
             if (snapshot.empty) {

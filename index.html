@@ -118,6 +118,18 @@
                 </div>
             </div>
 
+            <!-- 0. Admin Recommended Section (New) -->
+            <div class="recommend-section" id="section-recommend" style="display: none; margin-bottom: 4rem;">
+                <div class="carousel-header">
+                    <h3 class="carousel-title">관리자 추천 자료 <span
+                            style="font-size:0.5em; color:#999; font-weight:500; margin-left:10px;">Editor's Pick</span>
+                    </h3>
+                </div>
+                <div class="recommend-grid" id="grid-recommend">
+                    <!-- JS injected pick cards -->
+                </div>
+            </div>
+
             <!-- 1. New Arrivals Carousel -->
             <div class="carousel-section">
                 <div class="carousel-header">
@@ -475,18 +487,23 @@
                             <input type="text" id="post-title" placeholder="자료 제목을 입력하세요" required>
                         </div>
 
-                        <div class="input-row" style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+                        <div class="input-row"
+                            style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; align-items: end;">
                             <div class="input-group">
-                                <label>시리즈/연재 이름 (폴더명 - 선택사항)</label>
-                                <input type="text" id="post-series" placeholder="예: 요한복음 강해 시리즈, 청교도 역사 강의 등">
+                                <label>시리즈/폴더명 (선택)</label>
+                                <input type="text" id="post-series" placeholder="예: 요한복음 강해">
                             </div>
                             <div class="input-group">
-                                <label>정렬 순서 (숫자)</label>
+                                <label>정렬 순서</label>
                                 <input type="number" id="post-order" value="0">
                             </div>
-                            <div class="input-group">
-                                <label>가격 (도서 목록 전용)</label>
-                                <input type="text" id="post-price" placeholder="예: 18,000원">
+                            <div class="input-group"
+                                style="display: flex; align-items: center; gap: 10px; padding-bottom: 12px;">
+                                <input type="checkbox" id="post-is-recommend"
+                                    style="width: 20px; height: 20px; cursor: pointer;">
+                                <label for="post-is-recommend"
+                                    style="margin: 0; cursor: pointer; font-weight: 700; color: var(--secondary-color);">메인
+                                    추천 자료로 설정</label>
                             </div>
                         </div>
 

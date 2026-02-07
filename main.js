@@ -912,89 +912,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    window.openEditModal = async (id) => {
-        console.log("Opening edit modal for:", id);
-        try {
-            if (!window.db) {
-                return alert("데이터베이스에 연결되지 않았습니다.");
-            }
-            const doc = await db.collection("posts").doc(id).get();
-            if (!doc.exists) return alert("자료를 찾을 수 없습니다.");
-            const post = doc.data();
-
-            document.getElementById('edit-post-id').value = id;
-            document.getElementById('edit-topic').value = post.topic || "";
-            document.getElementById('edit-author').value = post.author || "";
-            document.getElementById('edit-other-category').value = post.otherCategory || "";
-            document.getElementById('edit-is-recommended').checked = post.isRecommended || false;
-
-            // [추가] 소책자 언어 처리
-            const langGroup = document.getElementById('edit-lang-group');
-            const langSelect = document.getElementById('edit-lang');
-            if (langGroup && langSelect) {
-                const isBooklet = (post.otherCategory === '전도 소책자') || (post.tags && post.tags.includes('전도 소책자'));
-                if (isBooklet) {
-                    langGroup.style.display = 'block';
-                    const languages = ['한국어', 'English', 'Spanish', 'Japanese', 'Arabic', 'Chinese'];
-                    const currentLang = (post.tags || []).find(tag => languages.includes(tag));
-                    langSelect.value = currentLang || '한국어';
-                    // 만약 otherCategory가 비어있다면 '전도 소책자'로 강제 설정 (수정 시 정합성 위해)
-                    if (!post.otherCategory) {
-                        document.getElementById('edit-other-category').value = '전도 소책자';
-                    }
-                } else {
-                    langGroup.style.display = 'none';
-                }
-            }
-
-            // [추가] 소책자 상세 분류 처리
-            const bookletTopicGroup = document.getElementById('edit-booklet-topic-group');
-            const bookletTopicSelect = document.getElementById('edit-booklet-topic');
-            if (bookletTopicGroup && bookletTopicSelect) {
-                const isBooklet = (post.otherCategory === '전도 소책자');
-                if (isBooklet) {
-                    bookletTopicGroup.style.display = 'block';
-                    bookletTopicSelect.value = post.subBookletTopic || "";
-                } else {
-                    bookletTopicGroup.style.display = 'none';
-                    bookletTopicSelect.value = "";
-                }
-            }
-
-            document.getElementById('edit-title').value = post.title || "";
-            document.getElementById('edit-series').value = post.series || "";
-            document.getElementById('edit-order').value = post.order || 0;
-            document.getElementById('edit-price').value = post.price || "";
-            document.getElementById('edit-content').value = post.content || '';
-
-            const coverStatus = document.getElementById('edit-cover-status');
-            if (coverStatus) coverStatus.textContent = post.coverUrl ? "기존 표지가 있습니다 (교체 시 새로 선택)" : "등록된 표지 없음";
-
-            const fileStatus = document.getElementById('edit-file-status');
-            if (fileStatus) fileStatus.textContent = post.fileUrl ? "기존 상세 파일이 있습니다 (교체 시 새로 선택)" : "첨부된 파일 없음";
-
-            if (editModal) {
-                // [Fail-safe] Force styles via JS to ensure visibility
-                const modalContent = editModal.querySelector('.modal-content');
-                if (modalContent) {
-                    modalContent.style.backgroundColor = '#ffffff';
-                    modalContent.style.opacity = '1';
-                    modalContent.style.visibility = 'visible';
-                }
-                const form = document.getElementById('edit-form');
-                if (form) {
-                    form.style.backgroundColor = '#fdfdfd';
-                    form.style.opacity = '1';
-                }
-                window.openModal(editModal);
-            } else {
-                console.error("Edit modal element not found");
-                alert("수정 창을 찾을 수 없습니다.");
-            }
-        } catch (error) {
-            console.error("Error opening edit modal:", error);
-            alert("수정 창을 여는 중 오류가 발생했습니다: " + error.message);
-        }
+    window.openEditModal = (id) => {
+        const width = 1000;
+        const height = 900;
+        const left = (window.screen.width - width) / 2;
+        const top = (window.screen.height - height) / 2;
+        window.open(`admin_edit.html?id=${id}`, `EditPost_${id}`, `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`);
     };
 
     window.deletePost = async (id) => {
@@ -1002,6 +925,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await db.collection("posts").doc(id).delete();
             alert("삭제되었습니다.");
+            // Refresh lists
+            if (window.loadAdminPosts) window.loadAdminPosts();
+            if (window.loadRecentPostsGrid) window.loadRecentPostsGrid();
         } catch (error) {
             console.error("Delete error:", error);
             alert("삭제 실패: " + error.message);

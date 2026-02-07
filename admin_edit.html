@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자료 수정 | 한국 청교도 연구소</title>
+    <link rel="stylesheet" href="style.css?v=106">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .edit-container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-header {
+            border-bottom: 2px solid var(--secondary-color);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .edit-header h2 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .form-section h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            padding: 12px 25px;
+            background: #999;
+            color: white;
+            border-radius: 4px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            padding: 12px 40px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 4px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-save:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-eng">KPI</span>
+                <span class="logo-kor">한국 청교도 연구소</span>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <div class="edit-container">
+            <div class="edit-header">
+                <h2>자료 수정</h2>
+                <button onclick="window.close()" style="background:none; border:none; cursor:pointer; color:#888;"><i
+                        class="fas fa-times"></i> 닫기</button>
+            </div>
+
+            <form id="full-edit-form">
+                <input type="hidden" id="edit-post-id">
+
+                <div class="form-section">
+                    <h3>분류 설정</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="input-group">
+                            <label>주제별 분류</label>
+                            <select id="edit-topic">
+                                <option value="">-- 선택 안함 --</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>저자별 분류</label>
+                            <select id="edit-author">
+                                <option value="">-- 선택 안함 --</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>기타 분류</label>
+                            <select id="edit-other-category">
+                                <option value="">-- 선택 안함 --</option>
+                                <option value="기타">기타 자료</option>
+                                <option value="도서 목록">도서 목록</option>
+                                <option value="전도 소책자">전도 소책자</option>
+                                <option value="강해설교">강해설교</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="extra-options" style="margin-top: 15px;">
+                        <div class="input-group" id="edit-booklet-topic-group"
+                            style="display: none; margin-bottom: 15px;">
+                            <label>소책자 상세 주제</label>
+                            <select id="edit-booklet-topic" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                                <option value="">-- 선택 안함 --</option>
+                                <option value="기독교의 체계">기독교의 체계</option>
+                                <option value="은혜의 방식">은혜의 방식</option>
+                                <option value="구원 점검">구원 점검</option>
+                                <option value="바른복음vs잘못된 복음">바른복음 vs 잘못된 복음</option>
+                                <option value="영적전쟁">영적전쟁</option>
+                                <option value="정통vs오류">정통vs오류</option>
+                                <option value="경건생활">경건생활</option>
+                            </select>
+                        </div>
+                        <div class="input-group" id="edit-lang-group" style="display: none;">
+                            <label>언어 (소책자 전용)</label>
+                            <select id="edit-lang" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                                <option value="한국어">한국어</option>
+                                <option value="English">English</option>
+                                <option value="Spanish">Spanish</option>
+                                <option value="Japanese">Japanese</option>
+                                <option value="Arabic">Arabic</option>
+                                <option value="Chinese">Chinese</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc;">
+                        <label style="display: flex; align-items: center; cursor: pointer; gap: 10px;">
+                            <input type="checkbox" id="edit-is-recommended" style="width: 20px; height: 20px;">
+                            <span style="color: var(--secondary-color); font-weight: bold;">관리자 추천 자료 (메인 상단 노출)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>기본 정보</h3>
+                    <div class="input-group">
+                        <label>제목</label>
+                        <input type="text" id="edit-title" required
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-top: 15px;">
+                        <div class="input-group">
+                            <label>시리즈/폴더명</label>
+                            <input type="text" id="edit-series"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                        </div>
+                        <div class="input-group">
+                            <label>정렬 순서</label>
+                            <input type="number" id="edit-order" value="0"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                        </div>
+                    </div>
+                    <div class="input-group" style="margin-top: 15px;">
+                        <label>가격 (도서 전용)</label>
+                        <input type="text" id="edit-price" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>내용</h3>
+                    <div class="input-group">
+                        <label>상세 내용 / 유튜브 링크</label>
+                        <textarea id="edit-content" rows="8"
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd;"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>파일 및 이미지</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="input-group">
+                            <label>표지 이미지</label>
+                            <input type="file" id="edit-cover" accept="image/*">
+                            <div id="current-cover" style="margin-top: 5px; font-size: 0.9rem; color: #666;"></div>
+                        </div>
+                        <div class="input-group">
+                            <label>상세 파일 (PDF 등)</label>
+                            <input type="file" id="edit-file">
+                            <div id="current-file" style="margin-top: 5px; font-size: 0.9rem; color: #666;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn-cancel" onclick="window.close()">취소</button>
+                    <button type="submit" class="btn-save">수정 내용 저장하기</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    <script src="data.js"></script>
+    <script>
+        // Init Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJbOaiElCypwgtPgbwdnudn3VC737fMrs",
+            authDomain: "kpuritan-home.firebaseapp.com",
+            projectId: "kpuritan-home",
+            storageBucket: "kpuritan-home.firebasestorage.app",
+            messagingSenderId: "1071220455502",
+            appId: "1:1071220455502:web:7f6f59b48c48a73437f8f0"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // Populate Selects
+        const topicSelect = document.getElementById('edit-topic');
+        topics.forEach(t => {
+            const op = document.createElement('option');
+            op.value = t; op.innerText = t;
+            topicSelect.appendChild(op);
+        });
+
+        const authorSelect = document.getElementById('edit-author');
+        authors.forEach(a => {
+            const op = document.createElement('option');
+            op.value = a; op.innerText = a;
+            authorSelect.appendChild(op);
+        });
+
+        // Toggle UI logic
+        const otherSelect = document.getElementById('edit-other-category');
+        const bookletGroup = document.getElementById('edit-booklet-topic-group');
+        const langGroup = document.getElementById('edit-lang-group');
+
+        otherSelect.addEventListener('change', function () {
+            if (this.value === '전도 소책자') {
+                bookletGroup.style.display = 'block';
+                langGroup.style.display = 'block';
+            } else {
+                bookletGroup.style.display = 'none';
+                langGroup.style.display = 'none';
+            }
+        });
+
+        // Load Data
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('id');
+
+        if (!postId) {
+            alert('잘못된 접근입니다.');
+            window.close();
+        } else {
+            loadPost(postId);
+        }
+
+        async function loadPost(id) {
+            try {
+                const doc = await db.collection('posts').doc(id).get();
+                if (!doc.exists) {
+                    alert('자료를 찾을 수 없습니다.');
+                    window.close();
+                    return;
+                }
+                const data = doc.data();
+
+                document.getElementById('edit-post-id').value = id;
+                document.getElementById('edit-topic').value = data.topic || "";
+                document.getElementById('edit-author').value = data.author || "";
+                document.getElementById('edit-other-category').value = data.otherCategory || "";
+
+                // Trigger change event to show/hide fields
+                otherSelect.dispatchEvent(new Event('change'));
+
+                document.getElementById('edit-booklet-topic').value = data.subBookletTopic || "";
+                document.getElementById('edit-is-recommended').checked = data.isRecommended || false;
+                document.getElementById('edit-title').value = data.title || "";
+                document.getElementById('edit-series').value = data.series || "";
+                document.getElementById('edit-order').value = data.order || 0;
+                document.getElementById('edit-price').value = data.price || "";
+                document.getElementById('edit-content').value = data.content || "";
+
+                if (data.tags) {
+                    const languages = ['한국어', 'English', 'Spanish', 'Japanese', 'Arabic', 'Chinese'];
+                    const foundLang = data.tags.find(t => languages.includes(t));
+                    if (foundLang) document.getElementById('edit-lang').value = foundLang;
+                }
+
+                const currentCover = document.getElementById('current-cover');
+                currentCover.innerHTML = data.coverUrl ? `<a href="${data.coverUrl}" target="_blank">기존 표지 보기</a>` : "없음";
+
+                const currentFile = document.getElementById('current-file');
+                currentFile.innerHTML = data.fileUrl ? `<a href="${data.fileUrl}" target="_blank">기존 파일 보기</a>` : "없음";
+
+            } catch (error) {
+                console.error(error);
+                alert("데이터 로딩 실패");
+            }
+        }
+
+        // Save Data
+        document.getElementById('full-edit-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!confirm('수정하시겠습니까?')) return;
+
+            const btn = document.querySelector('.btn-save');
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = "저장 중...";
+
+            try {
+                const id = document.getElementById('edit-post-id').value;
+                const topic = document.getElementById('edit-topic').value;
+                const author = document.getElementById('edit-author').value;
+                const other = document.getElementById('edit-other-category').value;
+                const subBookletTopic = document.getElementById('edit-booklet-topic').value;
+                const isRecommended = document.getElementById('edit-is-recommended').checked;
+
+                let tags = [topic, author, other].filter(t => t !== "");
+                if (other === '전도 소책자') {
+                    const lang = document.getElementById('edit-lang').value;
+                    if (lang) tags.push(lang);
+                }
+
+                if (tags.length === 0) {
+                    throw new Error("최소 하나 이상의 분류를 선택해야 합니다.");
+                }
+
+                const updateData = {
+                    topic, author, otherCategory: other, tags,
+                    title: document.getElementById('edit-title').value,
+                    series: document.getElementById('edit-series').value,
+                    order: Number(document.getElementById('edit-order').value),
+                    price: document.getElementById('edit-price').value,
+                    content: document.getElementById('edit-content').value,
+                    isRecommended: isRecommended,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (other === "전도 소책자" && subBookletTopic) {
+                    updateData.subBookletTopic = subBookletTopic;
+                }
+
+                // File Uploads
+                const coverInput = document.getElementById('edit-cover');
+                if (coverInput.files[0]) {
+                    const file = coverInput.files[0];
+                    const ref = storage.ref(`covers/${Date.now()}_${file.name}`);
+                    await ref.put(file);
+                    updateData.coverUrl = await ref.getDownloadURL();
+                }
+
+                const fileInput = document.getElementById('edit-file');
+                if (fileInput.files[0]) {
+                    const file = fileInput.files[0];
+                    const ref = storage.ref(`files/${Date.now()}_${file.name}`);
+                    await ref.put(file);
+                    updateData.fileUrl = await ref.getDownloadURL();
+                }
+
+                await db.collection('posts').doc(id).update(updateData);
+                alert("수정되었습니다.");
+
+                if (window.opener && !window.opener.closed) {
+                    if (window.opener.loadAdminPosts) window.opener.loadAdminPosts();
+                    if (window.opener.loadRecentPostsGrid) window.opener.loadRecentPostsGrid();
+                }
+                window.close();
+
+            } catch (error) {
+                alert("오류: " + error.message);
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -974,6 +974,18 @@ document.addEventListener('DOMContentLoaded', () => {
             if (fileStatus) fileStatus.textContent = post.fileUrl ? "기존 상세 파일이 있습니다 (교체 시 새로 선택)" : "첨부된 파일 없음";
 
             if (editModal) {
+                // [Fail-safe] Force styles via JS to ensure visibility
+                const modalContent = editModal.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.style.backgroundColor = '#ffffff';
+                    modalContent.style.opacity = '1';
+                    modalContent.style.visibility = 'visible';
+                }
+                const form = document.getElementById('edit-form');
+                if (form) {
+                    form.style.backgroundColor = '#fdfdfd';
+                    form.style.opacity = '1';
+                }
                 window.openModal(editModal);
             } else {
                 console.error("Edit modal element not found");

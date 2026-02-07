@@ -2548,22 +2548,23 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.cssText = `
                 position: relative;
                 height: 380px;
+                border: 1px solid #eee;
                 border-radius: 12px;
                 overflow: hidden;
                 box-shadow: 0 10px 20px rgba(0,0,0,0.1);
                 cursor: pointer;
-                background-size: cover;
-                background-position: center;
-                ${bgStyle}
+                background: #fff;
             `;
 
             card.innerHTML = `
-                <div class="admin-pick-content" style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 25px; color: white;">
-                    <span class="admin-pick-tag" style="background: var(--secondary-color); color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; margin-bottom: 10px; display: inline-block; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
-                        ${data.series || data.topic || '추천 자료'}
-                    </span>
-                    <h3 style="margin: 0 0 8px 0; font-size: 1.5rem; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); line-height: 1.3;">${data.title}</h3>
-                    <p style="margin: 0; font-size: 0.95rem; opacity: 0.9; font-weight: 300;">${data.author || 'Korea Puritan Institute'}</p>
+                <div class="admin-pick-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0;">
+                    ${bgImage
+                    ? `<img src="${bgImage}" style="width: 100%; height: 100%; object-fit: contain;" alt="${data.title}">`
+                    : `<div style="text-align:center; padding:20px;">
+                               <i class="fas fa-book" style="font-size:3rem; color:#ccc;"></i>
+                               <h4 style="margin-top:10px; color:#555;">${data.title}</h4>
+                           </div>`
+                }
                 </div>
             `;
 

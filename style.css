@@ -1410,6 +1410,28 @@ footer {
     border: 1px solid #eee;
 }
 
+#edit-form .input-group input,
+#edit-form .input-group select {
+    background: #fff !important;
+    border: 1px solid #ddd;
+    color: #333;
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+#edit-form label {
+    margin-bottom: 5px;
+    display: block;
+    font-weight: 700;
+    color: #333;
+}
+
+#edit-form .checkbox-group {
+    flex-direction: row !important;
+    align-items: center;
+}
+
 .upload-form select,
 .upload-form input[type="file"] {
     width: 100%;

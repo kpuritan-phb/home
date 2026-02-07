@@ -110,23 +110,24 @@
             </div>
         </section>
 
+        <!-- Admin Recommended Section -->
+        <section id="admin-picks-section" style="padding: 4rem 2rem; background: #fff;">
+            <div class="section-title modern-flex" style="margin-bottom: 2rem; border-bottom: none;">
+                <div class="title-text-group">
+                    <h2>관리자 추천 자료</h2>
+                    <p style="color: var(--secondary-color); font-weight: 500;">Editor's Choice</p>
+                </div>
+            </div>
+            <div class="admin-picks-grid" id="admin-picks-container">
+                <div class="loading-msg">추천 자료를 불러오는 중...</div>
+            </div>
+        </section>
+
         <section id="recent-updates">
             <div class="section-title modern-flex" style="margin-bottom: 2rem; border-bottom: none;">
                 <div class="title-text-group">
                     <h2>EXPLORE RESOURCES</h2>
                     <p>Discover our curated library of Reformed theology.</p>
-                </div>
-            </div>
-
-            <!-- 0. Admin Recommended Section (New) -->
-            <div class="recommend-section" id="section-recommend" style="display: none; margin-bottom: 4rem;">
-                <div class="carousel-header">
-                    <h3 class="carousel-title">관리자 추천 자료 <span
-                            style="font-size:0.5em; color:#999; font-weight:500; margin-left:10px;">Editor's Pick</span>
-                    </h3>
-                </div>
-                <div class="recommend-grid" id="grid-recommend">
-                    <!-- JS injected pick cards -->
                 </div>
             </div>
 
@@ -480,6 +481,15 @@
                                     <option value="경건생활">경건생활</option>
                                 </select>
                             </div>
+                            <!-- Added Recommended Checkbox -->
+                            <div class="input-group checkbox-group"
+                                style="display: flex; align-items: center; justify-content: flex-start; gap: 10px; margin-top: 25px;">
+                                <input type="checkbox" id="post-is-recommended"
+                                    style="width: 20px; height: 20px; cursor: pointer;">
+                                <label for="post-is-recommended"
+                                    style="margin-bottom: 0; cursor: pointer; color: var(--secondary-color); font-weight: bold;">관리자
+                                    추천 (메인 상단 노출)</label>
+                            </div>
                         </div>
 
                         <div class="input-group">
@@ -487,23 +497,18 @@
                             <input type="text" id="post-title" placeholder="자료 제목을 입력하세요" required>
                         </div>
 
-                        <div class="input-row"
-                            style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; align-items: end;">
+                        <div class="input-row" style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
                             <div class="input-group">
-                                <label>시리즈/폴더명 (선택)</label>
-                                <input type="text" id="post-series" placeholder="예: 요한복음 강해">
+                                <label>시리즈/연재 이름 (폴더명 - 선택사항)</label>
+                                <input type="text" id="post-series" placeholder="예: 요한복음 강해 시리즈, 청교도 역사 강의 등">
                             </div>
                             <div class="input-group">
-                                <label>정렬 순서</label>
+                                <label>정렬 순서 (숫자)</label>
                                 <input type="number" id="post-order" value="0">
                             </div>
-                            <div class="input-group"
-                                style="display: flex; align-items: center; gap: 10px; padding-bottom: 12px;">
-                                <input type="checkbox" id="post-is-recommend"
-                                    style="width: 20px; height: 20px; cursor: pointer;">
-                                <label for="post-is-recommend"
-                                    style="margin: 0; cursor: pointer; font-weight: 700; color: var(--secondary-color);">메인
-                                    추천 자료로 설정</label>
+                            <div class="input-group">
+                                <label>가격 (도서 목록 전용)</label>
+                                <input type="text" id="post-price" placeholder="예: 18,000원">
                             </div>
                         </div>
 
@@ -822,61 +827,70 @@
                             <option value="경건생활">경건생활</option>
                         </select>
                     </div>
-                    <div class="input-group" id="edit-lang-group" style="display: none;">
-                        <label>언어 분류 (소책자 전용)</label>
-                        <select id="edit-lang">
-                            <option value="한국어">한국어</option>
-                            <option value="English">English</option>
-                            <option value="Spanish">Spanish</option>
-                            <option value="Japanese">Japanese</option>
-                            <option value="Arabic">Arabic</option>
-                            <option value="Chinese">Chinese</option>
-                        </select>
+                    <!-- Added Recommended Checkbox to Edit -->
+                    <div class="input-group checkbox-group"
+                        style="display: flex; align-items: center; justify-content: flex-start; gap: 10px; margin-top: 25px;">
+                        <input type="checkbox" id="edit-is-recommended"
+                            style="width: 20px; height: 20px; cursor: pointer;">
+                        <label for="edit-is-recommended"
+                            style="margin-bottom: 0; cursor: pointer; color: var(--secondary-color); font-weight: bold;">관리자
+                            추천 설정</label>
                     </div>
                 </div>
-                <div class="input-group">
-                    <label>제목</label>
-                    <input type="text" id="edit-title" placeholder="자료 제목을 입력하세요">
+                <div class="input-group" id="edit-lang-group" style="display: none;">
+                    <label>언어 분류 (소책자 전용)</label>
+                    <select id="edit-lang">
+                        <option value="한국어">한국어</option>
+                        <option value="English">English</option>
+                        <option value="Spanish">Spanish</option>
+                        <option value="Japanese">Japanese</option>
+                        <option value="Arabic">Arabic</option>
+                        <option value="Chinese">Chinese</option>
+                    </select>
                 </div>
-                <div class="input-row">
-                    <div class="input-group">
-                        <label>시리즈/연재 이름 (폴더명)</label>
-                        <input type="text" id="edit-series" placeholder="예: 사도행전 강해 시리즈">
-                    </div>
-                    <div class="input-group">
-                        <label>정렬 순서</label>
-                        <input type="number" id="edit-order">
-                    </div>
-                    <div class="input-group">
-                        <label>가격 (도서 전용)</label>
-                        <input type="text" id="edit-price" placeholder="예: 15,000원">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>내용 (또는 유튜브 링크)</label>
-                    <textarea id="edit-content" rows="6" placeholder="내용을 입력하거나 유튜브 주소를 넣어주세요"></textarea>
-                </div>
-                <div class="input-row"
-                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 15px;">
-                    <div class="input-group">
-                        <label>도서 표지 교체</label>
-                        <input type="file" id="edit-cover" accept="image/*">
-                        <p id="edit-cover-status" style="font-size: 0.8em; color: var(--text-light); margin-top: 5px;">
-                        </p>
-                    </div>
-                    <div class="input-group">
-                        <label>상세 내용/파일 교체</label>
-                        <input type="file" id="edit-file">
-                        <p id="edit-file-status" style="font-size: 0.8em; color: var(--text-light); margin-top: 5px;">
-                        </p>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <button type="submit" class="cta-btn primary">수정 완료</button>
-                </div>
-            </form>
         </div>
+        <div class="input-group">
+            <label>제목</label>
+            <input type="text" id="edit-title" placeholder="자료 제목을 입력하세요">
+        </div>
+        <div class="input-row">
+            <div class="input-group">
+                <label>시리즈/연재 이름 (폴더명)</label>
+                <input type="text" id="edit-series" placeholder="예: 사도행전 강해 시리즈">
+            </div>
+            <div class="input-group">
+                <label>정렬 순서</label>
+                <input type="number" id="edit-order">
+            </div>
+            <div class="input-group">
+                <label>가격 (도서 전용)</label>
+                <input type="text" id="edit-price" placeholder="예: 15,000원">
+            </div>
+        </div>
+        <div class="input-group">
+            <label>내용 (또는 유튜브 링크)</label>
+            <textarea id="edit-content" rows="6" placeholder="내용을 입력하거나 유튜브 주소를 넣어주세요"></textarea>
+        </div>
+        <div class="input-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 15px;">
+            <div class="input-group">
+                <label>도서 표지 교체</label>
+                <input type="file" id="edit-cover" accept="image/*">
+                <p id="edit-cover-status" style="font-size: 0.8em; color: var(--text-light); margin-top: 5px;">
+                </p>
+            </div>
+            <div class="input-group">
+                <label>상세 내용/파일 교체</label>
+                <input type="file" id="edit-file">
+                <p id="edit-file-status" style="font-size: 0.8em; color: var(--text-light); margin-top: 5px;">
+                </p>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <button type="submit" class="cta-btn primary">수정 완료</button>
+        </div>
+        </form>
+    </div>
     </div>
 
     <!-- Resource List Modal -->

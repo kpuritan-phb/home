@@ -1156,6 +1156,8 @@ nav ul li:hover a i {
     visibility: visible !important;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
     display: block !important;
+    position: relative;
+    z-index: 5000 !important;
 }
 
 .modal.show .modal-content {
@@ -1415,6 +1417,14 @@ footer {
     padding: 1.5rem;
     border-radius: 8px;
     border: 1px solid #eee;
+}
+
+#edit-form {
+    background-color: #fdfdfd !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    position: relative;
+    z-index: 5001;
 }
 
 #edit-form .input-group input,

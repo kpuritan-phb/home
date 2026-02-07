@@ -522,7 +522,7 @@ nav ul li:hover a i {
     height: 85vh;
     position: relative;
     /* 웨스트민스터 신앙고백서 회의 삽화 적용 */
-    background: linear-gradient(rgba(42, 45, 50, 0.4), rgba(42, 45, 50, 0.4)), url('westminster_assembly_illustration_1768571596977.png');
+    background: linear-gradient(rgba(42, 45, 50, 0.4), rgba(42, 45, 50, 0.4)), url('hero-bg.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -531,6 +531,19 @@ nav ul li:hover a i {
     align-items: center;
     overflow: hidden;
     color: #fff;
+}
+
+#edit-form {
+    background: var(--accent-color);
+    padding: 2.5rem;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+#edit-form .input-group {
+    background: transparent;
 }
 
 .hero-content {

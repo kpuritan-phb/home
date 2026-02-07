@@ -1147,8 +1147,11 @@ nav ul li:hover a i {
 }
 
 #edit-modal .modal-content {
+    background: #fff !important;
     max-width: 650px;
     text-align: left;
+    color: #333;
+    padding: 2.5rem;
 }
 
 .modal.show .modal-content {
@@ -1412,8 +1415,8 @@ footer {
 
 #edit-form .input-group input,
 #edit-form .input-group select {
-    background: #fff !important;
-    border: 1px solid #ddd;
+    background: #fdfdfd !important;
+    border: 1px solid #ccc;
     color: #333;
     width: 100%;
     padding: 10px;

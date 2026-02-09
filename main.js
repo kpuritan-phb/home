@@ -293,16 +293,69 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginCloseBtn = document.getElementById('login-close-btn');
     const loginForm = document.getElementById('login-form');
 
-    // Restore Admin UI state if persisted
+    // Global Logout Function
+    window.logoutAdmin = () => {
+        if (confirm('현재 관리자 모드입니다. 로그아웃 하시겠습니까?')) {
+            window.isAdmin = false;
+            localStorage.removeItem('isAdmin');
+
+            // Update UI components
+            const dashboard = document.getElementById('admin-dashboard');
+            const loginOpenBtn = document.getElementById('admin-access-btn');
+            const navLogout = document.getElementById('nav-logout-item');
+
+            if (dashboard) dashboard.classList.add('section-hidden');
+            if (loginOpenBtn) loginOpenBtn.innerHTML = '<i class="fas fa-user-lock"></i> <span>관리자</span>';
+            if (navLogout) navLogout.remove();
+
+            alert('로그아웃 되었습니다.');
+            // Go to home if on admin-heavy page
+            if (location.pathname.includes('seminary.html')) {
+                // Stay or go home
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
+    // Update Navigation with Logout Link if Admin
+    const addNavLogout = () => {
+        if (!window.isAdmin) return;
+        const navUl = document.querySelector('nav ul');
+        if (navUl && !document.getElementById('nav-logout-item')) {
+            const logoutLi = document.createElement('li');
+            logoutLi.id = 'nav-logout-item';
+            logoutLi.innerHTML = '<a href="javascript:void(0)" style="color: #e74c3c !important; font-weight: bold;"><i class="fas fa-sign-out-alt"></i> 로그아웃</a>';
+            logoutLi.onclick = (e) => {
+                e.preventDefault();
+                window.logoutAdmin();
+            };
+            navUl.appendChild(logoutLi);
+        }
+    };
+
+    // Initial check
     if (window.isAdmin) {
         if (loginOpenBtn) loginOpenBtn.innerHTML = '<i class="fas fa-user-check"></i> 관리자(로그인됨)';
         const dashboard = document.getElementById('admin-dashboard');
         if (dashboard) dashboard.classList.remove('section-hidden');
+        addNavLogout();
     }
 
-    if (loginOpenBtn && loginModal) {
+    if (loginOpenBtn) {
         loginOpenBtn.addEventListener('click', () => {
-            window.openModal(loginModal);
+            if (window.isAdmin) {
+                // Prompt for logout or scroll to dashboard
+                const dashboard = document.getElementById('admin-dashboard');
+                if (dashboard) {
+                    dashboard.classList.remove('section-hidden');
+                    dashboard.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    window.logoutAdmin();
+                }
+            } else {
+                if (loginModal) window.openModal(loginModal);
+                else location.href = 'index.html'; // Modal only on index
+            }
         });
     }
 
@@ -360,9 +413,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (id === 'admin' && pw === '1234') {
                 alert('관리자로 로그인되었습니다. 하단 대시보드에서 자료를 관리하세요.');
                 isAdmin = true;
+                window.isAdmin = true;
                 localStorage.setItem('isAdmin', 'true');
                 window.closeAllModals();
                 if (loginOpenBtn) loginOpenBtn.innerHTML = '<i class="fas fa-user-check"></i> 관리자(로그인됨)';
+                addNavLogout();
 
                 // Show Admin Dashboard
                 const dashboard = document.getElementById('admin-dashboard');
@@ -379,19 +434,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Logout Logic
     const logoutBtn = document.getElementById('admin-logout-btn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            if (confirm('로그아웃 하시겠습니까?')) {
-                isAdmin = false;
-                localStorage.removeItem('isAdmin');
-                const dashboard = document.getElementById('admin-dashboard');
-                const loginOpenBtn = document.getElementById('admin-access-btn');
-
-                if (dashboard) dashboard.classList.add('section-hidden');
-                if (loginOpenBtn) loginOpenBtn.innerHTML = '<i class="fas fa-user-lock"></i> <span>관리자</span>';
-
-                alert('로그아웃 되었습니다.');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.logoutAdmin();
         });
     }
 

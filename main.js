@@ -610,12 +610,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.createNewSeriesPrompt = (category) => {
         const name = prompt("새롭게 만드실 시리즈(폴더) 이름을 입력하세요.\n예: 사도행전 강해 시리즈");
         if (name && name.trim()) {
-            // 폴더를 '생성'한다는 것은 해당 시리즈명으로 첫 자료를 올릴 준비를 하는 것
-            openResourceModalWithSeries(category, name.trim());
-            setTimeout(() => {
-                const uploadBtn = document.getElementById('toggle-modal-upload');
-                if (uploadBtn) uploadBtn.click();
-            }, 500);
+            const url = new URL('admin_add.html', window.location.href);
+            const otherCats = ['기타', '도서 목록', '전도 소책자', '강해설교'];
+            if (otherCats.includes(category)) url.searchParams.set('category', category);
+            url.searchParams.set('series', name.trim());
+            window.open(url.href, '_blank', 'width=1000,height=800');
         }
     };
 
@@ -696,13 +695,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentUploadTarget = null;
 
     window.prepareUploadForCategory = (categoryName) => {
-        // 이 함수는 이제 모달 내부의 업로드 창을 열어주는 역할로 변경합니다.
-        const modalUploadForm = document.getElementById('modal-upload-form');
-        if (modalUploadForm) {
-            modalUploadForm.style.display = 'block';
-            const titleInput = document.getElementById('modal-post-title');
-            if (titleInput) titleInput.focus();
-        }
+        // Open admin_add.html instead of inline form
+        const url = new URL('admin_add.html', window.location.href);
+        if (topics.includes(categoryName)) url.searchParams.set('topic', categoryName);
+        if (authors.includes(categoryName)) url.searchParams.set('author', categoryName);
+        if (['전도 소책자', '도서 목록', '강해설교', '기타'].includes(categoryName)) url.searchParams.set('category', categoryName);
+
+        window.open(url.href, '_blank', 'width=1000,height=800');
     };
 
     window.clearUploadTarget = () => {
@@ -1209,32 +1208,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (modalSeries) modalSeries.value = targetSeries || "";
 
                 if (toggleBtn) {
-                    toggleBtn.textContent = '업로드 창 열기';
+                    toggleBtn.textContent = '새 자료 추가 (새 창)';
                     toggleBtn.onclick = (e) => {
                         e.preventDefault();
-                        if (modalUploadForm.style.display === 'none') {
-                            modalUploadForm.style.display = 'block';
-                            toggleBtn.textContent = '업로드 창 닫기';
-                            const titleInput = document.getElementById('modal-post-title');
-                            if (titleInput) titleInput.focus();
-                        } else {
-                            modalUploadForm.style.display = 'none';
-                            toggleBtn.textContent = '업로드 창 열기';
-                        }
+                        const url = new URL('admin_add.html', window.location.href);
+
+                        // Set presets based on current modal view
+                        if (topics.includes(queryTag)) url.searchParams.set('topic', queryTag);
+                        if (authors.includes(queryTag)) url.searchParams.set('author', queryTag);
+                        const otherCats = ['기타', '도서 목록', '전도 소책자', '강해설교'];
+                        if (otherCats.includes(queryTag)) url.searchParams.set('category', queryTag);
+                        if (targetSeries) url.searchParams.set('series', targetSeries);
+
+                        window.open(url.href, '_blank', 'width=1000,height=800');
                     };
                 }
 
-                // "이 폴더에 새 자료 추가" 텍스트 클릭 시에도 업로드 창 열기
+                // "이 폴더에 새 자료 추가" 텍스트 클릭 시에도 새 창 열기
                 const addText = adminHeader.querySelector('span');
                 if (addText) {
                     addText.style.cursor = 'pointer';
                     addText.onclick = () => {
-                        if (modalUploadForm && modalUploadForm.style.display === 'none') {
-                            modalUploadForm.style.display = 'block';
-                            if (toggleBtn) toggleBtn.textContent = '업로드 창 닫기';
-                            const titleInput = document.getElementById('modal-post-title');
-                            if (titleInput) titleInput.focus();
-                        }
+                        toggleBtn.click();
                     };
                 }
 

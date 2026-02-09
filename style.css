@@ -238,7 +238,7 @@ nav ul li a:hover {
     color: var(--white);
 }
 
-.nav-seminary-link {
+/* .nav-seminary-link {
     background: white !important;
     color: #2c3e50 !important;
     padding: 0.5rem 1.2rem !important;
@@ -257,7 +257,8 @@ nav ul li a:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     color: #0a7c68 !important;
-}
+} */
+
 
 nav {
     flex-grow: 1;

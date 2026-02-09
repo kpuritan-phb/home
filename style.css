@@ -238,6 +238,27 @@ nav ul li a:hover {
     color: var(--white);
 }
 
+.nav-seminary-link {
+    background: white !important;
+    color: #2c3e50 !important;
+    padding: 0.5rem 1.2rem !important;
+    border-radius: 4px;
+    font-family: 'Noto Serif KR', serif !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-left: 10px;
+    transition: all 0.3s ease !important;
+}
+
+.nav-seminary-link:hover {
+    background: #fdfcf9 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    color: #0a7c68 !important;
+}
+
 nav {
     flex-grow: 1;
 }

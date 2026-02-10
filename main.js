@@ -809,6 +809,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 uploadForm.reset();
                 clearUploadTarget(); // This helper should exist in your codebase to clear file selection UI
                 if (window.loadRecentPostsGrid) window.loadRecentPostsGrid();
+                if (window.loadAdminPicks) window.loadAdminPicks();
 
             } catch (error) {
                 console.error("❌ Upload Workflow Error:", error);
@@ -2265,15 +2266,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // Query for isRecommended == true
-            const snapshot = await db.collection("posts")
-                .where("isRecommended", "==", true)
-                .limit(3)
-                .get();
+            // Query for isRecommended == true, ordered by newest first
+            // Note: This requires a composite index on [isRecommended: ASC, createdAt: DESC]
+            let snapshot;
+            try {
+                snapshot = await db.collection("posts")
+                    .where("isRecommended", "==", true)
+                    .orderBy("createdAt", "desc")
+                    .limit(3)
+                    .get();
+            } catch (indexErr) {
+                console.warn("Recommended index not ready, falling back to unordered query:", indexErr);
+                snapshot = await db.collection("posts")
+                    .where("isRecommended", "==", true)
+                    .limit(3)
+                    .get();
+            }
 
-            if (snapshot.empty) {
-                // Fallback to most recent 3 if none recommended
-                console.log("No recommended items found. Falling back to recent.");
+            if (snapshot && !snapshot.empty) {
+                renderAdminPicks(snapshot, container);
+            } else {
+                // Fallback to most recent 3 if none recommended OR if the ordered query returned nothing (though that's unlikely if posts exist)
+                console.log("No explicitly recommended items found. Falling back to recent.");
                 const fallbackSnapshot = await db.collection("posts")
                     .orderBy("createdAt", "desc")
                     .limit(3)
@@ -2284,17 +2298,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 renderAdminPicks(fallbackSnapshot, container);
-            } else {
-                renderAdminPicks(snapshot, container);
             }
         } catch (err) {
             console.error("Error loading admin picks:", err);
-            // Fallback to recent on index error (often happens with new compound queries)
-            const fallbackSnapshot = await db.collection("posts")
-                .orderBy("createdAt", "desc")
-                .limit(3)
-                .get();
-            if (!fallbackSnapshot.empty) renderAdminPicks(fallbackSnapshot, container);
+            container.innerHTML = '<div class="error-msg">자료를 불러오는데 오류가 발생했습니다.</div>';
         }
     };
 
@@ -2315,7 +2322,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 bgImage = data.fileUrl;
             }
 
-            let bgStyle = '';
             if (bgImage) {
                 bgStyle = `background-image: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8)), url('${bgImage}');`;
             } else {
@@ -2332,15 +2338,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 box-shadow: 0 10px 20px rgba(0,0,0,0.1);
                 cursor: pointer;
                 background: #fff;
+                ${bgImage ? '' : bgStyle}
             `;
 
             card.innerHTML = `
-                <div class="admin-pick-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0;">
+                <div class="admin-pick-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ${bgImage ? '' : 'color: white;'}">
                     ${bgImage
                     ? `<img src="${bgImage}" style="width: 100%; height: 100%; object-fit: contain;" alt="${data.title}">`
                     : `<div style="text-align:center; padding:20px;">
-                               <i class="fas fa-book" style="font-size:3rem; color:#ccc;"></i>
-                               <h4 style="margin-top:10px; color:#555;">${data.title}</h4>
+                               <i class="fas fa-book" style="font-size:3rem; color:rgba(255,255,255,0.8);"></i>
+                               <h4 style="margin-top:10px; color:white;">${data.title}</h4>
                            </div>`
                 }
                 </div>

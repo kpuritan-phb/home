@@ -349,6 +349,7 @@
                 if (window.opener && !window.opener.closed) {
                     if (window.opener.loadAdminPosts) window.opener.loadAdminPosts();
                     if (window.opener.loadRecentPostsGrid) window.opener.loadRecentPostsGrid();
+                    if (window.opener.loadAdminPicks) window.opener.loadAdminPicks();
                     if (window.opener.loadAdminSeries) {
                         const portalCards = window.opener.document.querySelectorAll('.admin-portal-card.active');
                         if (portalCards.length > 0) {

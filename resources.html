@@ -329,12 +329,7 @@
                     <label>분류 선택</label>
                     <select id="type-filter" onchange="handleFilterChange()">
                         <option value="topic">주제별 자료</option>
-                        <option value="author">저자별 자료</option>
                     </select>
-                </div>
-                <div class="filter-group" id="author-search-group" style="display:none;">
-                    <label>저자 검색</label>
-                    <input type="text" id="author-search" placeholder="저자 이름을 입력하세요..." oninput="handleFilterChange()">
                 </div>
             </div>
 
@@ -432,7 +427,6 @@
         }
 
         function updateUI() {
-            authorSearchGroup.style.display = currentType === 'author' ? 'block' : 'none';
             if (currentCategory) {
                 backNav.style.display = 'block';
                 filterWrapper.style.display = 'none';
@@ -440,7 +434,7 @@
             } else {
                 backNav.style.display = 'none';
                 filterWrapper.style.display = 'flex';
-                pageTitle.textContent = currentType === 'topic' ? '주제별 자료' : '저자별 자료';
+                pageTitle.textContent = '주제별 자료';
             }
         }
 
@@ -472,12 +466,7 @@
         function loadCategories() {
             grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 로딩 중...</div>';
 
-            let list = currentType === 'topic' ? topics : authors;
-
-            if (currentType === 'author' && authorSearch.value) {
-                const query = authorSearch.value.toLowerCase();
-                list = list.filter(a => a.toLowerCase().includes(query));
-            }
+            let list = topics;
 
             if (list.length === 0) {
                 grid.innerHTML = '<div class="no-results">검색 결과가 없습니다.</div>';
@@ -496,7 +485,7 @@
 
                 card.innerHTML = `
                     <div class="group-thumb" style="background-image: url('${defaultImg}')">
-                        <i class="fas ${currentType === 'topic' ? 'fa-tags' : 'fa-user-edit'}" style="position:absolute; top:15px; left:15px; color:white; font-size:1.2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3);"></i>
+                        <i class="fas fa-tags" style="position:absolute; top:15px; left:15px; color:white; font-size:1.2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3);"></i>
                     </div>
                     <div class="group-info">
                         <h3 class="group-title">${item}</h3>
@@ -508,7 +497,7 @@
                     if (window.Stats) {
                         window.Stats.track('view', {
                             id: 'res_cat_' + btoa(item).substring(0, 16),
-                            type: currentType === 'topic' ? 'topic_category' : 'author_category',
+                            type: 'topic_category',
                             title: item
                         });
                     }

@@ -116,22 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Populate dropdowns
     if (typeof topics !== 'undefined') renderMegaMenuItems(topics, topicDropdown);
 
-    // Render for Author Dropdown (Special case for search)
-    const renderAuthorsInDropdown = (list) => {
-        if (!authorDropdownGrid || !Array.isArray(list)) return;
-        authorDropdownGrid.innerHTML = '';
-        list.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'mega-menu-item';
-            div.textContent = item;
-            div.addEventListener('click', () => {
-                location.href = `resources.html?type=author&cat=${encodeURIComponent(item)}`;
-            });
-            authorDropdownGrid.appendChild(div);
-        });
-    };
 
-    if (typeof authors !== 'undefined') renderAuthorsInDropdown(authors);
 
     // --- Mobile Menu Toggle ---
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
@@ -219,20 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sec) sec.classList.remove('section-hidden');
     });
 
-    // Search function for Author Dropdown
-    const authorSearchInput = document.getElementById('author-dropdown-search');
-    if (authorSearchInput && typeof authors !== 'undefined') {
-        authorSearchInput.addEventListener('input', (e) => {
-            const val = e.target.value.toLowerCase();
-            const filtered = authors.filter(a => a.toLowerCase().includes(val));
-            renderAuthorsInDropdown(filtered);
-        });
 
-        // Prevent dropdown from closing when clicking search input
-        authorSearchInput.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-    }
 
     // Smooth scroll for all anchor links (Navigation & Hero buttons)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -2279,179 +2251,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.openAllAuthorsModal = () => {
-        if (!resourceModal) return;
-        window.openModal(resourceModal);
-        resourceListContainer.classList.remove('compact-view');
-        resourceModalTitle.textContent = `전체 저자 목록`;
-
-        // 검색/카테고리 선택 모달에서는 업로드 헤더 숨김
-        const adminHeader = document.getElementById('resource-modal-admin-header');
-        if (adminHeader) adminHeader.style.display = 'none';
-
-        const renderAuthorContent = (list) => {
-            // 정렬
-            const sortedList = [...list].sort((a, b) => a.localeCompare(b, 'ko'));
-
-            // 그룹화
-            const groups = {};
-            sortedList.forEach(item => {
-                const initial = getInitialConsonant(item);
-                if (!groups[initial]) groups[initial] = [];
-                groups[initial].push(item);
-            });
-
-            const consonants = Object.keys(groups).sort();
-
-            resourceListContainer.innerHTML = `
-                <div class="author-search-container" style="margin-bottom: 2rem;">
-                    <input type="text" id="modal-author-search" placeholder="저자 이름 검색..." style="width: 100%; padding: 1rem; border-radius: 8px; border: 1px solid #ddd;">
-                </div>
-                <div class="modal-nav-container">
-                    <div class="modal-content-scroll" id="modal-author-scroll">
-                        <div class="main-grid-container" id="modal-author-grid"></div>
-                    </div>
-                    <div class="modal-index-nav" id="modal-author-index"></div>
-                </div>
-            `;
-
-            const grid = document.getElementById('modal-author-grid');
-            const indexNav = document.getElementById('modal-author-index');
-            const scrollContainer = document.getElementById('modal-author-scroll');
-            const searchInput = document.getElementById('modal-author-search');
-
-            consonants.forEach(consonant => {
-                // 인덱스 바
-                const span = document.createElement('span');
-                span.textContent = consonant;
-                span.addEventListener('click', () => {
-                    const header = document.getElementById(`header-author-${consonant}`);
-                    if (header) {
-                        scrollContainer.scrollTo({
-                            top: header.offsetTop - 10,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-                indexNav.appendChild(span);
-
-                // 섹션 헤더
-                const header = document.createElement('div');
-                header.className = 'modal-section-header';
-                header.id = `header-author-${consonant}`;
-                header.textContent = consonant;
-                grid.appendChild(header);
-
-                // 항목
-                groups[consonant].forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'main-grid-item';
-                    div.innerHTML = `
-                        <i class="fas fa-user-edit"></i>
-                        <span>${item}</span>
-                    `;
-                    div.addEventListener('click', () => {
-                        openResourceModal(item);
-                    });
-                    grid.appendChild(div);
-                });
-            });
-
-            // 검색어 유지 로직
-            if (searchInput) {
-                searchInput.addEventListener('input', (e) => {
-                    const val = e.target.value.toLowerCase();
-                    const filtered = authors.filter(a => a.toLowerCase().includes(val));
-                    // 검색 시에는 인덱스 네비게이션이 복잡해질 수 있으므로 간단한 리스트로 재렌더링하거나 필터링 로직 개선 필요
-                    // 여기서는 유저 요구사항인 '인덱스'를 유지하기 위해 전체 저자 목록에서 검색 필터링된 결과로 다시 그룹화 수행
-                    renderAuthorContentFiltered(filtered, val);
-                });
-            }
-        };
-
-        const renderAuthorContentFiltered = (list, searchVal) => {
-            // 전체 저자 목록 UI 구조는 유지하되 내용만 필터링
-            renderAuthorContentInternal(list, searchVal);
-        };
-
-        const renderAuthorContentInternal = (list, searchVal = '') => {
-            // 정렬
-            const sortedList = [...list].sort((a, b) => a.localeCompare(b, 'ko'));
-
-            // 그룹화
-            const groups = {};
-            sortedList.forEach(item => {
-                const initial = getInitialConsonant(item);
-                if (!groups[initial]) groups[initial] = [];
-                groups[initial].push(item);
-            });
-
-            const consonants = Object.keys(groups).sort();
-
-            resourceListContainer.innerHTML = `
-                <div class="author-search-container" style="margin-bottom: 2rem;">
-                    <input type="text" id="modal-author-search" value="${searchVal}" placeholder="저자 이름 검색..." style="width: 100%; padding: 1rem; border-radius: 8px; border: 1px solid #ddd;">
-                </div>
-                <div class="modal-nav-container">
-                    <div class="modal-content-scroll" id="modal-author-scroll">
-                        <div class="main-grid-container" id="modal-author-grid"></div>
-                    </div>
-                    <div class="modal-index-nav" id="modal-author-index"></div>
-                </div>
-            `;
-
-            const grid = document.getElementById('modal-author-grid');
-            const indexNav = document.getElementById('modal-author-index');
-            const scrollContainer = document.getElementById('modal-author-scroll');
-            const searchInput = document.getElementById('modal-author-search');
-
-            if (searchInput) {
-                searchInput.focus();
-                // Move cursor to end
-                searchInput.setSelectionRange(searchVal.length, searchVal.length);
-
-                searchInput.addEventListener('input', (e) => {
-                    const val = e.target.value.toLowerCase();
-                    const filtered = authors.filter(a => a.toLowerCase().includes(val));
-                    renderAuthorContentInternal(filtered, val);
-                });
-            }
-
-            consonants.forEach(consonant => {
-                const span = document.createElement('span');
-                span.textContent = consonant;
-                span.addEventListener('click', () => {
-                    const header = document.getElementById(`header-author-${consonant}`);
-                    if (header) {
-                        scrollContainer.scrollTo({
-                            top: header.offsetTop - 10,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-                indexNav.appendChild(span);
-
-                const header = document.createElement('div');
-                header.className = 'modal-section-header';
-                header.id = `header-author-${consonant}`;
-                header.textContent = consonant;
-                grid.appendChild(header);
-
-                groups[consonant].forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'main-grid-item';
-                    div.innerHTML = `
-                        <i class="fas fa-user-edit"></i>
-                        <span>${item}</span>
-                    `;
-                    div.addEventListener('click', () => {
-                        openResourceModal(item);
-                    });
-                    grid.appendChild(div);
-                });
-            });
-        };
-
-        renderAuthorContentInternal(authors);
+        alert("이 기능은 더 이상 사용되지 않습니다.");
     };
 
     // --- Admin Picks Logic ---

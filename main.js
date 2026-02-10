@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (m.classList.contains('show')) {
                 m.classList.remove('show');
                 anyModalWasOpen = true;
+                window.selectionTargetSlot = null; // Selection mode reset
             }
         });
 
@@ -468,6 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let themeColor = 'var(--primary-color)';
             if (tabName === 'bible-study') themeColor = 'var(--secondary-color)';
             if (tabName === 'booklet') themeColor = '#e67e22';
+            if (tabName === 'picks') themeColor = '#f1c40f';
             if (tabName === 'stats') themeColor = '#9b59b6';
 
             activeCard.style.border = `2px solid ${themeColor}`;
@@ -487,6 +489,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // 강해설교 탭 선택 시 시리즈 목록 로드
         if (tabName === 'bible-study') {
             loadAdminSeries('강해설교');
+        }
+        if (tabName === 'picks') {
+            loadAdminPicksForManagement();
         }
         if (tabName === 'stats' && window.AdminStats) {
             AdminStats.load('all');
@@ -780,8 +785,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (statusText) statusText.textContent = '자료 정보 저장 중...';
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 정보 저장 중...';
 
-                const isRecommended = document.getElementById('post-is-recommended').checked;
-
                 const postData = {
                     topic,
                     author,
@@ -793,7 +796,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     price,
                     content,
                     subBookletTopic: (other === "전도 소책자") ? subBookletTopic : null,
-                    isRecommended: isRecommended || false, // Default false
                     fileUrl,
                     coverUrl,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1317,6 +1319,9 @@ document.addEventListener('DOMContentLoaded', () => {
             let q = db.collection("posts");
             if (queryTag === '전도 소책자') {
                 q = q.where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"]);
+            } else if (queryTag === '모든 자료') {
+                // No tag filter, just get all (limit for safety)
+                q = q.orderBy("createdAt", "desc").limit(500);
             } else {
                 q = q.where("tags", "array-contains", queryTag);
             }
@@ -1651,10 +1656,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         let adminButtons = '';
         if (isAdmin) {
+            let selectBtn = '';
+            if (window.selectionTargetSlot !== null) {
+                selectBtn = `<button onclick="window.assignPostToSlot('${post.id}', '${post.title.replace(/'/g, "\\'")}')" class="cta-btn primary" style="padding: 10px; font-size: 0.8rem; margin-top: 10px; border-radius: 6px; width: 100%; background: #f1c40f; color: #000; font-weight: bold;">
+                    <i class="fas fa-check-circle"></i> 추천 자료 슬롯 ${window.selectionTargetSlot + 1}번에 등록
+                </button>`;
+            }
+
             adminButtons = `
-                <div class="resource-admin-actions">
-                    <button onclick="window.openEditModal('${post.id}')" class="action-btn edit-small" title="수정"><i class="fas fa-edit"></i></button>
-                    <button onclick="window.deletePost('${post.id}')" class="action-btn delete-small" title="삭제"><i class="fas fa-trash"></i></button>
+                <div class="resource-admin-actions" style="display: flex; flex-direction: column; gap: 5px;">
+                    <div style="display: flex; gap: 5px;">
+                        <button onclick="window.openEditModal('${post.id}')" class="action-btn edit-small" title="수정"><i class="fas fa-edit"></i></button>
+                        <button onclick="window.deletePost('${post.id}')" class="action-btn delete-small" title="삭제"><i class="fas fa-trash"></i></button>
+                    </div>
+                    ${selectBtn}
                 </div>
             `;
         }
@@ -2304,6 +2319,168 @@ document.addEventListener('DOMContentLoaded', () => {
             container.innerHTML = '<div class="error-msg">자료를 불러오는데 오류가 발생했습니다.</div>';
         }
     };
+
+    // --- New Admin Picks Management Logic (Direct Slot Selection) ---
+    window.selectionTargetSlot = null; // 0, 1, 2
+
+    window.loadAdminPicksForManagement = async () => {
+        if (!window.db) return;
+        try {
+            // Get current picks from site_settings/admin_picks
+            const settingsDoc = await db.collection("site_settings").doc("admin_picks").get();
+            let pickIds = [null, null, null];
+            if (settingsDoc.exists) {
+                pickIds = settingsDoc.data().posts || [null, null, null];
+            }
+
+            for (let i = 0; i < 3; i++) {
+                const contentArea = document.getElementById(`pick-content-${i + 1}`);
+                if (!contentArea) continue;
+
+                if (pickIds[i]) {
+                    const postDoc = await db.collection("posts").doc(pickIds[i]).get();
+                    if (postDoc.exists) {
+                        const post = postDoc.data();
+                        const thumb = post.coverUrl || 'https://images.unsplash.com/photo-1585829365234-78905bc76269?auto=format&fit=crop&q=80&w=200';
+                        contentArea.innerHTML = `
+                            <div style="width:120px; height:150px; margin: 0 auto 10px; border-radius:8px; overflow:hidden; border:1px solid #eee;">
+                                <img src="${thumb}" style="width:100%; height:100%; object-fit:cover;">
+                            </div>
+                            <h4 style="margin:0; font-size:0.9rem; color:#333; height: 40px; overflow:hidden;">${post.title}</h4>
+                        `;
+                    } else {
+                        renderEmptySlot(contentArea, i);
+                    }
+                } else {
+                    renderEmptySlot(contentArea, i);
+                }
+            }
+        } catch (err) {
+            console.error("Management Picks Load Error:", err);
+        }
+    };
+
+    function renderEmptySlot(container, index) {
+        container.innerHTML = `
+            <i class="fas fa-plus-circle" style="font-size: 3rem; color: #eee; cursor: pointer;" onclick="openAdminPickSelection(${index})"></i>
+            <p style="color: #aaa; font-size: 0.9rem;">선택된 자료 없음</p>
+        `;
+    }
+
+    window.openAdminPickSelection = (slotIndex) => {
+        window.selectionTargetSlot = slotIndex;
+        // Open all materials modal for selection
+        window.openResourceModal('모든 자료');
+        // Rename modal title to indicate selection mode
+        const modalTitle = document.getElementById('resource-modal-title');
+        if (modalTitle) modalTitle.textContent = `슬롯 ${slotIndex + 1}에 넣을 자료를 선택하세요`;
+    };
+
+    window.assignPostToSlot = async (postId, postTitle) => {
+        if (window.selectionTargetSlot === null) return;
+        if (!confirm(`'${postTitle}' 자료를 슬롯 ${window.selectionTargetSlot + 1}번의 추천 자료로 지정하시겠습니까?`)) return;
+
+        try {
+            const settingsRef = db.collection("site_settings").doc("admin_picks");
+            const settingsDoc = await settingsRef.get();
+            let currentPicks = [null, null, null];
+            if (settingsDoc.exists) {
+                currentPicks = settingsDoc.data().posts || [null, null, null];
+            }
+
+            currentPicks[window.selectionTargetSlot] = postId;
+            await settingsRef.set({ posts: currentPicks }, { merge: true });
+
+            alert("성공적으로 등록되었습니다.");
+            window.selectionTargetSlot = null;
+            window.closeAllModals();
+
+            // Refresh dashboards
+            window.loadAdminPicksForManagement();
+            window.loadAdminPicks();
+        } catch (err) {
+            console.error("Slot Assign Error:", err);
+            alert("지정 오류: " + err.message);
+        }
+    };
+
+    // Update loadAdminPicks to use the settings doc
+    const originalLoadAdminPicks = window.loadAdminPicks;
+    window.loadAdminPicks = async () => {
+        const container = document.getElementById('admin-picks-container');
+        if (!container || !window.db) return;
+
+        try {
+            const settingsDoc = await db.collection("site_settings").doc("admin_picks").get();
+            if (settingsDoc.exists && settingsDoc.data().posts && settingsDoc.data().posts.filter(id => id).length > 0) {
+                const pickIds = settingsDoc.data().posts.filter(id => id);
+                // Fetch each post doc
+                const posts = [];
+                for (const id of pickIds) {
+                    const d = await db.collection("posts").doc(id).get();
+                    if (d.exists) posts.push({ id: d.id, data: d.data() });
+                }
+
+                if (posts.length > 0) {
+                    container.innerHTML = '';
+                    posts.forEach(p => {
+                        const card = createAdminPickCard(p.data, p.id);
+                        container.appendChild(card);
+                    });
+                    return;
+                }
+            }
+            // Fallback to original logic if no settings or empty
+            await originalLoadAdminPicks();
+        } catch (err) {
+            console.error("Admin Picks Logic Error, falling back:", err);
+            await originalLoadAdminPicks();
+        }
+    };
+
+    function createAdminPickCard(data, id) {
+        const card = document.createElement('div');
+        card.className = 'admin-pick-card';
+
+        let bgImage = data.coverUrl || '';
+        if (!bgImage && data.fileUrl && (data.fileUrl.includes('.jpg') || data.fileUrl.includes('.png') || data.fileUrl.includes('.jpeg'))) {
+            bgImage = data.fileUrl;
+        }
+
+        let bgStyle = bgImage
+            ? `background-image: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8)), url('${bgImage}');`
+            : `background: linear-gradient(135deg, var(--primary-color), #2c3e50);`;
+
+        card.style.cssText = `
+            position: relative;
+            height: 380px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            cursor: pointer;
+            background: #fff;
+            ${bgImage ? '' : bgStyle}
+        `;
+
+        card.innerHTML = `
+            <div class="admin-pick-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ${bgImage ? '' : 'color: white;'}">
+                ${bgImage
+                ? `<img src="${bgImage}" style="width: 100%; height: 100%; object-fit: contain;" alt="${data.title}">`
+                : `<div style="text-align:center; padding:20px;">
+                           <i class="fas fa-book" style="font-size:3rem; color:rgba(255,255,255,0.8);"></i>
+                           <h4 style="margin-top:10px; color:white;">${data.title}</h4>
+                       </div>`
+            }
+            </div>
+        `;
+
+        card.onclick = () => {
+            const cat = data.topic || (data.tags && data.tags[0]) || '전체 자료';
+            window.openResourceModal(cat, data.series, id);
+        };
+        return card;
+    }
 
     function renderAdminPicks(snapshot, container) {
         container.innerHTML = '';

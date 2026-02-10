@@ -160,12 +160,6 @@
                         </div>
                     </div>
 
-                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc;">
-                        <label style="display: flex; align-items: center; cursor: pointer; gap: 10px;">
-                            <input type="checkbox" id="add-is-recommended" style="width: 20px; height: 20px;">
-                            <span style="color: var(--secondary-color); font-weight: bold;">관리자 추천 자료 (메인 상단 노출)</span>
-                        </label>
-                    </div>
                 </div>
 
                 <div class="form-section">
@@ -299,7 +293,6 @@
                 const author = document.getElementById('add-author').value;
                 const other = document.getElementById('add-other-category').value;
                 const subBookletTopic = document.getElementById('add-booklet-topic').value;
-                const isRecommended = document.getElementById('add-is-recommended').checked;
 
                 let tags = [topic, author, other].filter(t => t !== "");
                 if (other === '전도 소책자') {
@@ -318,7 +311,6 @@
                     order: Number(document.getElementById('add-order').value),
                     price: document.getElementById('add-price').value.trim() || "",
                     content: document.getElementById('add-content').value,
-                    isRecommended: isRecommended,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 

@@ -162,12 +162,6 @@
                         </div>
                     </div>
 
-                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc;">
-                        <label style="display: flex; align-items: center; cursor: pointer; gap: 10px;">
-                            <input type="checkbox" id="edit-is-recommended" style="width: 20px; height: 20px;">
-                            <span style="color: var(--secondary-color); font-weight: bold;">관리자 추천 자료 (메인 상단 노출)</span>
-                        </label>
-                    </div>
                 </div>
 
                 <div class="form-section">
@@ -307,7 +301,6 @@
                 otherSelect.dispatchEvent(new Event('change'));
 
                 document.getElementById('edit-booklet-topic').value = data.subBookletTopic || "";
-                document.getElementById('edit-is-recommended').checked = data.isRecommended || false;
                 document.getElementById('edit-title').value = data.title || "";
                 document.getElementById('edit-series').value = data.series || "";
                 document.getElementById('edit-order').value = data.order || 0;
@@ -348,7 +341,6 @@
                 const author = document.getElementById('edit-author').value;
                 const other = document.getElementById('edit-other-category').value;
                 const subBookletTopic = document.getElementById('edit-booklet-topic').value;
-                const isRecommended = document.getElementById('edit-is-recommended').checked;
 
                 let tags = [topic, author, other].filter(t => t !== "");
                 if (other === '전도 소책자') {
@@ -367,7 +359,6 @@
                     order: Number(document.getElementById('edit-order').value),
                     price: document.getElementById('edit-price').value,
                     content: document.getElementById('edit-content').value,
-                    isRecommended: isRecommended,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 

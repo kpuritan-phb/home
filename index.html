@@ -425,6 +425,12 @@
                             style="font-size: 1.5rem; color: #9b59b6; margin-bottom: 12px;"></i>
                         <h3 style="margin-bottom: 5px; font-size: 1rem;">통합 통계</h3>
                     </div>
+                    <div class="admin-portal-card" onclick="switchAdminTab('order')" id="tab-order"
+                        style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
+                        <i class="fas fa-sort-amount-down-alt"
+                            style="font-size: 1.5rem; color: #1abc9c; margin-bottom: 12px;"></i>
+                        <h3 style="margin-bottom: 5px; font-size: 1rem;">자료 순서 관리</h3>
+                    </div>
                 </div>
 
                 <!-- 1. 일반 자료 섹션 -->
@@ -708,6 +714,61 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. 자료 순서 관리 섹션 -->
+            <div class="admin-tab-content" id="admin-order-section" style="display: none;">
+                <div
+                    style="background: #fff; padding: 30px; border-radius: 15px; border: 1px solid #eee; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                    <div style="margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
+                        <h3 style="margin:0; color: #1abc9c;"><i class="fas fa-sort-amount-down-alt"></i> 자료 순서 관리 (드래그
+                            앤 드롭)</h3>
+                        <p style="font-size: 0.9rem; color: #777; margin-top: 5px;">특정 분류 또는 시리즈 내의 자료 순서를 직접 조정하세요.</p>
+                    </div>
+
+                    <div class="order-management-controls"
+                        style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                        <div class="input-group" style="flex: 1; min-width: 200px;">
+                            <label style="font-size: 0.8rem; color: #666; display: block; margin-bottom: 5px;">대분류
+                                선택</label>
+                            <select id="order-type-select" onchange="updateOrderSubSelect()"
+                                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                                <option value="">-- 분류 선택 --</option>
+                                <option value="topic">주제별</option>
+                                <option value="author">저자별</option>
+                                <option value="category">카테고리별 (자료 형태)</option>
+                                <option value="series">시리즈/폴더별</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="flex: 1; min-width: 200px;">
+                            <label style="font-size: 0.8rem; color: #666; display: block; margin-bottom: 5px;">상세 항목
+                                선택</label>
+                            <select id="order-value-select"
+                                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                                <option value="">-- 먼저 대분류를 선택하세요 --</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: flex-end;">
+                            <button onclick="loadOrderItems()" class="cta-btn primary"
+                                style="padding: 10px 25px; margin: 0; background: #1abc9c; border-color: #1abc9c;">자료
+                                불러오기</button>
+                        </div>
+                    </div>
+
+                    <div id="order-items-container" class="order-list-container"
+                        style="min-height: 200px; border: 1px solid #eee; border-radius: 12px; padding: 15px; background: #fafafa; margin-bottom: 20px;">
+                        <p style="text-align: center; color: #999; padding: 50px;">재정렬할 자료를 불러와주세요.</p>
+                    </div>
+
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; background: #f0fdfa; padding: 15px; border-radius: 10px; border: 1px solid #c6f6d5;">
+                        <p style="font-size: 0.85rem; color: #2d3748; margin: 0;"><i class="fas fa-info-circle"></i> 목록을
+                            드래그하여 순서를 바꾼 후 <strong>'순서 최종 저장하기'</strong> 버튼을 클릭하세요.</p>
+                        <button onclick="saveCurrentOrder()" id="save-order-btn" class="cta-btn primary"
+                            style="margin: 0; padding: 10px 30px; background: #1abc9c; border-color: #1abc9c; display: none;">순서
+                            최종 저장하기</button>
                     </div>
                 </div>
             </div>

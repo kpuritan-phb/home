@@ -486,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
             targetSection.style.display = (tabName === 'general') ? 'grid' : 'block';
         }
 
-        // 강해설교 탭 선택 시 시리즈 목록 로드
+        // 탭 별 데이터 로드 로직
         if (tabName === 'bible-study') {
             loadAdminSeries('강해설교');
         }
@@ -495,6 +495,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (tabName === 'stats' && window.AdminStats) {
             AdminStats.load('all');
+        }
+        if (tabName === 'order') {
+            // 초기 셀렉트박스 설정 등 필요시 호출
         }
     };
 
@@ -2545,6 +2548,189 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         setTimeout(() => { if (window.loadAdminPicks) window.loadAdminPicks(); }, 1500);
     }
+
+    // --- Order Management Support Logic ---
+
+    window.updateOrderSubSelect = async () => {
+        const type = document.getElementById('order-type-select').value;
+        const valueSelect = document.getElementById('order-value-select');
+        if (!valueSelect) return;
+
+        valueSelect.innerHTML = '<option value="">-- 로딩 중... --</option>';
+
+        if (!type) {
+            valueSelect.innerHTML = '<option value="">-- 먼저 대분류를 선택하세요 --</option>';
+            return;
+        }
+
+        try {
+            let items = [];
+            if (type === 'topic') items = topics;
+            else if (type === 'author') items = authors;
+            else if (type === 'category') items = ['기타', '도서 목록', '전도 소책자', '강해설교'];
+            else if (type === 'series') {
+                // Fetch unique series names from Firestore
+                const snapshot = await db.collection("posts").get();
+                const seriesSet = new Set();
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const s = data.series;
+                    if (s && s.trim()) seriesSet.add(s.trim());
+                    else if (data.tags && data.tags.includes('강해설교')) seriesSet.add('기타 단편 설교');
+                });
+                items = Array.from(seriesSet).sort((a, b) => a.trim().localeCompare(b.trim(), 'ko', { numeric: true, sensitivity: 'base' }));
+            }
+
+            valueSelect.innerHTML = '<option value="">-- 상세 항목 선택 --</option>';
+            items.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+                valueSelect.appendChild(opt);
+            });
+        } catch (err) {
+            console.error(err);
+            valueSelect.innerHTML = '<option value="">-- 로딩 실패 --</option>';
+        }
+    };
+
+    window.loadOrderItems = async () => {
+        const type = document.getElementById('order-type-select').value;
+        const value = document.getElementById('order-value-select').value;
+        const container = document.getElementById('order-items-container');
+        const saveBtn = document.getElementById('save-order-btn');
+
+        if (!type || !value) {
+            alert("분류와 상세 항목을 모두 선택해주세요.");
+            return;
+        }
+
+        container.innerHTML = '<p class="loading-msg" style="text-align:center; padding: 50px;">자료를 불러오는 중입니다...</p>';
+        if (saveBtn) saveBtn.style.display = 'none';
+
+        try {
+            let query = db.collection("posts");
+            let posts = [];
+
+            if (type === 'topic' || type === 'author' || type === 'category') {
+                const snapshot = await query.where("tags", "array-contains", value).get();
+                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+            } else if (type === 'series') {
+                if (value === '기타 단편 설교') {
+                    // Fetch all sermon posts and filter by empty series
+                    const snapshot = await query.where("tags", "array-contains", "강해설교").get();
+                    snapshot.forEach(doc => {
+                        const d = doc.data();
+                        if (!d.series || d.series.trim() === "" || d.series === "기타 단편 설교") {
+                            posts.push({ id: doc.id, ...d });
+                        }
+                    });
+                } else {
+                    const snapshot = await query.where("series", "==", value).get();
+                    snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                }
+            }
+
+            if (posts.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#999; padding:50px;">해당하는 자료가 없습니다.</p>';
+                return;
+            }
+
+            // Sort by manual order first, then date desc
+            posts.sort((a, b) => {
+                const orderDiff = (a.order || 0) - (b.order || 0);
+                if (orderDiff !== 0) return orderDiff;
+                return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+            });
+
+            container.innerHTML = '';
+            const list = document.createElement('ul');
+            list.id = 'draggable-order-list';
+            list.style.cssText = 'list-style: none; padding: 0; margin: 0;';
+
+            posts.forEach(post => {
+                const li = document.createElement('li');
+                li.className = 'order-item';
+                li.setAttribute('data-id', post.id);
+                li.style.cssText = 'background: white; border: 1px solid #eee; margin-bottom: 10px; padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 15px; cursor: move; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02);';
+
+                // Hover effect logic
+                li.onmouseover = () => { li.style.borderColor = '#1abc9c'; li.style.background = '#f0fdfa'; };
+                li.onmouseout = () => { li.style.borderColor = '#eee'; li.style.background = 'white'; };
+
+                const date = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : '날짜 없음';
+                li.innerHTML = `
+                    <div style="color: #cbd5e0;"><i class="fas fa-grip-vertical" style="font-size: 1.2rem;"></i></div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="font-size: 1rem; color: #2d3748;">${post.title}</strong>
+                            <span style="background: #edf2f7; color: #4a5568; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;"># ${post.order || 0}</span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: #a0aec0; margin-top: 5px;">
+                            <span><i class="far fa-calendar-alt"></i> ${date}</span>
+                            ${post.series ? `<span style="margin-left: 10px;"><i class="far fa-folder"></i> ${post.series}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+
+            container.appendChild(list);
+            if (saveBtn) saveBtn.style.display = 'block';
+
+            // Initialize Sortable
+            if (typeof Sortable !== 'undefined') {
+                new Sortable(list, {
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    onStart: () => {
+                        if (saveBtn) saveBtn.style.opacity = '0.5';
+                    },
+                    onEnd: () => {
+                        if (saveBtn) saveBtn.style.opacity = '1';
+                    }
+                });
+            }
+        } catch (err) {
+            console.error(err);
+            container.innerHTML = '<p style="color:red; text-align:center; padding:50px;">자료 로딩 중 오류가 발생했습니다.<br>' + err.message + '</p>';
+        }
+    };
+
+    window.saveCurrentOrder = async () => {
+        const listItems = document.querySelectorAll('#draggable-order-list li');
+        if (listItems.length === 0) return;
+
+        if (!confirm(`${listItems.length}개 자료의 순서를 현재 드래그하신 순서대로 저장하시겠습니까?`)) return;
+
+        const saveBtn = document.getElementById('save-order-btn');
+        const originalHtml = saveBtn.innerHTML;
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 저장 중...';
+
+        try {
+            const batch = db.batch();
+            listItems.forEach((item, index) => {
+                const id = item.getAttribute('data-id');
+                const ref = db.collection("posts").doc(id);
+                batch.update(ref, { order: index });
+            });
+
+            await batch.commit();
+            alert("✅ 순서가 성공적으로 저장되었습니다!");
+            window.loadOrderItems(); // Refresh view
+
+            // Other lists refresh
+            if (window.loadAdminPosts) window.loadAdminPosts();
+            if (window.loadRecentPostsGrid) window.loadRecentPostsGrid();
+        } catch (err) {
+            console.error(err);
+            alert("❌ 저장 실패: " + err.message);
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = originalHtml;
+        }
+    };
 
 });
 

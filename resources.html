@@ -529,7 +529,7 @@
                 card.onclick = () => {
                     if (window.Stats) {
                         window.Stats.track('view', {
-                            id: 'res_cat_' + btoa(item).substring(0, 16),
+                            id: 'res_cat_' + item.substring(0, 16),
                             type: 'topic_category',
                             title: item
                         });

@@ -124,17 +124,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const nav = document.querySelector('nav');
     const navOverlay = document.querySelector('.nav-overlay');
 
-    if (mobileMenuToggle && nav && navOverlay) {
+    if (mobileMenuToggle) {
         mobileMenuToggle.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
-            nav.classList.toggle('active');
-            navOverlay.classList.toggle('active');
-            const icon = mobileMenuToggle.querySelector('i');
-            if (nav.classList.contains('active')) {
-                icon.classList.replace('fa-bars', 'fa-times');
-            } else {
-                icon.classList.replace('fa-times', 'fa-bars');
+            if (window.innerWidth <= 1024) {
+                window.location.href = 'menu.html';
+                return;
             }
+            // Fallback or Desktop behavior if toggle exists but screen is large
+            if (nav) nav.classList.toggle('active');
+            if (navOverlay) navOverlay.classList.toggle('active');
         });
 
         // Close menu when clicking outside or overlay

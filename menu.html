@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu | 한국 청교도 연구소</title>
+    <link rel="stylesheet" href="style.css?v=106">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Noto+Sans+KR:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --menu-bg: #2a2d32;
+            --menu-accent: #0a7c68;
+            --menu-text: #ffffff;
+        }
+
+        body {
+            background-color: var(--menu-bg);
+            color: var(--menu-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .menu-header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--menu-bg);
+            z-index: 100;
+        }
+
+        .close-btn {
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 10px;
+            transition: transform 0.3s;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+            color: var(--menu-accent);
+        }
+
+        .menu-content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-item {
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: menuFadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes menuFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-link {
+            color: white;
+            text-decoration: none;
+            font-size: 2.2rem;
+            font-weight: 900;
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: -0.04em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+
+        .menu-link:hover {
+            color: var(--menu-accent);
+            padding-left: 10px;
+        }
+
+        .menu-link i {
+            font-size: 1.2rem;
+            opacity: 0.5;
+        }
+
+        .menu-sub-list {
+            list-style: none;
+            padding-left: 1rem;
+            margin-top: 1rem;
+            border-left: 3px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .menu-sub-link {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: block;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .menu-sub-link:hover {
+            color: var(--menu-accent);
+            transform: translateX(5px);
+        }
+
+        .menu-footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 2rem;
+        }
+
+        .footer-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.2rem;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.2);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .footer-copy {
+            color: rgba(10, 124, 104, 0.6);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="menu-header">
+        <a href="index.html" class="logo">
+            <span class="logo-eng">KPI</span>
+        </a>
+        <button class="close-btn" onclick="window.history.back()">
+            <i class="fas fa-times"></i>
+        </button>
+    </header>
+    <main class="menu-content">
+        <ul class="menu-list">
+            <li class="menu-item" style="animation-delay: 0.1s;">
+                <a href="index.html#about" class="menu-link">About <i class="fas fa-arrow-right"></i></a>
+            </li>
+            <li class="menu-item" style="animation-delay: 0.2s;">
+                <a href="resources.html?type=topic" class="menu-link">주제별 자료 <i class="fas fa-arrow-right"></i></a>
+            </li>
+            <li class="menu-item" style="animation-delay: 0.3s;">
+                <a href="resources.html?cat=강해설교" class="menu-link">강해설교 <i class="fas fa-arrow-right"></i></a>
+            </li>
+            <li class="menu-item" style="animation-delay: 0.4s;">
+                <a href="booklets.html" class="menu-link">전도 소책자 <i class="fas fa-arrow-right"></i></a>
+            </li>
+            <li class="menu-item" style="animation-delay: 0.5s;">
+                <span class="menu-link" style="color: var(--menu-accent);">PHB <i class="fas fa-chevron-down"
+                        style="font-size: 0.8rem;"></i></span>
+                <ul class="menu-sub-list">
+                    <li><a href="books.html" class="menu-sub-link">도서 목록</a></li>
+                    <li><a href="mailto:kpuritan.phb@gmail.com" class="menu-sub-link">메일 문의</a></li>
+                </ul>
+            </li>
+            <li class="menu-item" style="animation-delay: 0.6s;">
+                <a href="seminary.html" class="menu-link">SRS 신학대학원 <i class="fas fa-arrow-right"></i></a>
+            </li>
+        </ul>
+    </main>
+    <footer class="menu-footer">
+        <span class="footer-logo">KPI</span>
+        <div class="footer-copy">&copy; 2026 Korea Puritan Institute.</div>
+    </footer>
+    <!-- Music Player Container -->
+    <div class="bgm-player" id="bgm-player"
+        style="position: fixed; bottom: 2rem; left: 2rem; z-index: 1500; pointer-events: none;">
+        <button id="bgm-toggle-btn" class="bgm-control" onclick="if(window.toggleBGM) window.toggleBGM(event)"
+            style="pointer-events: auto; display: none;">
+            <span class="music-icon"><i class="fas fa-music"></i></span>
+            <span class="music-text">배경음악 On/Off</span>
+        </button>
+        <div id="yt-player-container" style="display: none;"></div>
+    </div>
+
+    <script src="bgm.js?v=1"></script>
+</body>
+
+</html>

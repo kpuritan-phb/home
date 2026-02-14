@@ -1171,14 +1171,13 @@
         // --- Core Logic handled by main.js ---
         console.log("Waiting for main.js to handle application logic...");
 
-    /run if DB connected
-        if (window.db) {
-            setTimeout(() => {
-                if (typeof window.loadMainCarousels === 'function') {
-                    window.loadMainCarousels();
-                }
-            }, 500);
-        }
+        // Auto-run if DB connected
+        // Auto-run regardless of DB status (for Mock fallback)
+        setTimeout(() => {
+            if (typeof window.loadMainCarousels === 'function') {
+                window.loadMainCarousels();
+            }
+        }, 500);
     </script>
     <script src="bgm.js?v=1"></script>
     <script src="stats.js?v=1"></script>

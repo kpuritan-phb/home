@@ -226,6 +226,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="data.js"></script>
     <script>
         // Init Firebase
@@ -240,6 +241,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const storage = firebase.storage();
+        const auth = firebase.auth();
 
         // Populate Selects
         const topicSelect = document.getElementById('edit-topic');
@@ -279,7 +281,15 @@
             alert('잘못된 접근입니다.');
             window.close();
         } else {
-            loadPost(postId);
+            // Auth Check Wrapper
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    loadPost(postId);
+                } else {
+                    alert("로그인이 필요합니다 (권한 없음).");
+                    // window.close(); // Optional: Keep open to see error or redirect
+                }
+            });
         }
 
         async function loadPost(id) {

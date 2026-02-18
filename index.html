@@ -1123,6 +1123,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 
     <!-- PortOne SDK for actual payments -->
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
@@ -1149,7 +1150,8 @@
                 firebase.initializeApp(firebaseConfig);
                 window.db = firebase.firestore();
                 window.storage = firebase.storage();
-                console.log("✅ Firebase (HTML) 연결 성공!");
+                window.auth = firebase.auth();
+                console.log("✅ Firebase (HTML) 연결 성공! Auth 추가됨");
                 // alert("DEBUG: 1. Firebase (HTML) 연결 성공!"); 
             }
         } catch (e) {

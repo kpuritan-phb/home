@@ -377,32 +377,57 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('admin-id').value;
             const pw = document.getElementById('admin-pw').value;
 
-            // Simple mock login
+            // Simple mock login check
             if (id === 'admin' && pw === '1234') {
-                alert('관리자로 로그인되었습니다. 하단 대시보드에서 자료를 관리하세요.');
-                isAdmin = true;
-                window.isAdmin = true;
-                localStorage.setItem('isAdmin', 'true');
-                window.closeAllModals();
-                if (loginOpenBtn) loginOpenBtn.innerHTML = '<i class="fas fa-user-check"></i> 관리자(로그인됨)';
-                addNavLogout();
+                const proceedLogin = () => {
+                    isAdmin = true;
+                    window.isAdmin = true;
+                    localStorage.setItem('isAdmin', 'true');
+                    window.closeAllModals();
+                    if (loginOpenBtn) loginOpenBtn.innerHTML = '<i class="fas fa-user-check"></i> 관리자(로그인됨)';
+                    addNavLogout();
 
-                // Show Admin Dashboard
-                const dashboard = document.getElementById('admin-dashboard');
-                if (dashboard) {
-                    dashboard.classList.remove('section-hidden');
-                    dashboard.scrollIntoView({ behavior: 'smooth' });
+                    // Show Admin Dashboard
+                    const dashboard = document.getElementById('admin-dashboard');
+                    if (dashboard) {
+                        dashboard.classList.remove('section-hidden');
+                        dashboard.scrollIntoView({ behavior: 'smooth' });
+                    }
+                };
+
+                // Try Firebase Auth (Anonymous or other method needed for Firestore Rules)
+                if (window.auth) {
+                    try {
+                        await window.auth.signInAnonymously();
+                        console.log("✅ Firebase Anonymous Auth Success");
+                        alert('관리자로 로그인되었습니다. (Firebase 인증 성공)');
+                        proceedLogin();
+                    } catch (error) {
+                        console.error("Auth Error:", error);
+                        if (error.code === 'auth/operation-not-allowed') {
+                            alert('주의: Firebase 익명 인증이 비활성화되어 있습니다. Console에서 활성화가 필요합니다.\n일단 로컬 관리자 모드로 진입합니다.');
+                            proceedLogin(); // Proceed anyway, let Firestore decide
+                        } else {
+                            alert('Firebase 인증 실패: ' + error.message);
+                            // Proceed anyway? Maybe better to stop. But let's be permissive for now.
+                            proceedLogin();
+                        }
+                    }
+                } else {
+                    alert('관리자로 로그인되었습니다. (Auth 모듈 미로드)');
+                    proceedLogin();
                 }
             } else {
-                alert('아이디 또는 비밀번호가 일치하지 않습니다.');
+                alert('아이디 또는 비밀번호가 올바르지 않습니다.');
             }
         });
     }
+
 
     // Logout Logic
     const logoutBtn = document.getElementById('admin-logout-btn');

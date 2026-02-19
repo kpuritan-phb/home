@@ -212,7 +212,7 @@
 
                 <div class="btn-group">
                     <button type="button" class="btn-cancel" onclick="window.close()">취소</button>
-                    <button type="submit" class="btn-save">자료 등록하기</button>
+                    <button type="button" class="btn-save" id="btn-add-action">자료 등록하기</button>
                 </div>
             </form>
         </div>
@@ -280,12 +280,47 @@
         if (urlParams.get('series')) document.getElementById('add-series').value = urlParams.get('series');
         if (urlParams.get('subTopic')) document.getElementById('add-booklet-topic').value = urlParams.get('subTopic');
 
-        // Save Data
-        document.getElementById('full-add-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!confirm('새 자료를 등록하시겠습니까?')) return;
+        // --- DEBUGGING & SAFETY PATCHES ---
+        let clickCount = 0;
 
-            const btn = document.querySelector('.btn-save');
+        // Track page unloads
+        window.addEventListener('beforeunload', (e) => {
+            console.warn('DEBUG: [CORE] beforeunload triggered. Page is about to unload!');
+        });
+        window.addEventListener('pagehide', (e) => {
+            console.warn('DEBUG: [CORE] pagehide triggered.');
+        });
+        window.addEventListener('unload', (e) => {
+            console.warn('DEBUG: [CORE] unload triggered.');
+        });
+
+        // Block all default form submissions
+        document.getElementById('full-add-form').addEventListener('submit', (e) => {
+            clickCount++;
+            console.warn(`DEBUG: [FORM] Form submit event fired. Target:`, e.target, `Count: ${clickCount}`);
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+
+        // Save Data
+        document.getElementById('btn-add-action').addEventListener('click', async (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            clickCount++;
+            console.log(`DEBUG: [ADD_BTN] Click handler started. Count: ${clickCount}`);
+
+            console.log('DEBUG: [ADD_BTN] Calling confirm()...');
+            if (!confirm('새 자료를 등록하시겠습니까?')) {
+                console.log('DEBUG: [ADD_BTN] confirm() returned FALSE. Aborting.');
+                return;
+            }
+            console.log('DEBUG: [ADD_BTN] confirm() returned TRUE. Proceeding with upload.');
+
+            const btn = document.getElementById('btn-add-action');
             const originalText = btn.innerText;
             btn.disabled = true;
             btn.innerText = "등록 중...";

@@ -216,7 +216,7 @@
 
                 <div class="btn-group">
                     <button type="button" class="btn-cancel" onclick="window.close()">취소</button>
-                    <button type="submit" class="btn-save">수정 내용 저장하기</button>
+                    <button type="button" class="btn-save" id="btn-save-action">수정 내용 저장하기</button>
                 </div>
             </form>
         </div>
@@ -352,17 +352,59 @@
             }
         }
 
-        // Save Data
-        document.getElementById('full-edit-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!confirm('수정하시겠습니까?')) return;
+        // --- DEBUGGING & SAFETY PATCHES ---
+        let clickCount = 0;
 
-            const btn = document.querySelector('.btn-save');
+        // Track page unloads
+        window.addEventListener('beforeunload', (e) => {
+            console.warn('DEBUG: [CORE] beforeunload triggered. Page is about to unload!');
+        });
+        window.addEventListener('pagehide', (e) => {
+            console.warn('DEBUG: [CORE] pagehide triggered.');
+        });
+        window.addEventListener('unload', (e) => {
+            console.warn('DEBUG: [CORE] unload triggered.');
+        });
+
+        // Block all default form submissions
+        document.getElementById('full-edit-form').addEventListener('submit', (e) => {
+            clickCount++;
+            console.warn(`DEBUG: [FORM] Form submit event fired. Target:`, e.target, `Count: ${clickCount}`);
+            e.preventDefault(); // CRITICAL: Stop the form from actually submitting and reloading
+            e.stopPropagation();
+            return false;
+        });
+
+        // Save Data - Using click instead of submit for better stability in popups
+        document.getElementById('btn-save-action').addEventListener('click', async (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            clickCount++;
+            console.log(`DEBUG: [SAVE_BTN] Click handler started. Count: ${clickCount}`);
+
+            // Unify confirm check
+            console.log('DEBUG: [SAVE_BTN] Calling confirm()...');
+            const result = confirm('수정하시겠습니까?');
+
+            if (!result) {
+                console.log('DEBUG: [SAVE_BTN] confirm() returned FALSE. Aborting.');
+                return;
+            }
+            console.log('DEBUG: [SAVE_BTN] confirm() returned TRUE. Proceeding with save.');
+
+            const btn = document.getElementById('btn-save-action');
             const originalText = btn.innerText;
             btn.disabled = true;
             btn.innerText = "저장 중...";
 
             try {
+                // Check if auth is valid
+                const currentUser = firebase.auth().currentUser;
+                console.log("Current User:", currentUser ? currentUser.uid : "Anonymous/None");
+
                 const id = document.getElementById('edit-post-id').value;
                 const topic = document.getElementById('edit-topic').value;
                 const author = document.getElementById('edit-author').value;
@@ -410,7 +452,10 @@
                     updateData.fileUrl = await ref.getDownloadURL();
                 }
 
+                console.log("Updating document in Firestore...");
                 await db.collection('posts').doc(id).update(updateData);
+                console.log("Update success!");
+
                 alert("수정되었습니다.");
 
                 if (window.opener && !window.opener.closed) {
@@ -421,6 +466,7 @@
                 window.close();
 
             } catch (error) {
+                console.error("Save error:", error);
                 alert("오류: " + error.message);
                 btn.disabled = false;
                 btn.innerText = originalText;

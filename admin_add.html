@@ -326,6 +326,25 @@
             btn.innerText = "등록 중...";
 
             try {
+                // --- AUTHENTICATION CHECK & RE-LOGIN ---
+                let currentUser = firebase.auth().currentUser;
+                console.log("DEBUG: [AUTH] Current auth status:", currentUser ? `Logged in as ${currentUser.uid}` : "Not logged in");
+
+                if (!currentUser) {
+                    console.warn("DEBUG: [AUTH] User not authenticated. Attempting emergency anonymous sign-in...");
+                    btn.innerText = "인증 시도 중...";
+                    try {
+                        await firebase.auth().signInAnonymously();
+                        currentUser = firebase.auth().currentUser;
+                        console.log("DEBUG: [AUTH] Anonymous sign-in success. UID:", currentUser.uid);
+                    } catch (authError) {
+                        console.error("DEBUG: [AUTH] Sign-in failed:", authError);
+                        throw new Error("관리자 권한 인증에 실패했습니다. (사유: " + authError.message + ")");
+                    }
+                }
+
+                btn.innerText = "등록 중...";
+
                 const topic = document.getElementById('add-topic').value;
                 const author = document.getElementById('add-author').value;
                 const other = document.getElementById('add-other-category').value;
@@ -390,7 +409,14 @@
                 window.close();
 
             } catch (error) {
-                alert("오류: " + error.message);
+                console.error("Add error details:", error);
+
+                let errorMsg = "등록 중 오류가 발생했습니다: " + error.message;
+                if (error.code === 'permission-denied') {
+                    errorMsg = "권한이 없습니다 (Missing Permissions).\n\n해결 방법:\n1. 메인 페이지에서 다시 로그인을 시도해 주세요.\n2. 로그인이 되어있는데도 안 된다면 창을 닫고 다시 열어 보세요.";
+                }
+
+                alert(errorMsg);
                 btn.disabled = false;
                 btn.innerText = originalText;
             }

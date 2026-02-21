@@ -1382,11 +1382,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (filterSection) {
                 // 전도 소책자나 강해설교 등 자료가 많을 수 있는 곳에서 노출
-                const needsFilter = ['전도 소책자', '강해설교', '도서 목록'].includes(queryTag);
+                // 추천 자료 선택 모드일 때도 강제로 노출
+                const needsFilter = ['전도 소책자', '강해설교', '도서 목록', '모든 자료'].includes(queryTag) || window.selectionTargetSlot !== null;
                 filterSection.style.display = needsFilter ? 'flex' : 'none';
             }
             if (filterTopic) filterTopic.value = "";
             if (filterAuthor) filterAuthor.value = "";
+
+            const searchInput = document.getElementById('modal-search-input');
+            if (searchInput) searchInput.value = "";
 
             // Render View
             const renderListView = (currentGroupedData) => {
@@ -1463,7 +1467,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     folderCard.onclick = () => {
                         if (window.Stats) {
                             window.Stats.track('view', {
-                                id: 'series_' + btoa(sName).substring(0, 16),
+                                id: 'series_' + Date.now().toString(36), // Replace btoa with safe random ID
                                 type: 'series_folder',
                                 title: sName,
                                 category: categoryName
@@ -1600,6 +1604,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const applyModalFilters = () => {
                 const selectedTopic = filterTopic ? filterTopic.value : "";
                 const selectedAuthor = filterAuthor ? filterAuthor.value : "";
+                const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
                 let filtered = posts;
                 if (selectedTopic) {
@@ -1608,11 +1613,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (selectedAuthor) {
                     filtered = filtered.filter(p => p.tags && p.tags.includes(selectedAuthor));
                 }
+                if (searchTerm) {
+                    filtered = filtered.filter(p =>
+                        (p.title && p.title.toLowerCase().includes(searchTerm)) ||
+                        (p.content && p.content.toLowerCase().includes(searchTerm)) ||
+                        (p.series && p.series.toLowerCase().includes(searchTerm))
+                    );
+                }
                 groupAndRender(filtered);
             };
 
             if (filterTopic) filterTopic.onchange = applyModalFilters;
             if (filterAuthor) filterAuthor.onchange = applyModalFilters;
+            if (searchInput) {
+                searchInput.oninput = applyModalFilters;
+            }
 
             // 초기 렌더링
             groupAndRender(posts);

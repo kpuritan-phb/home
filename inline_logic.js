@@ -106,13 +106,25 @@ window.loadMainCarousels = async () => {
     }
 
     try {
-        // recent_order 순서로 100개 가져옴
-        const snapshot = await window.db.collection("posts").orderBy("recent_order", "asc").limit(100).get();
+        // 최신순으로 100개를 가져온 뒤, 메모리에서 recent_order 순으로 정렬합니다.
+        const snapshot = await window.db.collection("posts").orderBy("createdAt", "desc").limit(100).get();
         if (snapshot.empty) return;
 
         window.isDataLoaded = true;
         const allPosts = [];
-        snapshot.forEach(doc => allPosts.push({ id: doc.id, data: doc.data() }));
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            allPosts.push({ id: doc.id, data: data });
+        });
+
+        // recent_order가 있는 경우 해당 순서로, 없는 경우 뒤로 보냅니다.
+        allPosts.sort((a, b) => {
+            const orderA = a.data.recent_order !== undefined ? a.data.recent_order : 999999;
+            const orderB = b.data.recent_order !== undefined ? b.data.recent_order : 999999;
+            if (orderA !== orderB) return orderA - orderB;
+            // 순서가 같으면 최신순
+            return (b.data.createdAt?.seconds || 0) - (a.data.createdAt?.seconds || 0);
+        });
 
         // 1. New Arrivals (무조건 최근 12개)
         const newTrack = document.getElementById('carousel-new');

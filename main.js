@@ -868,8 +868,8 @@ document.addEventListener('DOMContentLoaded', () => {
             isLoadingMore = true;
 
             try {
-                // recent_order가 있으면 우선순위로 정렬, 없으면 createdAt 기준
-                let query = db.collection("posts").orderBy("recent_order", "asc");
+                // 전체 목록은 최신 업로드 순(createdAt)으로 유지해야 모든 자료가 보입니다.
+                let query = db.collection("posts").orderBy("createdAt", "desc");
 
                 if (loadMore && lastVisiblePost) {
                     query = query.startAfter(lastVisiblePost);

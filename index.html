@@ -774,16 +774,17 @@
             </div>
 
             <div class="admin-status">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin:0;">최근 업로드 현황</h3>
-                    <div id="recent-order-controls">
-                        <button onclick="toggleRecentOrderMode()" id="btn-toggle-recent-order" class="cta-btn secondary"
-                            style="padding: 5px 12px; font-size: 0.8rem; margin:0;">
-                            <i class="fas fa-sort"></i> 순서 변경
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    <h3 style="margin:0; border:none; padding:0; display:block;">최근 업로드 현황</h3>
+                    <div id="recent-order-controls" style="display: flex; gap: 10px;">
+                        <button onclick="toggleRecentOrderMode()" id="btn-toggle-recent-order" class="cta-btn"
+                            style="padding: 8px 15px; font-size: 0.85rem; margin:0; background:#666; color:white; border:none; border-radius:4px; cursor:pointer;">
+                            <i class="fas fa-sort"></i> 순서 변경 시작
                         </button>
-                        <button onclick="saveRecentOrder()" id="btn-save-recent-order" class="cta-btn primary"
-                            style="padding: 5px 12px; font-size: 0.8rem; margin:0; display:none; background:#27ae60; border-color:#27ae60;">
-                            <i class="fas fa-check"></i> 순서 저장
+                        <button onclick="saveRecentOrder()" id="btn-save-recent-order" class="cta-btn"
+                            style="padding: 8px 15px; font-size: 0.85rem; margin:0; display:none; background:#27ae60; color:white; border:none; border-radius:4px; cursor:pointer;">
+                            <i class="fas fa-check"></i> 순서 최종 저장
                         </button>
                     </div>
                 </div>
@@ -1196,8 +1197,8 @@
     <script src="bgm.js?v=1"></script>
     <script src="stats.js?v=1"></script>
     <script src="admin-stats.js?v=1"></script>
-    <script src="admin_migration.js"></script>
-    <script src="main.js?v=restore_lastnight_v2"></script>
+    <script src="admin_migration.js?v=2"></script>
+    <script src="main.js?v=reorder_v2"></script>
 </body>
 
 </html>

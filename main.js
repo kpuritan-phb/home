@@ -2782,14 +2782,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const isEditing = list.classList.toggle('reorder-mode');
 
         if (isEditing) {
-            toggleBtn.innerHTML = '<i class="fas fa-times"></i> 취소';
-            toggleBtn.classList.replace('secondary', 'cancel');
+            toggleBtn.innerHTML = '<i class="fas fa-times"></i> 순서 변경 취소';
+            toggleBtn.style.background = '#e74c3c';
             saveBtn.style.display = 'block';
             list.style.cursor = 'move';
 
             // Highlight items that can be dragged
             list.querySelectorAll('.post-item').forEach(li => {
-                li.style.border = '1px dashed var(--secondary-color)';
+                li.style.border = '2px dashed #0a7c68';
+                li.style.background = '#f0fdfa';
             });
 
             if (typeof Sortable !== 'undefined') {
@@ -2800,13 +2801,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         } else {
-            toggleBtn.innerHTML = '<i class="fas fa-sort"></i> 순서 변경';
-            toggleBtn.classList.replace('cancel', 'secondary');
+            toggleBtn.innerHTML = '<i class="fas fa-sort"></i> 순서 변경 시작';
+            toggleBtn.style.background = '#666';
             saveBtn.style.display = 'none';
             list.style.cursor = 'default';
 
             list.querySelectorAll('.post-item').forEach(li => {
-                li.style.border = '1px solid #eee';
+                li.style.border = 'none';
+                li.style.background = '';
             });
 
             if (recentSortableInstance) {

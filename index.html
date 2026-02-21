@@ -774,7 +774,19 @@
             </div>
 
             <div class="admin-status">
-                <h3>최근 업로드 현황</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin:0;">최근 업로드 현황</h3>
+                    <div id="recent-order-controls">
+                        <button onclick="toggleRecentOrderMode()" id="btn-toggle-recent-order" class="cta-btn secondary"
+                            style="padding: 5px 12px; font-size: 0.8rem; margin:0;">
+                            <i class="fas fa-sort"></i> 순서 변경
+                        </button>
+                        <button onclick="saveRecentOrder()" id="btn-save-recent-order" class="cta-btn primary"
+                            style="padding: 5px 12px; font-size: 0.8rem; margin:0; display:none; background:#27ae60; border-color:#27ae60;">
+                            <i class="fas fa-check"></i> 순서 저장
+                        </button>
+                    </div>
+                </div>
                 <ul id="admin-recent-posts">
                     <li class="empty-msg">아직 업로드된 자료가 없습니다.</li>
                 </ul>
@@ -1184,6 +1196,7 @@
     <script src="bgm.js?v=1"></script>
     <script src="stats.js?v=1"></script>
     <script src="admin-stats.js?v=1"></script>
+    <script src="admin_migration.js"></script>
     <script src="main.js?v=restore_lastnight_v2"></script>
 </body>
 

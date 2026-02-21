@@ -365,6 +365,7 @@
                     title: document.getElementById('add-title').value.trim() || "제목 없음",
                     series: document.getElementById('add-series').value.trim() || "",
                     order: Number(document.getElementById('add-order').value),
+                    recent_order: 0, // 초기값 세팅 (최상단 노출 위해 0 부여)
                     price: document.getElementById('add-price').value.trim() || "",
                     content: document.getElementById('add-content').value,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()

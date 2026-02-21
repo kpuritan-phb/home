@@ -821,6 +821,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     title,
                     series,
                     order,
+                    recent_order: 0,
                     price,
                     content,
                     subBookletTopic: (other === "전도 소책자") ? subBookletTopic : null,
@@ -867,7 +868,8 @@ document.addEventListener('DOMContentLoaded', () => {
             isLoadingMore = true;
 
             try {
-                let query = db.collection("posts").orderBy("createdAt", "desc");
+                // recent_order가 있으면 우선순위로 정렬, 없으면 createdAt 기준
+                let query = db.collection("posts").orderBy("recent_order", "asc");
 
                 if (loadMore && lastVisiblePost) {
                     query = query.startAfter(lastVisiblePost);
@@ -892,6 +894,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const id = doc.id;
                     const li = document.createElement('li');
                     li.className = 'post-item admin-post-item';
+                    li.setAttribute('data-id', id); // ID 속성 추가
                     const date = post.createdAt ? post.createdAt.toDate().toLocaleString() : '방금 전';
                     const displayTags = post.tags ? post.tags.join(', ') : '분류 없음';
                     const hasFile = post.fileUrl ? true : false;
@@ -2619,6 +2622,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    /**
+     * [Refactored API] 공통 순서 변경 함수
+     * @param {string} collectionName - Firestore 컬렉션 이름 (tableName 대응)
+     * @param {string} orderField - 변경할 순서 필드명
+     * @param {Array} orderedIds - 순서대로 정렬된 ID 배열
+     */
+    window.reorderByIds = async (collectionName, orderField, orderedIds) => {
+        if (!orderedIds || orderedIds.length === 0) return;
+        const batch = db.batch();
+        orderedIds.forEach((id, index) => {
+            const ref = db.collection(collectionName).doc(id);
+            batch.update(ref, { [orderField]: index });
+        });
+        return await batch.commit();
+    };
+
     window.loadOrderItems = async () => {
         const type = document.getElementById('order-type-select').value;
         const value = document.getElementById('order-value-select').value;
@@ -2734,14 +2753,8 @@ document.addEventListener('DOMContentLoaded', () => {
         saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 저장 중...';
 
         try {
-            const batch = db.batch();
-            listItems.forEach((item, index) => {
-                const id = item.getAttribute('data-id');
-                const ref = db.collection("posts").doc(id);
-                batch.update(ref, { order: index });
-            });
-
-            await batch.commit();
+            const ids = Array.from(listItems).map(item => item.getAttribute('data-id'));
+            await window.reorderByIds("posts", "order", ids);
             alert("✅ 순서가 성공적으로 저장되었습니다!");
             window.loadOrderItems(); // Refresh view
 
@@ -2751,6 +2764,91 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
             console.error(err);
             alert("❌ 저장 실패: " + err.message);
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = originalHtml;
+        }
+    };
+
+    /**
+     * 최근 업로드 정렬 모드 토글
+     */
+    let recentSortableInstance = null;
+    window.toggleRecentOrderMode = () => {
+        const list = document.getElementById('admin-recent-posts');
+        const toggleBtn = document.getElementById('btn-toggle-recent-order');
+        const saveBtn = document.getElementById('btn-save-recent-order');
+
+        const isEditing = list.classList.toggle('reorder-mode');
+
+        if (isEditing) {
+            toggleBtn.innerHTML = '<i class="fas fa-times"></i> 취소';
+            toggleBtn.classList.replace('secondary', 'cancel');
+            saveBtn.style.display = 'block';
+            list.style.cursor = 'move';
+
+            // Highlight items that can be dragged
+            list.querySelectorAll('.post-item').forEach(li => {
+                li.style.border = '1px dashed var(--secondary-color)';
+            });
+
+            if (typeof Sortable !== 'undefined') {
+                recentSortableInstance = new Sortable(list, {
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    draggable: '.post-item'
+                });
+            }
+        } else {
+            toggleBtn.innerHTML = '<i class="fas fa-sort"></i> 순서 변경';
+            toggleBtn.classList.replace('cancel', 'secondary');
+            saveBtn.style.display = 'none';
+            list.style.cursor = 'default';
+
+            list.querySelectorAll('.post-item').forEach(li => {
+                li.style.border = '1px solid #eee';
+            });
+
+            if (recentSortableInstance) {
+                recentSortableInstance.destroy();
+                recentSortableInstance = null;
+            }
+            // Reset list via refresh
+            if (window.loadAdminPosts) window.loadAdminPosts();
+        }
+    };
+
+    /**
+     * 최근 업로드 정렬 순서 저장 [API 대용]
+     */
+    window.saveRecentOrder = async () => {
+        const list = document.getElementById('admin-recent-posts');
+        const listItems = list.querySelectorAll('.post-item');
+        if (listItems.length === 0) return;
+
+        if (!confirm('최근 업로드 순서를 현재 순서대로 저장하시겠습니까?')) return;
+
+        const saveBtn = document.getElementById('btn-save-recent-order');
+        const originalHtml = saveBtn.innerHTML;
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 저장...';
+
+        try {
+            const ids = Array.from(listItems).map(li => {
+                // li 내부의 버튼 onclick에서 ID 추출하거나 data-id 속성 필요
+                // loadAdminPosts 수정 필요 (data-id 추가)
+                return li.getAttribute('data-id');
+            });
+
+            await window.reorderByIds("posts", "recent_order", ids);
+            alert("✅ 최근 업로드 순서가 저장되었습니다.");
+
+            // 토글 해제 및 새로고침
+            window.toggleRecentOrderMode();
+            if (window.loadRecentPostsGrid) window.loadRecentPostsGrid(); // 메인 홈 그리드도 영향 받을 수 있음
+        } catch (err) {
+            console.error(err);
+            alert("❌ 저장 실패");
         } finally {
             saveBtn.disabled = false;
             saveBtn.innerHTML = originalHtml;

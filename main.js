@@ -2607,6 +2607,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     else if (data.tags && data.tags.includes('강해설교')) seriesSet.add('기타 단편 설교');
                 });
                 items = Array.from(seriesSet).sort((a, b) => a.trim().localeCompare(b.trim(), 'ko', { numeric: true, sensitivity: 'base' }));
+            } else if (type === 'recent') {
+                items = ['메인 홈 최근 업데이트 (전체)'];
             }
 
             valueSelect.innerHTML = '<option value="">-- 상세 항목 선택 --</option>';
@@ -2673,6 +2675,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     const snapshot = await query.where("series", "==", value).get();
                     snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
                 }
+            } else if (type === 'recent') {
+                // Fetch recent 50 posts to allow reordering
+                const snapshot = await query.orderBy("createdAt", "desc").limit(50).get();
+                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
             }
 
             if (posts.length === 0) {
@@ -2682,8 +2688,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Sort by manual order first, then date desc
             posts.sort((a, b) => {
-                const orderDiff = (a.order || 0) - (b.order || 0);
-                if (orderDiff !== 0) return orderDiff;
+                const orderA = type === 'recent' ? (a.recent_order ?? 999999) : (a.order || 0);
+                const orderB = type === 'recent' ? (b.recent_order ?? 999999) : (b.order || 0);
+
+                if (orderA !== orderB) return orderA - orderB;
                 return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
             });
 
@@ -2708,7 +2716,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div style="flex: 1;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <strong style="font-size: 1rem; color: #2d3748;">${post.title}</strong>
-                            <span style="background: #edf2f7; color: #4a5568; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;"># ${post.order || 0}</span>
+                            <span style="background: #edf2f7; color: #4a5568; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">
+                                # ${type === 'recent' ? (post.recent_order ?? 'N/A') : (post.order || 0)}
+                            </span>
                         </div>
                         <div style="font-size: 0.8rem; color: #a0aec0; margin-top: 5px;">
                             <span><i class="far fa-calendar-alt"></i> ${date}</span>
@@ -2753,8 +2763,11 @@ document.addEventListener('DOMContentLoaded', () => {
         saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 저장 중...';
 
         try {
+            const type = document.getElementById('order-type-select').value;
+            const orderField = type === 'recent' ? 'recent_order' : 'order';
+
             const ids = Array.from(listItems).map(item => item.getAttribute('data-id'));
-            await window.reorderByIds("posts", "order", ids);
+            await window.reorderByIds("posts", orderField, ids);
             alert("✅ 순서가 성공적으로 저장되었습니다!");
             window.loadOrderItems(); // Refresh view
 

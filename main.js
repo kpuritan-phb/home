@@ -2357,7 +2357,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.loadAdminPicksForManagement = async () => {
         if (!window.db) return;
         try {
-            // Get current picks from site_settings/admin_picks
             const settingsDoc = await db.collection("site_settings").doc("admin_picks").get();
             let pickIds = [null, null, null];
             if (settingsDoc.exists) {
@@ -2374,10 +2373,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         const post = postDoc.data();
                         const thumb = post.coverUrl || 'https://images.unsplash.com/photo-1585829365234-78905bc76269?auto=format&fit=crop&q=80&w=200';
                         contentArea.innerHTML = `
-                            <div style="width:120px; height:150px; margin: 0 auto 10px; border-radius:8px; overflow:hidden; border:1px solid #eee;">
+                            <div style="width:120px; height:150px; margin: 0 auto 10px; border-radius:8px; overflow:hidden; border:1px solid #eee; position: relative;">
                                 <img src="${thumb}" style="width:100%; height:100%; object-fit:cover;">
+                                <button onclick="window.removePostFromSlot(${i})" style="position: absolute; top: 5px; right: 5px; background: rgba(231, 76, 60, 0.9); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px;" title="이 슬롯에서 제거">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             </div>
-                            <h4 style="margin:0; font-size:0.9rem; color:#333; height: 40px; overflow:hidden;">${post.title}</h4>
+                            <h4 style="margin:0; font-size:0.9rem; color:#333; height: 40px; overflow:hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${post.title}</h4>
+                            <p style="margin: 5px 0 0; font-size: 0.75rem; color: #27ae60; font-weight: bold;">[등록됨]</p>
                         `;
                     } else {
                         renderEmptySlot(contentArea, i);
@@ -2391,10 +2394,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    window.removePostFromSlot = async (slotIndex) => {
+        if (!confirm(`슬롯 ${slotIndex + 1}번의 추천 자료를 목록에서 제거하시겠습니까?`)) return;
+
+        try {
+            const settingsRef = db.collection("site_settings").doc("admin_picks");
+            const settingsDoc = await settingsRef.get();
+            let currentPicks = [null, null, null];
+            if (settingsDoc.exists) {
+                currentPicks = settingsDoc.data().posts || [null, null, null];
+            }
+
+            currentPicks[slotIndex] = null;
+            await settingsRef.set({ posts: currentPicks }, { merge: true });
+
+            alert("제거되었습니다.");
+            window.loadAdminPicksForManagement();
+            window.loadAdminPicks();
+        } catch (err) {
+            console.error("Slot Remove Error:", err);
+            alert("제거 오류: " + err.message);
+        }
+    };
+
     function renderEmptySlot(container, index) {
         container.innerHTML = `
-            <i class="fas fa-plus-circle" style="font-size: 3rem; color: #eee; cursor: pointer;" onclick="openAdminPickSelection(${index})"></i>
-            <p style="color: #aaa; font-size: 0.9rem;">선택된 자료 없음</p>
+            <div onclick="openAdminPickSelection(${index})" style="width:120px; height:150px; margin: 0 auto 10px; border-radius:8px; border: 2px dashed #eee; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fff;">
+                <i class="fas fa-plus" style="font-size: 1.5rem; color: #eee;"></i>
+            </div>
+            <p style="color: #aaa; font-size: 0.85rem; margin-top: 5px;">자료 없음</p>
         `;
     }
 
@@ -2404,7 +2432,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.openResourceModal('모든 자료');
         // Rename modal title to indicate selection mode
         const modalTitle = document.getElementById('resource-modal-title');
-        if (modalTitle) modalTitle.textContent = `슬롯 ${slotIndex + 1}에 넣을 자료를 선택하세요`;
+        if (modalTitle) modalTitle.textContent = `슬롯 ${slotIndex + 1}에 넣을 자료를 선택하세요 (자료 우측 노란색 버튼 클릭)`;
     };
 
     window.assignPostToSlot = async (postId, postTitle) => {

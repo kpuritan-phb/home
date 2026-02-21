@@ -2453,12 +2453,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.assignPostToSlotFromWindow = async (slotIndex, postId, postTitle) => {
         window.selectionTargetSlot = slotIndex;
-        await window.assignPostToSlot(postId, postTitle);
+        await window.assignPostToSlot(postId, postTitle, true); // Skip confirm in parent
     };
 
-    window.assignPostToSlot = async (postId, postTitle) => {
+    window.assignPostToSlot = async (postId, postTitle, skipConfirm = false) => {
         if (window.selectionTargetSlot === null) return;
-        if (!confirm(`'${postTitle}' 자료를 슬롯 ${window.selectionTargetSlot + 1}번의 추천 자료로 지정하시겠습니까?`)) return;
+        if (!skipConfirm && !confirm(`'${postTitle}' 자료를 슬롯 ${window.selectionTargetSlot + 1}번의 추천 자료로 지정하시겠습니까?`)) return;
 
         try {
             const settingsRef = db.collection("site_settings").doc("admin_picks");

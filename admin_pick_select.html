@@ -355,12 +355,25 @@
             container.appendChild(card);
         }
 
-        function parentSelect(id, title) {
+        async function parentSelect(id, title) {
+            if (!confirm(`'${title}' 자료를 슬롯 ${slotIndex + 1}번 추천 자료로 등록하시겠습니까?`)) return;
+
             if (window.opener && !window.opener.closed) {
-                window.opener.assignPostToSlotFromWindow(slotIndex, id, title);
-                window.close();
+                try {
+                    // Show a small loading state on the button
+                    const btn = event.target.closest('button');
+                    const originalHtml = btn.innerHTML;
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 등록 중...';
+
+                    await window.opener.assignPostToSlotFromWindow(slotIndex, id, title);
+                    window.close();
+                } catch (e) {
+                    console.error(e);
+                    alert("등록 중 오류가 발생했습니다: " + e.message);
+                }
             } else {
-                alert("부모 창이 닫혀있어 등록할 수 없습니다.");
+                alert("부모 창(관리자 페이지)을 찾을 수 없습니다. 창이 닫혀있는지 확인해주세요.");
             }
         }
 

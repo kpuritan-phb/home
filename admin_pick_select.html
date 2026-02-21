@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>추천 자료 선택 | 한국 청교도 연구소</title>
+    <link rel="stylesheet" href="style.css?v=fresh_window">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .selection-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .selection-header {
+            border-bottom: 2px solid #f1c40f;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .selection-header h2 {
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .filter-panel {
+            display: flex;
+            gap: 15px;
+            background: #fdfdfd;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-item label {
+            display: block;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .filter-item input,
+        .filter-item select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 0.95rem;
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+            grid-column: 1 / -1;
+        }
+
+        .select-btn {
+            background: #f1c40f !important;
+            color: #000 !important;
+            font-weight: bold !important;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* Compact folder view */
+        .folder-card {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .folder-card:hover {
+            border-color: #f1c40f;
+            background: #fffdf0;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(241, 196, 15, 0.1);
+        }
+
+        .back-btn {
+            background: #eee;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            background: #ddd;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loading" class="loading-overlay">
+        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-right: 15px;"></i> 데이터를 불러오는 중...
+    </div>
+
+    <div class="selection-container">
+        <div class="selection-header">
+            <div>
+                <h2 id="page-title">추천 자료 선택</h2>
+                <p id="page-subtitle" style="color: #666; font-size: 0.9rem; margin-top: 5px;">슬롯에 넣을 자료를 선택하세요.</p>
+            </div>
+            <button onclick="window.close()" class="btn-cancel"
+                style="background: #eee; color: #333; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer;">닫기</button>
+        </div>
+
+        <div class="filter-panel">
+            <div class="filter-item">
+                <label>주제 선택</label>
+                <select id="filter-topic">
+                    <option value="">-- 모든 주제 --</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>저자 선택</label>
+                <select id="filter-author">
+                    <option value="">-- 모든 저자 --</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>자료 검색</label>
+                <input type="text" id="search-input" placeholder="제목이나 내용을 입력하세요...">
+            </div>
+        </div>
+
+        <div id="navigation-area" style="display: none;">
+            <button class="back-btn" onclick="goBackToList()"><i class="fas fa-arrow-left"></i> 폴더 목록으로 돌아가기</button>
+            <h3 id="current-folder-title" style="margin-bottom: 20px;"></h3>
+        </div>
+
+        <div id="resource-container" class="resource-grid">
+            <!-- Content -->
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="data.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJbOaiElCypwgtPgbwdnudn3VC737fMrs",
+            authDomain: "kpuritan-home.firebaseapp.com",
+            projectId: "kpuritan-home",
+            storageBucket: "kpuritan-home.firebasestorage.app",
+            messagingSenderId: "1071220455502",
+            appId: "1:1071220455502:web:7f6f59b48c48a73437f8f0"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const slotIndex = parseInt(urlParams.get('slot')) || 0;
+        document.getElementById('page-title').textContent = `슬롯 ${slotIndex + 1} 추천 자료 선택`;
+
+        let allPosts = [];
+        let filteredPosts = [];
+        let groupedPosts = {};
+        let isDetailView = false;
+
+        async function init() {
+            // Populate filters
+            const topicSelect = document.getElementById('filter-topic');
+            const authorSelect = document.getElementById('filter-author');
+
+            topics.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t; opt.textContent = t;
+                topicSelect.appendChild(opt);
+            });
+            authors.forEach(a => {
+                const opt = document.createElement('option');
+                opt.value = a; opt.textContent = a;
+                authorSelect.appendChild(opt);
+            });
+
+            // Load data
+            const snapshot = await db.collection("posts").orderBy("createdAt", "asc").limit(500).get();
+            snapshot.forEach(doc => {
+                allPosts.push({ id: doc.id, ...doc.data() });
+            });
+
+            document.getElementById('loading').style.display = 'none';
+            applyFilters();
+
+            // Events
+            document.getElementById('filter-topic').onchange = applyFilters;
+            document.getElementById('filter-author').onchange = applyFilters;
+            document.getElementById('search-input').oninput = applyFilters;
+        }
+
+        function applyFilters() {
+            const topic = document.getElementById('filter-topic').value;
+            const author = document.getElementById('filter-author').value;
+            const search = document.getElementById('search-input').value.toLowerCase().trim();
+
+            filteredPosts = allPosts.filter(p => {
+                const matchTopic = !topic || (p.tags && p.tags.includes(topic));
+                const matchAuthor = !author || (p.tags && p.tags.includes(author));
+                const matchSearch = !search ||
+                    (p.title && p.title.toLowerCase().includes(search)) ||
+                    (p.content && p.content.toLowerCase().includes(search)) ||
+                    (p.series && p.series.toLowerCase().includes(search));
+                return matchTopic && matchAuthor && matchSearch;
+            });
+
+            if (search || topic || author) {
+                // Show flat list when filtering
+                isDetailView = false;
+                document.getElementById('navigation-area').style.display = 'none';
+                renderFlatList(filteredPosts);
+            } else {
+                // Show grouped view (Folders) when no filters
+                groupAndRender(filteredPosts);
+            }
+        }
+
+        function groupAndRender(posts) {
+            groupedPosts = {};
+            posts.forEach(p => {
+                let sName = (p.series && p.series.trim()) ? p.series.trim() : '_none';
+                if (!groupedPosts[sName]) groupedPosts[sName] = [];
+                groupedPosts[sName].push(p);
+            });
+
+            renderFolderList(groupedPosts);
+        }
+
+        function renderFolderList(groups) {
+            isDetailView = false;
+            document.getElementById('navigation-area').style.display = 'none';
+            const container = document.getElementById('resource-container');
+            container.innerHTML = '';
+
+            const keys = Object.keys(groups).sort((a, b) => {
+                if (a === '_none') return 1;
+                if (b === '_none') return -1;
+                return a.localeCompare(b, 'ko');
+            });
+
+            keys.forEach(name => {
+                if (name === '_none') {
+                    groups[name].forEach(p => renderSingleItem(p, container));
+                    return;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'folder-card';
+                const items = groups[name];
+
+                // Try to find first image for thumbnail
+                let thumbUrl = 'https://images.unsplash.com/photo-1585829365234-78905bc76269?auto=format&fit=crop&q=80&w=400';
+                for (let itm of items) {
+                    if (itm.coverUrl) { thumbUrl = itm.coverUrl; break; }
+                }
+
+                card.innerHTML = `
+                    <div style="width:100%; height:120px; border-radius:8px; overflow:hidden; margin-bottom:10px; background:#f0f0f0;">
+                        <img src="${thumbUrl}" style="width:100%; height:100%; object-fit:cover;">
+                    </div>
+                    <h4 style="margin:0; font-size:0.95rem; line-height:1.3; height: 2.6em; overflow:hidden;">${name}</h4>
+                    <p style="font-size:0.75rem; color:#888; margin-top:5px;"><i class="fas fa-file-alt"></i> ${items.length}개 자료</p>
+                `;
+                card.onclick = () => showFolderDetail(name, items);
+                container.appendChild(card);
+            });
+        }
+
+        function showFolderDetail(name, items) {
+            isDetailView = true;
+            document.getElementById('navigation-area').style.display = 'block';
+            document.getElementById('current-folder-title').textContent = name;
+            renderFlatList(items);
+        }
+
+        function goBackToList() {
+            applyFilters();
+        }
+
+        function renderFlatList(posts) {
+            const container = document.getElementById('resource-container');
+            container.innerHTML = '';
+
+            if (posts.length === 0) {
+                container.innerHTML = '<div class="no-results">검색 결과가 없습니다.</div>';
+                return;
+            }
+
+            posts.forEach(p => renderSingleItem(p, container));
+        }
+
+        function renderSingleItem(post, container) {
+            const card = document.createElement('div');
+            card.className = 'folder-card'; // Reuse style
+            card.style.cursor = 'default';
+
+            const thumb = post.coverUrl || 'https://images.unsplash.com/photo-1585829365234-78905bc76269?auto=format&fit=crop&q=80&w=400';
+
+            card.innerHTML = `
+                <div style="width:100%; height:120px; border-radius:8px; overflow:hidden; margin-bottom:10px; background:#f0f0f0;">
+                    <img src="${thumb}" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                <h4 style="margin:0; font-size:0.9rem; line-height:1.3; height: 2.6em; overflow:hidden;">${post.title}</h4>
+                <button onclick="parentSelect('${post.id}', '${post.title.replace(/'/g, "\\'")}')" class="cta-btn primary select-btn">
+                    <i class="fas fa-check-circle"></i> 슬롯 ${slotIndex + 1}번에 등록
+                </button>
+            `;
+            container.appendChild(card);
+        }
+
+        function parentSelect(id, title) {
+            if (window.opener && !window.opener.closed) {
+                window.opener.assignPostToSlotFromWindow(slotIndex, id, title);
+                window.close();
+            } else {
+                alert("부모 창이 닫혀있어 등록할 수 없습니다.");
+            }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

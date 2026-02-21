@@ -2442,12 +2442,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.openAdminPickSelection = (slotIndex) => {
+        const width = 1300;
+        const height = 900;
+        const left = (window.screen.width / 2) - (width / 2);
+        const top = (window.screen.height / 2) - (height / 2);
+
+        window.open(`admin_pick_select.html?slot=${slotIndex}`, 'PickSelectWindow',
+            `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`);
+    };
+
+    window.assignPostToSlotFromWindow = async (slotIndex, postId, postTitle) => {
         window.selectionTargetSlot = slotIndex;
-        // Open all materials modal for selection
-        window.openResourceModal('모든 자료');
-        // Rename modal title to indicate selection mode
-        const modalTitle = document.getElementById('resource-modal-title');
-        if (modalTitle) modalTitle.textContent = `슬롯 ${slotIndex + 1}에 넣을 자료를 선택하세요 (자료 우측 노란색 버튼 클릭)`;
+        await window.assignPostToSlot(postId, postTitle);
     };
 
     window.assignPostToSlot = async (postId, postTitle) => {

@@ -313,17 +313,10 @@
             clickCount++;
             console.log(`DEBUG: [ADD_BTN] Click handler started. Count: ${clickCount}`);
 
-            console.log('DEBUG: [ADD_BTN] Calling confirm()...');
-            if (!confirm('새 자료를 등록하시겠습니까?')) {
-                console.log('DEBUG: [ADD_BTN] confirm() returned FALSE. Aborting.');
-                return;
-            }
-            console.log('DEBUG: [ADD_BTN] confirm() returned TRUE. Proceeding with upload.');
-
             const btn = document.getElementById('btn-add-action');
             const originalText = btn.innerText;
             btn.disabled = true;
-            btn.innerText = "등록 중...";
+            btn.innerText = "업로드 중...";
 
             try {
                 // --- AUTHENTICATION CHECK & RE-LOGIN ---

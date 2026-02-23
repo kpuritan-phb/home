@@ -386,18 +386,10 @@
             clickCount++;
             console.log(`DEBUG: [SAVE_BTN] Click handler started. Count: ${clickCount}`);
 
-            // Unify confirm check
-            console.log('DEBUG: [SAVE_BTN] Calling confirm()...');
-            const result = confirm('수정하시겠습니까?');
-
-            if (!result) {
-                console.log('DEBUG: [SAVE_BTN] confirm() returned FALSE. Aborting.');
-                return;
-            }
-            console.log('DEBUG: [SAVE_BTN] confirm() returned TRUE. Proceeding with save.');
-
             const btn = document.getElementById('btn-save-action');
             const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = "저장 중...";
             btn.disabled = true;
             btn.innerText = "저장 중...";
 

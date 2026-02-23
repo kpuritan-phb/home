@@ -481,132 +481,225 @@ footer {
     }
 }
 
-/* Sticky Project Section - Noah Demeuldre Style */
-.sticky-project-section {
-    position: relative;
-    padding: 0;
-    /* Full bleed usually */
-    margin: 10vh 0;
+/* Works Section (4BFILM Style) */
+.works-section {
+    padding: 15vh 0 0 0;
+    /* No bottom padding here as grid is seamless */
+    background-color: #ffffff;
+    color: #000000;
 }
 
-.sticky-container {
-    position: sticky;
-    top: 10vh;
-    /* Leave space for header */
-    height: 80vh;
-    /* Large visual area */
-    width: 60%;
-    /* Visual occupies left side */
-    float: left;
+.works-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 0 5vw;
+}
+
+.works-title {
+    font-family: var(--font-body);
+    /* 4bfilm uses clean sans-serif */
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #000;
+    letter-spacing: -0.01em;
+}
+
+.works-sub {
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    color: #999;
+    text-transform: uppercase;
+}
+
+/* Filters */
+.works-filter-container {
+    padding: 0 5vw;
+    margin-bottom: 5rem;
+}
+
+.works-filters {
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding-left: 5vw;
-    z-index: 10;
+    flex-wrap: wrap;
+    gap: 3rem;
 }
 
-.sticky-visual {
+.filter-item {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    color: #aaa;
+    transition: color 0.3s, border-bottom 0.3s;
+    padding-bottom: 8px;
+    border-bottom: 1.5px solid transparent;
+    font-weight: 500;
+}
+
+.filter-item.active {
+    color: #000;
+    border-bottom: 1.5px solid #000;
+}
+
+/* Seamless Grid */
+.works-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     width: 100%;
-    height: 100%;
+}
+
+.work-item {
     position: relative;
+    aspect-ratio: 16/10;
     overflow: hidden;
-    border-radius: 4px;
-}
-
-.sticky-visual img,
-.sticky-visual video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: opacity 0.5s ease-in-out;
-}
-
-.scroll-list {
-    width: 40%;
-    /* Text occupies right side */
-    float: right;
-    padding-top: 10vh;
-    /* Start lower */
-    padding-bottom: 20vh;
-}
-
-.scroll-item {
-    height: 60vh;
-    /* Each item has height to trigger scroll */
-    display: flex;
-    align-items: center;
-    padding: 0 4vw;
-    opacity: 0.3;
-    transition: opacity 0.3s;
     cursor: pointer;
 }
 
-.scroll-item.active {
+.work-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s var(--easing), filter 0.8s var(--easing);
+    filter: brightness(0.9);
+}
+
+.work-item:hover img {
+    transform: scale(1.03);
+    filter: brightness(1);
+}
+
+.work-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.4s var(--easing);
+    padding: 2.5rem;
+    text-align: center;
+}
+
+.work-item:hover .work-overlay {
     opacity: 1;
 }
 
-.item-content {
-    border-left: 2px solid rgba(255, 255, 255, 0.1);
-    padding-left: 2rem;
-    transition: border-color 0.3s;
+.work-title-inner {
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    color: white;
+    transform: translateY(15px);
+    transition: transform 0.6s var(--easing);
 }
 
-.scroll-item.active .item-content {
-    border-left-color: white;
+.work-client-inner {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    transform: translateY(15px);
+    transition: transform 0.6s var(--easing) 0.1s;
 }
 
-.item-cat {
-    display: block;
-    font-size: 0.8rem;
-    color: #666;
+.work-item:hover .work-title-inner,
+.work-item:hover .work-client-inner {
+    transform: translateY(0);
+}
+
+/* Video Modal */
+.video-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 1000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 1200px;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+}
+
+.video-container {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: black;
+    margin-bottom: 2rem;
+}
+
+.video-container iframe {
+    width: 100%;
+    height: 100%;
+}
+
+.modal-info {
+    color: white;
+}
+
+#modal-title {
+    font-size: 2rem;
     margin-bottom: 0.5rem;
+}
+
+#modal-client {
+    color: #888;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-}
-
-.item-title {
-    font-size: 2.5rem;
     margin-bottom: 1rem;
-    line-height: 1.1;
 }
 
-.item-desc {
-    color: #aaa;
+#modal-desc {
     font-size: 1rem;
-    line-height: 1.5;
+    line-height: 1.6;
+    color: #ccc;
+    max-width: 800px;
 }
 
-/* Clearfix for floats */
-.sticky-project-section::after {
-    content: "";
-    display: table;
-    clear: both;
+/* Mobile Adjustments */
+@media (max-width: 1024px) {
+    .works-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-    .sticky-container {
-        position: relative;
-        width: 100%;
-        height: 50vh;
-        float: none;
-        top: 0;
-        padding: 0 5vw;
-        margin-bottom: 2rem;
+@media (max-width: 640px) {
+    .works-grid {
+        grid-template-columns: 1fr;
     }
 
-    .scroll-list {
-        width: 100%;
-        float: none;
-        padding-top: 0;
-        padding-bottom: 5vh;
-    }
-
-    .scroll-item {
-        height: auto;
-        padding: 2rem 5vw;
-        margin-bottom: 2rem;
+    .work-overlay {
         opacity: 1;
-        /* Always visible on mobile */
+        /* Always show info on mobile */
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+        justify-content: flex-end;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .work-title-inner {
+        font-size: 1.2rem;
     }
 }

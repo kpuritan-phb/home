@@ -56,7 +56,7 @@
             <span class="separator">·</span>
 
             <div class="nav-item-container">
-                <a href="#projects" class="nav-item">
+                <a href="#works" class="nav-item">
                     <span class="nav-char">W</span><span class="nav-word">ORKS</span>
                 </a>
                 <div class="nav-desc">우리가 만든 결과와 그 성과</div>
@@ -64,7 +64,7 @@
             <span class="separator">·</span>
 
             <div class="nav-item-container">
-                <a href="#projects" class="nav-item">
+                <a href="#works" class="nav-item">
                     <span class="nav-char">W</span><span class="nav-word">ITNESS</span>
                 </a>
                 <div class="nav-desc">가공하지 않은 작업의 순간들</div>
@@ -108,54 +108,26 @@
             </div>
         </section>
 
-        <!-- Projects / Portfolio Section (Sticky Scroll Style) -->
-        <section id="projects" class="sticky-project-section">
-            <div class="sticky-container">
-                <div class="sticky-visual">
-                    <img id="dynamic-visual"
-                        src="https://images.unsplash.com/photo-1492691523567-61125645e34b?auto=format&fit=crop&q=80&w=800"
-                        alt="Project Visual">
-                    <!-- Video Element Placeholder (Hidden by default) -->
-                    <video id="dynamic-video" loop muted playsinline style="display:none;"></video>
-                </div>
+        <!-- Works Section (4BFILM Style) -->
+        <section id="works" class="works-section">
+            <div class="works-header reveal-text">
+                <h2 class="works-title">디테일이 스케일이다</h2>
+                <p class="works-sub">WORKS</p>
             </div>
 
-            <div class="scroll-list">
-                <div class="scroll-item"
-                    data-img="https://images.unsplash.com/photo-1492691523567-61125645e34b?auto=format&fit=crop&q=80&w=800">
-                    <div class="item-content">
-                        <span class="item-cat">TVC / Campaign</span>
-                        <h2 class="item-title">Brand Commercial</h2>
-                        <p class="item-desc">Creating a new standard for visual storytelling.</p>
-                    </div>
-                </div>
+            <div class="works-filter-container reveal-text">
+                <ul class="works-filters">
+                    <li class="filter-item active" data-filter="ALL">ALL</li>
+                    <li class="filter-item" data-filter="BRAND">BRAND</li>
+                    <li class="filter-item" data-filter="MUSIC_VIDEO">MUSIC VIDEO</li>
+                    <li class="filter-item" data-filter="FASHION">FASHION</li>
+                    <li class="filter-item" data-filter="DOCUMENTARY">DOCUMENTARY</li>
+                    <li class="filter-item" data-filter="OTHERS">OTHERS</li>
+                </ul>
+            </div>
 
-                <div class="scroll-item"
-                    data-img="https://images.unsplash.com/photo-1550745619-7214ad4a0913?auto=format&fit=crop&q=80&w=800">
-                    <div class="item-content">
-                        <span class="item-cat">M/V Production</span>
-                        <h2 class="item-title">Music Video Project</h2>
-                        <p class="item-desc">Visualizing sound through dynamic motion.</p>
-                    </div>
-                </div>
-
-                <div class="scroll-item"
-                    data-img="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=800">
-                    <div class="item-content">
-                        <span class="item-cat">Short Film</span>
-                        <h2 class="item-title">Documentary Series</h2>
-                        <p class="item-desc">Capturing real moments with cinematic depth.</p>
-                    </div>
-                </div>
-
-                <div class="scroll-item"
-                    data-img="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&q=80&w=800">
-                    <div class="item-content">
-                        <span class="item-cat">Brand Film</span>
-                        <h2 class="item-title">Corporate Vision</h2>
-                        <p class="item-desc">Defining identity through powerful imagery.</p>
-                    </div>
-                </div>
+            <div class="works-grid" id="works-grid">
+                <!-- Project items will be injected here by main.js -->
             </div>
         </section>
 
@@ -225,7 +197,22 @@
         <div>SEOUL, KOREA</div>
     </footer>
 
-    <script src="main.js"></script>
+    <!-- Video Modal (Hidden by default) -->
+    <div id="video-modal" class="video-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="video-container">
+                <iframe id="modal-iframe" src="" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+            </div>
+            <div class="modal-info">
+                <h3 id="modal-title"></h3>
+                <p id="modal-client"></p>
+                <p id="modal-desc"></p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="main.js"></script>
 </body>
 
 </html>

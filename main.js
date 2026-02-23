@@ -1,3 +1,5 @@
+import works from './works.js';
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- Loading Animation (Simple Fade In) ---
@@ -10,9 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Scroll Animations (Reveal Text) ---
-    // Use IntersectionObserver for performance, or GSAP ScrollTrigger if available
-
-    // 1. Hero Text Stagger
     const heroTexts = document.querySelectorAll('.hero .reveal-text');
     gsap.fromTo(heroTexts,
         { y: 100, opacity: 0 },
@@ -26,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     );
 
-    // 2. Section Reveals on Scroll
     const revealElements = document.querySelectorAll('.reveal-text:not(.hero .reveal-text)');
 
     const observerOptions = {
@@ -39,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                // Optional: GSAP enhancement
                 gsap.to(entry.target, {
                     y: 0,
                     opacity: 1,
@@ -52,126 +49,100 @@ document.addEventListener('DOMContentLoaded', () => {
     }, observerOptions);
 
     revealElements.forEach(el => {
-        // Initial state set in CSS, but ensure GSAP knows it too if we mix
         sectionObserver.observe(el);
     });
 
-    // --- Mobile Menu Toggle ---
-    const mobileToggle = document.querySelector('.mobile-toggle');
-    const navMenu = document.querySelector('.nav-menu');
+    // --- Works Logic ---
+    const worksGrid = document.getElementById('works-grid');
+    const filterItems = document.querySelectorAll('.filter-item');
+    const modal = document.getElementById('video-modal');
+    const modalIframe = document.getElementById('modal-iframe');
+    const modalTitle = document.getElementById('modal-title');
+    const modalClient = document.getElementById('modal-client');
+    const modalDesc = document.getElementById('modal-desc');
+    const closeModal = document.querySelector('.close-modal');
 
-    if (mobileToggle) {
-        mobileToggle.addEventListener('click', () => {
-            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
-            if (navMenu.style.display === 'flex') {
-                navMenu.style.flexDirection = 'column';
-                navMenu.style.position = 'fixed';
-                navMenu.style.top = '0';
-                navMenu.style.left = '0';
-                navMenu.style.width = '100VW';
-                navMenu.style.height = '100VH';
-                navMenu.style.background = '#0d0d0d';
-                navMenu.style.justifyContent = 'center';
-                navMenu.style.alignItems = 'center';
-                navMenu.style.zIndex = '90';
-            } else {
-                navMenu.style = ''; // Reset
-            }
+    function renderWorks(filter = 'ALL') {
+        worksGrid.innerHTML = '';
+
+        const filteredWorks = filter === 'ALL'
+            ? works
+            : works.filter(work => work.category === filter);
+
+        filteredWorks.forEach(work => {
+            const workItem = document.createElement('div');
+            workItem.className = 'work-item reveal-text';
+            workItem.innerHTML = `
+                <img src="${work.thumbnail}" alt="${work.title}">
+                <div class="work-overlay">
+                    <h3 class="work-title-inner">${work.title}</h3>
+                    <p class="work-client-inner">${work.client}</p>
+                </div>
+            `;
+
+            workItem.addEventListener('click', () => openModal(work));
+            worksGrid.appendChild(workItem);
+
+            // Re-observe for animation
+            sectionObserver.observe(workItem);
         });
     }
 
-});
+    function openModal(work) {
+        modalTitle.textContent = work.title;
+        modalClient.textContent = work.client;
+        modalDesc.textContent = work.description;
+        modalIframe.src = work.videoUrl;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Prevent scroll
+    }
 
-// --- Sticky Scroll Logic ---
-const scrollItems = document.querySelectorAll('.scroll-item');
-const dynamicVisual = document.getElementById('dynamic-visual');
-const dynamicVideo = document.getElementById('dynamic-video');
+    function hideModal() {
+        modal.style.display = 'none';
+        modalIframe.src = '';
+        document.body.style.overflow = 'auto';
+    }
 
-if (scrollItems.length > 0 && dynamicVisual) {
-    const observerOptions = {
-        root: null,
-        rootMargin: '-40% 0px -40% 0px', // Trigger when item is near center
-        threshold: 0
-    };
+    closeModal.addEventListener('click', hideModal);
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) hideModal();
+    });
 
-    const stickyObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Update Active State
-                scrollItems.forEach(item => item.classList.remove('active'));
-                entry.target.classList.add('active');
+    filterItems.forEach(item => {
+        item.addEventListener('click', () => {
+            filterItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            renderWorks(item.dataset.filter);
+        });
+    });
 
-                // Update Visual
-                const newImgSrc = entry.target.dataset.img;
-                const newVideoSrc = entry.target.dataset.video;
+    // Initial Render
+    renderWorks();
 
-                // Transition Output (Simple Fade)
+    // --- Navigation Logic for Mobile ---
+    const navContainers = document.querySelectorAll('.nav-item-container');
 
-                if (newVideoSrc && dynamicVideo) {
-                    // Switch to Video
-                    dynamicVisual.style.opacity = 0;
-                    dynamicVideo.style.display = 'block';
-                    dynamicVideo.style.opacity = 1;
-                    if (dynamicVideo.src !== newVideoSrc) {
-                        dynamicVideo.src = newVideoSrc;
-                        dynamicVideo.play().catch(e => console.log('Autoplay blocked', e));
-                    }
-                } else if (newImgSrc) {
-                    // Switch to Image
-                    if (dynamicVideo) {
-                        dynamicVideo.style.opacity = 0;
-                        setTimeout(() => { dynamicVideo.style.display = 'none'; }, 500);
-                    }
+    navContainers.forEach(container => {
+        const link = container.querySelector('.nav-item');
+        if (!link) return;
 
-                    // Cross-fade image
-                    // Preload first to avoid blink, then swap
-                    const tempImg = new Image();
-                    tempImg.src = newImgSrc;
-                    tempImg.onload = () => {
-                        dynamicVisual.style.opacity = 0;
-                        setTimeout(() => {
-                            dynamicVisual.src = newImgSrc;
-                            dynamicVisual.style.opacity = 1;
-                        }, 300); // Wait for fade out
-                    };
+        link.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                if (!container.classList.contains('active')) {
+                    e.preventDefault();
+                    navContainers.forEach(c => c.classList.remove('active'));
+                    container.classList.add('active');
                 }
             }
         });
-    }, observerOptions);
+    });
 
-    scrollItems.forEach(item => stickyObserver.observe(item));
-}
-
-// --- Interactive Navigation Logic for Mobile ---
-const navContainers = document.querySelectorAll('.nav-item-container');
-
-navContainers.forEach(container => {
-    const link = container.querySelector('.nav-item');
-    if (!link) return;
-
-    link.addEventListener('click', (e) => {
-        // Only apply "double tap" logic on mobile or small screens
+    document.addEventListener('click', (e) => {
         if (window.innerWidth <= 768) {
-            // If not already active, prevent default navigation and show info
-            if (!container.classList.contains('active')) {
-                e.preventDefault();
-
-                // Reset others
+            if (!e.target.closest('.brand-nav')) {
                 navContainers.forEach(c => c.classList.remove('active'));
-
-                // Activate current
-                container.classList.add('active');
             }
-            // If already active, allow click to proceed (navigate)
         }
     });
-});
 
-// Close menu when clicking outside on mobile
-document.addEventListener('click', (e) => {
-    if (window.innerWidth <= 768) {
-        if (!e.target.closest('.brand-nav')) {
-            navContainers.forEach(c => c.classList.remove('active'));
-        }
-    }
 });

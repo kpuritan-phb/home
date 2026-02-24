@@ -95,48 +95,148 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollItems.forEach(item => stickyObserver.observe(item));
     }
 
-    // --- Works Grid Logic (Only for works.html) ---
-    const worksGrid = document.getElementById('works-grid');
-    if (worksGrid) {
-        const filterItems = document.querySelectorAll('.filter-item');
+    // --- Works Page: Orientation Tab + Infinite Scroll ---
+    const worksGrid = document.getElementById('works-grid'); // 구 구조 체크 (없어질 예정)
+    const landscapeGrid = document.getElementById('landscape-grid');
+    const portraitGrid = document.getElementById('portrait-grid');
+
+    if (landscapeGrid || portraitGrid) {
         const modal = document.getElementById('video-modal');
         const modalIframe = document.getElementById('modal-iframe');
         const modalTitle = document.getElementById('modal-title');
         const modalClient = document.getElementById('modal-client');
         const modalDesc = document.getElementById('modal-desc');
         const closeModal = document.querySelector('.close-modal');
+        const tabBtns = document.querySelectorAll('.works-tab-btn');
 
-        function renderWorks(filter = 'ALL') {
-            worksGrid.innerHTML = '';
-            const filteredWorks = filter === 'ALL'
-                ? works
-                : works.filter(work => work.category === filter);
+        const PAGE_SIZE = 4; // 한 번에 로드할 개수
 
-            filteredWorks.forEach(work => {
-                const workItem = document.createElement('div');
-                workItem.className = 'work-item reveal-text';
-                workItem.innerHTML = `
-                    <img src="${work.thumbnail}" alt="${work.title}">
-                    <div class="work-overlay">
-                        <h3 class="work-title-inner">${work.title}</h3>
-                        <p class="work-client-inner">${work.client}</p>
-                    </div>
-                `;
-                workItem.addEventListener('click', () => {
-                    if (modal) {
-                        modalTitle.textContent = work.title;
-                        modalClient.textContent = work.client;
-                        modalDesc.textContent = work.description;
-                        modalIframe.src = work.videoUrl;
-                        modal.style.display = 'flex';
-                        document.body.style.overflow = 'hidden';
-                    }
+        // orientation별 상태 관리
+        const state = {
+            landscape: { page: 0, loading: false, done: false },
+            portrait: { page: 0, loading: false, done: false },
+        };
+
+        // orientation별 데이터 필터
+        const dataMap = {
+            landscape: works.filter(w => w.orientation === 'landscape'),
+            portrait: works.filter(w => w.orientation === 'portrait'),
+        };
+
+        // 현재 활성 탭 (URL 쿼리 우선)
+        const urlParams = new URLSearchParams(window.location.search);
+        let activeView = urlParams.get('view') === 'portrait' ? 'portrait' : 'landscape';
+
+        // 카드 DOM 생성
+        function createWorkCard(work) {
+            const el = document.createElement('div');
+            el.className = 'work-item reveal-text';
+            el.innerHTML = `
+                <img src="${work.thumbnail}" alt="${work.title}" loading="lazy">
+                <div class="work-overlay">
+                    <h3 class="work-title-inner">${work.title}</h3>
+                    <p class="work-client-inner">${work.client}</p>
+                </div>
+            `;
+            el.addEventListener('click', () => {
+                if (modal) {
+                    modalTitle.textContent = work.title;
+                    modalClient.textContent = work.client;
+                    modalDesc.textContent = work.description;
+                    modalIframe.src = work.videoUrl;
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+            return el;
+        }
+
+        // 특정 orientation 페이지 로드
+        function loadPage(orientation) {
+            const s = state[orientation];
+            if (s.loading || s.done) return;
+
+            s.loading = true;
+            const loadingEl = document.getElementById(`${orientation}-loading`);
+            const endEl = document.getElementById(`${orientation}-end`);
+            const grid = document.getElementById(`${orientation}-grid`);
+
+            if (loadingEl) loadingEl.style.display = 'flex';
+
+            const data = dataMap[orientation];
+            const start = s.page * PAGE_SIZE;
+            const slice = data.slice(start, start + PAGE_SIZE);
+
+            // 약간의 딜레이로 로딩 느낌 자연스럽게
+            setTimeout(() => {
+                slice.forEach(work => {
+                    const card = createWorkCard(work);
+                    grid.appendChild(card);
+                    // reveal animation
+                    sectionObserver.observe(card);
                 });
-                worksGrid.appendChild(workItem);
-                sectionObserver.observe(workItem);
+
+                s.page += 1;
+                s.loading = false;
+
+                if (loadingEl) loadingEl.style.display = 'none';
+
+                const nextStart = s.page * PAGE_SIZE;
+                if (nextStart >= data.length) {
+                    s.done = true;
+                    if (endEl) endEl.style.display = 'block';
+                    // sentinel 감시 해제
+                    const sentinel = document.getElementById(`${orientation}-sentinel`);
+                    if (sentinel) infiniteObserver.unobserve(sentinel);
+                }
+            }, 400);
+        }
+
+        // IntersectionObserver: sentinel 감지 → 다음 페이지
+        const infiniteObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const orientation = entry.target.id.replace('-sentinel', '');
+                    loadPage(orientation);
+                }
+            });
+        }, { rootMargin: '200px' });
+
+        // 탭 전환 UI
+        function switchTab(view) {
+            activeView = view;
+
+            // URL 동기화
+            const url = new URL(window.location);
+            url.searchParams.set('view', view);
+            window.history.replaceState({}, '', url);
+
+            // 탭 버튼 active 상태
+            tabBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.view === view);
+            });
+
+            // 패널 visible 처리
+            const panels = ['landscape', 'portrait'];
+            panels.forEach(p => {
+                const panel = document.getElementById(`panel-${p}`);
+                if (panel) panel.style.display = p === view ? 'block' : 'none';
             });
         }
 
+        // 탭 버튼 이벤트
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const view = btn.dataset.view;
+                switchTab(view);
+                // 해당 탭이 아직 한 번도 로드 안 됐으면 첫 페이지 로드
+                if (state[view].page === 0) {
+                    loadPage(view);
+                }
+            });
+        });
+
+        // 모달 닫기
         if (closeModal) {
             closeModal.addEventListener('click', () => {
                 modal.style.display = 'none';
@@ -144,7 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.style.overflow = 'auto';
             });
         }
-
         window.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.style.display = 'none';
@@ -153,15 +252,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        filterItems.forEach(item => {
-            item.addEventListener('click', () => {
-                filterItems.forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-                renderWorks(item.getAttribute('data-filter'));
-            });
+        // 초기화: URL 상태 기반 탭 적용 + 첫 페이지 로드
+        switchTab(activeView);
+        // 두 sentinel 모두 등록 (탭 전환 때 바로 로딩 가능하게)
+        ['landscape', 'portrait'].forEach(o => {
+            const sentinel = document.getElementById(`${o}-sentinel`);
+            if (sentinel) infiniteObserver.observe(sentinel);
         });
-
-        renderWorks();
+        // 초기 활성 탭 첫 페이지 로드
+        loadPage(activeView);
     }
 
     // --- FAQ Logic (Only for workflow.html) ---

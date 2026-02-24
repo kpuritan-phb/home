@@ -89,7 +89,7 @@ const works = [
         category: "BRAND",
         orientation: "portrait",
         thumbnail: "images/works/thumb_tiktok.jpg",
-        videoUrl: "https://www.tiktok.com/@1ndian2wins/video/7600738854332665109",
+        videoUrl: "https://www.tiktok.com/embed/v2/7600738854332665109",
         description: "Fast-paced vertical edit specifically designed for TikTok's visual language."
     },
     {
@@ -99,7 +99,7 @@ const works = [
         category: "BRAND",
         orientation: "portrait",
         thumbnail: "images/works/thumb_threads.jpg",
-        videoUrl: "https://www.threads.net/@1ndian2wins/post/DUCiAXOAWxT",
+        videoUrl: "https://www.threads.net/@1ndian2wins/post/DUCiAXOAWxT/embed",
         description: "Engaging and raw storytelling produced for the Threads platform."
     },
     {
@@ -109,7 +109,7 @@ const works = [
         category: "FASHION",
         orientation: "portrait",
         thumbnail: "images/works/thumb_instagram.jpg",
-        videoUrl: "https://www.instagram.com/reel/DTfRhxVE6f9/",
+        videoUrl: "https://www.instagram.com/reel/DTfRhxVE6f9/embed",
         description: "A premium cinematic expression exploring style through Instagram Reels."
     },
     {

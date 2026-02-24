@@ -1,6 +1,86 @@
 const works = [
     // LANDSCAPE (16:9 가로형)
     {
+        id: 27,
+        title: "영하의 날씨에 버려진 누더기 실버푸들 미용했어요🩷",
+        client: "YouTube",
+        category: "OTHERS",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/nyiKexi9NSw/maxresdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/nyiKexi9NSw",
+        description: "추운 날씨에 구조된 실버푸들의 미용 과정 영상입니다."
+    },
+    {
+        id: 28,
+        title: "25년 경력 뷰티팟 TV 송원장의 브랜드 '퀸즈본가'",
+        client: "퀸즈본가",
+        category: "BRAND",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/atuODTDp0Qk/maxresdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/atuODTDp0Qk",
+        description: "뷰티 브랜드 퀸즈본가 소개 영상입니다."
+    },
+    {
+        id: 29,
+        title: "소향 - 나 언젠가 떠날거야 (디즈니 모아나 커버)",
+        client: "진제이",
+        category: "MUSIC_VIDEO",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/MEOo7CNdcXs/maxresdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/MEOo7CNdcXs",
+        description: "디즈니 모아나 OST '나 언젠가 떠날거야' 커버 영상입니다."
+    },
+    {
+        id: 30,
+        title: "WOO(성현우) - 없었던 것처럼 LIVE CLIP",
+        client: "WOO(성현우)",
+        category: "MUSIC_VIDEO",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/42BldXKgIao/maxresdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/42BldXKgIao",
+        description: "WOO(성현우)의 '없었던 것처럼' 라이브 클립입니다."
+    },
+    {
+        id: 31,
+        title: "WOO(성현우) - DiNA LIVE CLIP",
+        client: "WOO(성현우)",
+        category: "MUSIC_VIDEO",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/-XrWUXBvyMY/maxresdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/-XrWUXBvyMY",
+        description: "WOO(성현우)의 'DiNA' (원곡.Yuuri/優里) 라이브 클립입니다."
+    },
+    {
+        id: 32,
+        title: "덥덥이(dubdubee) - Again and Again(Official MV)",
+        client: "덥덥이",
+        category: "MUSIC_VIDEO",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/XHGNBDjRgdQ/maxresdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/XHGNBDjRgdQ",
+        description: "덥덥이의 'Again and Again' 공식 뮤직비디오입니다."
+    },
+    {
+        id: 33,
+        title: "랩레슨 싸이퍼 촬영 비하인드",
+        client: "326-2KIDS",
+        category: "DOCUMENTARY",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/hqh2-3iBWM4/maxresdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/hqh2-3iBWM4",
+        description: "랩레슨 싸이퍼 촬영 비하인드 영상입니다."
+    },
+    {
+        id: 34,
+        title: "흉터치료 새살침, 치료 방법과 접근법",
+        client: "흉지사",
+        category: "BRAND",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/GCJ6Qkosgaw/maxresdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/GCJ6Qkosgaw",
+        description: "피부 유형에 따른 흉터치료 새살침의 접근법을 소개합니다."
+    },
+    {
         id: 20,
         title: "집 [대전CKL 2차 유튜브 콘테스트 공모작]",
         client: "YouTube",

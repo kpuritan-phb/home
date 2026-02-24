@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let onErrorAttr = "this.onerror=null; this.src='https://images.unsplash.com/photo-1492691523567-61125645e34b?auto=format&fit=crop&q=80&w=800';";
             if (thumbUrl.includes('maxresdefault.jpg')) {
                 const fallbackUrl = thumbUrl.replace('maxresdefault.jpg', 'hqdefault.jpg');
-                onErrorAttr = `this.onerror=function(){ this.onerror=null; this.src='${fallbackUrl}'; };`;
+                onErrorAttr = `this.onerror=null; this.src='${fallbackUrl}';`;
             }
 
             el.innerHTML = `

@@ -106,13 +106,14 @@ header.top-bar {
 
 .nav-item-container {
     position: relative;
-    padding: 0 1rem;
+    padding: 0 0.8rem;
+    /* 약간 줄여 메뉴 사이 간격 완화 */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    height: 35px;
-    /* Prevent jitter on hover */
+    justify-content: center;
+    height: 80px;
+    /* 헤더 높이에 맞춤 */
     cursor: pointer;
     pointer-events: auto;
     /* Re-enable for items */
@@ -153,6 +154,12 @@ header.top-bar {
 }
 
 .nav-desc {
+    position: absolute;
+    top: 55px;
+    /* 헤더 안쪽으로 배치 */
+    left: 50%;
+    margin-left: -125px;
+    /* width 250px의 절반을 빼서 transform 없이 가운데 정렬 */
     width: 250px;
     text-align: center;
     font-size: 0.8rem;
@@ -161,11 +168,8 @@ header.top-bar {
     font-weight: 400;
     opacity: 0;
     pointer-events: none;
-    transition: all 0.5s var(--easing);
+    transition: opacity 0.5s var(--easing);
     letter-spacing: -0.01em;
-    height: 0;
-    overflow: hidden;
-    margin-top: 0;
 }
 
 /* Hover / Active States */
@@ -179,8 +183,6 @@ header.top-bar {
 .nav-item-container:hover .nav-desc,
 .nav-item-container.active .nav-desc {
     opacity: 1;
-    height: 20px;
-    margin-top: 5px;
 }
 
 .nav-item-container:hover .nav-item {
@@ -227,18 +229,21 @@ header.top-bar {
 
     .nav-desc {
         width: 100%;
-        position: static;
+        position: absolute;
+        top: 40px;
+        left: 0;
+        margin-left: 0;
         background: transparent;
         padding: 0;
         margin: 0;
         transform: none;
+        height: auto;
+        opacity: 0;
     }
 
     .nav-item-container.active .nav-desc,
     .nav-item-container:hover .nav-desc {
-        transform: none;
-        height: 20px;
-        margin-top: 5px;
+        opacity: 1;
     }
 }
 
@@ -998,10 +1003,11 @@ body.dark-subpage {
     color: #f0f0f0;
 }
 
-body.dark-subpage header {
-    background: transparent;
-    border-bottom: none;
-    backdrop-filter: none;
+body.dark-subpage header.top-bar {
+    /* 기존 투명한 배경 선언 삭제하고 top-bar와 일치하게 하여 
+       subpage에서도 상단 레이어가 보이게 설정 */
+    background-color: var(--bg-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 body.dark-subpage .nav-item,

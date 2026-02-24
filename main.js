@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const closeModal = document.querySelector('.close-modal');
         const tabBtns = document.querySelectorAll('.works-tab-btn');
 
-        const PAGE_SIZE = 4; // 한 번에 로드할 개수
+        const PAGE_SIZE = 12; // 한 번에 로드할 개수 증가 (딜레이 단축)
 
         // orientation별 상태 관리
         const state = {
@@ -177,10 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
                      alt="${work.title}" 
                      loading="lazy"
                      onerror="${onErrorAttr}">
-                <div class="work-overlay">
-                    <h3 class="work-title-inner">${work.title}</h3>
-                    <p class="work-client-inner">${work.client}</p>
-                </div>
             `;
             el.addEventListener('click', () => {
                 if (modal) {
@@ -211,29 +207,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const start = s.page * PAGE_SIZE;
             const slice = data.slice(start, start + PAGE_SIZE);
 
-            // 약간의 딜레이로 로딩 느낌 자연스럽게
-            setTimeout(() => {
-                slice.forEach(work => {
-                    const card = createWorkCard(work);
-                    grid.appendChild(card);
-                    // reveal animation
-                    sectionObserver.observe(card);
-                });
+            // 딜레이 없이 즉시 로드
+            slice.forEach(work => {
+                const card = createWorkCard(work);
+                grid.appendChild(card);
+                // reveal animation
+                sectionObserver.observe(card);
+            });
 
-                s.page += 1;
-                s.loading = false;
+            s.page += 1;
+            s.loading = false;
 
-                if (loadingEl) loadingEl.style.display = 'none';
+            if (loadingEl) loadingEl.style.display = 'none';
 
-                const nextStart = s.page * PAGE_SIZE;
-                if (nextStart >= data.length) {
-                    s.done = true;
-                    if (endEl) endEl.style.display = 'block';
-                    // sentinel 감시 해제
-                    const sentinel = document.getElementById(`${orientation}-sentinel`);
-                    if (sentinel) infiniteObserver.unobserve(sentinel);
-                }
-            }, 400);
+            const nextStart = s.page * PAGE_SIZE;
+            if (nextStart >= data.length) {
+                s.done = true;
+                if (endEl) endEl.style.display = 'block';
+                // sentinel 감시 해제
+                const sentinel = document.getElementById(`${orientation}-sentinel`);
+                if (sentinel) infiniteObserver.unobserve(sentinel);
+            }
         }
 
         // IntersectionObserver: sentinel 감지 → 다음 페이지

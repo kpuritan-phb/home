@@ -6,7 +6,7 @@ const works = [
         client: "이명수 의원",
         category: "DOCUMENTARY",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/k3u6NfPXB5w/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/k3u6NfPXB5w/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/k3u6NfPXB5w",
         description: "16년 차 국회의원 이명수의 진솔한 일상을 담은 다큐멘터리 영상입니다."
     },
@@ -16,7 +16,7 @@ const works = [
         client: "충남대학교",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/s4cqLJhCgE8/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/s4cqLJhCgE8/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/s4cqLJhCgE8",
         description: "대전 최대 규모를 자랑하는 CNU 스포렉스 센터의 시설과 활기를 소개하는 영상입니다."
     },
@@ -26,7 +26,7 @@ const works = [
         client: "YouTube",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/QbwHp3gcZDE/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/QbwHp3gcZDE/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/QbwHp3gcZDE",
         description: "콜라젠 리프팅 입점 소식과 제품의 매력을 담은 브랜드 영상입니다."
     },
@@ -36,7 +36,7 @@ const works = [
         client: "YouTube",
         category: "OTHERS",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/nyiKexi9NSw/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/nyiKexi9NSw/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/nyiKexi9NSw",
         description: "추운 날씨에 구조된 실버푸들의 미용 과정 영상입니다."
     },
@@ -46,7 +46,7 @@ const works = [
         client: "퀸즈본가",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/atuODTDp0Qk/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/atuODTDp0Qk/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/atuODTDp0Qk",
         description: "뷰티 브랜드 퀸즈본가 소개 영상입니다."
     },
@@ -56,7 +56,7 @@ const works = [
         client: "진제이",
         category: "MUSIC_VIDEO",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/MEOo7CNdcXs/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/MEOo7CNdcXs/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/MEOo7CNdcXs",
         description: "디즈니 모아나 OST '나 언젠가 떠날거야' 커버 영상입니다."
     },
@@ -66,7 +66,7 @@ const works = [
         client: "WOO(성현우)",
         category: "MUSIC_VIDEO",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/42BldXKgIao/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/42BldXKgIao/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/42BldXKgIao",
         description: "WOO(성현우)의 '없었던 것처럼' 라이브 클립입니다."
     },
@@ -76,7 +76,7 @@ const works = [
         client: "WOO(성현우)",
         category: "MUSIC_VIDEO",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/-XrWUXBvyMY/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/-XrWUXBvyMY/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/-XrWUXBvyMY",
         description: "WOO(성현우)의 'DiNA' (원곡.Yuuri/優里) 라이브 클립입니다."
     },
@@ -86,7 +86,7 @@ const works = [
         client: "덥덥이",
         category: "MUSIC_VIDEO",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/XHGNBDjRgdQ/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/XHGNBDjRgdQ/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/XHGNBDjRgdQ",
         description: "덥덥이의 'Again and Again' 공식 뮤직비디오입니다."
     },
@@ -96,7 +96,7 @@ const works = [
         client: "326-2KIDS",
         category: "DOCUMENTARY",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/hqh2-3iBWM4/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/hqh2-3iBWM4/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/hqh2-3iBWM4",
         description: "랩레슨 싸이퍼 촬영 비하인드 영상입니다."
     },
@@ -106,7 +106,7 @@ const works = [
         client: "흉지사",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/GCJ6Qkosgaw/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/GCJ6Qkosgaw/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/GCJ6Qkosgaw",
         description: "피부 유형에 따른 흉터치료 새살침의 접근법을 소개합니다."
     },
@@ -116,7 +116,7 @@ const works = [
         client: "YouTube",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/3umEWnQN_oM/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/3umEWnQN_oM/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/3umEWnQN_oM",
         description: "대전CKL 2차 유튜브 콘테스트 공모작 '집' 영상입니다."
     },
@@ -126,7 +126,7 @@ const works = [
         client: "KOHI",
         category: "DOCUMENTARY",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/gv_7288qSng/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/gv_7288qSng/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/gv_7288qSng",
         description: "2023년 KOHI 사회복무요원 SNS 영상 공모전 대상 수상작입니다."
     },
@@ -136,7 +136,7 @@ const works = [
         client: "Mirabelle Korea",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/tjn6_Tp6bGo/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/tjn6_Tp6bGo/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/tjn6_Tp6bGo",
         description: "Mirabelle Korea 2025 브랜드 필름입니다."
     },
@@ -146,7 +146,7 @@ const works = [
         client: "YouTube",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/X8bjIyiJeYI/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/X8bjIyiJeYI/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/X8bjIyiJeYI",
         description: "피부 고민 타파를 위한 찐템 소개 영상입니다."
     },
@@ -156,7 +156,7 @@ const works = [
         client: "MELLBEU",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/yEhwdmJ5xTg/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/yEhwdmJ5xTg/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/yEhwdmJ5xTg",
         description: "MELLBEU 브랜드 영상 'BE YOU' 입니다."
     },
@@ -166,7 +166,7 @@ const works = [
         client: "김다현",
         category: "MUSIC_VIDEO",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/uCIRKVpoXb4/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/uCIRKVpoXb4/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/uCIRKVpoXb4",
         description: "김다현의 '수은등' 커버 영상입니다."
     },
@@ -176,7 +176,7 @@ const works = [
         client: "김다현",
         category: "DOCUMENTARY",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/xvwhyCuUO-Q/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/xvwhyCuUO-Q/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/xvwhyCuUO-Q",
         description: "관악중부시장에서 진행된 떴다떴다현 에피소드 1입니다."
     },

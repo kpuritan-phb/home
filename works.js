@@ -1,15 +1,6 @@
 const works = [
     // LANDSCAPE (16:9 가로형)
-    {
-        id: 35,
-        title: "16년 KTX 외길 아산 뚜벅이 국회의원 이명수 일상",
-        client: "이명수 의원",
-        category: "DOCUMENTARY",
-        orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/k3u6NfPXB5w/hqdefault.jpg",
-        videoUrl: "https://www.youtube.com/embed/k3u6NfPXB5w",
-        description: "16년 차 국회의원 이명수의 진솔한 일상을 담은 다큐멘터리 영상입니다."
-    },
+
     {
         id: 36,
         title: "대전 최대 규모 스포츠센터, CNU 스포렉스 센터",

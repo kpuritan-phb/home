@@ -162,6 +162,36 @@ const works = [
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
         description: "Short-form storytelling optimized for social feed."
     },
+    {
+        id: 17,
+        title: "Maison de Onu: Party Pool",
+        client: "Maison de Onu",
+        category: "BRAND",
+        orientation: "portrait",
+        thumbnail: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&q=80&w=450&h=800",
+        videoUrl: "https://www.instagram.com/reel/DTU3zQAkV14/embed",
+        description: "광주 프리미엄 풀빌라 '메종드오누'. 청결하고 프라이빗한 파티풀 시설의 매력을 담은 감성 영상입니다."
+    },
+    {
+        id: 18,
+        title: "Obang Heater: Originality",
+        client: "오방난로",
+        category: "BRAND",
+        orientation: "portrait",
+        thumbnail: "https://images.unsplash.com/photo-1591197172071-36acd2517335?auto=format&fit=crop&q=80&w=450&h=800",
+        videoUrl: "https://www.instagram.com/reel/DRwggvgk791/embed",
+        description: "기술력에 대한 브랜드의 자신감. 세계 최초 상단 하이라이트 가열 구조를 가진 오방난로의 오리지널리티를 강조합니다."
+    },
+    {
+        id: 19,
+        title: "Mirabelle Korea: K-Solutions",
+        client: "Mirabelle Korea",
+        category: "BRAND",
+        orientation: "portrait",
+        thumbnail: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&q=80&w=450&h=800",
+        videoUrl: "https://www.instagram.com/reel/DMdGy21PiTy/embed",
+        description: "인도를 위한 K-솔루션. 다양한 기후와 피부 타입에 맞춘 현지화된 K-뷰티 스킨케어를 소개합니다."
+    }
 ];
 
 export default works;

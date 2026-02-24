@@ -1,6 +1,36 @@
 const works = [
     // LANDSCAPE (16:9 가로형)
     {
+        id: 35,
+        title: "16년 KTX 외길 아산 뚜벅이 국회의원 이명수 일상",
+        client: "이명수 의원",
+        category: "DOCUMENTARY",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/k3u6NfPXB5w/maxresdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/k3u6NfPXB5w",
+        description: "16년 차 국회의원 이명수의 진솔한 일상을 담은 다큐멘터리 영상입니다."
+    },
+    {
+        id: 36,
+        title: "대전 최대 규모 스포츠센터, CNU 스포렉스 센터",
+        client: "충남대학교",
+        category: "BRAND",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/s4cqLJhCgE8/maxresdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/s4cqLJhCgE8",
+        description: "대전 최대 규모를 자랑하는 CNU 스포렉스 센터의 시설과 활기를 소개하는 영상입니다."
+    },
+    {
+        id: 37,
+        title: "피부 RETURN 시리즈 콜라젠 리프팅 입점",
+        client: "YouTube",
+        category: "BRAND",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/QbwHp3gcZDE/maxresdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/QbwHp3gcZDE",
+        description: "콜라젠 리프팅 입점 소식과 제품의 매력을 담은 브랜드 영상입니다."
+    },
+    {
         id: 27,
         title: "영하의 날씨에 버려진 누더기 실버푸들 미용했어요🩷",
         client: "YouTube",
@@ -152,7 +182,17 @@ const works = [
     },
 
 
-    // PORTRAIT (9:16 세로형) - 신규 영상을 최상단으로 이동
+    // PORTRAIT (9:16 세로형)
+    {
+        id: 38,
+        title: "에어리어(Airear): 브랜드 스토리",
+        client: "에어리어",
+        category: "BRAND",
+        orientation: "portrait",
+        thumbnail: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=450&h=800",
+        videoUrl: "https://www.instagram.com/reel/DRlgi0ZE5xy/embed",
+        description: "누구나 따뜻하게 씻을 수 있게 하자. 에어리어 창업자의 진심이 담긴 브랜드 스토리와 A3 욕실 온풍기 소개 영상입니다."
+    },
     {
         id: 14,
         title: "TikTok: Creative Edit",

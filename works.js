@@ -132,6 +132,36 @@ const works = [
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
         description: "Short-form storytelling optimized for social feed."
     },
+    {
+        id: 14,
+        title: "Experimental Motion",
+        client: "TikTok Creative",
+        category: "BRAND",
+        orientation: "portrait",
+        thumbnail: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=450&h=800",
+        videoUrl: "https://www.tiktok.com/embed/v2/7600738854332665109",
+        description: "A fast-paced creative edit specifically designed for TikTok's unique visual language."
+    },
+    {
+        id: 15,
+        title: "Behind the Scenes",
+        client: "Threads Post",
+        category: "OTHERS",
+        orientation: "portrait",
+        thumbnail: "https://images.unsplash.com/photo-1512314889357-e157c22f938d?auto=format&fit=crop&q=80&w=450&h=800",
+        videoUrl: "https://www.threads.net/post/DUCiAXOAWxT/embed",
+        description: "Capturing the raw process and intimate moments behind the production, shared on Threads."
+    },
+    {
+        id: 16,
+        title: "Urban Expression",
+        client: "Instagram Reel",
+        category: "FASHION",
+        orientation: "portrait",
+        thumbnail: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&q=80&w=450&h=800",
+        videoUrl: "https://www.instagram.com/reel/DTfRhxVE6f9/embed",
+        description: "Short-form cinematic expression exploring urban style through Instagram Reels."
+    },
 ];
 
 export default works;

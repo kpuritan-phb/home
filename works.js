@@ -1,6 +1,46 @@
 const works = [
     // LANDSCAPE (16:9 가로형)
     {
+        id: 44,
+        title: "Mercedes-AMG G 63 오너의 남다른 일상 ㅣ 한성 SEE. Vol.2",
+        client: "한성자동차",
+        category: "BRAND",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/P0brARRRS_c/hqdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/P0brARRRS_c",
+        description: "Mercedes-AMG G 63 오너의 남다른 일상을 담은 한성 SEE. Vol.2 영상입니다."
+    },
+    {
+        id: 45,
+        title: "📢숨겨진 최고의 인증 중고차 보물을 찾아라! 한성트레저 두번째 이야기💎",
+        client: "한성자동차",
+        category: "BRAND",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/ZeiWlxHSKWY/hqdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/ZeiWlxHSKWY",
+        description: "최고의 인증 중고차를 찾는 한성트레저 두 번째 이야기 영상입니다."
+    },
+    {
+        id: 43,
+        title: "[안전로드 퀴즈쇼] 드디어 등장한 현대모비스 아이돌?✨ 우리 회사 자랑 좀 들어보세요😎 | 현대모비스 본사",
+        client: "현대모비스",
+        category: "BRAND",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/PofMcsINkHc/hqdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/PofMcsINkHc",
+        description: "현대모비스 본사에서 진행된 안전로드 퀴즈쇼 영상입니다."
+    },
+    {
+        id: 22,
+        title: "Mirabelle Korea 2025 Brand Film",
+        client: "Mirabelle Korea",
+        category: "BRAND",
+        orientation: "landscape",
+        thumbnail: "https://img.youtube.com/vi/tjn6_Tp6bGo/maxresdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/tjn6_Tp6bGo",
+        description: "Mirabelle Korea 2025 브랜드 필름입니다."
+    },
+    {
         id: 39,
         title: "지하니_수분라인-1",
         client: "Vimeo",
@@ -39,36 +79,6 @@ const works = [
         thumbnail: "https://img.youtube.com/vi/OaGTS4ybsYQ/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/OaGTS4ybsYQ",
         description: "1390만 유튜버 햄지님과의 먹방 콜라보레이션 영상입니다."
-    },
-    {
-        id: 43,
-        title: "[안전로드 퀴즈쇼] 드디어 등장한 현대모비스 아이돌?✨ 우리 회사 자랑 좀 들어보세요😎 | 현대모비스 본사",
-        client: "현대모비스",
-        category: "BRAND",
-        orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/PofMcsINkHc/hqdefault.jpg",
-        videoUrl: "https://www.youtube.com/embed/PofMcsINkHc",
-        description: "현대모비스 본사에서 진행된 안전로드 퀴즈쇼 영상입니다."
-    },
-    {
-        id: 44,
-        title: "Mercedes-AMG G 63 오너의 남다른 일상 ㅣ 한성 SEE. Vol.2",
-        client: "한성자동차",
-        category: "BRAND",
-        orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/P0brARRRS_c/hqdefault.jpg",
-        videoUrl: "https://www.youtube.com/embed/P0brARRRS_c",
-        description: "Mercedes-AMG G 63 오너의 남다른 일상을 담은 한성 SEE. Vol.2 영상입니다."
-    },
-    {
-        id: 45,
-        title: "📢숨겨진 최고의 인증 중고차 보물을 찾아라! 한성트레저 두번째 이야기💎",
-        client: "한성자동차",
-        category: "BRAND",
-        orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/ZeiWlxHSKWY/hqdefault.jpg",
-        videoUrl: "https://www.youtube.com/embed/ZeiWlxHSKWY",
-        description: "최고의 인증 중고차를 찾는 한성트레저 두 번째 이야기 영상입니다."
     },
     {
         id: 36,
@@ -191,16 +201,6 @@ const works = [
         description: "2023년 KOHI 사회복무요원 SNS 영상 공모전 대상 수상작입니다."
     },
     {
-        id: 22,
-        title: "Mirabelle Korea 2025 Brand Film",
-        client: "Mirabelle Korea",
-        category: "BRAND",
-        orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/tjn6_Tp6bGo/maxresdefault.jpg",
-        videoUrl: "https://www.youtube.com/embed/tjn6_Tp6bGo",
-        description: "Mirabelle Korea 2025 브랜드 필름입니다."
-    },
-    {
         id: 23,
         title: "피부 고민 하던 지하니, 결국 사버린 찐템은? 🛍",
         client: "YouTube",
@@ -243,6 +243,16 @@ const works = [
 
 
     // PORTRAIT (9:16 세로형) - 신규 영상을 최상단으로 이동
+    {
+        id: 19,
+        title: "Mirabelle Korea: K-Solutions",
+        client: "Mirabelle Korea",
+        category: "BRAND",
+        orientation: "portrait",
+        thumbnail: "images/works/thumb_mirabelle.jpg",
+        videoUrl: "https://www.instagram.com/reel/DMdGy21PiTy/embed",
+        description: "인도를 위한 K-솔루션. 다양한 기후와 피부 타입에 맞춘 현지화된 K-뷰티 스킨케어를 소개합니다."
+    },
     {
         id: 14,
         title: "TikTok: Creative Edit",
@@ -292,16 +302,6 @@ const works = [
         thumbnail: "images/works/thumb_obang.jpg",
         videoUrl: "https://www.instagram.com/reel/DRwggvgk791/embed",
         description: "기술력에 대한 브랜드의 자신감. 세계 최초 상단 하이라이트 가열 구조를 가진 오방난로의 오리지널리티를 강조합니다."
-    },
-    {
-        id: 19,
-        title: "Mirabelle Korea: K-Solutions",
-        client: "Mirabelle Korea",
-        category: "BRAND",
-        orientation: "portrait",
-        thumbnail: "images/works/thumb_mirabelle.jpg",
-        videoUrl: "https://www.instagram.com/reel/DMdGy21PiTy/embed",
-        description: "인도를 위한 K-솔루션. 다양한 기후와 피부 타입에 맞춘 현지화된 K-뷰티 스킨케어를 소개합니다."
     },
 
 ];

@@ -112,14 +112,14 @@ const works = [
         description: "김다현의 '수은등' 커버 영상입니다."
     },
     {
-        id: 49,
-        title: "지코, 한국 힙합과 K-POP을 넘나들며 | INTERVIEW",
-        client: "JJK",
-        category: "DOCUMENTARY",
+        id: 42,
+        title: "김다현 1390만 유튜버 대선배 햄지님과 먹방 했습니다😋🍴 #김다현 #김다현tv",
+        client: "김다현",
+        category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/BggUcEa3Ess/maxresdefault.jpg",
-        videoUrl: "https://www.youtube.com/embed/BggUcEa3Ess",
-        description: "지코 - 한국 힙합과 K-POP을 넘나들며, 인터뷰 영상입니다."
+        thumbnail: "https://img.youtube.com/vi/OaGTS4ybsYQ/maxresdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/OaGTS4ybsYQ",
+        description: "1390만 유튜버 햄지님과의 먹방 콜라보레이션 영상입니다."
     },
     {
         id: 50,
@@ -172,14 +172,14 @@ const works = [
         description: "온누리상품권 500원이 없어서 생긴 에피소드 영상입니다."
     },
     {
-        id: 42,
-        title: "김다현 1390만 유튜버 대선배 햄지님과 먹방 했습니다😋🍴 #김다현 #김다현tv",
-        client: "김다현",
-        category: "BRAND",
+        id: 49,
+        title: "지코, 한국 힙합과 K-POP을 넘나들며 | INTERVIEW",
+        client: "JJK",
+        category: "DOCUMENTARY",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/OaGTS4ybsYQ/maxresdefault.jpg",
-        videoUrl: "https://www.youtube.com/embed/OaGTS4ybsYQ",
-        description: "1390만 유튜버 햄지님과의 먹방 콜라보레이션 영상입니다."
+        thumbnail: "https://img.youtube.com/vi/BggUcEa3Ess/maxresdefault.jpg",
+        videoUrl: "https://www.youtube.com/embed/BggUcEa3Ess",
+        description: "지코 - 한국 힙합과 K-POP을 넘나들며, 인터뷰 영상입니다."
     },
     {
         id: 36,

@@ -183,7 +183,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     modalTitle.textContent = work.title;
                     modalClient.textContent = work.client;
                     modalDesc.textContent = work.description;
-                    modalIframe.src = work.videoUrl;
+
+                    let url = work.videoUrl;
+                    if (url && (url.includes('youtube.com') || url.includes('youtu.be'))) {
+                        url += (url.includes('?') ? '&' : '?') + 'autoplay=1&rel=0';
+                    }
+                    modalIframe.src = url;
+
                     modal.style.display = 'flex';
                     document.body.style.overflow = 'hidden';
 

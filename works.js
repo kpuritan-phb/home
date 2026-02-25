@@ -46,7 +46,7 @@ const works = [
         client: "Vimeo",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://i.vimeocdn.com/video/2125713132-e9aaaf337903130fc6b3ca6edc27dfb70ee5114aacd249086143e6b93819127b-d_295x166?region=us",
+        thumbnail: "https://i.vimeocdn.com/video/2125713132-e9aaaf337903130fc6b3ca6edc27dfb70ee5114aacd249086143e6b93819127b-d_1280?region=us",
         videoUrl: "https://player.vimeo.com/video/1167646145",
         description: "지하니 피부 수분라인 소개 영상입니다."
     },
@@ -56,7 +56,7 @@ const works = [
         client: "Vimeo",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://i.vimeocdn.com/video/2125713291-2265b8cfd78d386b9d6236b5520ba24709e88bf642c276fa490cbe169ef82dbc-d_295x166?region=us",
+        thumbnail: "https://i.vimeocdn.com/video/2125713291-2265b8cfd78d386b9d6236b5520ba24709e88bf642c276fa490cbe169ef82dbc-d_1280?region=us",
         videoUrl: "https://player.vimeo.com/video/1167646253",
         description: "온누리상품권 이별 단편 영상입니다."
     },
@@ -66,7 +66,7 @@ const works = [
         client: "Vimeo",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://i.vimeocdn.com/video/2125713326-a54dabd4eda07d326a4e72c1c290f9258f4580b5bedd933953fd0b0d0bda2038-d_295x166?region=us",
+        thumbnail: "https://i.vimeocdn.com/video/2125713326-a54dabd4eda07d326a4e72c1c290f9258f4580b5bedd933953fd0b0d0bda2038-d_1280?region=us",
         videoUrl: "https://player.vimeo.com/video/1167646281",
         description: "온누리상품권 500원이 없어서 생긴 에피소드 영상입니다."
     },

@@ -6,7 +6,7 @@ const works = [
         client: "한성자동차",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/P0brARRRS_c/hqdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/P0brARRRS_c/maxresdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/P0brARRRS_c",
         description: "Mercedes-AMG G 63 오너의 남다른 일상을 담은 한성 SEE. Vol.2 영상입니다."
     },
@@ -16,7 +16,7 @@ const works = [
         client: "한성자동차",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/ZeiWlxHSKWY/hqdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/ZeiWlxHSKWY/maxresdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/ZeiWlxHSKWY",
         description: "최고의 인증 중고차를 찾는 한성트레저 두 번째 이야기 영상입니다."
     },
@@ -26,7 +26,7 @@ const works = [
         client: "현대모비스",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/PofMcsINkHc/hqdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/PofMcsINkHc/maxresdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/PofMcsINkHc",
         description: "현대모비스 본사에서 진행된 안전로드 퀴즈쇼 영상입니다."
     },
@@ -76,7 +76,7 @@ const works = [
         client: "김다현",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/OaGTS4ybsYQ/hqdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/OaGTS4ybsYQ/maxresdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/OaGTS4ybsYQ",
         description: "1390만 유튜버 햄지님과의 먹방 콜라보레이션 영상입니다."
     },
@@ -86,7 +86,7 @@ const works = [
         client: "충남대학교",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/s4cqLJhCgE8/hqdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/s4cqLJhCgE8/maxresdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/s4cqLJhCgE8",
         description: "대전 최대 규모를 자랑하는 CNU 스포렉스 센터의 시설과 활기를 소개하는 영상입니다."
     },
@@ -96,7 +96,7 @@ const works = [
         client: "YouTube",
         category: "BRAND",
         orientation: "landscape",
-        thumbnail: "https://img.youtube.com/vi/QbwHp3gcZDE/hqdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/QbwHp3gcZDE/maxresdefault.jpg",
         videoUrl: "https://www.youtube.com/embed/QbwHp3gcZDE",
         description: "콜라젠 리프팅 입점 소식과 제품의 매력을 담은 브랜드 영상입니다."
     },

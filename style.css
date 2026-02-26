@@ -1126,6 +1126,27 @@ footer {
     text-align: center;
 }
 
+/* Inquiry Button Style */
+.inquiry-btn {
+    display: inline-block;
+    padding: 1.5rem 4rem;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 800;
+    color: #fff;
+    border: 2px solid #fff;
+    background: transparent;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.4s var(--easing);
+    letter-spacing: 0.1em;
+}
+
+.inquiry-btn:hover {
+    background: #fff;
+    color: #000;
+}
+
+
 /* FAQ Style (Reusing system-item logic) */
 .faq-item {
     border-top: 1px solid rgba(255, 255, 255, 0.1);

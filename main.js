@@ -129,6 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 썸네일 URL을 지능적으로 결정하는 헬퍼 함수 (플레이 버튼 제거 최적화)
         function deduceThumbnail(work) {
+            // 0. 로컬 썸네일이 있으면 최우선 사용
+            if (work.thumbnail && work.thumbnail.startsWith('thumbnails/')) {
+                return work.thumbnail;
+            }
             const url = work.videoUrl || '';
 
             // 1. 유튜브 썸네일 (maxresdefault 사용으로 버튼 제거)

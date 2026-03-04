@@ -1288,4 +1288,71 @@ body.dark-subpage header.top-bar {
 body.dark-subpage .nav-item,
 body.dark-subpage .separator {
     color: #fff !important;
+/* With Us Page - One Screen Layout */
+.with-us-page .subpage-hero {
+    min-height: 25vh;
+    padding-top: 120px;
+    padding-bottom: 0;
+}
+
+.with-us-page .contact-grid-section {
+    padding: 2rem 5vw;
+    text-align: center;
+}
+
+.with-us-page .contact-info-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.with-us-page .content-group {
+    margin: 0;
+    flex: 1 1 250px;
+    min-width: 250px;
+    border-bottom: none;
+}
+
+.with-us-page .content-body p {
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
+    margin-bottom: 0;
+}
+
+.with-us-page .inquiry-wrap {
+    margin-top: 4rem;
+    display: flex;
+    justify-content: center;
+}
+
+.with-us-page .inquiry-btn {
+    padding: 1.2rem 3rem;
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
+}
+
+.with-us-page .cta-section {
+    padding: 5vh 5vw;
+    border-top: none;
+}
+
+.with-us-page .cta-sub {
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .with-us-page .contact-info-container {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .with-us-page .subpage-hero {
+        min-height: auto;
+        padding-top: 100px;
+    }
+    
+    .with-us-page .content-group {
+        margin-bottom: 1rem;
+    }
 }

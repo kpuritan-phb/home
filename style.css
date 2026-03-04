@@ -1383,7 +1383,7 @@ body.dark-subpage .separator {
     font-size: clamp(2rem, 5vw, 4rem);
     line-height: 1;
     margin-bottom: 1rem;
-    color: rgba(255,255,255,0.2);
+    color: rgba(255, 255, 255, 0.2);
     transition: color 0.5s;
     text-transform: uppercase;
 }
@@ -1463,7 +1463,7 @@ body.dark-subpage .separator {
     top: 0;
     width: 1px;
     height: 100%;
-    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.2), transparent);
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.2), transparent);
 }
 
 .workflow-step {
@@ -1479,7 +1479,7 @@ body.dark-subpage .separator {
     font-size: clamp(3rem, 10vw, 8rem);
     line-height: 0.8;
     color: transparent;
-    -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
     transition: all 0.5s;
     opacity: 0.5;
 }
@@ -1512,12 +1512,12 @@ body.dark-subpage .separator {
 
 .step-list li {
     font-size: 1rem;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
     display: flex;
     align-items: center;
     gap: 0.7rem;
     padding: 1rem;
-    background: rgba(255,255,255,0.02);
+    background: rgba(255, 255, 255, 0.02);
     border-radius: 4px;
 }
 
@@ -1532,24 +1532,30 @@ body.dark-subpage .separator {
         grid-template-columns: 1fr;
         gap: 3rem;
     }
+
     .sticky-label {
         position: relative;
         top: 0;
     }
+
     .bento-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
     .workflow-timeline {
         padding-left: 0;
     }
+
     .workflow-timeline::before {
         display: none;
     }
+
     .workflow-step {
         grid-template-columns: 1fr;
         gap: 1.5rem;
         margin-bottom: 15vh;
     }
+
     .step-list {
         grid-template-columns: 1fr;
     }
@@ -1559,7 +1565,9 @@ body.dark-subpage .separator {
     .bento-grid {
         grid-template-columns: 1fr;
     }
-}/* --- Index Specific --- */
+}
+
+/* --- Index Specific --- */
 .index-hero {
     height: 90vh;
     display: flex;
@@ -1573,18 +1581,21 @@ body.dark-subpage .separator {
 }
 
 .menu-summaries {
-    padding: 10vh 5vw;
+    padding: 15vh 5vw;
     background: #0d0d0d;
 }
 
 .summary-item {
     display: grid;
-    grid-template-columns: 100px 1.5fr 3.5fr 1fr;
-    gap: 2rem;
-    padding: 5rem 0;
+    grid-template-columns: 60px 25% 1fr 180px;
+    gap: 4rem;
+    padding: 6rem 0;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
-    align-items: center;
+    align-items: baseline;
+    /* Align by text baseline for better editorial look */
     transition: all 0.6s var(--easing);
+    position: relative;
+    overflow: hidden;
 }
 
 .summary-item:last-child {
@@ -1598,9 +1609,10 @@ body.dark-subpage .separator {
 
 .summary-num {
     font-family: var(--font-display);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: rgba(255, 255, 255, 0.2);
     transition: color 0.4s;
+    font-weight: 500;
 }
 
 .summary-item:hover .summary-num {
@@ -1608,27 +1620,35 @@ body.dark-subpage .separator {
 }
 
 .summary-title {
-    font-size: clamp(2.5rem, 6vw, 6rem);
+    font-size: clamp(2.5rem, 5vw, 5rem);
     text-transform: uppercase;
     font-family: var(--font-display);
     font-weight: 800;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
+    margin: 0;
+    line-height: 1;
 }
 
 .summary-desc {
-    font-size: clamp(1rem, 1.2vw, 1.3rem);
+    font-size: clamp(1rem, 1.1vw, 1.25rem);
     color: #888;
-    line-height: 1.7;
-    max-width: 600px;
+    line-height: 1.6;
+    max-width: 550px;
+    margin: 0;
+    font-weight: 400;
+    word-break: keep-all;
+    /* Prevents awkward breaks in Korean */
 }
 
 .summary-link {
     font-family: var(--font-display);
-    font-size: 1rem;
+    font-size: 0.9rem;
     letter-spacing: 0.15em;
     text-align: right;
     color: rgba(255, 255, 255, 0.3);
     transition: all 0.4s var(--easing);
+    align-self: center;
+    /* Center the link vertically */
 }
 
 .summary-item:hover .summary-link {
@@ -1636,22 +1656,37 @@ body.dark-subpage .separator {
     transform: translateX(10px);
 }
 
+@media (max-width: 1200px) {
+    .summary-item {
+        grid-template-columns: 60px 30% 1fr 150px;
+        gap: 2rem;
+    }
+}
+
 @media (max-width: 1024px) {
     .summary-item {
         grid-template-columns: 1fr;
         gap: 1.5rem;
         padding: 4rem 0;
+        align-items: flex-start;
     }
 
     .summary-num {
         font-size: 1rem;
     }
 
+    .summary-title {
+        font-size: 3rem;
+    }
+
     .summary-desc {
         max-width: 100%;
+        font-size: 1.1rem;
     }
 
     .summary-link {
         text-align: left;
+        margin-top: 1rem;
+        align-self: flex-start;
     }
 }

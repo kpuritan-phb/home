@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let activeView = urlParams.get('view') === 'portrait' ? 'portrait' : 'landscape';
 
         function deduceThumbnail(work) {
-            if (work.thumbnail && work.thumbnail.startsWith('thumbnails/')) return work.thumbnail;
+            if (work.thumbnail && (work.thumbnail.startsWith('thumbnails/') || work.thumbnail.startsWith('images/'))) return work.thumbnail;
             const url = work.videoUrl || '';
             if (url.includes('youtube.com') || url.includes('youtu.be')) {
                 let videoId = '';

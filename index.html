@@ -30,8 +30,7 @@
 <body class="dark-index">
     <!-- Global Background Layer -->
     <div class="global-bg-layer">
-        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=800"
-            alt="Background Vibe">
+        <img src="images/hero_vibe.png" alt="Background Vibe">
     </div>
 
     <!-- Navigation -->
@@ -85,6 +84,7 @@
     <main>
         <!-- Hero Section -->
         <section class="index-hero">
+            <div class="hero-bg-overlay"></div>
             <div class="hero-text-container">
                 <h1 class="display-text reveal-text">WE WANT,</h1>
                 <h1 class="display-text reveal-text" style="padding-left: 10vw;">WE WON,</h1>
@@ -94,12 +94,74 @@
                 <p>단순한 영상을 넘어 브랜드를 완성하는 미디어 프로덕션, 위원입니다.<br>
                     Creative Media Production rooted in Strategy.</p>
             </div>
+            <div class="scroll-indicator">
+                <span class="line"></span>
+                <span class="txt">SCROLL</span>
+            </div>
+        </section>
+
+        <!-- Featured Works Section -->
+        <section class="featured-works" id="featured-works">
+            <div class="section-label reveal-text">SELECTED PROJECTS</div>
+
+            <div class="featured-grid">
+                <!-- Project 01 -->
+                <div class="featured-item reveal-text" data-id="22">
+                    <div class="featured-thumb">
+                        <img src="https://img.youtube.com/vi/tjn6_Tp6bGo/maxresdefault.jpg" alt="Mirabelle Korea">
+                        <div class="thumb-overlay">
+                            <span>VIEW PROJECT</span>
+                        </div>
+                    </div>
+                    <div class="featured-info">
+                        <span class="f-num">01</span>
+                        <h3 class="f-title">Mirabelle Korea 2025 Brand Film</h3>
+                        <p class="f-client">Mirabelle Korea</p>
+                    </div>
+                </div>
+
+                <!-- Project 02 -->
+                <div class="featured-item reveal-text" style="margin-top: 15vh;" data-id="44">
+                    <div class="featured-thumb">
+                        <img src="https://img.youtube.com/vi/P0brARRRS_c/maxresdefault.jpg" alt="Hansung Motor">
+                        <div class="thumb-overlay">
+                            <span>VIEW PROJECT</span>
+                        </div>
+                    </div>
+                    <div class="featured-info">
+                        <span class="f-num">02</span>
+                        <h3 class="f-title">Mercedes-AMG G 63 Owner Story</h3>
+                        <p class="f-client">한성자동차</p>
+                    </div>
+                </div>
+
+                <!-- Project 03 -->
+                <div class="featured-item reveal-text" data-id="46">
+                    <div class="featured-thumb">
+                        <img src="https://img.youtube.com/vi/ClX7DnBhzL4/maxresdefault.jpg" alt="Hansung Treasure">
+                        <div class="thumb-overlay">
+                            <span>VIEW PROJECT</span>
+                        </div>
+                    </div>
+                    <div class="featured-info">
+                        <span class="f-num">03</span>
+                        <h3 class="f-title">Hanseong Treasure EP.1</h3>
+                        <p class="f-client">한성자동차</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-all-container reveal-text">
+                <a href="works.html" class="view-all-btn">VIEW ALL WORKS →</a>
+            </div>
         </section>
 
         <!-- Menu Summaries -->
         <section class="menu-summaries" id="menu-summaries">
+            <div class="section-label reveal-text" style="margin-bottom: 5vh;">DIRECTORY</div>
             <!-- WHO -->
-            <div class="summary-item reveal-text">
+            <div class="summary-item reveal-text"
+                data-bg="https://images.unsplash.com/photo-1492691523567-61125645e34b?auto=format&fit=crop&q=80&w=800">
                 <span class="summary-num">01</span>
                 <h2 class="summary-title">WHO</h2>
                 <p class="summary-desc">브랜드의 본질을 진단하고, 그 가치가 가장 빛날 수 있는 시각적 스토리텔링을 설계합니다.</p>
@@ -107,7 +169,8 @@
             </div>
 
             <!-- WORKFLOW -->
-            <div class="summary-item reveal-text">
+            <div class="summary-item reveal-text"
+                data-bg="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=800">
                 <span class="summary-num">02</span>
                 <h2 class="summary-title">WORKFLOW</h2>
                 <p class="summary-desc">기획부터 연출, 성과 분석까지 이어지는 위원만의 탄탄하고 전략적인 제작 프로세스를 구축합니다.</p>
@@ -115,7 +178,8 @@
             </div>
 
             <!-- WORKS -->
-            <div class="summary-item reveal-text">
+            <div class="summary-item reveal-text"
+                data-bg="https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&q=80&w=800">
                 <span class="summary-num">03</span>
                 <h2 class="summary-title">WORKS</h2>
                 <p class="summary-desc">한성자동차, 미라벨 등 유수의 파트너십을 통해 증명된 성과 중심의 프로젝트들을 확인하세요.</p>
@@ -123,7 +187,8 @@
             </div>
 
             <!-- WITHNESS -->
-            <div class="summary-item reveal-text">
+            <div class="summary-item reveal-text"
+                data-bg="https://images.unsplash.com/photo-1542204172-3c13936637b5?auto=format&fit=crop&q=80&w=800">
                 <span class="summary-num">04</span>
                 <h2 class="summary-title">WITHNESS</h2>
                 <p class="summary-desc">현장의 치열한 고민과 정제되지 않은 작업의 과정들, 그 비하인드 스토리와 기록을 공유합니다.</p>
@@ -131,7 +196,8 @@
             </div>
 
             <!-- OMNIVERSE -->
-            <div class="summary-item reveal-text">
+            <div class="summary-item reveal-text"
+                data-bg="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800">
                 <span class="summary-num">05</span>
                 <h2 class="summary-title">OMNIVERSE</h2>
                 <p class="summary-desc">위원이 지향하는 가치와 철학이 담긴 또 다른 실험적인 세계와 프로젝트를 경험하세요.</p>
@@ -145,6 +211,21 @@
             <a href="with-us.html" class="contact-link" style="font-size: clamp(2rem, 5vw, 4rem);">WITH US →</a>
         </section>
     </main>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="video-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="video-container">
+                <iframe id="modal-iframe" src="" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+            </div>
+            <div class="modal-info">
+                <h3 id="modal-title"></h3>
+                <p id="modal-client"></p>
+                <p id="modal-desc"></p>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <div class="social-links">

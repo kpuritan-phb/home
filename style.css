@@ -269,20 +269,24 @@ section {
 }
 
 /* Global Background Layer */
+/* Global Background Layer - Enhanced for Premium Vibe */
 .global-bg-layer {
     position: fixed;
     top: 50%;
-    right: 10%;
+    right: 5%;
     transform: translateY(-50%);
-    width: 30vw;
-    height: 40vh;
-    opacity: 0.15;
-    /* Subtle global vibe */
+    width: 45vw;
+    height: 60vh;
+    opacity: 0;
     z-index: -10;
-    /* background layer (가장 아래) */
     pointer-events: none;
-    /* 클릭 막힘 방지 */
     overflow: hidden;
+    transition: opacity 2s var(--easing), transform 10s linear;
+    filter: blur(2px) brightness(0.7);
+}
+
+.global-bg-layer.active {
+    opacity: 0.15;
 }
 
 .global-bg-layer img {
@@ -290,16 +294,22 @@ section {
     height: 100%;
     object-fit: cover;
     filter: grayscale(100%);
+    scale: 1.1;
+    transition: transform 20s ease-out;
+}
+
+.global-bg-layer:hover img {
+    transform: scale(1);
 }
 
 @media (max-width: 768px) {
     .global-bg-layer {
-        width: 60vw;
-        height: 30vh;
-        top: 25%;
-        right: -5%;
-        opacity: 0.1;
-        /* 모바일 환경에서는 콘텐츠 가독성을 위해 살짝 더 연하게 유지 */
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        right: 0;
+        transform: none;
+        opacity: 0.08;
     }
 }
 
@@ -1569,20 +1579,220 @@ body.dark-subpage .separator {
 
 /* --- Index Specific --- */
 .index-hero {
-    height: 90vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 0 5vw;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, transparent 0%, rgba(13, 13, 13, 0.4) 100%);
+    z-index: -1;
 }
 
 .index-hero .display-text {
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
 }
 
+.scroll-indicator {
+    position: absolute;
+    bottom: 5vh;
+    left: 5vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0.5;
+}
+
+.scroll-indicator .line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, white, transparent);
+    animation: scroll-line 2s infinite;
+    transform-origin: top;
+}
+
+.scroll-indicator .txt {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    writing-mode: vertical-lr;
+}
+
+@keyframes scroll-line {
+    0% { transform: scaleY(0); }
+    50% { transform: scaleY(1); }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+.section-label {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    color: var(--accent-color);
+    margin-bottom: 3rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.section-label::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Featured Works */
+.featured-works {
+    padding: 20vh 5vw;
+}
+
+.featured-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10vw;
+    margin-bottom: 10vh;
+}
+
+.featured-item {
+    cursor: pointer;
+}
+
+.featured-thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    position: relative;
+    border-radius: 2px;
+    background: #1a1a1a;
+}
+
+.featured-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s var(--easing);
+}
+
+.thumb-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.6s var(--easing);
+    backdrop-filter: blur(0px);
+}
+
+.thumb-overlay span {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    border: 1px solid white;
+    padding: 1rem 2rem;
+    transform: translateY(20px);
+    transition: transform 0.6s var(--easing);
+}
+
+.featured-item:hover .featured-thumb img {
+    transform: scale(1.05);
+}
+
+.featured-item:hover .thumb-overlay {
+    opacity: 1;
+    backdrop-filter: blur(5px);
+}
+
+.featured-item:hover .thumb-overlay span {
+    transform: translateY(0);
+}
+
+.featured-info {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.f-num {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    color: var(--accent-color);
+    opacity: 0.5;
+}
+
+.f-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.f-client {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.view-all-container {
+    text-align: center;
+    margin-top: 5vh;
+}
+
+.view-all-btn {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid white;
+    transition: opacity 0.3s;
+}
+
+.view-all-btn:hover {
+    opacity: 0.6;
+}
+
+/* Menu Summaries Enhanced */
 .menu-summaries {
-    padding: 15vh 5vw;
+    padding: 20vh 5vw;
     background: #0d0d0d;
+    position: relative;
+    z-index: 1;
+}
+
+/* Hover Background for Summaries */
+.summary-bg-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.8s var(--easing);
+}
+
+.summary-bg-layer img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.3) grayscale(0.5) blur(30px);
 }
 
 .summary-item {
@@ -1595,6 +1805,7 @@ body.dark-subpage .separator {
     transition: all 0.6s var(--easing);
     position: relative;
     overflow: hidden;
+    background: transparent;
 }
 
 .summary-item:last-child {
@@ -1602,8 +1813,7 @@ body.dark-subpage .separator {
 }
 
 .summary-item:hover {
-    padding-left: 2.5rem;
-    background: rgba(255, 255, 255, 0.02);
+    padding-left: 2rem;
 }
 
 .summary-num {
@@ -1619,36 +1829,46 @@ body.dark-subpage .separator {
 }
 
 .summary-title {
-    font-size: clamp(2rem, 5vw, 6rem);
+    font-size: clamp(2.5rem, 6vw, 7rem);
     text-transform: uppercase;
     font-family: var(--font-display);
     font-weight: 800;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
     margin: 0;
-    line-height: 1;
+    line-height: 0.9;
     white-space: nowrap;
+    opacity: 0.3;
+    transition: opacity 0.6s var(--easing);
+}
+
+.summary-item:hover .summary-title {
+    opacity: 1;
 }
 
 .summary-desc {
-    font-size: clamp(1rem, 1.1vw, 1.25rem);
-    color: #888;
+    font-size: clamp(1rem, 1.1vw, 1.2rem);
+    color: #666;
     line-height: 1.6;
-    max-width: 550px;
+    max-width: 500px;
     margin: 0;
     font-weight: 400;
     word-break: keep-all;
-    /* Prevents awkward breaks in Korean */
+    transition: color 0.6s;
+}
+
+.summary-item:hover .summary-desc {
+    color: #bbb;
 }
 
 .summary-link {
     font-family: var(--font-display);
-    font-size: 0.9rem;
-    letter-spacing: 0.15em;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
     text-align: right;
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.1);
     transition: all 0.4s var(--easing);
     align-self: center;
-    /* Center the link vertically */
+    font-weight: 700;
 }
 
 .summary-item:hover .summary-link {
@@ -1664,6 +1884,15 @@ body.dark-subpage .separator {
 }
 
 @media (max-width: 1024px) {
+    .featured-grid {
+        grid-template-columns: 1fr;
+        gap: 5vh;
+    }
+
+    .featured-item {
+        margin-top: 0 !important;
+    }
+
     .summary-item {
         grid-template-columns: 1fr;
         gap: 1.5rem;
@@ -1671,22 +1900,20 @@ body.dark-subpage .separator {
         align-items: flex-start;
     }
 
-    .summary-num {
-        font-size: 1rem;
-    }
-
     .summary-title {
-        font-size: 3rem;
+        font-size: clamp(2rem, 10vw, 4rem);
+        white-space: normal;
+        opacity: 1;
     }
 
     .summary-desc {
         max-width: 100%;
-        font-size: 1.1rem;
     }
 
     .summary-link {
         text-align: left;
         margin-top: 1rem;
         align-self: flex-start;
+        color: white;
     }
 }

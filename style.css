@@ -2008,7 +2008,7 @@ body.dark-subpage .separator {
 }
 
 .shorts-item .shorts-thumb {
-    width: 250px;
+    width: 400px;
     aspect-ratio: 9/16;
     flex-shrink: 0;
     border-radius: 4px;
@@ -2017,13 +2017,15 @@ body.dark-subpage .separator {
 @media (max-width: 768px) {
     .shorts-item {
         flex-direction: column-reverse;
-        align-items: flex-start;
-        gap: 1.5rem;
+        /* 모바일에서는 가운데 정렬이 더 예쁠 수 있습니다 */
+        align-items: center;
+        text-align: center;
+        gap: 2rem;
     }
 
     .shorts-item .shorts-thumb {
         width: 100%;
-        max-width: 300px;
+        max-width: 450px;
     }
 
     .shorts-item .featured-info {

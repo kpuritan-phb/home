@@ -1992,26 +1992,41 @@ body.dark-subpage .separator {
 
 /* Shorts Item specific styling */
 .shorts-item {
-    position: relative;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: flex-end;
+    /* 썸네일과 텍스트 정보를 하단 정렬하거나 flex-end로 조절 */
+    justify-content: space-between;
+    gap: 2rem;
+    margin-top: 5vh;
 }
 
-.shorts-badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    z-index: 10;
-    background: #fff;
-    color: #000;
-    font-size: 0.7rem;
-    padding: 0.3rem 0.6rem;
-    font-weight: 800;
-    font-family: var(--font-display);
+.shorts-item .featured-info {
+    margin-top: 0;
+    flex: 1;
+    margin-bottom: 2rem;
+}
+
+.shorts-item .shorts-thumb {
+    width: 250px;
+    aspect-ratio: 9/16;
+    flex-shrink: 0;
     border-radius: 4px;
-    letter-spacing: 0.05em;
 }
 
-.shorts-item .featured-thumb {
-    width: 100%;
+@media (max-width: 768px) {
+    .shorts-item {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+
+    .shorts-item .shorts-thumb {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .shorts-item .featured-info {
+        margin-bottom: 0;
+    }
 }

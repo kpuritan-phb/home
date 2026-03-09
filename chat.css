@@ -7,40 +7,43 @@
 }
 
 .chat-trigger {
-    width: 60px;
+    padding: 0 24px;
     height: 60px;
-    background: #000;
-    border-radius: 50%;
+    background: #fff;
+    border-radius: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 12px;
     cursor: pointer;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
+    color: #000;
 }
 
 .chat-trigger:hover {
-    transform: scale(1.1);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
 }
 
 .chat-trigger img {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     object-fit: contain;
 }
 
+.chat-trigger span {
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    font-family: var(--font-display, sans-serif);
+}
+
 .chat-trigger::after {
-    content: '';
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 14px;
-    height: 14px;
-    background: #4caf50;
-    border-radius: 50%;
-    border: 3px solid #000;
+    display: none;
+    /* 제거: 텍스트가 있으므로 온라인 점은 생략하거나 위치 조정 필요 */
 }
 
 .chat-window {

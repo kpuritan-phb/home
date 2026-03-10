@@ -188,8 +188,8 @@
         /* Grid Layout */
         .book-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
         }
 
         .book-list-item {
@@ -217,15 +217,16 @@
         .book-list-thumb {
             width: 100%;
             min-width: unset;
-            height: 220px;
+            height: 380px;
+            /* 더 크게 노출하기 위해 높이 대폭 증가 */
             background-color: #f0f0f0;
             /* 배경색을 살짝 진하게 하여 이미지 경계 구분 */
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            padding: 10px;
-            /* 양옆 잘리지 않도록 여백 추가 */
+            padding: 4px;
+            /* 여백을 최소화하여 이미지가 꽉 차게 */
             border-bottom: 1px solid #eee;
         }
 
@@ -338,7 +339,10 @@
             }
 
             .book-list-thumb {
-                height: 140px;
+                height: 220px;
+                /* 모바일에서도 높이를 키워 크게 보이게 */
+                padding: 2px;
+                /* 모바일은 더 좁은 여백 */
             }
 
             .book-list-info {

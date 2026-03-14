@@ -36,7 +36,16 @@ window.openResourceModal = (category, series, docId) => {
                         // Link Check
                         let linkHtml = '';
                         const fileUrl = item.fileUrl || item.downloadUrl;
-                        if (fileUrl) linkHtml += `<a href="${fileUrl}" target="_blank" class="download-btn"><i class="fas fa-file-download"></i> 다운로드</a>`;
+                        const isPdf = fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(fileUrl);
+
+                        if (fileUrl) {
+                            if (isPdf) {
+                                linkHtml += `<a href="viewer.html?file=${encodeURIComponent(fileUrl)}&title=${encodeURIComponent(item.title)}" target="_blank" class="download-btn"><i class="fas fa-eye"></i> 열기</a>`;
+                            } else {
+                                linkHtml += `<a href="${fileUrl}" target="_blank" class="download-btn"><i class="fas fa-file-download"></i> 다운로드</a>`;
+                            }
+                        }
+
                         if (item.youtubeLink) linkHtml += `<a href="${item.youtubeLink}" target="_blank" class="download-btn youtube"><i class="fab fa-youtube"></i> 영상 보기</a>`;
                         if (!linkHtml) linkHtml = `<span style="color:#999; font-size:0.8rem;">첨부 파일 없음</span>`;
 

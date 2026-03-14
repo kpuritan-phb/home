@@ -1696,7 +1696,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const icon = isPdf ? 'fa-file-pdf' : 'fa-file-download';
             const label = isPdf ? 'PDF 파일 보기' : '첨부파일 다운로드';
             const color = isPdf ? '#e74c3c' : 'var(--secondary-color)';
-            fileLinkHtml = `<a href="${post.fileUrl}" target="_blank" class="resource-link premium-btn" style="border-color:${color}; color:${color}; margin-top:10px;" 
+            const finalHref = isPdf ? `viewer.html?file=${encodeURIComponent(post.fileUrl)}&title=${encodeURIComponent(post.title)}` : post.fileUrl;
+
+            fileLinkHtml = `<a href="${finalHref}" target="_blank" class="resource-link premium-btn" style="border-color:${color}; color:${color}; margin-top:10px;" 
                 onclick="if(window.Stats) window.Stats.track('${isPdf ? 'download' : 'click'}', { id: '${post.id}', type: '${isPdf ? 'tract_pdf' : 'resource_file'}', title: '${post.title.replace(/'/g, "\\'")}', category: '${(post.tags || []).join(",")}' })">
                 <i class="fas ${icon}"></i> ${label}</a>`;
         }

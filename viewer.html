@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading...</title>
+    <title>PDF 뷰어 | 한국 청교도 연구소</title>
     <style>
         body,
         html {
@@ -13,19 +13,69 @@
             height: 100%;
             overflow: hidden;
             background: #525659;
+            font-family: -apple-system, BlinkMacMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .viewer-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         iframe {
             width: 100%;
-            height: 100%;
+            flex: 1;
             border: none;
             display: block;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(82, 86, 89, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 1000;
+            transition: opacity 0.3s;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
 
 <body>
-    <iframe id="pdf-frame"></iframe>
+    <div class="viewer-container">
+        <div id="loading" class="loading-overlay">
+            <div class="spinner"></div>
+            <div>문서를 불러오는 중입니다...</div>
+        </div>
+        <iframe id="pdf-frame" allow="fullscreen"></iframe>
+    </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
@@ -33,11 +83,40 @@
         const title = urlParams.get('title');
 
         if (title) {
-            document.title = title;
+            document.title = title + " | PDF 뷰어";
         }
 
         if (fileUrl) {
-            document.getElementById('pdf-frame').src = fileUrl;
+            const frame = document.getElementById('pdf-frame');
+            const loading = document.getElementById('loading');
+
+            // 모바일/태블릿 여부 확인
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+            let finalUrl = fileUrl;
+
+            // 모바일에서는 Google Docs Viewer를 사용하는 것이 훨씬 안정적입니다 (다운로드 방지 및 인라인 뷰잉)
+            if (isMobile) {
+                finalUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+            }
+
+            frame.src = finalUrl;
+
+            frame.onload = () => {
+                setTimeout(() => {
+                    loading.style.opacity = '0';
+                    setTimeout(() => loading.style.display = 'none', 300);
+                }, 500);
+            };
+
+            // 만약 10초 동안 로딩이 안되면 로딩 화면 제거 (폴백)
+            setTimeout(() => {
+                if (loading.style.display !== 'none') {
+                    loading.style.display = 'none';
+                }
+            }, 10000);
+        } else {
+            document.body.innerHTML = "<div style='color:white; text-align:center; padding-top:50px;'>파일 경로가 유효하지 않습니다.</div>";
         }
     </script>
 </body>

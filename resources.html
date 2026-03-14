@@ -619,15 +619,13 @@
                     });
                 }
 
-                // If it's a PDF, open directly like booklets.html does
+                // If it's a PDF, open via viewer.html for better mobile experience
                 if (post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) {
+                    window.open(`viewer.html?file=${encodeURIComponent(post.fileUrl)}&title=${encodeURIComponent(post.title)}`, '_blank');
+                } else if (post.fileUrl) {
                     window.open(post.fileUrl, '_blank');
                 } else {
-                    // For now, redirect to index.html with param or show modal if available
-                    // Since resources.html is a standalone page, we might need a detail view here too
-                    // But to match "booklets.html" which often opens PDFs directly:
-                    if (post.fileUrl) window.open(post.fileUrl, '_blank');
-                    else alert("상세보기 기능은 준비 중입니다. (index.html에서 확인 가능)");
+                    alert("상세보기 기능은 준비 중입니다. (index.html에서 확인 가능)");
                 }
             };
 

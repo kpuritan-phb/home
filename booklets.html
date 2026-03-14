@@ -691,7 +691,7 @@
 
                 itemEl.onclick = () => {
                     if (item.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(item.fileUrl)) {
-                        window.open(item.fileUrl, '_blank');
+                        window.open(`viewer.html?file=${encodeURIComponent(item.fileUrl)}&title=${encodeURIComponent(item.title)}`, '_blank');
                     } else {
                         openDetail(item);
                     }

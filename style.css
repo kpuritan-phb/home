@@ -981,10 +981,19 @@ footer {
 
 .video-modal.is-portrait .video-container {
     aspect-ratio: 9/16;
-    max-height: 70vh;
-    /* Maximize video scale */
+    height: 70vh;
+    /* Set height explicitly to ensure visibility */
     width: auto;
+    max-width: 100%;
     margin: 0 auto 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .video-modal.is-portrait .video-container {
+        height: auto;
+        width: 100%;
+        max-height: 70vh;
+    }
 }
 
 .video-modal.is-portrait .modal-info {

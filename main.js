@@ -428,4 +428,133 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Project Request Form Logic ---
+    const projectForm = document.getElementById('project-form');
+    const formSteps = document.querySelectorAll('.form-step');
+    const stepIndicators = document.querySelectorAll('.step-indicator');
+    const nextBtn = document.querySelector('.next-step-btn');
+    const prevBtn = document.querySelector('.prev-step-btn');
+    const statusMsg = document.getElementById('status-msg');
+    const fileInput = document.getElementById('file-upload');
+    const fileNameDisplay = document.getElementById('file-name');
+
+    // Step Navigation (Mobile Only)
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            // Simple validation before going to next step
+            const currentStepFields = document.getElementById('step-1').querySelectorAll('[required]');
+            let valid = true;
+            currentStepFields.forEach(field => {
+                if (!field.value) {
+                    valid = false;
+                    field.style.borderColor = '#ff3e3e';
+                } else {
+                    field.style.borderColor = '';
+                }
+            });
+
+            if (valid) {
+                formSteps[0].classList.remove('active');
+                formSteps[1].classList.add('active');
+                stepIndicators[0].classList.remove('active');
+                stepIndicators[1].classList.add('active');
+                window.scrollTo({
+                    top: document.getElementById('project-request').offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            formSteps[1].classList.remove('active');
+            formSteps[0].classList.add('active');
+            stepIndicators[1].classList.remove('active');
+            stepIndicators[0].classList.add('active');
+            window.scrollTo({
+                top: document.getElementById('project-request').offsetTop - 100,
+                behavior: 'smooth'
+            });
+        });
+    }
+
+    // File Name Display
+    if (fileInput && fileNameDisplay) {
+        fileInput.addEventListener('change', (e) => {
+            const fileName = e.target.files[0]?.name || '없음';
+            fileNameDisplay.textContent = `선택된 파일: ${fileName}`;
+            fileNameDisplay.style.display = 'block';
+        });
+    }
+
+    // Form Submission
+    if (projectForm) {
+        projectForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = projectForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+
+            // Loading state
+            submitBtn.textContent = '전송 중...';
+            submitBtn.disabled = true;
+            statusMsg.className = 'status-message';
+            statusMsg.style.display = 'none';
+
+            const formData = new FormData(projectForm);
+
+            try {
+                const response = await fetch(projectForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    statusMsg.textContent = '문의가 정상적으로 접수되었습니다. 담당자가 내용을 확인한 뒤 24시간 내에 연락드리겠습니다. 급한 문의는 0507-1480-1707로 연락 부탁드립니다.';
+                    statusMsg.classList.add('success');
+                    projectForm.reset();
+                    if (fileNameDisplay) fileNameDisplay.style.display = 'none';
+                    // Reset to first step on mobile
+                    if (window.innerWidth <= 768) {
+                        formSteps[1].classList.remove('active');
+                        formSteps[0].classList.add('active');
+                        stepIndicators[1].classList.remove('active');
+                        stepIndicators[0].classList.add('active');
+                    }
+                } else {
+                    const data = await response.json();
+                    statusMsg.textContent = data.errors ? data.errors.map(error => error.message).join(", ") : '오류가 발생했습니다. 다시 시도해주세요.';
+                    statusMsg.classList.add('error');
+                }
+            } catch (error) {
+                statusMsg.textContent = '서버 연결에 실패했습니다. 인터넷 연결을 확인하거나 나중에 다시 시도해주세요.';
+                statusMsg.classList.add('error');
+            } finally {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
+                statusMsg.style.display = 'block';
+
+                // Scroll to status message
+                statusMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    }
+
+    // Smooth scroll for all hash links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                window.scrollTo({
+                    top: target.offsetTop - 80, // Offset for header
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
 });

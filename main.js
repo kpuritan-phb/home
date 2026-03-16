@@ -13,13 +13,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Loading Animation ---
-    gsap.from("header", {
-        y: -50,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out",
-        delay: 0.5
-    });
+    if (typeof gsap !== 'undefined') {
+        gsap.from("header", {
+            y: -50,
+            opacity: 0,
+            duration: 1,
+            ease: "power3.out",
+            delay: 0.5
+        });
+    }
 
     // --- Scroll Animations (Reveal Text) ---
     const revealElements = document.querySelectorAll('.reveal-text');
@@ -33,12 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                gsap.to(entry.target, {
-                    y: 0,
-                    opacity: 1,
-                    duration: 1,
-                    ease: "power2.out"
-                });
+                if (typeof gsap !== 'undefined') {
+                    gsap.to(entry.target, {
+                        y: 0,
+                        opacity: 1,
+                        duration: 1,
+                        ease: "power2.out"
+                    });
+                }
                 observer.unobserve(entry.target);
             }
         });
@@ -98,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = 'hidden';
 
         if (window.history && window.history.pushState) {
-            window.history.pushState({ modalOpen: true }, '', window.location.href);
+            window.history.pushState({ modalOpen: true }, '');
         }
     }
 
@@ -289,16 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadPage(activeView);
     }
 
-    // --- Footer & Nav logic ---
-    const faqItems = document.querySelectorAll('.faq-item');
-    faqItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const isActive = item.classList.contains('active');
-            faqItems.forEach(i => i.classList.remove('active'));
-            if (!isActive) item.classList.add('active');
-        });
-    });
-
     // --- Navigation Logic for Mobile ---
     const navContainers = document.querySelectorAll('.nav-item-container');
     navContainers.forEach(container => {
@@ -334,10 +328,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (chatTrigger && chatWidget) {
         chatTrigger.addEventListener('click', () => {
             chatWidget.classList.toggle('active');
-            if (chatWidget.classList.contains('active')) {
-                // Remove notification dot if active
-                chatTrigger.style.setProperty('--unread', 'none');
-            }
         });
     }
 
@@ -348,28 +338,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Function to add chat bubble
     const addBubble = (text, type) => {
         if (!chatBody) return;
         const bubble = document.createElement('div');
         bubble.className = `chat-msg-bubble ${type}`;
-        // Preserve newlines
         bubble.innerHTML = `<p>${text.replace(/\n/g, '<br>')}</p>`;
         chatBody.appendChild(bubble);
         chatBody.scrollTop = chatBody.scrollHeight;
     };
 
+    /**
+     * 성공 처리를 위한 공통 함수
+     */
+    const handleSuccess = (name, message) => {
+        if (chatLeadContainer) chatLeadContainer.style.display = 'none';
+        isLeadSubmitted = true;
+
+        // 사용자 메시지 표시
+        addBubble(message, 'user');
+
+        // 봇의 응답 표시
+        setTimeout(() => {
+            const successMsg = `${name}님, 문의가 성공적으로 접수되었습니다. 최대한 신속하게 답변 드리겠습니다!\n(※ 제출하신 내용은 안전하게 전송되었습니다.)`;
+            addBubble(successMsg, 'bot');
+        }, 500);
+    };
+
     if (chatForm) {
-        chatForm.addEventListener('submit', (e) => {
+        chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = chatForm.querySelector('.chat-submit-btn');
 
-            // Get data to simulate save
             const name = document.getElementById('chat-name').value;
             const email = document.getElementById('chat-email').value;
             const phone = document.getElementById('chat-phone').value;
             const message = document.getElementById('chat-message').value;
 
+            // 1. 로컬 백업 세이브 (실패 시 대비)
             try {
                 const inquiries = JSON.parse(localStorage.getItem('wewon_inquiries') || '[]');
                 inquiries.push({ name, email, phone, message, timestamp: new Date().toLocaleString() });
@@ -379,30 +384,44 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.textContent = '전송 중...';
             btn.disabled = true;
 
-            setTimeout(() => {
-                if (chatLeadContainer) chatLeadContainer.style.display = 'none';
-                isLeadSubmitted = true;
+            // 2. EmailJS 전송 실행
+            const config = window._EMAILJS_CONFIG;
+            const isConfigured = config && config.PUBLIC_KEY !== 'YOUR_PUBLIC_KEY';
 
-                // Add user message
-                addBubble(message, 'user');
+            if (isConfigured) {
+                try {
+                    // EmailJS Template 변수와 매칭되어야 합니다.
+                    const templateParams = {
+                        from_name: name,
+                        from_email: email,
+                        phone: phone,
+                        message: message
+                    };
 
-                // Add auto-reply
+                    await emailjs.send(config.SERVICE_ID, config.TEMPLATE_ID, templateParams);
+                    handleSuccess(name, message);
+                } catch (error) {
+                    console.error('Email 전송 실패:', error);
+                    alert('메일 전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+                    btn.textContent = '문의 보내기';
+                    btn.disabled = false;
+                }
+            } else {
+                // 테스트 모드 (EmailJS 설정 전)
+                console.warn('EmailJS가 설정되지 않았습니다. 테스트 모드로 동작합니다.');
                 setTimeout(() => {
-                    addBubble(`${name}님, 문의가 성공적으로 접수되었습니다. 최대한 신속하게 답변 드리겠습니다!\n(※ 현재 웹사이트는 테스트 버전이며, 제출 내용은 브라우저 로컬 저장소에 임시 저장되었습니다.)`, 'bot');
-                }, 500);
-
-            }, 800);
+                    handleSuccess(name, message);
+                }, 1000);
+            }
         });
     }
 
-    // Footer input handling
     const handleSendMsg = () => {
         if (!chatInput) return;
         const text = chatInput.value.trim();
         if (!text) return;
 
         if (!isLeadSubmitted) {
-            // Fill message field if form is not submitted yet
             const msgArea = document.getElementById('chat-message');
             if (msgArea) {
                 msgArea.value = (msgArea.value + (msgArea.value ? "\n" : "") + text).trim();
@@ -412,7 +431,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Chat mode
         addBubble(text, 'user');
         chatInput.value = '';
 

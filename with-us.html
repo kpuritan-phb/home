@@ -27,7 +27,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
+    <!-- EmailJS Settings -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        window._EMAILJS_CONFIG = {
+            PUBLIC_KEY: 'K08_7j5qGvI_6Hn_6',
+            SERVICE_ID: 'service_p11z08f',
+            TEMPLATE_ID: 'template_u3f4f6r'
+        };
 
+        (function () {
+            if (window._EMAILJS_CONFIG.PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+                emailjs.init(window._EMAILJS_CONFIG.PUBLIC_KEY);
+            }
+        })();
+    </script>
 </head>
 
 <body class="dark-subpage with-us-page">
@@ -118,16 +132,43 @@
                 </div>
             </div>
 
-            <div class="reveal-text inquiry-wrap">
-                <a href="https://forms.gle/RbZxF3pYXArgwnMRA" target="_blank" class="inquiry-btn">
-                    견적문의 →
-                </a>
+            <!-- Native Inquiry Form (Replaces broken external links) -->
+            <div class="reveal-text inquiry-form-container">
+                <h2 class="form-title">프로젝트 의뢰하기</h2>
+                <form id="page-inquiry-form" class="native-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="p-name">성함 / 회사명</label>
+                            <input type="text" id="p-name" name="from_name" placeholder="홍길동 (위원프로덕션)" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="p-contact">연락처</label>
+                            <input type="tel" id="p-contact" name="phone" placeholder="010-0000-0000" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="p-email">이메일 주소</label>
+                        <input type="email" id="p-email" name="from_email" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="p-message">문의 상세 내용</label>
+                        <textarea id="p-message" name="message" placeholder="제작하고자 하시는 영상의 성격, 예산, 마감 기한 등을 자유롭게 남겨주세요."
+                            required></textarea>
+                    </div>
+                    <div class="form-submit">
+                        <button type="submit" id="p-submit-btn" class="inquiry-btn">전송하기</button>
+                    </div>
+                </form>
+                <div id="form-success-msg" class="success-message" style="display: none;">
+                    <h3>문의가 성공적으로 접수되었습니다!</h3>
+                    <p>보내주신 내용을 확인하여 담당자가 신속하게 연락드리겠습니다.</p>
+                </div>
             </div>
         </section>
 
         <!-- CTA Section -->
         <section class="cta-section reveal-text">
-            <span class="cta-sub">START YOUR PROJECT</span>
+            <span class="cta-sub">READY TO START?</span>
             <a href="mailto:wwwwwo.official@gmail.com" class="contact-link"
                 style="font-size: clamp(1.2rem, 3vw, 2.5rem);">wwwwwo.official@gmail.com</a>
         </section>

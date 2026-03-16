@@ -446,4 +446,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Page Level: Inquiry Form Logic ---
+    const pageInquiryForm = document.getElementById('page-inquiry-form');
+    if (pageInquiryForm) {
+        pageInquiryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('p-submit-btn');
+            const successMsg = document.getElementById('form-success-msg');
+
+            const formData = new FormData(pageInquiryForm);
+            const templateParams = {
+                from_name: formData.get('from_name'),
+                from_email: formData.get('from_email'),
+                phone: formData.get('phone'),
+                message: formData.get('message')
+            };
+
+            btn.textContent = '전송 중...';
+            btn.disabled = true;
+
+            const config = window._EMAILJS_CONFIG;
+            const isConfigured = config && config.PUBLIC_KEY !== 'YOUR_PUBLIC_KEY';
+
+            if (isConfigured) {
+                try {
+                    await emailjs.send(config.SERVICE_ID, config.TEMPLATE_ID, templateParams);
+                    pageInquiryForm.style.display = 'none';
+                    if (successMsg) successMsg.style.display = 'block';
+                } catch (error) {
+                    console.error('Email 전송 실패:', error);
+                    alert('메일 전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+                    btn.textContent = '전송하기';
+                    btn.disabled = false;
+                }
+            } else {
+                // 테스트 모드
+                setTimeout(() => {
+                    pageInquiryForm.style.display = 'none';
+                    if (successMsg) successMsg.style.display = 'block';
+                }, 1000);
+            }
+        });
+    }
+
 });

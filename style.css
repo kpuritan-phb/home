@@ -1915,8 +1915,8 @@ body.dark-subpage .separator {
 
 .process-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2vw;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5vw;
 }
 
 .process-card {
@@ -1928,6 +1928,8 @@ body.dark-subpage .separator {
     flex-direction: column;
     gap: 2rem;
     transition: transform 0.3s;
+    text-align: center;
+    align-items: center;
 }
 
 .process-card:hover {
@@ -1976,19 +1978,19 @@ body.dark-subpage .separator {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
+    align-items: center;
 }
 
 .p-list li {
     font-size: 0.85rem;
     color: #555;
     position: relative;
-    padding-left: 1rem;
+    padding-left: 0;
 }
 
 .p-list li::before {
     content: '→';
-    position: absolute;
-    left: 0;
+    margin-right: 0.5rem;
     color: var(--accent-color);
 }
 

@@ -964,18 +964,35 @@ footer {
 
 /* Portrait Mode Adjustments */
 .video-modal.is-portrait .modal-content {
-    max-width: 50vh;
-    /* Limit width in portrait so it's not too tall on Desktop */
+    max-width: 70vh;
+    /* Increased for larger display */
+    max-height: 90vh;
+    /* Fit within viewport */
+    display: flex;
+    flex-direction: column;
 }
 
 @media (max-width: 768px) {
     .video-modal.is-portrait .modal-content {
         max-width: 100%;
+        max-height: 85vh;
     }
 }
 
 .video-modal.is-portrait .video-container {
     aspect-ratio: 9/16;
+    max-height: 70vh;
+    /* Maximize video scale */
+    width: auto;
+    margin: 0 auto 1.5rem;
+}
+
+.video-modal.is-portrait .modal-info {
+    text-align: center;
+}
+
+.video-modal.is-portrait #modal-title {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
 }
 
 .video-container iframe {

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Deployment Trigger: 2026-02-19 23:10:20 (Force Refresh) -->
+    <title>관리자 - 수정하기 | 한국 청교도 연구소</title>
+    <link rel="stylesheet" href="style.css?v=106">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .edit-container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-header {
+            border-bottom: 2px solid var(--secondary-color);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .edit-header h2 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .form-section h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            padding: 12px 25px;
+            background: #999;
+            color: white;
+            border-radius: 4px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            padding: 12px 40px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 4px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-save:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-eng">KPI</span>
+                <span class="logo-kor">한국 청교도 연구소</span>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <div class="edit-container">
+            <div class="edit-header">
+                <h2>자료 수정</h2>
+                <button onclick="window.close()" style="background:none; border:none; cursor:pointer; color:#888;"><i
+                        class="fas fa-times"></i> 닫기</button>
+            </div>
+
+            <form id="full-edit-form">
+                <input type="hidden" id="edit-post-id">
+
+                <div class="form-section">
+                    <h3>분류 설정</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="input-group">
+                            <label>주제별 분류</label>
+                            <select id="edit-topic">
+                                <option value="">-- 선택 안함 --</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>저자별 분류</label>
+                            <select id="edit-author">
+                                <option value="">-- 선택 안함 --</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>기타 분류</label>
+                            <select id="edit-other-category">
+                                <option value="">-- 선택 안함 --</option>
+                                <option value="기타">기타 자료</option>
+                                <option value="도서 목록">도서 목록</option>
+                                <option value="전도 소책자">전도 소책자</option>
+                                <option value="강해설교">강해설교</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="extra-options" style="margin-top: 15px;">
+                        <div class="input-group" id="edit-booklet-topic-group"
+                            style="display: none; margin-bottom: 15px;">
+                            <label>소책자 상세 주제</label>
+                            <select id="edit-booklet-topic" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                                <option value="">-- 선택 안함 --</option>
+                                <option value="기독교의 체계">기독교의 체계</option>
+                                <option value="은혜의 방식">은혜의 방식</option>
+                                <option value="구원 점검">구원 점검</option>
+                                <option value="바른복음vs잘못된 복음">바른복음 vs 잘못된 복음</option>
+                                <option value="영적전쟁">영적전쟁</option>
+                                <option value="정통vs오류">정통vs오류</option>
+                                <option value="경건생활">경건생활</option>
+                            </select>
+                        </div>
+                        <div class="input-group" id="edit-lang-group" style="display: none;">
+                            <label>언어 (소책자 전용)</label>
+                            <select id="edit-lang" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                                <option value="한국어">한국어</option>
+                                <option value="English">English</option>
+                                <option value="Spanish">Spanish</option>
+                                <option value="Japanese">Japanese</option>
+                                <option value="Arabic">Arabic</option>
+                                <option value="Chinese">Chinese</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-section">
+                    <h3>기본 정보</h3>
+                    <div class="input-group">
+                        <label>제목</label>
+                        <input type="text" id="edit-title" required
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-top: 15px;">
+                        <div class="input-group">
+                            <label>시리즈/폴더명</label>
+                            <input type="text" id="edit-series"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                        </div>
+                        <div class="input-group">
+                            <label>정렬 순서</label>
+                            <input type="number" id="edit-order" value="0"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                        </div>
+                    </div>
+                    <div class="input-group" style="margin-top: 15px;">
+                        <label>가격 (도서 전용)</label>
+                        <input type="text" id="edit-price" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>내용</h3>
+                    <div class="input-group">
+                        <label>상세 내용 / 유튜브 링크</label>
+                        <textarea id="edit-content" rows="8"
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd;"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>파일 및 이미지</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="input-group">
+                            <label>표지 이미지</label>
+                            <input type="file" id="edit-cover" accept="image/*">
+                            <div id="current-cover" style="margin-top: 5px; font-size: 0.9rem; color: #666;"></div>
+                        </div>
+                        <div class="input-group">
+                            <label>상세 파일 (PDF 등)</label>
+                            <input type="file" id="edit-file">
+                            <div id="current-file" style="margin-top: 5px; font-size: 0.9rem; color: #666;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn-cancel" onclick="window.close()">취소</button>
+                    <button type="button" class="btn-save" id="btn-save-action">수정 내용 저장하기</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="data.js"></script>
+    <script>
+        // Init Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJbOaiElCypwgtPgbwdnudn3VC737fMrs",
+            authDomain: "kpuritan-home.firebaseapp.com",
+            projectId: "kpuritan-home",
+            storageBucket: "kpuritan-home.firebasestorage.app",
+            messagingSenderId: "1071220455502",
+            appId: "1:1071220455502:web:7f6f59b48c48a73437f8f0"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        const auth = firebase.auth();
+
+        // Populate Selects
+        const topicSelect = document.getElementById('edit-topic');
+        topics.forEach(t => {
+            const op = document.createElement('option');
+            op.value = t; op.innerText = t;
+            topicSelect.appendChild(op);
+        });
+
+        const authorSelect = document.getElementById('edit-author');
+        authors.forEach(a => {
+            const op = document.createElement('option');
+            op.value = a; op.innerText = a;
+            authorSelect.appendChild(op);
+        });
+
+        // Toggle UI logic
+        const otherSelect = document.getElementById('edit-other-category');
+        const bookletGroup = document.getElementById('edit-booklet-topic-group');
+        const langGroup = document.getElementById('edit-lang-group');
+
+        otherSelect.addEventListener('change', function () {
+            if (this.value === '전도 소책자') {
+                bookletGroup.style.display = 'block';
+                langGroup.style.display = 'block';
+            } else {
+                bookletGroup.style.display = 'none';
+                langGroup.style.display = 'none';
+            }
+        });
+
+        // Load Data
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('id');
+
+        if (!postId) {
+            console.error("No Post ID found in URL parameters.");
+            alert('잘못된 접근입니다. (ID가 없습니다)');
+            window.close();
+        } else {
+            console.log("Initializing admin_edit for postId:", postId);
+            // Load data immediately
+            loadPost(postId);
+
+            // Auth Check for editing permission (informative)
+            auth.onAuthStateChanged((user) => {
+                if (!user) {
+                    console.warn("User not authenticated via Firebase.");
+                    // Only alert if they actually try to save, or show a subtle warning
+                }
+            });
+        }
+
+        async function loadPost(id) {
+            const container = document.querySelector('.edit-container');
+            const originalContent = container.innerHTML;
+
+            try {
+                // Show loading state in title
+                document.title = "로딩 중... | 자료 수정";
+
+                console.log("Fetching document from Firestore...");
+                const doc = await db.collection('posts').doc(id).get();
+                console.log("Firestore response received. Exists:", doc.exists);
+
+                if (!doc.exists) {
+                    alert('자료를 찾을 수 없습니다. (ID: ' + id + ')');
+                    window.close();
+                    return;
+                }
+                const data = doc.data();
+                console.log("Data loaded:", data);
+                document.title = "자료 수정: " + (data.title || id);
+
+                document.getElementById('edit-post-id').value = id;
+                document.getElementById('edit-topic').value = data.topic || "";
+                document.getElementById('edit-author').value = data.author || "";
+                document.getElementById('edit-other-category').value = data.otherCategory || "";
+
+                // Trigger change event to show/hide fields
+                otherSelect.dispatchEvent(new Event('change'));
+
+                document.getElementById('edit-booklet-topic').value = data.subBookletTopic || "";
+                document.getElementById('edit-title').value = data.title || "";
+                document.getElementById('edit-series').value = data.series || "";
+                document.getElementById('edit-order').value = data.order || 0;
+                document.getElementById('edit-price').value = data.price || "";
+                document.getElementById('edit-content').value = data.content || "";
+
+                if (data.tags) {
+                    const languages = ['한국어', 'English', 'Spanish', 'Japanese', 'Arabic', 'Chinese'];
+                    const foundLang = data.tags.find(t => languages.includes(t));
+                    if (foundLang) document.getElementById('edit-lang').value = foundLang;
+                }
+
+                const currentCover = document.getElementById('current-cover');
+                currentCover.innerHTML = data.coverUrl ? `<a href="${data.coverUrl}" target="_blank">기존 표지 보기</a>` : "없음";
+
+                const currentFile = document.getElementById('current-file');
+                currentFile.innerHTML = data.fileUrl ? `<a href="${data.fileUrl}" target="_blank">기존 파일 보기</a>` : "없음";
+
+            } catch (error) {
+                console.error("loadPost error:", error);
+                alert("데이터 로딩 실패: " + error.message);
+                if (error.code === 'permission-denied') {
+                    alert("권한이 없습니다. 메인 페이지에서 다시 로그인해 주세요.");
+                }
+            }
+        }
+
+        // --- DEBUGGING & SAFETY PATCHES ---
+        let clickCount = 0;
+
+        // Track page unloads
+        window.addEventListener('beforeunload', (e) => {
+            console.warn('DEBUG: [CORE] beforeunload triggered. Page is about to unload!');
+        });
+        window.addEventListener('pagehide', (e) => {
+            console.warn('DEBUG: [CORE] pagehide triggered.');
+        });
+        window.addEventListener('unload', (e) => {
+            console.warn('DEBUG: [CORE] unload triggered.');
+        });
+
+        // Block all default form submissions
+        document.getElementById('full-edit-form').addEventListener('submit', (e) => {
+            clickCount++;
+            console.warn(`DEBUG: [FORM] Form submit event fired. Target:`, e.target, `Count: ${clickCount}`);
+            e.preventDefault(); // CRITICAL: Stop the form from actually submitting and reloading
+            e.stopPropagation();
+            return false;
+        });
+
+        // Save Data - Using click instead of submit for better stability in popups
+        document.getElementById('btn-save-action').addEventListener('click', async (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            clickCount++;
+            console.log(`DEBUG: [SAVE_BTN] Click handler started. Count: ${clickCount}`);
+
+            const btn = document.getElementById('btn-save-action');
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = "저장 중...";
+            btn.disabled = true;
+            btn.innerText = "저장 중...";
+
+            try {
+                // --- AUTHENTICATION CHECK & RE-LOGIN ---
+                let currentUser = firebase.auth().currentUser;
+                console.log("DEBUG: [AUTH] Current auth status:", currentUser ? `Logged in as ${currentUser.uid}` : "Not logged in");
+
+                if (!currentUser) {
+                    console.warn("DEBUG: [AUTH] User not authenticated. Attempting emergency anonymous sign-in...");
+                    btn.innerText = "인증 시도 중...";
+                    try {
+                        await firebase.auth().signInAnonymously();
+                        currentUser = firebase.auth().currentUser;
+                        console.log("DEBUG: [AUTH] Anonymous sign-in success. UID:", currentUser.uid);
+                    } catch (authError) {
+                        console.error("DEBUG: [AUTH] Sign-in failed:", authError);
+                        throw new Error("관리자 권한 인증에 실패했습니다. (사유: " + authError.message + ")");
+                    }
+                }
+
+                btn.innerText = "저장 중...";
+
+                const id = document.getElementById('edit-post-id').value;
+                const topic = document.getElementById('edit-topic').value;
+                const author = document.getElementById('edit-author').value;
+                const other = document.getElementById('edit-other-category').value;
+                const subBookletTopic = document.getElementById('edit-booklet-topic').value;
+
+                let tags = [topic, author, other].filter(t => t !== "");
+                if (other === '전도 소책자') {
+                    const lang = document.getElementById('edit-lang').value;
+                    if (lang) tags.push(lang);
+                }
+
+                if (tags.length === 0) {
+                    throw new Error("최소 하나 이상의 분류를 선택해야 합니다.");
+                }
+
+                const updateData = {
+                    topic, author, otherCategory: other, tags,
+                    title: document.getElementById('edit-title').value,
+                    series: document.getElementById('edit-series').value,
+                    order: Number(document.getElementById('edit-order').value),
+                    price: document.getElementById('edit-price').value,
+                    content: document.getElementById('edit-content').value,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (other === "전도 소책자" && subBookletTopic) {
+                    updateData.subBookletTopic = subBookletTopic;
+                }
+
+                // File Uploads
+                const coverInput = document.getElementById('edit-cover');
+                if (coverInput.files[0]) {
+                    const file = coverInput.files[0];
+                    const ref = storage.ref(`covers/${Date.now()}_${file.name}`);
+                    await ref.put(file);
+                    updateData.coverUrl = await ref.getDownloadURL();
+                }
+
+                const fileInput = document.getElementById('edit-file');
+                if (fileInput.files[0]) {
+                    const file = fileInput.files[0];
+                    const ref = storage.ref(`files/${Date.now()}_${file.name}`);
+                    await ref.put(file);
+                    updateData.fileUrl = await ref.getDownloadURL();
+                }
+
+                console.log("Updating document in Firestore...");
+                await db.collection('posts').doc(id).update(updateData);
+                console.log("Update success!");
+
+                alert("수정되었습니다.");
+
+                if (window.opener && !window.opener.closed) {
+                    if (window.opener.loadAdminPosts) window.opener.loadAdminPosts();
+                    if (window.opener.loadRecentPostsGrid) window.opener.loadRecentPostsGrid();
+                    if (window.opener.loadAdminPicks) window.opener.loadAdminPicks();
+                }
+                window.close();
+
+            } catch (error) {
+                console.error("Save error details:", error);
+
+                let errorMsg = "저장 중 오류가 발생했습니다: " + error.message;
+                if (error.code === 'permission-denied') {
+                    errorMsg = "권한이 없습니다 (Missing Permissions).\n\n해결 방법:\n1. 메인 페이지에서 다시 로그인을 시도해 주세요.\n2. 브라우저의 쿠키/세션 문제일 수 있습니다. 창을 닫고 다시 열어 보세요.";
+                }
+
+                alert(errorMsg);
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
+        });
+    </script>
+</body>
+
+</html>

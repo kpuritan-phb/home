@@ -2003,36 +2003,53 @@ body.dark-subpage .separator {
 
 /* Process Section */
 .process-section {
-    padding: 10vh 10vw;
+    padding: 10vh 5vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
 .process-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2vw;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1600px;
+    /* Optimal width for 5 cards */
 }
 
-.process-grid.grid-3 {
-    grid-template-columns: repeat(3, 1fr);
+.process-grid.grid-3 .process-card {
+    flex: 0 1 350px;
 }
 
-.process-grid.grid-5 {
-    grid-template-columns: repeat(5, 1fr);
+.process-grid.grid-5 .process-card {
+    flex: 0 1 300px;
 }
 
 @media (max-width: 1200px) {
-    .process-grid.grid-5 {
-        grid-template-columns: repeat(3, 1fr);
+    .process-card {
+        flex: 1 1 300px;
+        max-width: 400px;
     }
 }
 
 @media (max-width: 1024px) {
 
-    .process-grid.grid-3,
-    .process-grid.grid-4,
-    .process-grid.grid-5,
+    .process-grid.grid-3 .process-card,
+    .process-grid.grid-4 .process-card,
+    .process-grid.grid-5 .process-card {
+        flex: 1 1 100%;
+        max-width: 450px;
+    }
+
+    .process-card {
+        flex: 1 1 100%;
+        max-width: 500px;
+    }
+
     .process-grid {
-        grid-template-columns: 1fr;
         gap: 1.5rem;
     }
 }
@@ -2046,6 +2063,8 @@ body.dark-subpage .separator {
     gap: 0.8rem;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     padding-top: 1.5rem;
+    text-align: left;
+    width: fit-content;
 }
 
 .p-list li {
@@ -2073,6 +2092,12 @@ body.dark-subpage .separator {
     flex-direction: column;
     gap: 1.5rem;
     transition: all 0.4s var(--easing);
+
+    /* Perfect Centering */
+    flex: 1 1 280px;
+    max-width: 320px;
+    text-align: center;
+    align-items: center;
 }
 
 .process-card:hover {
@@ -2084,6 +2109,7 @@ body.dark-subpage .separator {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    align-items: center;
 }
 
 .p-num {

@@ -2521,3 +2521,136 @@ body.dark-subpage .separator {
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
 }
+/* --- Project Detail Page --- */
+.project-main {
+    padding-top: var(--nav-height);
+}
+
+.project-hero-media {
+    padding: 0;
+    width: 100%;
+    margin-top: 5vh;
+}
+
+.project-hero-media .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 5vw;
+    display: flex;
+    justify-content: center;
+}
+
+.video-wrapper {
+    width: 100%;
+    position: relative;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+}
+
+.video-wrapper.aspect-landscape {
+    aspect-ratio: 16/9;
+}
+
+.video-wrapper.aspect-portrait {
+    max-width: 500px;
+    aspect-ratio: 9/16;
+    margin: 0 auto;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.project-info-section {
+    padding: 10vh 0;
+}
+
+.project-info-section .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 5vw;
+}
+
+.project-header {
+    margin-bottom: 5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 3rem;
+}
+
+.project-client {
+    font-size: 0.9rem;
+    letter-spacing: 0.3em;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.project-title-text {
+    font-size: clamp(2rem, 5vw, 4.5rem);
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.project-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    margin-bottom: 6rem;
+}
+
+.project-description h3 {
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 1.5rem;
+}
+
+.project-description p {
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.8);
+    white-space: pre-wrap;
+}
+
+.project-footer {
+    display: flex;
+    justify-content: flex-start;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.back-link {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+}
+
+.back-link:hover {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .video-wrapper.aspect-portrait {
+        max-width: 100%;
+    }
+    
+    .project-header {
+        margin-bottom: 3rem;
+    }
+    
+    .project-description p {
+        font-size: 1.1rem;
+    }
+}

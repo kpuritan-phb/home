@@ -74,87 +74,19 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => globalBg.classList.add('active'), 100);
     }
 
-    // --- Shared Modal Logic ---
-    const modal = document.getElementById('video-modal');
-    const modalIframe = document.getElementById('modal-iframe');
-    const modalTitle = document.getElementById('modal-title');
-    const modalClient = document.getElementById('modal-client');
-    const modalDesc = document.getElementById('modal-desc');
-    const closeModal = document.querySelector('.close-modal');
-
-    function openModal(work) {
-        if (!modal) return;
-        modalTitle.textContent = work.title;
-        modalClient.textContent = work.client;
-        modalDesc.textContent = work.description;
-
-        let url = work.videoUrl;
-        if (url && (url.includes('youtube.com') || url.includes('youtu.be'))) {
-            // Use youtube-nocookie.com to avoid session issues and improve privacy
-            url = url.replace('www.youtube.com', 'www.youtube-nocookie.com')
-                .replace('youtube.com', 'www.youtube-nocookie.com');
-
-            const connector = url.includes('?') ? '&' : '?';
-            url += `${connector}autoplay=1&rel=0&enablejsapi=1`;
-        }
-        modalIframe.src = url;
-
-        // Handle Orientation Class
-        if (work.orientation === 'portrait') {
-            modal.classList.add('is-portrait');
-        } else {
-            modal.classList.remove('is-portrait');
-        }
-
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-
-        if (window.history && window.history.pushState) {
-            window.history.pushState({ modalOpen: true }, '', window.location.href);
+    // --- Navigation to Project Detail ---
+    function navigateToProject(id) {
+        if (id) {
+            window.location.href = `project.html?id=${id}`;
         }
     }
 
-    function closeVideoModal() {
-        if (!modal) return;
-        modal.style.display = 'none';
-        modalIframe.src = '';
-        modal.classList.remove('is-portrait'); // Always cleanup orientation class
-        document.body.style.overflow = 'auto';
-    }
-
-    if (closeModal) {
-        closeModal.addEventListener('click', () => {
-            if (window.history.state && window.history.state.modalOpen) {
-                window.history.back();
-            } else {
-                closeVideoModal();
-            }
-        });
-    }
-
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            if (window.history.state && window.history.state.modalOpen) {
-                window.history.back();
-            } else {
-                closeVideoModal();
-            }
-        }
-    });
-
-    window.addEventListener('popstate', (e) => {
-        if (modal && modal.style.display === 'flex') {
-            closeVideoModal();
-        }
-    });
-
-    // --- Featured Works Modal Binding ---
+    // --- Featured Works Binding ---
     const featuredItems = document.querySelectorAll('.featured-item');
     featuredItems.forEach(item => {
         item.addEventListener('click', () => {
-            const id = parseInt(item.dataset.id);
-            const work = works.find(w => w.id === id);
-            if (work) openModal(work);
+            const id = item.dataset.id;
+            navigateToProject(id);
         });
     });
 
@@ -240,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
             el.appendChild(img);
-            el.addEventListener('click', () => openModal(work));
+            el.addEventListener('click', () => navigateToProject(work.id));
             return el;
         }
 

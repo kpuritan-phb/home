@@ -128,19 +128,24 @@
     </footer>
 
     <script type="module">
-        import { works } from './works.js';
+        import works from './works.js';
 
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const projectId = parseInt(urlParams.get('id'));
+
+            console.log("Loading Project ID:", projectId);
+            console.log("Total Works Available:", works.length);
+
             const project = works.find(w => w.id === projectId);
 
             if (!project) {
-                window.location.href = 'works.html';
+                console.error("Project not found!");
+                // Optionally show error on page
                 return;
             }
 
-            // Update UI
+            console.log("Found Project:", project.title);
             document.getElementById('page-title').textContent = `${project.title} | WE WON PRODUCTION`;
             document.getElementById('project-client-name').textContent = project.client;
             document.getElementById('project-title-text').textContent = project.title;

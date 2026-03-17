@@ -1,495 +1,3 @@
-import works from './works.js';
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    // --- Active Page Highlighting ---
-    const currentPath = window.location.pathname;
-    const navLinks = document.querySelectorAll('.nav-item');
-    navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href !== '/' && currentPath.includes(href.replace('.html', ''))) {
-            link.closest('.nav-item-container').classList.add('active-page');
-        }
-    });
-
-    // --- Loading Animation ---
-    if (typeof gsap !== 'undefined') {
-        gsap.from("header", {
-            y: -50,
-            opacity: 0,
-            duration: 1,
-            ease: "power3.out",
-            delay: 0.5
-        });
-    }
-
-    // --- Scroll Animations (Reveal Text) ---
-    const revealElements = document.querySelectorAll('.reveal-text');
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
-    };
-
-    const sectionObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                if (typeof gsap !== 'undefined') {
-                    gsap.to(entry.target, {
-                        y: 0,
-                        opacity: 1,
-                        duration: 1,
-                        ease: "power2.out"
-                    });
-                }
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-
-    revealElements.forEach(el => {
-        sectionObserver.observe(el);
-    });
-
-    // --- Index Page: Latest Shorts Logic ---
-    const latestShortsEl = document.getElementById('index-latest-shorts');
-    if (latestShortsEl) {
-        const latestShortsData = works.find(w => w.orientation === 'portrait');
-        if (latestShortsData) {
-            latestShortsEl.setAttribute('data-id', latestShortsData.id);
-            const img = latestShortsEl.querySelector('img');
-            if (img) {
-                let thumb = latestShortsData.thumbnail;
-                if (!thumb || !thumb.startsWith('thumbnails/')) {
-                    if (latestShortsData.videoUrl && latestShortsData.videoUrl.includes('youtube')) {
-                        const vid = latestShortsData.videoUrl.split('embed/')[1]?.split('?')[0];
-                        if (vid) thumb = `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`;
-                    }
-                }
-                if (thumb) img.src = thumb;
-            }
-        }
-    }
-
-    // --- Index Page: Hero & Global Background ---
-    const globalBg = document.querySelector('.global-bg-layer');
-    if (globalBg) {
-        setTimeout(() => globalBg.classList.add('active'), 100);
-    }
-
-    // --- Shared Modal Logic ---
-    const modal = document.getElementById('video-modal');
-    const modalIframe = document.getElementById('modal-iframe');
-    const modalTitle = document.getElementById('modal-title');
-    const modalClient = document.getElementById('modal-client');
-    const modalDesc = document.getElementById('modal-desc');
-    const closeModal = document.querySelector('.close-modal');
-
-    function openModal(work) {
-        if (!modal) return;
-        modalTitle.textContent = work.title;
-        modalClient.textContent = work.client;
-        modalDesc.textContent = work.description;
-
-        let url = work.videoUrl;
-        if (url && (url.includes('youtube.com') || url.includes('youtu.be'))) {
-            url += (url.includes('?') ? '&' : '?') + 'autoplay=1&rel=0';
-        }
-        modalIframe.src = url;
-
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-
-        if (window.history && window.history.pushState) {
-            window.history.pushState({ modalOpen: true }, '');
-        }
-    }
-
-    function closeVideoModal() {
-        if (!modal) return;
-        modal.style.display = 'none';
-        modalIframe.src = '';
-        document.body.style.overflow = 'auto';
-    }
-
-    if (closeModal) {
-        closeModal.addEventListener('click', () => {
-            if (window.history.state && window.history.state.modalOpen) {
-                window.history.back();
-            } else {
-                closeVideoModal();
-            }
-        });
-    }
-
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            if (window.history.state && window.history.state.modalOpen) {
-                window.history.back();
-            } else {
-                closeVideoModal();
-            }
-        }
-    });
-
-    window.addEventListener('popstate', (e) => {
-        if (modal && modal.style.display === 'flex') {
-            closeVideoModal();
-        }
-    });
-
-    // --- Featured Works Modal Binding ---
-    const featuredItems = document.querySelectorAll('.featured-item');
-    featuredItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const id = parseInt(item.dataset.id);
-            const work = works.find(w => w.id === id);
-            if (work) openModal(work);
-        });
-    });
-
-    // --- Works Page Logic ---
-    const landscapeGrid = document.getElementById('landscape-grid');
-    const portraitGrid = document.getElementById('portrait-grid');
-
-    if (landscapeGrid || portraitGrid) {
-        const tabBtns = document.querySelectorAll('.works-tab-btn');
-        const PAGE_SIZE = 12;
-
-        const state = {
-            landscape: { page: 0, loading: false, done: false },
-            portrait: { page: 0, loading: false, done: false },
-        };
-
-        const dataMap = {
-            landscape: works.filter(w => w.orientation === 'landscape'),
-            portrait: works.filter(w => w.orientation === 'portrait'),
-        };
-
-        const urlParams = new URLSearchParams(window.location.search);
-        let activeView = urlParams.get('view') === 'portrait' ? 'portrait' : 'landscape';
-
-        function deduceThumbnail(work) {
-            if (work.thumbnail && work.thumbnail.startsWith('thumbnails/')) return work.thumbnail;
-            const url = work.videoUrl || '';
-            if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                let videoId = '';
-                if (url.includes('embed/')) videoId = url.split('embed/')[1].split('?')[0];
-                else if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
-                else videoId = url.split('/').pop().split('?')[0];
-                if (videoId) return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-            }
-            if (url.includes('instagram.com') || url.includes('threads.net')) {
-                let postId = '';
-                if (url.includes('/reel/')) postId = url.split('/reel/')[1].split('/')[0];
-                else if (url.includes('/reels/')) postId = url.split('/reels/')[1].split('/')[0];
-                else if (url.includes('/p/')) postId = url.split('/p/')[1].split('/')[0];
-                else if (url.includes('/post/')) postId = url.split('/post/')[1].split('/')[0];
-                if (postId) return `https://www.instagram.com/p/${postId}/media/?size=l`;
-            }
-            return work.thumbnail || 'https://images.unsplash.com/photo-1492691523567-61125645e34b?auto=format&fit=crop&q=80&w=800';
-        }
-
-        function showFallbackPlaceholder(imgEl, work) {
-            const parent = imgEl.parentElement;
-            if (parent.querySelector('.thumb-fallback')) {
-                imgEl.remove();
-                return;
-            }
-            imgEl.remove();
-            const fallback = document.createElement('div');
-            fallback.className = 'thumb-fallback';
-            const gradients = [
-                'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-                'linear-gradient(135deg, #2d1b3d 0%, #1e1233 50%, #0d0d2b 100%)',
-                'linear-gradient(135deg, #1b2838 0%, #0d1b2a 50%, #1c3144 100%)',
-                'linear-gradient(135deg, #2c1810 0%, #1a1a2e 50%, #16213e 100%)',
-                'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)',
-                'linear-gradient(135deg, #0d1117 0%, #161b22 50%, #21262d 100%)',
-            ];
-            fallback.style.background = gradients[work.id % gradients.length];
-            fallback.innerHTML = `<div class="fallback-title">${work.title !== 'Shorts' && work.title !== 'Vertical video content.' ? work.title : (work.client || 'Video')}</div>`;
-            parent.appendChild(fallback);
-        }
-
-        function createWorkCard(work) {
-            const el = document.createElement('div');
-            el.className = 'work-item reveal-text';
-            const thumbUrl = deduceThumbnail(work);
-            const img = document.createElement('img');
-            img.src = thumbUrl;
-            img.alt = work.title;
-            img.loading = 'lazy';
-            img.onerror = function () {
-                if (thumbUrl.includes('maxresdefault.jpg')) {
-                    const hqUrl = thumbUrl.replace('maxresdefault.jpg', 'hqdefault.jpg');
-                    this.onerror = function () { showFallbackPlaceholder(this, work); };
-                    this.src = hqUrl;
-                } else {
-                    showFallbackPlaceholder(this, work);
-                }
-            };
-            el.appendChild(img);
-            el.addEventListener('click', () => openModal(work));
-            return el;
-        }
-
-        function loadPage(orientation) {
-            const s = state[orientation];
-            if (s.loading || s.done) return;
-            s.loading = true;
-            const grid = document.getElementById(`${orientation}-grid`);
-            const data = dataMap[orientation];
-            const slice = data.slice(s.page * PAGE_SIZE, (s.page + 1) * PAGE_SIZE);
-            slice.forEach(work => {
-                const card = createWorkCard(work);
-                grid.appendChild(card);
-                sectionObserver.observe(card);
-            });
-            s.page += 1;
-            s.loading = false;
-            if (s.page * PAGE_SIZE >= data.length) {
-                s.done = true;
-                const endEl = document.getElementById(`${orientation}-end`);
-                if (endEl) endEl.style.display = 'block';
-            }
-        }
-
-        const infiniteObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const orientation = entry.target.id.replace('-sentinel', '');
-                    loadPage(orientation);
-                }
-            });
-        }, { rootMargin: '200px' });
-
-        function switchTab(view) {
-            activeView = view;
-            const url = new URL(window.location);
-            url.searchParams.set('view', view);
-            window.history.replaceState({}, '', url);
-            tabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
-            ['landscape', 'portrait'].forEach(p => {
-                const panel = document.getElementById(`panel-${p}`);
-                if (panel) panel.style.display = p === view ? 'block' : 'none';
-            });
-        }
-
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const view = btn.dataset.view;
-                switchTab(view);
-                if (state[view].page === 0) loadPage(view);
-            });
-        });
-
-        switchTab(activeView);
-        ['landscape', 'portrait'].forEach(o => {
-            const sentinel = document.getElementById(`${o}-sentinel`);
-            if (sentinel) infiniteObserver.observe(sentinel);
-        });
-        loadPage(activeView);
-    }
-
-    // --- Navigation Logic for Mobile ---
-    const navContainers = document.querySelectorAll('.nav-item-container');
-    navContainers.forEach(container => {
-        const link = container.querySelector('.nav-item');
-        if (!link) return;
-        link.addEventListener('click', (e) => {
-            if (window.innerWidth <= 768 && !container.classList.contains('active')) {
-                e.preventDefault();
-                navContainers.forEach(c => c.classList.remove('active'));
-                container.classList.add('active');
-            }
-        });
-    });
-
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 768 && !e.target.closest('.brand-nav')) {
-            navContainers.forEach(c => c.classList.remove('active'));
-        }
-    });
-
-    // --- Chat Widget Logic ---
-    const chatWidget = document.getElementById('chat-widget');
-    const chatTrigger = document.getElementById('chat-trigger');
-    const chatClose = document.getElementById('chat-close');
-    const chatForm = document.getElementById('chat-form');
-    const chatBody = document.getElementById('chat-body');
-    const chatLeadContainer = document.getElementById('chat-lead-container');
-    const chatInput = document.getElementById('chat-footer-input');
-    const chatSendBtn = document.getElementById('chat-send-btn');
-
-    let isLeadSubmitted = false;
-
-    if (chatTrigger && chatWidget) {
-        chatTrigger.addEventListener('click', () => {
-            chatWidget.classList.toggle('active');
-        });
-    }
-
-    if (chatClose && chatWidget) {
-        chatClose.addEventListener('click', (e) => {
-            e.stopPropagation();
-            chatWidget.classList.remove('active');
-        });
-    }
-
-    const addBubble = (text, type) => {
-        if (!chatBody) return;
-        const bubble = document.createElement('div');
-        bubble.className = `chat-msg-bubble ${type}`;
-        bubble.innerHTML = `<p>${text.replace(/\n/g, '<br>')}</p>`;
-        chatBody.appendChild(bubble);
-        chatBody.scrollTop = chatBody.scrollHeight;
-    };
-
-    /**
-     * 성공 처리를 위한 공통 함수
-     */
-    const handleSuccess = (name, message) => {
-        if (chatLeadContainer) chatLeadContainer.style.display = 'none';
-        isLeadSubmitted = true;
-
-        // 사용자 메시지 표시
-        addBubble(message, 'user');
-
-        // 봇의 응답 표시
-        setTimeout(() => {
-            const successMsg = `${name}님, 문의가 성공적으로 접수되었습니다. 최대한 신속하게 답변 드리겠습니다!\n(※ 제출하신 내용은 안전하게 전송되었습니다.)`;
-            addBubble(successMsg, 'bot');
-        }, 500);
-    };
-
-    if (chatForm) {
-        chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = chatForm.querySelector('.chat-submit-btn');
-
-            const name = document.getElementById('chat-name').value;
-            const email = document.getElementById('chat-email').value;
-            const phone = document.getElementById('chat-phone').value;
-            const message = document.getElementById('chat-message').value;
-
-            // 1. 로컬 백업 세이브 (실패 시 대비)
-            try {
-                const inquiries = JSON.parse(localStorage.getItem('wewon_inquiries') || '[]');
-                inquiries.push({ name, email, phone, message, timestamp: new Date().toLocaleString() });
-                localStorage.setItem('wewon_inquiries', JSON.stringify(inquiries));
-            } catch (err) { }
-
-            btn.textContent = '전송 중...';
-            btn.disabled = true;
-
-            // 2. EmailJS 전송 실행
-            const config = window._EMAILJS_CONFIG;
-            const isConfigured = config && config.PUBLIC_KEY !== 'YOUR_PUBLIC_KEY';
-
-            if (isConfigured) {
-                try {
-                    // EmailJS Template 변수와 매칭되어야 합니다.
-                    const templateParams = {
-                        from_name: name,
-                        from_email: email,
-                        phone: phone,
-                        message: message
-                    };
-
-                    await emailjs.send(config.SERVICE_ID, config.TEMPLATE_ID, templateParams);
-                    handleSuccess(name, message);
-                } catch (error) {
-                    console.error('Email 전송 실패:', error);
-                    alert('메일 전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
-                    btn.textContent = '문의 보내기';
-                    btn.disabled = false;
-                }
-            } else {
-                // 테스트 모드 (EmailJS 설정 전)
-                console.warn('EmailJS가 설정되지 않았습니다. 테스트 모드로 동작합니다.');
-                setTimeout(() => {
-                    handleSuccess(name, message);
-                }, 1000);
-            }
-        });
-    }
-
-    const handleSendMsg = () => {
-        if (!chatInput) return;
-        const text = chatInput.value.trim();
-        if (!text) return;
-
-        if (!isLeadSubmitted) {
-            const msgArea = document.getElementById('chat-message');
-            if (msgArea) {
-                msgArea.value = (msgArea.value + (msgArea.value ? "\n" : "") + text).trim();
-                msgArea.focus();
-            }
-            chatInput.value = '';
-            return;
-        }
-
-        addBubble(text, 'user');
-        chatInput.value = '';
-
-        setTimeout(() => {
-            addBubble('문의가 접수된 상태입니다. 남겨주신 연락처로 곧 안내해 드리겠습니다.', 'bot');
-        }, 800);
-    };
-
-    if (chatSendBtn && chatInput) {
-        chatSendBtn.addEventListener('click', handleSendMsg);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSendMsg();
-        });
-    }
-
-    // --- Page Level: Inquiry Form Logic ---
-    const pageInquiryForm = document.getElementById('page-inquiry-form');
-    if (pageInquiryForm) {
-        pageInquiryForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('p-submit-btn');
-            const successMsg = document.getElementById('form-success-msg');
-
-            const formData = new FormData(pageInquiryForm);
-            const templateParams = {
-                from_name: formData.get('from_name'),
-                from_email: formData.get('from_email'),
-                phone: formData.get('phone'),
-                message: formData.get('message')
-            };
-
-            btn.textContent = '전송 중...';
-            btn.disabled = true;
-
-            const config = window._EMAILJS_CONFIG;
-            const isConfigured = config && config.PUBLIC_KEY !== 'YOUR_PUBLIC_KEY';
-
-            if (isConfigured) {
-                try {
-                    await emailjs.send(config.SERVICE_ID, config.TEMPLATE_ID, templateParams);
-                    pageInquiryForm.style.display = 'none';
-                    if (successMsg) successMsg.style.display = 'block';
-                } catch (error) {
-                    console.error('Email 전송 실패:', error);
-                    alert('메일 전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
-                    btn.textContent = '전송하기';
-                    btn.disabled = false;
-                }
-            } else {
-                // 테스트 모드
-                setTimeout(() => {
-                    pageInquiryForm.style.display = 'none';
-                    if (successMsg) successMsg.style.display = 'block';
-                }, 1000);
-            }
-        });
-    }
-
-});
 // Data is loaded from data.js globally
 // alert("DEBUG: 0. Main JS 파일 로드됨");
 
@@ -504,10 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // HTML에서 초기화된 전역 변수들이 사용됩니다.
 console.log("Main JS using global DB connection");
 
-// Check persistence
-if (localStorage.getItem('isAdmin') === 'true') {
-    window.isAdmin = true;
-}
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Global Variable Declarations (DOM References) ---
@@ -553,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const topicDropdown = document.getElementById('topic-dropdown');
     const authorDropdownGrid = document.getElementById('author-dropdown-grid');
 
-
     // --- Modal Management with Browser Back Button Support ---
     // --- Modal Management with Browser Back Button Support ---
     window.openModal = (modal) => {
@@ -572,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (m.classList.contains('show')) {
                 m.classList.remove('show');
                 anyModalWasOpen = true;
-                window.selectionTargetSlot = null; // Selection mode reset
             }
         });
 
@@ -599,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             div.className = 'mega-menu-item';
             div.textContent = item;
             div.addEventListener('click', () => {
-                location.href = `resources.html?type=topic&cat=${encodeURIComponent(item)}`;
+                if (window.openResourceModal) window.openResourceModal(item);
             });
             grid.appendChild(div);
         });
@@ -609,24 +111,39 @@ document.addEventListener('DOMContentLoaded', () => {
     // Populate dropdowns
     if (typeof topics !== 'undefined') renderMegaMenuItems(topics, topicDropdown);
 
+    // Render for Author Dropdown (Special case for search)
+    const renderAuthorsInDropdown = (list) => {
+        if (!authorDropdownGrid || !Array.isArray(list)) return;
+        authorDropdownGrid.innerHTML = '';
+        list.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'mega-menu-item';
+            div.textContent = item;
+            div.addEventListener('click', () => {
+                if (window.openResourceModal) window.openResourceModal(item);
+            });
+            authorDropdownGrid.appendChild(div);
+        });
+    };
 
+    if (typeof authors !== 'undefined') renderAuthorsInDropdown(authors);
 
     // --- Mobile Menu Toggle ---
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const nav = document.querySelector('nav');
     const navOverlay = document.querySelector('.nav-overlay');
 
-    if (mobileMenuToggle) {
+    if (mobileMenuToggle && nav && navOverlay) {
         mobileMenuToggle.addEventListener('click', (e) => {
-            e.preventDefault();
             e.stopPropagation();
-            if (window.innerWidth <= 1024) {
-                window.location.href = 'menu.html';
-                return;
+            nav.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (nav.classList.contains('active')) {
+                icon.classList.replace('fa-bars', 'fa-times');
+            } else {
+                icon.classList.replace('fa-times', 'fa-bars');
             }
-            // Fallback or Desktop behavior if toggle exists but screen is large
-            if (nav) nav.classList.toggle('active');
-            if (navOverlay) navOverlay.classList.toggle('active');
         });
 
         // Close menu when clicking outside or overlay
@@ -697,7 +214,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sec) sec.classList.remove('section-hidden');
     });
 
+    // Search function for Author Dropdown
+    const authorSearchInput = document.getElementById('author-dropdown-search');
+    if (authorSearchInput && typeof authors !== 'undefined') {
+        authorSearchInput.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const filtered = authors.filter(a => a.toLowerCase().includes(val));
+            renderAuthorsInDropdown(filtered);
+        });
 
+        // Prevent dropdown from closing when clicking search input
+        authorSearchInput.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
 
     // Smooth scroll for all anchor links (Navigation & Hero buttons)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -758,69 +288,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginCloseBtn = document.getElementById('login-close-btn');
     const loginForm = document.getElementById('login-form');
 
-    // Global Logout Function
-    window.logoutAdmin = () => {
-        if (confirm('현재 관리자 모드입니다. 로그아웃 하시겠습니까?')) {
-            window.isAdmin = false;
-            localStorage.removeItem('isAdmin');
-
-            // Update UI components
-            const dashboard = document.getElementById('admin-dashboard');
-            const loginOpenBtn = document.getElementById('admin-access-btn');
-            const navLogout = document.getElementById('nav-logout-item');
-
-            if (dashboard) dashboard.classList.add('section-hidden');
-            if (loginOpenBtn) loginOpenBtn.innerHTML = '<i class="fas fa-user-lock"></i> <span>관리자</span>';
-            if (navLogout) navLogout.remove();
-
-            alert('로그아웃 되었습니다.');
-            // Go to home if on admin-heavy page
-            if (location.pathname.includes('seminary.html')) {
-                // Stay or go home
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    };
-
-    // Update Navigation with Logout Link if Admin
-    const addNavLogout = () => {
-        if (!window.isAdmin) return;
-        const navUl = document.querySelector('nav ul');
-        if (navUl && !document.getElementById('nav-logout-item')) {
-            const logoutLi = document.createElement('li');
-            logoutLi.id = 'nav-logout-item';
-            logoutLi.innerHTML = '<a href="javascript:void(0)" style="color: #e74c3c !important; font-weight: bold;"><i class="fas fa-sign-out-alt"></i> 로그아웃</a>';
-            logoutLi.onclick = (e) => {
-                e.preventDefault();
-                window.logoutAdmin();
-            };
-            navUl.appendChild(logoutLi);
-        }
-    };
-
-    // Initial check
-    if (window.isAdmin) {
-        if (loginOpenBtn) loginOpenBtn.innerHTML = '<i class="fas fa-user-check"></i> 관리자(로그인됨)';
-        const dashboard = document.getElementById('admin-dashboard');
-        if (dashboard) dashboard.classList.remove('section-hidden');
-        addNavLogout();
-    }
-
-    if (loginOpenBtn) {
+    if (loginOpenBtn && loginModal) {
         loginOpenBtn.addEventListener('click', () => {
-            if (window.isAdmin) {
-                // Prompt for logout or scroll to dashboard
-                const dashboard = document.getElementById('admin-dashboard');
-                if (dashboard) {
-                    dashboard.classList.remove('section-hidden');
-                    dashboard.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                    window.logoutAdmin();
-                }
-            } else {
-                if (loginModal) window.openModal(loginModal);
-                else location.href = 'index.html'; // Modal only on index
-            }
+            window.openModal(loginModal);
         });
     }
 
@@ -869,64 +339,45 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
+        loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const id = document.getElementById('admin-id').value;
             const pw = document.getElementById('admin-pw').value;
 
-            // Simple mock login check
+            // Simple mock login
             if (id === 'admin' && pw === '1234') {
-                const proceedLogin = () => {
-                    isAdmin = true;
-                    window.isAdmin = true;
-                    localStorage.setItem('isAdmin', 'true');
-                    window.closeAllModals();
-                    if (loginOpenBtn) loginOpenBtn.innerHTML = '<i class="fas fa-user-check"></i> 관리자(로그인됨)';
-                    addNavLogout();
+                alert('관리자로 로그인되었습니다. 하단 대시보드에서 자료를 관리하세요.');
+                isAdmin = true;
+                window.closeAllModals();
+                loginOpenBtn.innerHTML = '<i class="fas fa-user-check"></i> 관리자(로그인됨)';
 
-                    // Show Admin Dashboard
-                    const dashboard = document.getElementById('admin-dashboard');
-                    if (dashboard) {
-                        dashboard.classList.remove('section-hidden');
-                        dashboard.scrollIntoView({ behavior: 'smooth' });
-                    }
-                };
-
-                // Try Firebase Auth (Anonymous or other method needed for Firestore Rules)
-                if (window.auth) {
-                    try {
-                        await window.auth.signInAnonymously();
-                        console.log("✅ Firebase Anonymous Auth Success");
-                        alert('관리자로 로그인되었습니다. (Firebase 인증 성공)');
-                        proceedLogin();
-                    } catch (error) {
-                        console.error("Auth Error:", error);
-                        if (error.code === 'auth/operation-not-allowed') {
-                            alert('주의: Firebase 익명 인증이 비활성화되어 있습니다. Console에서 활성화가 필요합니다.\n일단 로컬 관리자 모드로 진입합니다.');
-                            proceedLogin(); // Proceed anyway, let Firestore decide
-                        } else {
-                            alert('Firebase 인증 실패: ' + error.message);
-                            // Proceed anyway? Maybe better to stop. But let's be permissive for now.
-                            proceedLogin();
-                        }
-                    }
-                } else {
-                    alert('관리자로 로그인되었습니다. (Auth 모듈 미로드)');
-                    proceedLogin();
+                // Show Admin Dashboard
+                const dashboard = document.getElementById('admin-dashboard');
+                if (dashboard) {
+                    dashboard.classList.remove('section-hidden');
+                    dashboard.scrollIntoView({ behavior: 'smooth' });
                 }
             } else {
-                alert('아이디 또는 비밀번호가 올바르지 않습니다.');
+                alert('아이디 또는 비밀번호가 일치하지 않습니다.');
             }
         });
     }
 
-
     // Logout Logic
     const logoutBtn = document.getElementById('admin-logout-btn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.logoutAdmin();
+        logoutBtn.addEventListener('click', () => {
+            if (confirm('로그아웃 하시겠습니까?')) {
+                isAdmin = false;
+                const dashboard = document.getElementById('admin-dashboard');
+                const loginOpenBtn = document.getElementById('admin-access-btn');
+
+                if (dashboard) dashboard.classList.add('section-hidden');
+                if (loginOpenBtn) loginOpenBtn.innerHTML = '<i class="fas fa-user-lock"></i> <span>관리자</span>';
+
+                alert('로그아웃 되었습니다.');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         });
     }
 
@@ -955,18 +406,6 @@ document.addEventListener('DOMContentLoaded', () => {
         populateSelect('modal-filter-author', authors);
     }
 
-
-    // [추가] 업로드 폼에서 기타 분류 변경 시 소책자 분류 노출 제어
-    const postOtherCat = document.getElementById('post-other-category');
-    if (postOtherCat) {
-        postOtherCat.addEventListener('change', (e) => {
-            const bookletTopicGroup = document.getElementById('post-booklet-topic-group');
-            if (bookletTopicGroup) {
-                bookletTopicGroup.style.display = (e.target.value === '전도 소책자') ? 'block' : 'none';
-            }
-        });
-    }
-
     // Real Database Upload Logic
     const uploadForm = document.getElementById('post-upload-form');
     const recentPostsList = document.getElementById('admin-recent-posts');
@@ -983,13 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const activeCard = document.getElementById(targetTabId);
         if (activeCard) {
             activeCard.classList.add('active');
-            let themeColor = 'var(--primary-color)';
-            if (tabName === 'bible-study') themeColor = 'var(--secondary-color)';
-            if (tabName === 'booklet') themeColor = '#e67e22';
-            if (tabName === 'picks') themeColor = '#f1c40f';
-            if (tabName === 'stats') themeColor = '#9b59b6';
-
-            activeCard.style.border = `2px solid ${themeColor}`;
+            activeCard.style.border = `2px solid var(--primary-color)`;
             activeCard.style.boxShadow = '0 10px 20px rgba(0,0,0,0.05)';
         }
 
@@ -1003,18 +436,9 @@ document.addEventListener('DOMContentLoaded', () => {
             targetSection.style.display = (tabName === 'general') ? 'grid' : 'block';
         }
 
-        // 탭 별 데이터 로드 로직
+        // 강해설교 탭 선택 시 시리즈 목록 로드
         if (tabName === 'bible-study') {
             loadAdminSeries('강해설교');
-        }
-        if (tabName === 'picks') {
-            loadAdminPicksForManagement();
-        }
-        if (tabName === 'stats' && window.AdminStats) {
-            AdminStats.load('all');
-        }
-        if (tabName === 'order') {
-            // 초기 셀렉트박스 설정 등 필요시 호출
         }
     };
 
@@ -1107,11 +531,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.createNewSeriesPrompt = (category) => {
         const name = prompt("새롭게 만드실 시리즈(폴더) 이름을 입력하세요.\n예: 사도행전 강해 시리즈");
         if (name && name.trim()) {
-            const url = new URL('admin_add.html', window.location.href);
-            const otherCats = ['기타', '도서 목록', '전도 소책자', '강해설교'];
-            if (otherCats.includes(category)) url.searchParams.set('category', category);
-            url.searchParams.set('series', name.trim());
-            window.open(url.href, '_blank', 'width=1000,height=800');
+            // 폴더를 '생성'한다는 것은 해당 시리즈명으로 첫 자료를 올릴 준비를 하는 것
+            openResourceModalWithSeries(category, name.trim());
+            setTimeout(() => {
+                const uploadBtn = document.getElementById('toggle-modal-upload');
+                if (uploadBtn) uploadBtn.click();
+            }, 500);
         }
     };
 
@@ -1192,13 +617,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentUploadTarget = null;
 
     window.prepareUploadForCategory = (categoryName) => {
-        // Open admin_add.html instead of inline form
-        const url = new URL('admin_add.html', window.location.href);
-        if (topics.includes(categoryName)) url.searchParams.set('topic', categoryName);
-        if (authors.includes(categoryName)) url.searchParams.set('author', categoryName);
-        if (['전도 소책자', '도서 목록', '강해설교', '기타'].includes(categoryName)) url.searchParams.set('category', categoryName);
-
-        window.open(url.href, '_blank', 'width=1000,height=800');
+        // 이 함수는 이제 모달 내부의 업로드 창을 열어주는 역할로 변경합니다.
+        const modalUploadForm = document.getElementById('modal-upload-form');
+        if (modalUploadForm) {
+            modalUploadForm.style.display = 'block';
+            const titleInput = document.getElementById('modal-post-title');
+            if (titleInput) titleInput.focus();
+        }
     };
 
     window.clearUploadTarget = () => {
@@ -1214,7 +639,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const topic = document.getElementById('post-topic').value;
             const author = document.getElementById('post-author').value;
             const other = document.getElementById('post-other-category').value;
-            const subBookletTopic = document.getElementById('post-booklet-topic').value;
 
             let tags = [topic, author, other].filter(t => t !== "");
             if (currentUploadTarget) {
@@ -1313,10 +737,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     title,
                     series,
                     order,
-                    recent_order: 0,
                     price,
                     content,
-                    subBookletTopic: (other === "전도 소책자") ? subBookletTopic : null,
                     fileUrl,
                     coverUrl,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1332,7 +754,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 uploadForm.reset();
                 clearUploadTarget(); // This helper should exist in your codebase to clear file selection UI
                 if (window.loadRecentPostsGrid) window.loadRecentPostsGrid();
-                if (window.loadAdminPicks) window.loadAdminPicks();
 
             } catch (error) {
                 console.error("❌ Upload Workflow Error:", error);
@@ -1360,7 +781,6 @@ document.addEventListener('DOMContentLoaded', () => {
             isLoadingMore = true;
 
             try {
-                // 전체 목록은 최신 업로드 순(createdAt)으로 유지해야 모든 자료가 보입니다.
                 let query = db.collection("posts").orderBy("createdAt", "desc");
 
                 if (loadMore && lastVisiblePost) {
@@ -1386,7 +806,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const id = doc.id;
                     const li = document.createElement('li');
                     li.className = 'post-item admin-post-item';
-                    li.setAttribute('data-id', id); // ID 속성 추가
                     const date = post.createdAt ? post.createdAt.toDate().toLocaleString() : '방금 전';
                     const displayTags = post.tags ? post.tags.join(', ') : '분류 없음';
                     const hasFile = post.fileUrl ? true : false;
@@ -1454,12 +873,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    window.openEditModal = (id) => {
-        const width = 1000;
-        const height = 900;
-        const left = (window.screen.width - width) / 2;
-        const top = (window.screen.height - height) / 2;
-        window.open(`admin_edit.html?id=${id}`, `EditPost_${id}`, `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`);
+    window.openEditModal = async (id) => {
+        console.log("Opening edit modal for:", id);
+        try {
+            if (!window.db) {
+                return alert("데이터베이스에 연결되지 않았습니다.");
+            }
+            const doc = await db.collection("posts").doc(id).get();
+            if (!doc.exists) return alert("자료를 찾을 수 없습니다.");
+            const post = doc.data();
+
+            document.getElementById('edit-post-id').value = id;
+            document.getElementById('edit-topic').value = post.topic || "";
+            document.getElementById('edit-author').value = post.author || "";
+            document.getElementById('edit-other-category').value = post.otherCategory || "";
+
+            // [추가] 소책자 언어 처리
+            const langGroup = document.getElementById('edit-lang-group');
+            const langSelect = document.getElementById('edit-lang');
+            if (langGroup && langSelect) {
+                const isBooklet = (post.otherCategory === '전도 소책자') || (post.tags && post.tags.includes('전도 소책자'));
+                if (isBooklet) {
+                    langGroup.style.display = 'block';
+                    const languages = ['한국어', 'English', 'Spanish', 'Japanese', 'Arabic', 'Chinese'];
+                    const currentLang = (post.tags || []).find(tag => languages.includes(tag));
+                    langSelect.value = currentLang || '한국어';
+                    // 만약 otherCategory가 비어있다면 '전도 소책자'로 강제 설정 (수정 시 정합성 위해)
+                    if (!post.otherCategory) {
+                        document.getElementById('edit-other-category').value = '전도 소책자';
+                    }
+                } else {
+                    langGroup.style.display = 'none';
+                }
+            }
+
+            document.getElementById('edit-title').value = post.title || "";
+            document.getElementById('edit-series').value = post.series || "";
+            document.getElementById('edit-order').value = post.order || 0;
+            document.getElementById('edit-price').value = post.price || "";
+            document.getElementById('edit-content').value = post.content || '';
+
+            const coverStatus = document.getElementById('edit-cover-status');
+            if (coverStatus) coverStatus.textContent = post.coverUrl ? "기존 표지가 있습니다 (교체 시 새로 선택)" : "등록된 표지 없음";
+
+            const fileStatus = document.getElementById('edit-file-status');
+            if (fileStatus) fileStatus.textContent = post.fileUrl ? "기존 상세 파일이 있습니다 (교체 시 새로 선택)" : "첨부된 파일 없음";
+
+            if (editModal) {
+                window.openModal(editModal);
+            } else {
+                console.error("Edit modal element not found");
+                alert("수정 창을 찾을 수 없습니다.");
+            }
+        } catch (error) {
+            console.error("Error opening edit modal:", error);
+            alert("수정 창을 여는 중 오류가 발생했습니다: " + error.message);
+        }
     };
 
     window.deletePost = async (id) => {
@@ -1467,9 +936,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await db.collection("posts").doc(id).delete();
             alert("삭제되었습니다.");
-            // Refresh lists
-            if (window.loadAdminPosts) window.loadAdminPosts();
-            if (window.loadRecentPostsGrid) window.loadRecentPostsGrid();
         } catch (error) {
             console.error("Delete error:", error);
             alert("삭제 실패: " + error.message);
@@ -1485,10 +951,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (langGroup) {
                 langGroup.style.display = (e.target.value === '전도 소책자') ? 'block' : 'none';
             }
-            const bookletTopicGroup = document.getElementById('edit-booklet-topic-group');
-            if (bookletTopicGroup) {
-                bookletTopicGroup.style.display = (e.target.value === '전도 소책자') ? 'block' : 'none';
-            }
         });
     }
     if (editForm) {
@@ -1499,7 +961,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const topic = document.getElementById('edit-topic').value;
             const author = document.getElementById('edit-author').value;
             const other = document.getElementById('edit-other-category').value;
-            const subBookletTopic = document.getElementById('edit-booklet-topic').value;
             const tags = [topic, author, other].filter(t => t !== "");
 
             // [추가] 소책자 언어 태그 추가
@@ -1539,13 +1000,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     order,
                     price,
                     content,
-                    isRecommended: document.getElementById('edit-is-recommended').checked,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
-
-                if (other === "전도 소책자" && subBookletTopic) {
-                    updateData.subBookletTopic = subBookletTopic;
-                }
 
                 if (file) {
                     const storageRef = storage.ref(`files/${Date.now()}_${file.name}`);
@@ -1706,28 +1162,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (modalSeries) modalSeries.value = targetSeries || "";
 
                 if (toggleBtn) {
-                    toggleBtn.textContent = '새 자료 추가 (새 창)';
+                    toggleBtn.textContent = '업로드 창 열기';
                     toggleBtn.onclick = (e) => {
                         e.preventDefault();
-                        const url = new URL('admin_add.html', window.location.href);
-
-                        // Set presets based on current modal view
-                        if (topics.includes(queryTag)) url.searchParams.set('topic', queryTag);
-                        if (authors.includes(queryTag)) url.searchParams.set('author', queryTag);
-                        const otherCats = ['기타', '도서 목록', '전도 소책자', '강해설교'];
-                        if (otherCats.includes(queryTag)) url.searchParams.set('category', queryTag);
-                        if (targetSeries) url.searchParams.set('series', targetSeries);
-
-                        window.open(url.href, '_blank', 'width=1000,height=800');
+                        if (modalUploadForm.style.display === 'none') {
+                            modalUploadForm.style.display = 'block';
+                            toggleBtn.textContent = '업로드 창 닫기';
+                            const titleInput = document.getElementById('modal-post-title');
+                            if (titleInput) titleInput.focus();
+                        } else {
+                            modalUploadForm.style.display = 'none';
+                            toggleBtn.textContent = '업로드 창 열기';
+                        }
                     };
                 }
 
-                // "이 폴더에 새 자료 추가" 텍스트 클릭 시에도 새 창 열기
+                // "이 폴더에 새 자료 추가" 텍스트 클릭 시에도 업로드 창 열기
                 const addText = adminHeader.querySelector('span');
                 if (addText) {
                     addText.style.cursor = 'pointer';
                     addText.onclick = () => {
-                        toggleBtn.click();
+                        if (modalUploadForm && modalUploadForm.style.display === 'none') {
+                            modalUploadForm.style.display = 'block';
+                            if (toggleBtn) toggleBtn.textContent = '업로드 창 닫기';
+                            const titleInput = document.getElementById('modal-post-title');
+                            if (titleInput) titleInput.focus();
+                        }
                     };
                 }
 
@@ -1842,9 +1302,6 @@ document.addEventListener('DOMContentLoaded', () => {
             let q = db.collection("posts");
             if (queryTag === '전도 소책자') {
                 q = q.where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"]);
-            } else if (queryTag === '모든 자료') {
-                // No tag filter, just get all (limit for safety)
-                q = q.orderBy("createdAt", "desc").limit(500);
             } else {
                 q = q.where("tags", "array-contains", queryTag);
             }
@@ -1874,15 +1331,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (filterSection) {
                 // 전도 소책자나 강해설교 등 자료가 많을 수 있는 곳에서 노출
-                // 추천 자료 선택 모드일 때도 강제로 노출
-                const needsFilter = ['전도 소책자', '강해설교', '도서 목록', '모든 자료'].includes(queryTag) || window.selectionTargetSlot !== null;
+                const needsFilter = ['전도 소책자', '강해설교', '도서 목록'].includes(queryTag);
                 filterSection.style.display = needsFilter ? 'flex' : 'none';
             }
             if (filterTopic) filterTopic.value = "";
             if (filterAuthor) filterAuthor.value = "";
-
-            const searchInput = document.getElementById('modal-search-input');
-            if (searchInput) searchInput.value = "";
 
             // Render View
             const renderListView = (currentGroupedData) => {
@@ -1956,17 +1409,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h4 style="margin:0; font-size:0.95rem; color:var(--primary-color); line-height:1.2;">${sName}</h4>
                         <p style="font-size:0.7rem; color:#888; margin-top:5px;">상세 보기 <i class="fas fa-chevron-right"></i></p>
                     `;
-                    folderCard.onclick = () => {
-                        if (window.Stats) {
-                            window.Stats.track('view', {
-                                id: 'series_' + Date.now().toString(36), // Replace btoa with safe random ID
-                                type: 'series_folder',
-                                title: sName,
-                                category: categoryName
-                            });
-                        }
-                        renderDetailView(sName, seriesPosts);
-                    };
+                    folderCard.onclick = () => renderDetailView(sName, seriesPosts);
                     grid.appendChild(folderCard);
                 });
 
@@ -2096,7 +1539,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const applyModalFilters = () => {
                 const selectedTopic = filterTopic ? filterTopic.value : "";
                 const selectedAuthor = filterAuthor ? filterAuthor.value : "";
-                const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
                 let filtered = posts;
                 if (selectedTopic) {
@@ -2105,21 +1547,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (selectedAuthor) {
                     filtered = filtered.filter(p => p.tags && p.tags.includes(selectedAuthor));
                 }
-                if (searchTerm) {
-                    filtered = filtered.filter(p =>
-                        (p.title && p.title.toLowerCase().includes(searchTerm)) ||
-                        (p.content && p.content.toLowerCase().includes(searchTerm)) ||
-                        (p.series && p.series.toLowerCase().includes(searchTerm))
-                    );
-                }
                 groupAndRender(filtered);
             };
 
             if (filterTopic) filterTopic.onchange = applyModalFilters;
             if (filterAuthor) filterAuthor.onchange = applyModalFilters;
-            if (searchInput) {
-                searchInput.oninput = applyModalFilters;
-            }
 
             // 초기 렌더링
             groupAndRender(posts);
@@ -2188,28 +1620,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const icon = isPdf ? 'fa-file-pdf' : 'fa-file-download';
             const label = isPdf ? 'PDF 파일 보기' : '첨부파일 다운로드';
             const color = isPdf ? '#e74c3c' : 'var(--secondary-color)';
-            const finalHref = isPdf ? `viewer.html?file=${encodeURIComponent(post.fileUrl)}&title=${encodeURIComponent(post.title)}` : post.fileUrl;
-
-            fileLinkHtml = `<a href="${finalHref}" target="_blank" class="resource-link premium-btn" style="border-color:${color}; color:${color}; margin-top:10px;" 
-                onclick="if(window.Stats) window.Stats.track('${isPdf ? 'download' : 'click'}', { id: '${post.id}', type: '${isPdf ? 'tract_pdf' : 'resource_file'}', title: '${post.title.replace(/'/g, "\\'")}', category: '${(post.tags || []).join(",")}' })">
+            fileLinkHtml = `<a href="${post.fileUrl}" target="_blank" class="resource-link premium-btn" style="border-color:${color}; color:${color}; margin-top:10px;">
                 <i class="fas ${icon}"></i> ${label}</a>`;
         }
         let adminButtons = '';
         if (isAdmin) {
-            let selectBtn = '';
-            if (window.selectionTargetSlot !== null) {
-                selectBtn = `<button onclick="window.assignPostToSlot('${post.id}', '${post.title.replace(/'/g, "\\'")}')" class="cta-btn primary" style="padding: 10px; font-size: 0.8rem; margin-top: 10px; border-radius: 6px; width: 100%; background: #f1c40f; color: #000; font-weight: bold;">
-                    <i class="fas fa-check-circle"></i> 추천 자료 슬롯 ${window.selectionTargetSlot + 1}번에 등록
-                </button>`;
-            }
-
             adminButtons = `
-                <div class="resource-admin-actions" style="display: flex; flex-direction: column; gap: 5px;">
-                    <div style="display: flex; gap: 5px;">
-                        <button onclick="window.openEditModal('${post.id}')" class="action-btn edit-small" title="수정"><i class="fas fa-edit"></i></button>
-                        <button onclick="window.deletePost('${post.id}')" class="action-btn delete-small" title="삭제"><i class="fas fa-trash"></i></button>
-                    </div>
-                    ${selectBtn}
+                <div class="resource-admin-actions">
+                    <button onclick="window.openEditModal('${post.id}')" class="action-btn edit-small" title="수정"><i class="fas fa-edit"></i></button>
+                    <button onclick="window.deletePost('${post.id}')" class="action-btn delete-small" title="삭제"><i class="fas fa-trash"></i></button>
                 </div>
             `;
         }
@@ -2239,8 +1658,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (priceNum > 0) {
                 buyButtonHtml = `
-                    <button class="premium-btn" style="background: var(--secondary-color); color: white; border: none; width: 100%; margin-top: 15px; padding: 12px;" 
-                        onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${post.id}', type: 'book_purchase_intent', title: '${post.title.replace(/'/g, "\\'")}' }); window.requestPay('${post.title.replace(/'/g, "\\'")}', ${priceNum})">
+                    <button class="premium-btn" style="background: var(--secondary-color); color: white; border: none; width: 100%; margin-top: 15px; padding: 12px;" onclick="window.requestPay('${post.title.replace(/'/g, "\\'")}', ${priceNum})">
                         <i class="fas fa-shopping-cart"></i> 바로 구매하기
                     </button>
                 `;
@@ -2807,613 +2225,269 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.openAllAuthorsModal = () => {
-        alert("이 기능은 더 이상 사용되지 않습니다.");
-    };
+        if (!resourceModal) return;
+        window.openModal(resourceModal);
+        resourceListContainer.classList.remove('compact-view');
+        resourceModalTitle.textContent = `전체 저자 목록`;
 
-    // --- Admin Picks Logic ---
-    window.loadAdminPicks = async () => {
-        const container = document.getElementById('admin-picks-container');
-        if (!container) return;
+        // 검색/카테고리 선택 모달에서는 업로드 헤더 숨김
+        const adminHeader = document.getElementById('resource-modal-admin-header');
+        if (adminHeader) adminHeader.style.display = 'none';
 
-        if (!window.db) {
-            container.innerHTML = '<div class="loading-msg">데이터베이스 연결 대기 중...</div>';
-            return;
-        }
+        const renderAuthorContent = (list) => {
+            // 정렬
+            const sortedList = [...list].sort((a, b) => a.localeCompare(b, 'ko'));
 
-        try {
-            // Query for isRecommended == true, ordered by newest first
-            // Note: This requires a composite index on [isRecommended: ASC, createdAt: DESC]
-            let snapshot;
-            try {
-                snapshot = await db.collection("posts")
-                    .where("isRecommended", "==", true)
-                    .orderBy("createdAt", "desc")
-                    .limit(3)
-                    .get();
-            } catch (indexErr) {
-                console.warn("Recommended index not ready, falling back to unordered query:", indexErr);
-                snapshot = await db.collection("posts")
-                    .where("isRecommended", "==", true)
-                    .limit(3)
-                    .get();
-            }
+            // 그룹화
+            const groups = {};
+            sortedList.forEach(item => {
+                const initial = getInitialConsonant(item);
+                if (!groups[initial]) groups[initial] = [];
+                groups[initial].push(item);
+            });
 
-            if (snapshot && !snapshot.empty) {
-                renderAdminPicks(snapshot, container);
-            } else {
-                // Fallback to most recent 3 if none recommended OR if the ordered query returned nothing (though that's unlikely if posts exist)
-                console.log("No explicitly recommended items found. Falling back to recent.");
-                const fallbackSnapshot = await db.collection("posts")
-                    .orderBy("createdAt", "desc")
-                    .limit(3)
-                    .get();
+            const consonants = Object.keys(groups).sort();
 
-                if (fallbackSnapshot.empty) {
-                    container.innerHTML = '<div class="loading-msg">등록된 자료가 없습니다.</div>';
-                    return;
-                }
-                renderAdminPicks(fallbackSnapshot, container);
-            }
-        } catch (err) {
-            console.error("Error loading admin picks:", err);
-            container.innerHTML = '<div class="error-msg">자료를 불러오는데 오류가 발생했습니다.</div>';
-        }
-    };
-
-    // --- New Admin Picks Management Logic (Direct Slot Selection) ---
-    window.selectionTargetSlot = null; // 0, 1, 2
-
-    window.loadAdminPicksForManagement = async () => {
-        if (!window.db) return;
-        try {
-            const settingsDoc = await db.collection("site_settings").doc("admin_picks").get();
-            let pickIds = [null, null, null];
-            if (settingsDoc.exists) {
-                pickIds = settingsDoc.data().posts || [null, null, null];
-            }
-
-            for (let i = 0; i < 3; i++) {
-                const contentArea = document.getElementById(`pick-content-${i + 1}`);
-                if (!contentArea) continue;
-
-                if (pickIds[i]) {
-                    const postDoc = await db.collection("posts").doc(pickIds[i]).get();
-                    if (postDoc.exists) {
-                        const post = postDoc.data();
-                        const thumb = post.coverUrl || 'https://images.unsplash.com/photo-1585829365234-78905bc76269?auto=format&fit=crop&q=80&w=200';
-                        contentArea.innerHTML = `
-                            <div style="width:120px; height:150px; margin: 0 auto 10px; border-radius:8px; overflow:hidden; border:1px solid #eee; position: relative;">
-                                <img src="${thumb}" style="width:100%; height:100%; object-fit:cover;">
-                                <button onclick="window.removePostFromSlot(${i})" style="position: absolute; top: 5px; right: 5px; background: rgba(231, 76, 60, 0.9); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px;" title="이 슬롯에서 제거">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                            <h4 style="margin:0; font-size:0.9rem; color:#333; height: 40px; overflow:hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${post.title}</h4>
-                            <p style="margin: 5px 0 0; font-size: 0.75rem; color: #27ae60; font-weight: bold;">[등록됨]</p>
-                        `;
-                    } else {
-                        renderEmptySlot(contentArea, i);
-                    }
-                } else {
-                    renderEmptySlot(contentArea, i);
-                }
-            }
-        } catch (err) {
-            console.error("Management Picks Load Error:", err);
-        }
-    };
-
-    window.removePostFromSlot = async (slotIndex) => {
-        if (!confirm(`슬롯 ${slotIndex + 1}번의 추천 자료를 목록에서 제거하시겠습니까?`)) return;
-
-        try {
-            const settingsRef = db.collection("site_settings").doc("admin_picks");
-            const settingsDoc = await settingsRef.get();
-            let currentPicks = [null, null, null];
-            if (settingsDoc.exists) {
-                currentPicks = settingsDoc.data().posts || [null, null, null];
-            }
-
-            currentPicks[slotIndex] = null;
-            await settingsRef.set({ posts: currentPicks }, { merge: true });
-
-            alert("제거되었습니다.");
-            window.loadAdminPicksForManagement();
-            window.loadAdminPicks();
-        } catch (err) {
-            console.error("Slot Remove Error:", err);
-            alert("제거 오류: " + err.message);
-        }
-    };
-
-    function renderEmptySlot(container, index) {
-        container.innerHTML = `
-            <div onclick="openAdminPickSelection(${index})" style="width:120px; height:150px; margin: 0 auto 10px; border-radius:8px; border: 2px dashed #eee; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fff;">
-                <i class="fas fa-plus" style="font-size: 1.5rem; color: #eee;"></i>
-            </div>
-            <p style="color: #aaa; font-size: 0.85rem; margin-top: 5px;">자료 없음</p>
-        `;
-    }
-
-    window.openAdminPickSelection = (slotIndex) => {
-        const width = 1300;
-        const height = 900;
-        const left = (window.screen.width / 2) - (width / 2);
-        const top = (window.screen.height / 2) - (height / 2);
-
-        window.open(`admin_pick_select.html?slot=${slotIndex}`, 'PickSelectWindow',
-            `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`);
-    };
-
-    window.assignPostToSlotFromWindow = async (slotIndex, postId, postTitle) => {
-        window.selectionTargetSlot = slotIndex;
-        await window.assignPostToSlot(postId, postTitle, true); // Skip confirm in parent
-    };
-
-    window.assignPostToSlot = async (postId, postTitle, skipConfirm = false) => {
-        if (window.selectionTargetSlot === null) return;
-        if (!skipConfirm && !confirm(`'${postTitle}' 자료를 슬롯 ${window.selectionTargetSlot + 1}번의 추천 자료로 지정하시겠습니까?`)) return;
-
-        try {
-            const settingsRef = db.collection("site_settings").doc("admin_picks");
-            const settingsDoc = await settingsRef.get();
-            let currentPicks = [null, null, null];
-            if (settingsDoc.exists) {
-                currentPicks = settingsDoc.data().posts || [null, null, null];
-            }
-
-            currentPicks[window.selectionTargetSlot] = postId;
-            await settingsRef.set({ posts: currentPicks }, { merge: true });
-
-            alert("성공적으로 등록되었습니다.");
-            window.selectionTargetSlot = null;
-            window.closeAllModals();
-
-            // Refresh dashboards
-            window.loadAdminPicksForManagement();
-            window.loadAdminPicks();
-        } catch (err) {
-            console.error("Slot Assign Error:", err);
-            alert("지정 오류: " + err.message);
-        }
-    };
-
-    // Update loadAdminPicks to use the settings doc
-    const originalLoadAdminPicks = window.loadAdminPicks;
-    window.loadAdminPicks = async () => {
-        const container = document.getElementById('admin-picks-container');
-        if (!container || !window.db) return;
-
-        try {
-            const settingsDoc = await db.collection("site_settings").doc("admin_picks").get();
-            if (settingsDoc.exists && settingsDoc.data().posts && settingsDoc.data().posts.filter(id => id).length > 0) {
-                const pickIds = settingsDoc.data().posts.filter(id => id);
-                // Fetch each post doc
-                const posts = [];
-                for (const id of pickIds) {
-                    const d = await db.collection("posts").doc(id).get();
-                    if (d.exists) posts.push({ id: d.id, data: d.data() });
-                }
-
-                if (posts.length > 0) {
-                    container.innerHTML = '';
-                    posts.forEach(p => {
-                        const card = createAdminPickCard(p.data, p.id);
-                        container.appendChild(card);
-                    });
-                    return;
-                }
-            }
-            // Fallback to original logic if no settings or empty
-            await originalLoadAdminPicks();
-        } catch (err) {
-            console.error("Admin Picks Logic Error, falling back:", err);
-            await originalLoadAdminPicks();
-        }
-    };
-
-    function createAdminPickCard(data, id) {
-        const card = document.createElement('div');
-        card.className = 'admin-pick-card';
-
-        let bgImage = data.coverUrl || '';
-        if (!bgImage && data.fileUrl && (data.fileUrl.includes('.jpg') || data.fileUrl.includes('.png') || data.fileUrl.includes('.jpeg'))) {
-            bgImage = data.fileUrl;
-        }
-
-        let bgStyle = bgImage
-            ? `background-image: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8)), url('${bgImage}');`
-            : `background: linear-gradient(135deg, var(--primary-color), #2c3e50);`;
-
-        card.style.cssText = `
-            position: relative;
-            height: 380px;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            cursor: pointer;
-            background: #fff;
-            ${bgImage ? '' : bgStyle}
-        `;
-
-        card.innerHTML = `
-            <div class="admin-pick-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ${bgImage ? '' : 'color: white;'}">
-                ${bgImage
-                ? `<img src="${bgImage}" style="width: 100%; height: 100%; object-fit: contain;" alt="${data.title}">`
-                : `<div style="text-align:center; padding:20px;">
-                           <i class="fas fa-book" style="font-size:3rem; color:rgba(255,255,255,0.8);"></i>
-                           <h4 style="margin-top:10px; color:white;">${data.title}</h4>
-                       </div>`
-            }
-            </div>
-        `;
-
-        card.onclick = () => {
-            const cat = data.topic || (data.tags && data.tags[0]) || '전체 자료';
-            window.openResourceModal(cat, data.series, id);
-        };
-        return card;
-    }
-
-    function renderAdminPicks(snapshot, container) {
-        container.innerHTML = '';
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            const id = doc.id;
-
-            // Card HTML
-            const card = document.createElement('div');
-            card.className = 'admin-pick-card';
-
-            // Image handling (Cover priority, then file if image, then fallback)
-            let bgImage = data.coverUrl || '';
-            // If no cover, check if fileUrl is image
-            if (!bgImage && data.fileUrl && (data.fileUrl.includes('.jpg') || data.fileUrl.includes('.png') || data.fileUrl.includes('.jpeg'))) {
-                bgImage = data.fileUrl;
-            }
-
-            if (bgImage) {
-                bgStyle = `background-image: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8)), url('${bgImage}');`;
-            } else {
-                // Premium Gradient Fallback
-                bgStyle = `background: linear-gradient(135deg, var(--primary-color), #2c3e50);`;
-            }
-
-            card.style.cssText = `
-                position: relative;
-                height: 380px;
-                border: 1px solid #eee;
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-                cursor: pointer;
-                background: #fff;
-                ${bgImage ? '' : bgStyle}
-            `;
-
-            card.innerHTML = `
-                <div class="admin-pick-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ${bgImage ? '' : 'color: white;'}">
-                    ${bgImage
-                    ? `<img src="${bgImage}" style="width: 100%; height: 100%; object-fit: contain;" alt="${data.title}">`
-                    : `<div style="text-align:center; padding:20px;">
-                               <i class="fas fa-book" style="font-size:3rem; color:rgba(255,255,255,0.8);"></i>
-                               <h4 style="margin-top:10px; color:white;">${data.title}</h4>
-                           </div>`
-                }
+            resourceListContainer.innerHTML = `
+                <div class="author-search-container" style="margin-bottom: 2rem;">
+                    <input type="text" id="modal-author-search" placeholder="저자 이름 검색..." style="width: 100%; padding: 1rem; border-radius: 8px; border: 1px solid #ddd;">
+                </div>
+                <div class="modal-nav-container">
+                    <div class="modal-content-scroll" id="modal-author-scroll">
+                        <div class="main-grid-container" id="modal-author-grid"></div>
+                    </div>
+                    <div class="modal-index-nav" id="modal-author-index"></div>
                 </div>
             `;
 
-            card.onclick = () => {
-                const cat = data.topic || (data.tags && data.tags[0]) || '전체 자료';
-                window.openResourceModal(cat, data.series, id);
-            };
+            const grid = document.getElementById('modal-author-grid');
+            const indexNav = document.getElementById('modal-author-index');
+            const scrollContainer = document.getElementById('modal-author-scroll');
+            const searchInput = document.getElementById('modal-author-search');
 
-            container.appendChild(card);
-        });
-    }
-
-    // Trigger load
-    if (window.db) {
-        window.loadAdminPicks();
-    } else {
-        setTimeout(() => { if (window.loadAdminPicks) window.loadAdminPicks(); }, 1500);
-    }
-
-    // --- Order Management Support Logic ---
-
-    window.updateOrderSubSelect = async () => {
-        const type = document.getElementById('order-type-select').value;
-        const valueSelect = document.getElementById('order-value-select');
-        if (!valueSelect) return;
-
-        valueSelect.innerHTML = '<option value="">-- 로딩 중... --</option>';
-
-        if (!type) {
-            valueSelect.innerHTML = '<option value="">-- 먼저 대분류를 선택하세요 --</option>';
-            return;
-        }
-
-        try {
-            let items = [];
-            if (type === 'topic') items = topics;
-            else if (type === 'author') items = authors;
-            else if (type === 'category') items = ['기타', '도서 목록', '전도 소책자', '강해설교'];
-            else if (type === 'series') {
-                // Fetch unique series names from Firestore
-                const snapshot = await db.collection("posts").get();
-                const seriesSet = new Set();
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const s = data.series;
-                    if (s && s.trim()) seriesSet.add(s.trim());
-                    else if (data.tags && data.tags.includes('강해설교')) seriesSet.add('기타 단편 설교');
-                });
-                items = Array.from(seriesSet).sort((a, b) => a.trim().localeCompare(b.trim(), 'ko', { numeric: true, sensitivity: 'base' }));
-            } else if (type === 'recent') {
-                items = ['메인 홈 최근 업데이트 (전체)'];
-            }
-
-            valueSelect.innerHTML = '<option value="">-- 상세 항목 선택 --</option>';
-            items.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item;
-                opt.textContent = item;
-                valueSelect.appendChild(opt);
-            });
-        } catch (err) {
-            console.error(err);
-            valueSelect.innerHTML = '<option value="">-- 로딩 실패 --</option>';
-        }
-    };
-
-    /**
-     * [Refactored API] 공통 순서 변경 함수
-     * @param {string} collectionName - Firestore 컬렉션 이름 (tableName 대응)
-     * @param {string} orderField - 변경할 순서 필드명
-     * @param {Array} orderedIds - 순서대로 정렬된 ID 배열
-     */
-    window.reorderByIds = async (collectionName, orderField, orderedIds) => {
-        if (!orderedIds || orderedIds.length === 0) return;
-        const batch = db.batch();
-        orderedIds.forEach((id, index) => {
-            const ref = db.collection(collectionName).doc(id);
-            batch.update(ref, { [orderField]: index });
-        });
-        return await batch.commit();
-    };
-
-    window.loadOrderItems = async () => {
-        const type = document.getElementById('order-type-select').value;
-        const value = document.getElementById('order-value-select').value;
-        const container = document.getElementById('order-items-container');
-        const saveBtn = document.getElementById('save-order-btn');
-
-        if (!type || !value) {
-            alert("분류와 상세 항목을 모두 선택해주세요.");
-            return;
-        }
-
-        container.innerHTML = '<p class="loading-msg" style="text-align:center; padding: 50px;">자료를 불러오는 중입니다...</p>';
-        if (saveBtn) saveBtn.style.display = 'none';
-
-        try {
-            let query = db.collection("posts");
-            let posts = [];
-
-            if (type === 'topic' || type === 'author' || type === 'category') {
-                const snapshot = await query.where("tags", "array-contains", value).get();
-                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
-            } else if (type === 'series') {
-                if (value === '기타 단편 설교') {
-                    // Fetch all sermon posts and filter by empty series
-                    const snapshot = await query.where("tags", "array-contains", "강해설교").get();
-                    snapshot.forEach(doc => {
-                        const d = doc.data();
-                        if (!d.series || d.series.trim() === "" || d.series === "기타 단편 설교") {
-                            posts.push({ id: doc.id, ...d });
-                        }
-                    });
-                } else {
-                    const snapshot = await query.where("series", "==", value).get();
-                    snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
-                }
-            } else if (type === 'recent') {
-                // Fetch recent 50 posts to allow reordering
-                const snapshot = await query.orderBy("createdAt", "desc").limit(50).get();
-                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
-            }
-
-            if (posts.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#999; padding:50px;">해당하는 자료가 없습니다.</p>';
-                return;
-            }
-
-            // Sort by manual order first, then date desc
-            posts.sort((a, b) => {
-                const orderA = type === 'recent' ? (a.recent_order ?? 999999) : (a.order || 0);
-                const orderB = type === 'recent' ? (b.recent_order ?? 999999) : (b.order || 0);
-
-                if (orderA !== orderB) return orderA - orderB;
-                return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
-            });
-
-            container.innerHTML = '';
-            const list = document.createElement('ul');
-            list.id = 'draggable-order-list';
-            list.style.cssText = 'list-style: none; padding: 0; margin: 0;';
-
-            posts.forEach(post => {
-                const li = document.createElement('li');
-                li.className = 'order-item';
-                li.setAttribute('data-id', post.id);
-                li.style.cssText = 'background: white; border: 1px solid #eee; margin-bottom: 10px; padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 15px; cursor: move; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02);';
-
-                // Hover effect logic
-                li.onmouseover = () => { li.style.borderColor = '#1abc9c'; li.style.background = '#f0fdfa'; };
-                li.onmouseout = () => { li.style.borderColor = '#eee'; li.style.background = 'white'; };
-
-                const date = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : '날짜 없음';
-                li.innerHTML = `
-                    <div style="color: #cbd5e0;"><i class="fas fa-grip-vertical" style="font-size: 1.2rem;"></i></div>
-                    <div style="flex: 1;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <strong style="font-size: 1rem; color: #2d3748;">${post.title}</strong>
-                            <span style="background: #edf2f7; color: #4a5568; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">
-                                # ${type === 'recent' ? (post.recent_order ?? 'N/A') : (post.order || 0)}
-                            </span>
-                        </div>
-                        <div style="font-size: 0.8rem; color: #a0aec0; margin-top: 5px;">
-                            <span><i class="far fa-calendar-alt"></i> ${date}</span>
-                            ${post.series ? `<span style="margin-left: 10px;"><i class="far fa-folder"></i> ${post.series}</span>` : ''}
-                        </div>
-                    </div>
-                `;
-                list.appendChild(li);
-            });
-
-            container.appendChild(list);
-            if (saveBtn) saveBtn.style.display = 'block';
-
-            // Initialize Sortable
-            if (typeof Sortable !== 'undefined') {
-                new Sortable(list, {
-                    animation: 150,
-                    ghostClass: 'sortable-ghost',
-                    onStart: () => {
-                        if (saveBtn) saveBtn.style.opacity = '0.5';
-                    },
-                    onEnd: () => {
-                        if (saveBtn) saveBtn.style.opacity = '1';
+            consonants.forEach(consonant => {
+                // 인덱스 바
+                const span = document.createElement('span');
+                span.textContent = consonant;
+                span.addEventListener('click', () => {
+                    const header = document.getElementById(`header-author-${consonant}`);
+                    if (header) {
+                        scrollContainer.scrollTo({
+                            top: header.offsetTop - 10,
+                            behavior: 'smooth'
+                        });
                     }
                 });
-            }
-        } catch (err) {
-            console.error(err);
-            container.innerHTML = '<p style="color:red; text-align:center; padding:50px;">자료 로딩 중 오류가 발생했습니다.<br>' + err.message + '</p>';
-        }
-    };
+                indexNav.appendChild(span);
 
-    window.saveCurrentOrder = async () => {
-        const listItems = document.querySelectorAll('#draggable-order-list li');
-        if (listItems.length === 0) return;
+                // 섹션 헤더
+                const header = document.createElement('div');
+                header.className = 'modal-section-header';
+                header.id = `header-author-${consonant}`;
+                header.textContent = consonant;
+                grid.appendChild(header);
 
-        if (!confirm(`${listItems.length}개 자료의 순서를 현재 드래그하신 순서대로 저장하시겠습니까?`)) return;
-
-        const saveBtn = document.getElementById('save-order-btn');
-        const originalHtml = saveBtn.innerHTML;
-        saveBtn.disabled = true;
-        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 저장 중...';
-
-        try {
-            const type = document.getElementById('order-type-select').value;
-            const orderField = type === 'recent' ? 'recent_order' : 'order';
-
-            const ids = Array.from(listItems).map(item => item.getAttribute('data-id'));
-            await window.reorderByIds("posts", orderField, ids);
-            alert("✅ 순서가 성공적으로 저장되었습니다!");
-            window.loadOrderItems(); // Refresh view
-
-            // Other lists refresh
-            if (window.loadAdminPosts) window.loadAdminPosts();
-            if (window.loadRecentPostsGrid) window.loadRecentPostsGrid();
-        } catch (err) {
-            console.error(err);
-            alert("❌ 저장 실패: " + err.message);
-        } finally {
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = originalHtml;
-        }
-    };
-
-    /**
-     * 최근 업로드 정렬 모드 토글
-     */
-    let recentSortableInstance = null;
-    window.toggleRecentOrderMode = () => {
-        const list = document.getElementById('admin-recent-posts');
-        const toggleBtn = document.getElementById('btn-toggle-recent-order');
-        const saveBtn = document.getElementById('btn-save-recent-order');
-
-        const isEditing = list.classList.toggle('reorder-mode');
-
-        if (isEditing) {
-            toggleBtn.innerHTML = '<i class="fas fa-times"></i> 순서 변경 취소';
-            toggleBtn.style.background = '#e74c3c';
-            saveBtn.style.display = 'block';
-            list.style.cursor = 'move';
-
-            // Highlight items that can be dragged
-            list.querySelectorAll('.post-item').forEach(li => {
-                li.style.border = '2px dashed #0a7c68';
-                li.style.background = '#f0fdfa';
+                // 항목
+                groups[consonant].forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'main-grid-item';
+                    div.innerHTML = `
+                        <i class="fas fa-user-edit"></i>
+                        <span>${item}</span>
+                    `;
+                    div.addEventListener('click', () => {
+                        openResourceModal(item);
+                    });
+                    grid.appendChild(div);
+                });
             });
 
-            if (typeof Sortable !== 'undefined') {
-                recentSortableInstance = new Sortable(list, {
-                    animation: 150,
-                    ghostClass: 'sortable-ghost',
-                    draggable: '.post-item'
+            // 검색어 유지 로직
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const val = e.target.value.toLowerCase();
+                    const filtered = authors.filter(a => a.toLowerCase().includes(val));
+                    // 검색 시에는 인덱스 네비게이션이 복잡해질 수 있으므로 간단한 리스트로 재렌더링하거나 필터링 로직 개선 필요
+                    // 여기서는 유저 요구사항인 '인덱스'를 유지하기 위해 전체 저자 목록에서 검색 필터링된 결과로 다시 그룹화 수행
+                    renderAuthorContentFiltered(filtered, val);
                 });
             }
-        } else {
-            toggleBtn.innerHTML = '<i class="fas fa-sort"></i> 순서 변경 시작';
-            toggleBtn.style.background = '#666';
-            saveBtn.style.display = 'none';
-            list.style.cursor = 'default';
+        };
 
-            list.querySelectorAll('.post-item').forEach(li => {
-                li.style.border = 'none';
-                li.style.background = '';
+        const renderAuthorContentFiltered = (list, searchVal) => {
+            // 전체 저자 목록 UI 구조는 유지하되 내용만 필터링
+            renderAuthorContentInternal(list, searchVal);
+        };
+
+        const renderAuthorContentInternal = (list, searchVal = '') => {
+            // 정렬
+            const sortedList = [...list].sort((a, b) => a.localeCompare(b, 'ko'));
+
+            // 그룹화
+            const groups = {};
+            sortedList.forEach(item => {
+                const initial = getInitialConsonant(item);
+                if (!groups[initial]) groups[initial] = [];
+                groups[initial].push(item);
             });
 
-            if (recentSortableInstance) {
-                recentSortableInstance.destroy();
-                recentSortableInstance = null;
+            const consonants = Object.keys(groups).sort();
+
+            resourceListContainer.innerHTML = `
+                <div class="author-search-container" style="margin-bottom: 2rem;">
+                    <input type="text" id="modal-author-search" value="${searchVal}" placeholder="저자 이름 검색..." style="width: 100%; padding: 1rem; border-radius: 8px; border: 1px solid #ddd;">
+                </div>
+                <div class="modal-nav-container">
+                    <div class="modal-content-scroll" id="modal-author-scroll">
+                        <div class="main-grid-container" id="modal-author-grid"></div>
+                    </div>
+                    <div class="modal-index-nav" id="modal-author-index"></div>
+                </div>
+            `;
+
+            const grid = document.getElementById('modal-author-grid');
+            const indexNav = document.getElementById('modal-author-index');
+            const scrollContainer = document.getElementById('modal-author-scroll');
+            const searchInput = document.getElementById('modal-author-search');
+
+            if (searchInput) {
+                searchInput.focus();
+                // Move cursor to end
+                searchInput.setSelectionRange(searchVal.length, searchVal.length);
+
+                searchInput.addEventListener('input', (e) => {
+                    const val = e.target.value.toLowerCase();
+                    const filtered = authors.filter(a => a.toLowerCase().includes(val));
+                    renderAuthorContentInternal(filtered, val);
+                });
             }
-            // Reset list via refresh
-            if (window.loadAdminPosts) window.loadAdminPosts();
-        }
-    };
 
-    /**
-     * 최근 업로드 정렬 순서 저장 [API 대용]
-     */
-    window.saveRecentOrder = async () => {
-        const list = document.getElementById('admin-recent-posts');
-        const listItems = list.querySelectorAll('.post-item');
-        if (listItems.length === 0) return;
+            consonants.forEach(consonant => {
+                const span = document.createElement('span');
+                span.textContent = consonant;
+                span.addEventListener('click', () => {
+                    const header = document.getElementById(`header-author-${consonant}`);
+                    if (header) {
+                        scrollContainer.scrollTo({
+                            top: header.offsetTop - 10,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+                indexNav.appendChild(span);
 
-        if (!confirm('최근 업로드 순서를 현재 순서대로 저장하시겠습니까?')) return;
+                const header = document.createElement('div');
+                header.className = 'modal-section-header';
+                header.id = `header-author-${consonant}`;
+                header.textContent = consonant;
+                grid.appendChild(header);
 
-        const saveBtn = document.getElementById('btn-save-recent-order');
-        const originalHtml = saveBtn.innerHTML;
-        saveBtn.disabled = true;
-        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 저장...';
-
-        try {
-            const ids = Array.from(listItems).map(li => {
-                // li 내부의 버튼 onclick에서 ID 추출하거나 data-id 속성 필요
-                // loadAdminPosts 수정 필요 (data-id 추가)
-                return li.getAttribute('data-id');
+                groups[consonant].forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'main-grid-item';
+                    div.innerHTML = `
+                        <i class="fas fa-user-edit"></i>
+                        <span>${item}</span>
+                    `;
+                    div.addEventListener('click', () => {
+                        openResourceModal(item);
+                    });
+                    grid.appendChild(div);
+                });
             });
+        };
 
-            await window.reorderByIds("posts", "recent_order", ids);
-            alert("✅ 최근 업로드 순서가 저장되었습니다.");
-
-            // 토글 해제 및 새로고침
-            window.toggleRecentOrderMode();
-            if (window.loadRecentPostsGrid) window.loadRecentPostsGrid(); // 메인 홈 그리드도 영향 받을 수 있음
-        } catch (err) {
-            console.error(err);
-            alert("❌ 저장 실패");
-        } finally {
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = originalHtml;
-        }
+        renderAuthorContentInternal(authors);
     };
 
-});
+}); // End of main DOMContentLoaded
 
-// End of main.js (BGM logic moved to bgm.js)
+// --- BGM Player Logic (YouTube API) ---
+let player;
+const bgmVideoId = 'rr8AnfdhP7Q'; // Amazing Grace (Instrumental)
+let isPlayerReady = false;
+
+// Load YouTube API
+const tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+const firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+window.onYouTubeIframeAPIReady = function () {
+    player = new YT.Player('yt-player-container', {
+        height: '0',
+        width: '0',
+        videoId: bgmVideoId,
+        playerVars: {
+            'autoplay': 1,
+            'controls': 0,
+            'showinfo': 0,
+            'rel': 0,
+            'loop': 1,
+            'playlist': bgmVideoId,
+            'playsinline': 1
+        },
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    });
+};
+
+function onPlayerReady(event) {
+    isPlayerReady = true;
+    player.setVolume(50); // Set volume
+    player.playVideo();   // Attempt immediate playback
+}
+
+function onPlayerStateChange(event) {
+    const bgmPlayer = document.getElementById('bgm-player');
+    const musicText = document.querySelector('.music-text');
+
+    if (event.data === YT.PlayerState.PLAYING) {
+        if (bgmPlayer) bgmPlayer.classList.add('playing');
+        if (musicText) musicText.textContent = "Amazing Grace (Instrumental)";
+    } else if (event.data === YT.PlayerState.PAUSED) {
+        if (bgmPlayer) bgmPlayer.classList.remove('playing');
+        if (musicText) musicText.textContent = "배경음악 On/Off";
+    }
+}
+
+// BGM Toggle & Autoplay Fallback
+// BGM Toggle Function for Global Access
+window.toggleBGM = (e) => {
+    if (e) e.stopPropagation();
+    if (!isPlayerReady || !player) {
+        console.log("Audio player loading...");
+        return;
+    }
+    const state = player.getPlayerState();
+    if (state === YT.PlayerState.PLAYING) {
+        player.pauseVideo();
+    } else {
+        player.playVideo();
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const bgmBtn = document.getElementById('bgm-toggle-btn');
+    if (bgmBtn) {
+        bgmBtn.addEventListener('click', window.toggleBGM);
+    }
+
+    // Robust Auto-play Fallback
+    const unlockAudio = () => {
+        if (isPlayerReady && player) {
+            if (player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                player.playVideo();
+            }
+        }
+        document.body.removeEventListener('click', unlockAudio);
+        document.body.removeEventListener('touchstart', unlockAudio);
+        document.body.removeEventListener('keydown', unlockAudio);
+    };
+    document.body.addEventListener('click', unlockAudio);
+    document.body.addEventListener('touchstart', unlockAudio);
+    document.body.addEventListener('keydown', unlockAudio);
+});
 

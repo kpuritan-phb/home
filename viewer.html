@@ -3,16 +3,24 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PDF 뷰어 | 한국 청교도 연구소</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #525659;
+            --toolbar-height: 50px;
+        }
+
         body,
         html {
             margin: 0;
             padding: 0;
             height: 100%;
             overflow: hidden;
-            background: #525659;
+            background: var(--bg-color);
             font-family: -apple-system, BlinkMacMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
@@ -23,20 +31,75 @@
             flex-direction: column;
         }
 
+        /* 상단 툴바 */
+        .toolbar {
+            height: var(--toolbar-height);
+            background: #323639;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+
+        .toolbar-title {
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 50%;
+            color: #e8eaed;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
         iframe {
             width: 100%;
             flex: 1;
             border: none;
             display: block;
+            background: var(--bg-color);
         }
 
         .loading-overlay {
             position: fixed;
-            top: 0;
+            top: var(--toolbar-height);
             left: 0;
             width: 100%;
-            height: 100%;
-            background: rgba(82, 86, 89, 0.9);
+            height: calc(100% - var(--toolbar-height));
+            background: rgba(82, 86, 89, 0.95);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -49,11 +112,20 @@
         .spinner {
             width: 40px;
             height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
+            border: 4px solid rgba(255, 255, 255, 0.1);
             border-top: 4px solid #ffffff;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .loading-tip {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #bdc3c7;
+            text-align: center;
+            padding: 0 20px;
+            line-height: 1.5;
         }
 
         @keyframes spin {
@@ -65,15 +137,49 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* 모바일 대응 */
+        @media (max-width: 600px) {
+            .toolbar-title {
+                display: none;
+                /* 모바일에서는 제목 생략 */
+            }
+
+            .btn span {
+                display: none;
+                /* 아이콘만 표시하거나 텍스트 줄임 */
+            }
+
+            .btn.show-text span {
+                display: inline;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="viewer-container">
+        <header class="toolbar">
+            <div class="toolbar-title" id="viewer-title">PDF 뷰어</div>
+            <div class="toolbar-actions">
+                <a href="#" id="direct-link" class="btn btn-primary show-text">
+                    <i class="fas fa-external-link-alt"></i> <span>원본 열기</span>
+                </a>
+                <button onclick="window.close(); if(!window.closed) history.back();" class="btn">
+                    <i class="fas fa-times"></i> <span>닫기</span>
+                </button>
+            </div>
+        </header>
+
         <div id="loading" class="loading-overlay">
             <div class="spinner"></div>
             <div>문서를 불러오는 중입니다...</div>
+            <div class="loading-tip">
+                파일 크기가 크거나 네트워크가 느리면 시간이 걸릴 수 있습니다.<br>
+                계속 로딩 중이라면 상단의 <b>'원본 열기'</b>를 눌러주세요.
+            </div>
         </div>
+
         <iframe id="pdf-frame" allow="fullscreen"></iframe>
     </div>
 
@@ -84,20 +190,38 @@
 
         if (title) {
             document.title = title + " | PDF 뷰어";
+            document.getElementById('viewer-title').textContent = title;
         }
 
         if (fileUrl) {
             const frame = document.getElementById('pdf-frame');
             const loading = document.getElementById('loading');
+            const directLink = document.getElementById('direct-link');
 
-            // 모바일/태블릿 여부 확인
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            directLink.href = fileUrl;
+
+            // 디바이스 감지
+            const ua = navigator.userAgent;
+            const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const isAndroid = /Android/i.test(ua);
+            const isMobile = isIOS || isAndroid;
 
             let finalUrl = fileUrl;
 
-            // 모바일에서는 Google Docs Viewer를 사용하는 것이 훨씬 안정적입니다 (다운로드 방지 및 인라인 뷰잉)
+            /**
+             * 모바일 처리 전략:
+             * 1. iOS: Safari는 PDF 인라인 뷰잉을 매우 잘 지원하므로 Google Viewer 없이 직접 연결이 가장 안정적임 (대용량 포함)
+             * 2. Android: 크롬 등에서 직접 연결 시 다운로드를 시도하는 경우가 많아 Google Viewer가 유리함.
+             *             단, 25MB 이상은 Google Viewer가 실패하므로 상단 '원본 열기' 버튼으로 유도.
+             */
             if (isMobile) {
-                finalUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+                if (isAndroid) {
+                    // 안드로이드는 구글 뷰어 사용 (미리보기 목적)
+                    finalUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+                } else if (isIOS) {
+                    // iOS는 직접 연결이 더 강력함
+                    finalUrl = fileUrl;
+                }
             }
 
             frame.src = finalUrl;
@@ -109,14 +233,22 @@
                 }, 500);
             };
 
-            // 만약 10초 동안 로딩이 안되면 로딩 화면 제거 (폴백)
+            // 만약 8초 동안 로딩이 안되면 로딩 화면 자동 제거하고 팁 강조
             setTimeout(() => {
-                if (loading.style.display !== 'none') {
-                    loading.style.display = 'none';
+                if (loading && loading.style.display !== 'none') {
+                    // 로딩 중임을 알리되, 사용자가 버튼을 누를 수 있게 투명도만 조정하거나 힌트 제공
+                    loading.querySelector('.loading-tip').style.color = '#ffeb3b';
+                    loading.querySelector('.loading-tip').style.fontSize = '0.9rem';
+
+                    // 15초 넘으면 로딩 가림막 아예 제거
+                    setTimeout(() => {
+                        loading.style.display = 'none';
+                    }, 7000);
                 }
-            }, 10000);
+            }, 8000);
+
         } else {
-            document.body.innerHTML = "<div style='color:white; text-align:center; padding-top:50px;'>파일 경로가 유효하지 않습니다.</div>";
+            document.body.innerHTML = "<div style='color:white; text-align:center; padding-top:100px;'><h3>파일 경로가 유효하지 않습니다.</h3><button onclick='history.back()' class='btn' style='margin:auto;'>돌아가기</button></div>";
         }
     </script>
 </body>

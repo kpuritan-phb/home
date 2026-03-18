@@ -145,15 +145,22 @@
 }
 
 .chat-footer-icons {
-    color: rgba(255, 255, 255, 0.4);
+    background: none;
+    border: none;
+    color: #ffffff;
     cursor: pointer;
     transition: all 0.3s;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .chat-footer-icons:hover {
-    color: #fff;
-    transform: scale(1.1);
+    color: #ffffff;
+    transform: scale(1.15) rotate(-10deg);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 /* Quick Question Buttons */

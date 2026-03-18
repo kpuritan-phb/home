@@ -2,6 +2,12 @@ import works from './works.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- EmailJS Initialization ---
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init('BQxwlbcswbEqw2enT');
+    }
+
+
     // --- Active Page Highlighting ---
     const currentPath = window.location.pathname;
     const navLinks = document.querySelectorAll('.nav-item');
@@ -270,11 +276,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatClose = document.getElementById('chat-close');
     const chatForm = document.getElementById('chat-form');
     const chatBody = document.getElementById('chat-body');
-    const chatLeadContainer = document.getElementById('chat-lead-container');
     const chatInput = document.getElementById('chat-footer-input');
     const chatSendBtn = document.getElementById('chat-send-btn');
+    const chatFooter = document.getElementById('chat-footer');
 
-    let isLeadSubmitted = false;
+    // localStorage에서 제출 여부 확인
+    let isLeadSubmitted = localStorage.getItem('wewon_chat_submitted') === 'true';
+
+    // 이미 제출했다면 폼 숨기고 채팅 모드(Footer 보임)로 시작
+    if (isLeadSubmitted && chatLeadContainer && chatFooter) {
+        chatLeadContainer.style.display = 'none';
+        chatFooter.style.display = 'flex';
+        // 초기 안내 메시지 하나 더 추가 (선택사항)
+        setTimeout(() => {
+            addBubble('문의가 접수된 상태입니다. 추가로 궁금하신 점을 남겨주시면 확인 후 연락드리겠습니다.', 'bot');
+        }, 1000);
+    }
 
     if (chatTrigger && chatWidget) {
         chatTrigger.addEventListener('click', () => {
@@ -309,34 +326,40 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const btn = chatForm.querySelector('.chat-submit-btn');
 
-            // Get data to simulate save
             const name = document.getElementById('chat-name').value;
             const email = document.getElementById('chat-email').value;
             const phone = document.getElementById('chat-phone').value;
             const message = document.getElementById('chat-message').value;
 
-            try {
-                const inquiries = JSON.parse(localStorage.getItem('wewon_inquiries') || '[]');
-                inquiries.push({ name, email, phone, message, timestamp: new Date().toLocaleString() });
-                localStorage.setItem('wewon_inquiries', JSON.stringify(inquiries));
-            } catch (err) { }
-
             btn.textContent = '전송 중...';
             btn.disabled = true;
 
-            setTimeout(() => {
-                if (chatLeadContainer) chatLeadContainer.style.display = 'none';
-                isLeadSubmitted = true;
+            const params = {
+                name: name,      // 템플릿의 {{name}}과 일치
+                email: email,    // 템플릿의 {{email}}과 일치
+                phone: phone,
+                message: message, // 템플릿의 {{message}}와 일치
+            };
 
-                // Add user message
-                addBubble(message, 'user');
+            emailjs.send('service_kexvgmp', 'template_pkc36ws', params)
+                .then(() => {
+                    if (chatLeadContainer) chatLeadContainer.style.display = 'none';
+                    if (chatFooter) chatFooter.style.display = 'flex';
 
-                // Add auto-reply
-                setTimeout(() => {
-                    addBubble(`${name}님, 문의가 성공적으로 접수되었습니다. 최대한 신속하게 답변 드리겠습니다!\n(※ 현재 웹사이트는 테스트 버전이며, 제출 내용은 브라우저 로컬 저장소에 임시 저장되었습니다.)`, 'bot');
-                }, 500);
+                    isLeadSubmitted = true;
+                    localStorage.setItem('wewon_chat_submitted', 'true');
 
-            }, 800);
+                    addBubble(message, 'user');
+                    setTimeout(() => {
+                        addBubble(`${name}님, 문의가 성공적으로 접수되었습니다. 담당자가 확인 후 연락드리겠습니다!`, 'bot');
+                    }, 800);
+                })
+                .catch((err) => {
+                    btn.textContent = '제출';
+                    btn.disabled = false;
+                    alert('전송에 실패했습니다. 키 값이 올바른지 확인해주세요.');
+                    console.error('EmailJS Error:', err);
+                });
         });
     }
 
@@ -347,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!text) return;
 
         if (!isLeadSubmitted) {
-            // Fill message field if form is not submitted yet
+            // 폼 입력 전이면 폼의 메세지 칸으로 유도
             const msgArea = document.getElementById('chat-message');
             if (msgArea) {
                 msgArea.value = (msgArea.value + (msgArea.value ? "\n" : "") + text).trim();
@@ -357,13 +380,21 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Chat mode
+        // 추가 채팅 모드: 전송 시에도 EmailJS로 발송 (유사한 데이터셋으로)
         addBubble(text, 'user');
         chatInput.value = '';
 
+        // 추가 메시지 발송 (이전에 저장된 정보 활용 가능하면 좋음)
+        const params = {
+            name: '추가 문의 (기제출자)',
+            message: text,
+        };
+
+        emailjs.send('service_kexvgmp', 'template_pkc36ws', params);
+
         setTimeout(() => {
-            addBubble('문의가 접수된 상태입니다. 남겨주신 연락처로 곧 안내해 드리겠습니다.', 'bot');
-        }, 800);
+            addBubble('내용이 추가 접수되었습니다. 곧 안내해 드리겠습니다.', 'bot');
+        }, 1000);
     };
 
     if (chatSendBtn && chatInput) {
@@ -440,49 +471,53 @@ document.addEventListener('DOMContentLoaded', () => {
             const submitBtn = projectForm.querySelector('button[type="submit"]');
             const originalBtnText = submitBtn.textContent;
 
-            // Loading state
             submitBtn.textContent = '전송 중...';
             submitBtn.disabled = true;
             statusMsg.className = 'status-message';
             statusMsg.style.display = 'none';
 
+            // 데이터 수집
             const formData = new FormData(projectForm);
+            const params = {};
+            formData.forEach((value, key) => {
+                // 체크박스 다중 선택 처리
+                if (params[key]) {
+                    if (!Array.isArray(params[key])) params[key] = [params[key]];
+                    params[key].push(value);
+                } else {
+                    params[key] = value;
+                }
+            });
+
+            // 다중 선택된 값은 콤마로 연결
+            Object.keys(params).forEach(key => {
+                if (Array.isArray(params[key])) params[key] = params[key].join(', ');
+            });
 
             try {
-                const response = await fetch(projectForm.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
+                // 프로젝트 문의는 내용이 많으므로 나중에 별도의 템플릿을 만드시는 것을 추천합니다.
+                // 현재는 동일한 템플릿(template_pkc36ws)을 사용하도록 설정했습니다.
+                await emailjs.send('service_kexvgmp', 'template_pkc36ws', params);
 
-                if (response.ok) {
-                    statusMsg.textContent = '문의가 정상적으로 접수되었습니다. 담당자가 내용을 확인한 뒤 24시간 내에 연락드리겠습니다. 급한 문의는 0507-1480-1707로 연락 부탁드립니다.';
-                    statusMsg.classList.add('success');
-                    projectForm.reset();
-                    if (fileNameDisplay) fileNameDisplay.style.display = 'none';
-                    // Reset to first step on mobile
-                    if (window.innerWidth <= 768) {
-                        formSteps[1].classList.remove('active');
-                        formSteps[0].classList.add('active');
-                        stepIndicators[1].classList.remove('active');
-                        stepIndicators[0].classList.add('active');
-                    }
-                } else {
-                    const data = await response.json();
-                    statusMsg.textContent = data.errors ? data.errors.map(error => error.message).join(", ") : '오류가 발생했습니다. 다시 시도해주세요.';
-                    statusMsg.classList.add('error');
+                statusMsg.textContent = '문의가 정상적으로 접수되었습니다. 담당자가 내용을 확인한 뒤 24시간 내에 연락드리겠습니다. 급한 문의는 0507-1480-1707로 연락 부탁드립니다.';
+                statusMsg.classList.add('success');
+                projectForm.reset();
+                if (fileNameDisplay) fileNameDisplay.style.display = 'none';
+
+                if (window.innerWidth <= 768) {
+                    formSteps[1].classList.remove('active');
+                    formSteps[0].classList.add('active');
+                    stepIndicators[1].classList.remove('active');
+                    stepIndicators[0].classList.add('active');
                 }
             } catch (error) {
-                statusMsg.textContent = '서버 연결에 실패했습니다. 인터넷 연결을 확인하거나 나중에 다시 시도해주세요.';
+                statusMsg.textContent = '전송에 실패했습니다. EmailJS 설정을 확인해주시거나 0507-1480-1707로 연락주세요.';
                 statusMsg.classList.add('error');
+                console.error('EmailJS Error:', error);
             } finally {
                 submitBtn.textContent = originalBtnText;
                 submitBtn.disabled = false;
                 statusMsg.style.display = 'block';
-
-                // Scroll to status message
                 statusMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         });

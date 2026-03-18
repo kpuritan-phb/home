@@ -298,8 +298,37 @@ document.addEventListener('DOMContentLoaded', () => {
         chatTrigger.addEventListener('click', () => {
             chatWidget.classList.toggle('active');
             if (chatWidget.classList.contains('active')) {
-                // Remove notification dot if active
+                // 알림 점 제거
                 chatTrigger.style.setProperty('--unread', 'none');
+
+                // 아직 제출 전이라면 자동응답 질문들 보여주기
+                if (!isLeadSubmitted && chatBody && chatBody.children.length <= 1) {
+                    setTimeout(() => {
+                        const quickWrap = document.createElement('div');
+                        quickWrap.className = 'chat-quick-wrap';
+                        const questions = [
+                            '제작 기간이 궁금해요',
+                            '견적 상담받고 싶어요',
+                            '포트폴리오 더 볼 수 있나요?'
+                        ];
+
+                        questions.forEach(q => {
+                            const btn = document.createElement('button');
+                            btn.className = 'quick-btn';
+                            btn.textContent = q;
+                            btn.onclick = () => {
+                                const msgArea = document.getElementById('chat-message');
+                                if (msgArea) {
+                                    msgArea.value = q;
+                                    msgArea.focus();
+                                }
+                            };
+                            quickWrap.appendChild(btn);
+                        });
+                        chatBody.appendChild(quickWrap);
+                        chatBody.scrollTop = chatBody.scrollHeight;
+                    }, 800);
+                }
             }
         });
     }
@@ -501,10 +530,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (Array.isArray(params[key])) params[key] = params[key].join(', ');
             });
 
+            // [핵심 수정] 템플릿과 일치하도록 데이터를 재구성합니다.
+            // 모든 상세 정보를 'message' 필드 하나로 합칩니다.
+            const emailParams = {
+                name: params.name || '알 수 없음',
+                email: params.email || '알 수 없음',
+                phone: params.phone || '알 수 없음',
+                message: `
+[프로젝트 상세 문의]
+--------------------------------
+회사명: ${params.company || '기재 안 함'}
+프로젝트 종류: ${params.project_type || '선택 안 함'}
+제작 목적: ${params.goal || '기재 안 함'}
+영상 길이: ${params.duration || '선택 안 함'}
+마감 기한: ${params.deadline || '기재 안 함'}
+플랫폼: ${params.platform || '선택 안 함'}
+예산 범위: ${params.budget || '선택 안 함'}
+주요 요소: ${params.elements || '선택 안 함'}
+참고 URL: ${params.reference || '기재 안 함'}
+
+--------------------------------
+상세 내용:
+${params.detail || '기재 안 함'}
+                `.trim()
+            };
+
             try {
-                // 프로젝트 문의는 내용이 많으므로 나중에 별도의 템플릿을 만드시는 것을 추천합니다.
-                // 현재는 동일한 템플릿(template_pkc36ws)을 사용하도록 설정했습니다.
-                await emailjs.send('service_kexvgmp', 'template_pkc36ws', params);
+                // 통합된 emailParams를 전송합니다.
+                await emailjs.send('service_kexvgmp', 'template_pkc36ws', emailParams);
 
                 statusMsg.textContent = '문의가 정상적으로 접수되었습니다. 담당자가 내용을 확인한 뒤 24시간 내에 연락드리겠습니다. 급한 문의는 0507-1480-1707로 연락 부탁드립니다.';
                 statusMsg.classList.add('success');

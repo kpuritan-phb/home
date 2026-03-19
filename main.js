@@ -321,6 +321,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatSendBtn = document.getElementById('chat-send-btn');
     const chatFooter = document.getElementById('chat-footer-form'); // [ID 수정] chat-footer -> chat-footer-form
     const chatLeadContainer = document.getElementById('chat-lead-container');
+    const chatStatus = document.createElement('div'); // 전송 상태 표시용
+    chatStatus.className = 'chat-status-msg';
+    if (chatBody) chatBody.appendChild(chatStatus);
+
+    // --- Firebase Chat ID Generation ---
+    let chatId = localStorage.getItem('wewon_chat_id');
+    if (!chatId) {
+        chatId = 'chat_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+        localStorage.setItem('wewon_chat_id', chatId);
+    }
 
     // localStorage에서 제출 여부 확인
     let isLeadSubmitted = localStorage.getItem('wewon_chat_submitted') === 'true';
@@ -416,6 +426,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(function (response) {
                     console.log('SUCCESS!', response.status, response.text);
 
+                    // Firebase에 리드 정보 생성
+                    if (window.realtimeDb) {
+                        window.realtimeDb.ref('chats/' + chatId + '/info').set({
+                            name: name,
+                            email: email,
+                            phone: phone,
+                            timestamp: Date.now()
+                        });
+                        window.realtimeDb.ref('chats/' + chatId + '/messages').push({
+                            sender: 'user',
+                            text: message,
+                            timestamp: Date.now()
+                        });
+                    }
+
                     // UI 상태 전환
                     if (chatLeadContainer) chatLeadContainer.style.display = 'none';
                     if (chatFooter) chatFooter.style.display = 'flex';
@@ -428,6 +453,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => {
                         addBubble(`문의 확인했습니다. 24시간 이내에 남겨주신 연락처로 연락드릴게요! 감사합니다 🙏`, 'bot');
                     }, 500);
+
+                    // 실시간 리스너 활성화
+                    if (window.realtimeDb) {
+                        window.realtimeDb.ref('chats/' + chatId + '/messages').on('child_added', (snapshot) => {
+                            const msg = snapshot.val();
+                            if (msg.sender === 'bot' || msg.sender === 'admin') {
+                                addBubble(msg.text, 'bot');
+                            }
+                        });
+                    }
                 })
                 .catch(function (error) {
                     console.log('FAILED...', error);
@@ -457,22 +492,44 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 추가 채팅 모드: 전송 시에도 EmailJS로 발송 (유사한 데이터셋으로)
+        // --- Firebase & Realtime Logic ---
+        const timestamp = Date.now();
+        const messageData = {
+            sender: 'user',
+            text: text,
+            timestamp: timestamp
+        };
+
+        // UI에 즉시 반영
         addBubble(text, 'user');
         chatInput.value = '';
 
-        // 추가 메시지 발송 (이전에 저장된 정보 활용 가능하면 좋음)
+        // Firebase 실시간 데이터베이스 저장
+        if (window.realtimeDb) {
+            window.realtimeDb.ref('chats/' + chatId + '/messages').push(messageData);
+            window.realtimeDb.ref('chats/' + chatId + '/lastActive').set(timestamp);
+        }
+
+        // EmailJS로도 전송 (백업/알림용)
         const params = {
-            name: '추가 문의 (기제출자)',
+            chat_id: chatId,
+            name: '실시간 채팅 메시지',
             message: text,
         };
-
         emailjs.send('service_kexvgmp', 'template_pkc36ws', params);
-
-        setTimeout(() => {
-            addBubble('내용이 추가 접수되었습니다. 곧 안내해 드리겠습니다.', 'bot');
-        }, 1000);
     };
+
+
+    // Firebase 메시지 리스너 (이미 제출한 경우에만 활성화)
+    if (window.realtimeDb && isLeadSubmitted) {
+        window.realtimeDb.ref('chats/' + chatId + '/messages').on('child_added', (snapshot) => {
+            const msg = snapshot.val();
+            // 중복 방지 (사용자가 직접 보낸 메시지가 아닐 때만 버블 추가)
+            if (msg.sender === 'bot' || msg.sender === 'admin') {
+                addBubble(msg.text, 'bot');
+            }
+        });
+    }
 
     const chatFooterForm = document.getElementById('chat-footer-form');
     if (chatFooterForm && chatInput) {

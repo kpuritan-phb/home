@@ -259,9 +259,44 @@
         </div>
     </div>
 
-    <!-- EmailJS -->
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        // --- Firebase Configuration (위원회 프로덕션 전용) ---
+        // TODO: 실제 위원 프로덕션(WWWWWO) Firebase 설정값을 입력해 주세요.
+        // 현재는 청교도 연구소(KPI)와 별개의 새로운 프로젝트 권장
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        if (typeof firebase !== 'undefined' && firebaseConfig && firebaseConfig.apiKey !== "YOUR_API_KEY") {
+            try {
+                if (firebase.apps.length === 0) {
+                    firebase.initializeApp(firebaseConfig);
+                    window.realtimeDb = firebase.database();
+                    console.log("✅ Firebase 실시간 데이터베이스 연결 성공!");
+                }
+            } catch (e) {
+                console.error("❌ Firebase 초기화 실패:", e);
+            }
+        } else {
+            console.warn("⚠️ Firebase 실시간 세팅 전입니다. (설정값이 필요합니다)");
+        }
+    </script>
+
+    <!-- Backup & Legacy: EmailJS -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script type="module" src="main.js?v=20260318_v5"></script>
+    <script type="module" src="main.js?v=20260319_v1"></script>
+
 </body>
 
 </html>

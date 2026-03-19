@@ -117,7 +117,10 @@ document.addEventListener('DOMContentLoaded', () => {
         function getFilteredData(orientation, category) {
             let filtered = works.filter(w => w.orientation === orientation);
             if (category !== 'ALL') {
-                filtered = filtered.filter(w => w.category === category);
+                filtered = filtered.filter(w => {
+                    const c = w.category;
+                    return Array.isArray(c) ? c.includes(category) : c === category;
+                });
             }
             return filtered;
         }

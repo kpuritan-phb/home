@@ -379,8 +379,12 @@
                 }
 
                 const categories = ['BRAND', 'BEAUTY', 'SPORTS', 'VIRAL', 'YOUTUBE', 'AD', 'MUSIC', 'OTHERS'];
-                const catOptions = categories.map(cat =>
-                    `<option value="${cat}" ${item.category === cat ? 'selected' : ''}>${cat}</option>`
+                const itemCats = Array.isArray(item.category) ? item.category : (item.category ? [item.category] : []);
+                const catCheckboxes = categories.map(cat =>
+                    `<label class="cat-check">
+                        <input type="checkbox" value="${cat}" ${itemCats.includes(cat) ? 'checked' : ''}>
+                        <span>${cat}</span>
+                    </label>`
                 ).join('');
 
                 li.innerHTML = `
@@ -390,22 +394,24 @@
                     </div>
                     <div class="item-info">
                         <p class="item-title">${item.title}</p>
-                        <select class="cat-selector" data-id="${item.id}">
-                            ${catOptions}
-                        </select>
+                        <div class="cat-checkboxes">
+                            ${catCheckboxes}
+                        </div>
                     </div>
                 `;
 
-                // Event listener for category change
-                li.querySelector('.cat-selector').addEventListener('change', (e) => {
-                    const id = parseInt(e.target.dataset.id);
-                    const newCat = e.target.value;
-                    const itemToUpdate = type === 'landscape' ?
-                        sortedLandscape.find(w => w.id === id) :
-                        sortedPortrait.find(w => w.id === id);
-                    if (itemToUpdate) {
-                        itemToUpdate.category = newCat;
-                    }
+                // Event listener for category changes
+                li.querySelectorAll('input[type="checkbox"]').forEach(input => {
+                    input.addEventListener('change', () => {
+                        const id = parseInt(li.dataset.id);
+                        const itemToUpdate = type === 'landscape' ?
+                            sortedLandscape.find(w => w.id === id) :
+                            sortedPortrait.find(w => w.id === id);
+                        if (itemToUpdate) {
+                            const checked = Array.from(li.querySelectorAll('input:checked')).map(i => i.value);
+                            itemToUpdate.category = checked;
+                        }
+                    });
                 });
 
                 list.appendChild(li);

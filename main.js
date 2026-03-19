@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (landscapeGrid || portraitGrid) {
         const tabBtns = document.querySelectorAll('.works-tab-btn');
+        const categoryBtns = document.querySelectorAll('.category-btn');
         const PAGE_SIZE = 12;
 
         const state = {
@@ -109,13 +110,17 @@ document.addEventListener('DOMContentLoaded', () => {
             portrait: { page: 0, loading: false, done: false },
         };
 
-        const dataMap = {
-            landscape: works.filter(w => w.orientation === 'landscape'),
-            portrait: works.filter(w => w.orientation === 'portrait'),
-        };
-
         const urlParams = new URLSearchParams(window.location.search);
         let activeView = urlParams.get('view') === 'portrait' ? 'portrait' : 'landscape';
+        let activeCategory = 'ALL';
+
+        function getFilteredData(orientation, category) {
+            let filtered = works.filter(w => w.orientation === orientation);
+            if (category !== 'ALL') {
+                filtered = filtered.filter(w => w.category === category);
+            }
+            return filtered;
+        }
 
         function deduceThumbnail(work) {
             if (work.thumbnail && (work.thumbnail.startsWith('thumbnails/') || work.thumbnail.startsWith('images/'))) return work.thumbnail;
@@ -182,20 +187,34 @@ document.addEventListener('DOMContentLoaded', () => {
             return el;
         }
 
-        function loadPage(orientation) {
+        function loadPage(orientation, reset = false) {
             const s = state[orientation];
+            if (reset) {
+                s.page = 0;
+                s.done = false;
+                s.loading = false;
+                const grid = document.getElementById(`${orientation}-grid`);
+                if (grid) grid.innerHTML = '';
+                const endEl = document.getElementById(`${orientation}-end`);
+                if (endEl) endEl.style.display = 'none';
+            }
+
             if (s.loading || s.done) return;
             s.loading = true;
+
             const grid = document.getElementById(`${orientation}-grid`);
-            const data = dataMap[orientation];
+            const data = getFilteredData(orientation, activeCategory);
             const slice = data.slice(s.page * PAGE_SIZE, (s.page + 1) * PAGE_SIZE);
+
             slice.forEach(work => {
                 const card = createWorkCard(work);
                 grid.appendChild(card);
                 sectionObserver.observe(card);
             });
+
             s.page += 1;
             s.loading = false;
+
             if (s.page * PAGE_SIZE >= data.length) {
                 s.done = true;
                 const endEl = document.getElementById(`${orientation}-end`);
@@ -227,8 +246,27 @@ document.addEventListener('DOMContentLoaded', () => {
         tabBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const view = btn.dataset.view;
+                if (activeView === view) return;
                 switchTab(view);
                 if (state[view].page === 0) loadPage(view);
+            });
+        });
+
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const category = btn.dataset.category;
+                if (activeCategory === category) return;
+
+                activeCategory = category;
+                categoryBtns.forEach(b => b.classList.toggle('active', b.dataset.category === category));
+
+                // Clear all grids and state
+                ['landscape', 'portrait'].forEach(o => {
+                    loadPage(o, true);
+                });
+
+                // Load current visible page
+                loadPage(activeView);
             });
         });
 

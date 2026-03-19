@@ -741,6 +741,64 @@ footer {
     color: #aaa;
 }
 
+/* Category Filter Bar */
+.category-filter-bar {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem 5vw;
+    background-color: var(--bg-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+    position: sticky;
+    top: calc(80px + 64px); /* Header + Tab Bar */
+    z-index: 980;
+}
+
+.category-filter-bar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+}
+
+.category-btn {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #888;
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s var(--easing);
+    white-space: nowrap;
+}
+
+.category-btn:hover {
+    color: var(--text-color);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.category-btn.active {
+    background-color: var(--text-color);
+    color: var(--bg-color);
+    border-color: var(--text-color);
+}
+
+@media (max-width: 768px) {
+    .category-filter-bar {
+        gap: 0.8rem;
+        padding: 1rem 5vw;
+        top: calc(60px + 52px); /* Adjusted for mobile header/tabs */
+    }
+    
+    .category-btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.75rem;
+    }
+}
+
 /* Works Panel */
 .works-panel {
     padding: 3rem 0 0;

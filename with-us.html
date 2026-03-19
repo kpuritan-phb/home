@@ -4,30 +4,28 @@
 <head>
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://wwwwwo.co.kr/with-us.html">
-    <meta property="og:title" content="위원프로덕션 | WITH US">
+    <meta property="og:title" content="WITH US | WE WON PRODUCTION">
     <meta property="og:description" content="우리와 함께하기">
     <meta property="og:image" content="https://wwwwwo.co.kr/images/og-image.png?v=3">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="위원프로덕션 | WITH US">
+    <meta name="twitter:title" content="WITH US | WE WON PRODUCTION">
     <meta name="twitter:description" content="우리와 함께하기">
     <meta name="twitter:image" content="https://wwwwwo.co.kr/images/og-image.png?v=3">
     <meta name="description" content="위원 프로덕션과 함께하기. 브랜드의 새로운 기준을 세울 프로젝트를 제안해 주세요. 견적 문의 및 협업 안내.">
     <meta name="keywords" content="영상제작문의, 프로덕션협업, 견적제안, 위원">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon_32.png">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" href="favicon.png">
 
-    <title>위원프로덕션 | WITH US</title>
+    <title>WITH US | WE WON PRODUCTION</title>
     <!-- CSS -->
-    <link rel="stylesheet" href="style.css?v=20260318_v5">
-    <link rel="stylesheet" href="chat.css?v=20260318_v5">
+    <link rel="stylesheet" href="style.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <!-- EmailJS SDK 추가 -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 
 </head>
@@ -118,215 +116,18 @@
                         <p>0507-1480-1707</p>
                     </div>
                 </div>
-
-                <form class="chat-footer" id="chat-footer-form" style="display:none;">
-                    <input type="text" id="chat-footer-input" placeholder="메시지를 입력하세요..." class="chat-input-field">
-                    <button type="submit" class="chat-footer-icons" id="chat-send-btn">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </form>
             </div>
 
             <div class="reveal-text inquiry-wrap">
-                <a href="#project-request" class="inquiry-btn">
+                <a href="https://forms.gle/RbZxF3pYXArgwnMRA" target="_blank" class="inquiry-btn">
                     견적문의 →
                 </a>
             </div>
         </section>
 
-        <!-- Project Request Form Section -->
-        <section id="project-request" class="project-request-section">
-            <div class="form-wrapper reveal-text">
-                <div class="form-header">
-                    <h2>Start Your Project With Us.</h2>
-                    <p>
-                        간단한 프로젝트라도 좋습니다.<br>
-                        아이디어 단계여도 괜찮습니다.<br>
-                        프로젝트 정보를 남겨주시면<br>
-                        wwwwwo 팀이 검토 후 연락드리겠습니다.
-                    </p>
-                </div>
-
-                <!-- Step Navigation for Mobile -->
-                <div class="step-nav">
-                    <span class="step-indicator active" data-step="1">01. 기본 정보</span>
-                    <span class="step-indicator" data-step="2">02. 프로젝트 정보</span>
-                </div>
-
-                <form action="https://formspree.io/f/mqaeobon" method="POST" enctype="multipart/form-data"
-                    id="project-form">
-                    <!-- Step 1: Basic Info -->
-                    <div class="form-step active" id="step-1">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label" for="user-name">담당자 성함 / 직책 <span>*</span></label>
-                                <input type="text" id="user-name" name="name" class="form-input" placeholder="홍길동 팀장"
-                                    required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" for="user-phone">연락처 <span>*</span></label>
-                                <input type="tel" id="user-phone" name="phone" class="form-input"
-                                    placeholder="010-0000-0000" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" for="user-company">회사 / 기관명</label>
-                                <input type="text" id="user-company" name="company" class="form-input"
-                                    placeholder="위원프로덕션">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" for="user-email">이메일 주소 <span>*</span></label>
-                                <input type="email" id="user-email" name="email" class="form-input"
-                                    placeholder="example@email.com" required>
-                            </div>
-                        </div>
-                        <div class="mobile-step-btns">
-                            <button type="button" class="next-step-btn">다음 단계로 →</button>
-                        </div>
-                    </div>
-
-                    <!-- Step 2: Project Info -->
-                    <div class="form-step" id="step-2">
-                        <div class="form-grid">
-                            <div class="form-group full-width">
-                                <label class="form-label">제작을 원하는 영상의 종류 <span>*</span></label>
-                                <select name="project_type" class="form-select" required>
-                                    <option value="" disabled selected>선택해주세요</option>
-                                    <option value="홍보 영상 / 기업 소개 영상">홍보 영상 / 기업 소개 영상</option>
-                                    <option value="제품 / 서비스 광고 영상">제품 / 서비스 광고 영상</option>
-                                    <option value="교육 / 강의 콘텐츠">교육 / 강의 콘텐츠</option>
-                                    <option value="바이럴 / 소셜 미디어용 숏폼">바이럴 / 소셜 미디어용 숏폼</option>
-                                    <option value="다큐멘터리 / 인터뷰">다큐멘터리 / 인터뷰</option>
-                                    <option value="애니메이션 / 모션 그래픽">애니메이션 / 모션 그래픽</option>
-                                    <option value="라이브 스트리밍 / 웨비나">라이브 스트리밍 / 웨비나</option>
-                                    <option value="브랜드 영상 / 광고 제작">브랜드 영상 / 광고 제작</option>
-                                    <option value="유튜브 채널 및 성장 관리">유튜브 채널 및 성장 관리</option>
-                                    <option value="인스타 비주얼 브랜딩">인스타 비주얼 브랜딩</option>
-                                    <option value="소셜 미디어 통합 관리">소셜 미디어 통합 관리</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group full-width">
-                                <label class="form-label" for="project-goal">영상 제작 목적 <span>*</span></label>
-                                <textarea id="project-goal" name="goal" class="form-textarea"
-                                    placeholder="영상을 통해 달성하고자 하는 목표를 알려주세요." required></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">예상 영상 길이 / 러닝타임 <span>*</span></label>
-                                <select name="duration" class="form-select" required>
-                                    <option value="" disabled selected>선택해주세요</option>
-                                    <option value="15초 미만">15초 미만</option>
-                                    <option value="15초 ~ 30초">15초 ~ 30초</option>
-                                    <option value="30초 ~ 1분">30초 ~ 1분</option>
-                                    <option value="1분 ~ 3분">1분 ~ 3분</option>
-                                    <option value="3분 ~ 5분">3분 ~ 5분</option>
-                                    <option value="5분 이상">5분 이상</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="deadline">제작 희망 기한 / 마감일</label>
-                                <input type="date" id="deadline" name="deadline" class="form-input">
-                            </div>
-
-                            <div class="form-group full-width">
-                                <label class="form-label">영상 배포 채널 / 주요 타겟 플랫폼 (중복 선택 가능)</label>
-                                <div class="options-grid">
-                                    <label class="option-item"><input type="checkbox" name="platform" value="홈페이지"><span
-                                            class="option-box">홈페이지</span></label>
-                                    <label class="option-item"><input type="checkbox" name="platform"
-                                            value="YouTube"><span class="option-box">YouTube</span></label>
-                                    <label class="option-item"><input type="checkbox" name="platform"
-                                            value="Instagram/FB"><span class="option-box">Instagram / FB</span></label>
-                                    <label class="option-item"><input type="checkbox" name="platform"
-                                            value="TikTok"><span class="option-box">TikTok</span></label>
-                                    <label class="option-item"><input type="checkbox" name="platform"
-                                            value="TV/OTT"><span class="option-box">TV / OTT</span></label>
-                                    <label class="option-item"><input type="checkbox" name="platform"
-                                            value="내부교육/세미나"><span class="option-box">내부교육 / 세미나</span></label>
-                                    <label class="option-item"><input type="checkbox" name="platform" value="행사현장"><span
-                                            class="option-box">행사 현장</span></label>
-                                    <label class="option-item"><input type="checkbox" name="platform" value="기타"><span
-                                            class="option-box">기타</span></label>
-                                </div>
-                            </div>
-
-                            <div class="form-group full-width">
-                                <label class="form-label">예상 제작 예산 범위 (VAT 제외) <span>*</span></label>
-                                <select name="budget" class="form-select" required>
-                                    <option value="" disabled selected>선택해주세요</option>
-                                    <option value="500만원 이하">500만원 이하</option>
-                                    <option value="1000만원 ~ 2000만원">1000만원 ~ 2000만원</option>
-                                    <option value="2000만원 ~ 4000만원">2000만원 ~ 4000만원</option>
-                                    <option value="5000만원 ~ 1억">5000만원 ~ 1억</option>
-                                    <option value="1억 이상">1억 이상</option>
-                                    <option value="협의 필요">협의 필요</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group full-width">
-                                <label class="form-label">원하는 주요 요소 / 스타일 (중복 선택 가능)</label>
-                                <div class="options-grid">
-                                    <label class="option-item"><input type="checkbox" name="elements"
-                                            value="실사 촬영"><span class="option-box">실사 촬영</span></label>
-                                    <label class="option-item"><input type="checkbox" name="elements"
-                                            value="전문 모델"><span class="option-box">전문 모델</span></label>
-                                    <label class="option-item"><input type="checkbox" name="elements"
-                                            value="성우 내레이션"><span class="option-box">성우 내레이션</span></label>
-                                    <label class="option-item"><input type="checkbox" name="elements"
-                                            value="자막 및 번역"><span class="option-box">자막 및 번역</span></label>
-                                    <label class="option-item"><input type="checkbox" name="elements"
-                                            value="3D/VFX"><span class="option-box">3D/VFX</span></label>
-                                    <label class="option-item"><input type="checkbox" name="elements"
-                                            value="맞춤 제작 음악"><span class="option-box">맞춤 제작 음악</span></label>
-                                    <label class="option-item"><input type="checkbox" name="elements"
-                                            value="스튜디오 촬영"><span class="option-box">스튜디오 촬영</span></label>
-                                    <label class="option-item"><input type="checkbox" name="elements"
-                                            value="기존 자료 활용"><span class="option-box">기존 자료 활용</span></label>
-                                </div>
-                            </div>
-
-                            <div class="form-group full-width">
-                                <label class="form-label" for="reference-url">참고 레퍼런스 URL</label>
-                                <input type="url" id="reference-url" name="reference" class="form-input"
-                                    placeholder="https://youtube.com/...">
-                            </div>
-
-                            <div class="form-group full-width">
-                                <label class="form-label" for="project-detail">영상 제작에 필요한 상세 내용 <span>*</span></label>
-                                <textarea id="project-detail" name="detail" class="form-textarea"
-                                    placeholder="프로젝트 배경, 기획 의도, 참고 사항, 원하는 결과물 등을 자유롭게 작성해주세요." required></textarea>
-                            </div>
-
-                            <div class="form-group full-width">
-                                <label class="form-label">파일 업로드 (기획안, 레퍼런스 등)</label>
-                                <div class="file-upload-wrapper">
-                                    <label for="file-upload" class="file-label">
-                                        <i class="fas fa-cloud-upload-alt"></i>
-                                        <span>클릭하여 파일을 선택하거나 이곳에 끌어다 놓으세요.</span>
-                                    </label>
-                                    <input type="file" id="file-upload" name="attachment" style="display: none;">
-                                    <div id="file-name">선택된 파일: 없음</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mobile-step-btns">
-                            <button type="button" class="prev-step-btn">← 이전으로</button>
-                        </div>
-
-                        <div class="form-submit-wrap">
-                            <button type="submit" class="submit-btn" id="submit-project">프로젝트 의뢰하기</button>
-                            <div id="status-msg" class="status-message"></div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </section>
-
         <!-- CTA Section -->
         <section class="cta-section reveal-text">
-            <span class="cta-sub">READY TO START?</span>
+            <span class="cta-sub">START YOUR PROJECT</span>
             <a href="mailto:wwwwwo.official@gmail.com" class="contact-link"
                 style="font-size: clamp(1.2rem, 3vw, 2.5rem);">wwwwwo.official@gmail.com</a>
         </section>
@@ -334,25 +135,23 @@
 
     <footer>
         <div class="social-links">
-            <a href="https://www.youtube.com/@wewantwewonweone" target="_blank" rel="noopener noreferrer"
-                aria-label="YouTube">
+            <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path
                         d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                 </svg>
             </a>
-            <a href="https://www.instagram.com/wwwwwo.official/" target="_blank" rel="noopener noreferrer"
-                aria-label="Instagram">
+            <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path
                         d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
                 </svg>
             </a>
         </div>
-        <div class="footer-copy">&copy; 위원프로덕션 (wwwwwo)</div>
+        <div class="footer-copy">&copy; wwwwwo</div>
     </footer>
 
-    <script type="module" src="main.js?v=20260318_v5"></script>
+    <script type="module" src="main.js"></script>
 </body>
 
 </html>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ORDER MANAGER | ADMIN</title>
-    <link rel="stylesheet" href="style.css?v=20260318_v5">
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -166,43 +166,19 @@
         }
 
         .item-info {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            cursor: default;
+            padding: 15px;
         }
 
         .item-title {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 600;
             margin: 0;
             display: -webkit-box;
             -webkit-line-clamp: 2;
-            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             color: #aaa;
             line-height: 1.4;
-            height: 2.8em;
-        }
-
-        .cat-selector {
-            width: 100%;
-            background: #222;
-            color: #fff;
-            border: 1px solid #333;
-            padding: 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            outline: none;
-            transition: all 0.3s;
-        }
-
-        .cat-selector:focus {
-            border-color: #fff;
-            background: #333;
         }
 
         .item-id {
@@ -309,8 +285,8 @@
     <div class="admin-container">
         <header class="admin-header">
             <div class="admin-title-group">
-                <h1>Works Manager</h1>
-                <p>드래그하여 순서를 변경하거나 카테고리를 분류하고 아래 버튼을 눌러 확정하세요.</p>
+                <h1>Works Order</h1>
+                <p>드래그하여 순서를 변경하고 아래 버튼을 눌러 확정하세요.</p>
             </div>
             <button id="export-btn" class="btn-save">
                 <i class="fas fa-check-circle"></i> 순서 확정 및 코드 생성
@@ -378,25 +354,6 @@
                     }
                 }
 
-                const categories = ['BRAND', 'BEAUTY', 'SPORTS', 'VIRAL', 'YOUTUBE', 'AD', 'MUSIC', 'OTHERS'];
-                const catLabels = {
-                    'BRAND': '브랜드',
-                    'BEAUTY': '뷰티',
-                    'SPORTS': '스포츠',
-                    'VIRAL': '바이럴',
-                    'YOUTUBE': '유튜브',
-                    'AD': '광고',
-                    'MUSIC': '뮤직',
-                    'OTHERS': '기타'
-                };
-                const itemCats = Array.isArray(item.category) ? item.category : (item.category ? [item.category] : []);
-                const catCheckboxes = categories.map(cat =>
-                    `<label class="cat-check">
-                        <input type="checkbox" value="${cat}" ${itemCats.includes(cat) ? 'checked' : ''}>
-                        <span>${catLabels[cat]}</span>
-                    </label>`
-                ).join('');
-
                 li.innerHTML = `
                     <span class="item-id">#${index + 1}</span>
                     <div class="item-thumb-container ${type === 'portrait' ? 'portrait' : ''}">
@@ -404,26 +361,8 @@
                     </div>
                     <div class="item-info">
                         <p class="item-title">${item.title}</p>
-                        <div class="cat-checkboxes">
-                            ${catCheckboxes}
-                        </div>
                     </div>
                 `;
-
-                // Event listener for category changes
-                li.querySelectorAll('input[type="checkbox"]').forEach(input => {
-                    input.addEventListener('change', () => {
-                        const id = parseInt(li.dataset.id);
-                        const itemToUpdate = type === 'landscape' ?
-                            sortedLandscape.find(w => w.id === id) :
-                            sortedPortrait.find(w => w.id === id);
-                        if (itemToUpdate) {
-                            const checked = Array.from(li.querySelectorAll('input:checked')).map(i => i.value);
-                            itemToUpdate.category = checked;
-                        }
-                    });
-                });
-
                 list.appendChild(li);
             });
         }

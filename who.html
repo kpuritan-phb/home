@@ -4,22 +4,22 @@
 <head>
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://wwwwwo.co.kr/who.html">
-    <meta property="og:title" content="위원프로덕션 | WHO">
+    <meta property="og:title" content="WHO | WE WON PRODUCTION">
     <meta property="og:description" content="브랜드의 이야기를 설계하고, 영상이라는 언어로 구현하는 전략 기반 프로덕션">
     <meta property="og:image" content="https://wwwwwo.co.kr/images/og-image.png?v=3">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="위원프로덕션 | WHO">
+    <meta name="twitter:title" content="WHO | WE WON PRODUCTION">
     <meta name="twitter:description" content="브랜드의 이야기를 설계하고, 영상이라는 언어로 구현하는 전략 기반 프로덕션">
     <meta name="twitter:image" content="https://wwwwwo.co.kr/images/og-image.png?v=3">
     <meta name="description" content="위원프로덕션(wwwwwo)은 브랜드의 이야기를 설계하고, 그것을 영상이라는 언어로 구현하는 전략 기반 프로덕션입니다.">
     <meta name="keywords" content="위원프로덕션, wwwwwo, 브랜드전략, 영상제작, 브랜드필름, 콘텐츠전략">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon_32.png">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" href="favicon.png">
 
-    <title>위원프로덕션 | WHO</title>
-    <link rel="stylesheet" href="style.css?v=20260318_v5">
-    <link rel="stylesheet" href="chat.css?v=20260318_v5">
+    <title>WHO | WE WON PRODUCTION</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -99,7 +99,6 @@
             font-weight: 700;
             line-height: 1.25;
             letter-spacing: -0.02em;
-            word-break: keep-all;
         }
 
         .brand-statement-headline em {
@@ -112,12 +111,169 @@
             color: rgba(255, 255, 255, 0.55);
             line-height: 1.85;
             font-weight: 300;
-            word-break: keep-all;
         }
 
         .brand-statement-body strong {
             color: rgba(255, 255, 255, 0.85);
             font-weight: 500;
+        }
+
+        /* ── Name Origin ── */
+        .name-block {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 4px;
+            padding: clamp(2.5rem, 5vw, 4rem);
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2.5rem 4rem;
+            align-items: center;
+        }
+
+        @media (max-width: 640px) {
+            .name-block {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        .name-letters {
+            font-size: clamp(3.5rem, 8vw, 6rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            line-height: 1;
+            color: rgba(255, 255, 255, 0.12);
+        }
+
+        .name-meaning-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .name-meaning-list li {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+            color: rgba(255, 255, 255, 0.55);
+            font-weight: 300;
+            line-height: 1.5;
+        }
+
+        .name-meaning-list li::before {
+            content: attr(data-key);
+            font-size: 0.62rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.22);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .name-meaning-list li strong {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        /* ── Questions ── */
+        .question-item {
+            display: grid;
+            grid-template-columns: 2.5rem 1fr;
+            gap: 1.5rem;
+            padding: 1.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            align-items: start;
+        }
+
+        .question-item:first-child {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .q-num {
+            font-size: 0.68rem;
+            color: rgba(255, 255, 255, 0.2);
+            letter-spacing: 0.1em;
+            font-weight: 500;
+            padding-top: 0.2em;
+        }
+
+        .q-text {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.5;
+            letter-spacing: -0.01em;
+        }
+
+        /* ── Process Steps ── */
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        @media (max-width: 900px) {
+            .process-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 540px) {
+            .process-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .process-step {
+            background: rgba(10, 10, 10, 0.6);
+            padding: clamp(1.8rem, 3vw, 2.8rem) clamp(1.2rem, 2vw, 2rem);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            transition: background 0.25s ease;
+        }
+
+        .process-step:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .step-index {
+            font-size: 0.6rem;
+            letter-spacing: 0.25em;
+            color: rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+        }
+
+        .step-eng {
+            font-size: clamp(0.85rem, 1.4vw, 1rem);
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .step-kor {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 300;
+        }
+
+        .step-desc {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.45);
+            line-height: 1.7;
+            font-weight: 300;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 1rem;
+            margin-top: auto;
         }
 
         /* ── Services ── */
@@ -147,7 +303,6 @@
         .closing-block {
             text-align: center;
             padding: clamp(5rem, 10vw, 9rem) clamp(1.5rem, 6vw, 6rem);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .closing-headline {
@@ -161,6 +316,26 @@
 
         .closing-headline span {
             color: rgba(255, 255, 255, 0.3);
+        }
+
+        .closing-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 0.3rem;
+            transition: all 0.2s ease;
+        }
+
+        .closing-cta:hover {
+            color: rgba(255, 255, 255, 1);
+            border-color: rgba(255, 255, 255, 0.6);
+            gap: 1.4rem;
         }
     </style>
 </head>
@@ -252,31 +427,19 @@
         <!-- ③ Name Origin -->
         <section class="who-section">
             <span class="who-tag reveal-text">NAME ORIGIN</span>
-            <div class="process-grid reveal-text grid-3">
-                <!-- WE WANT -->
-                <div class="process-card">
-                    <div class="p-header">
-                        <span class="p-num">W · W</span>
-                        <h2 class="p-title">WE WANT</h2>
-                    </div>
-                    <p class="p-desc">우리는 브랜드와 함께 진짜 원하는 가치를 찾습니다.</p>
-                </div>
-                <!-- WE WON -->
-                <div class="process-card">
-                    <div class="p-header">
-                        <span class="p-num">W · W</span>
-                        <h2 class="p-title">WE WON</h2>
-                    </div>
-                    <p class="p-desc">치열한 고민과 감각으로 최상의 결과를 함께 만들어냅니다.</p>
-                </div>
-                <!-- WE ONE -->
-                <div class="process-card">
-                    <div class="p-header">
-                        <span class="p-num">W · O</span>
-                        <h2 class="p-title">WE ONE</h2>
-                    </div>
-                    <p class="p-desc">결국 이 모든 과정은 하나의 단단한 브랜드 유산으로 연결됩니다.</p>
-                </div>
+            <div class="name-block reveal-text">
+                <div class="name-letters">wwwwwo</div>
+                <ul class="name-meaning-list">
+                    <li data-key="W · W">
+                        <span><strong>WE WANT</strong> — 우리는 함께 원하는 것을 찾고</span>
+                    </li>
+                    <li data-key="W · W">
+                        <span><strong>WE WON</strong> — 함께 만들어가며</span>
+                    </li>
+                    <li data-key="W · O">
+                        <span><strong>WE ONE</strong> — 결국 하나의 결과로 연결됩니다</span>
+                    </li>
+                </ul>
             </div>
         </section>
 
@@ -286,32 +449,62 @@
             <p class="brand-statement-body reveal-text" style="max-width:540px; margin-bottom:2.5rem;">
                 프로젝트를 시작할 때 우리는 먼저 질문합니다.
             </p>
-            <div class="process-grid reveal-text grid-3">
-                <div class="process-card">
-                    <div class="p-header">
-                        <span class="p-num">01</span>
-                        <h2 class="p-title">MESSAGE</h2>
-                    </div>
-                    <p class="p-desc">이 브랜드는 무엇을 말하려 하는가.</p>
+            <div>
+                <div class="question-item reveal-text">
+                    <span class="q-num">01</span>
+                    <span class="q-text">이 브랜드는 무엇을 말하려 하는가.</span>
                 </div>
-                <div class="process-card">
-                    <div class="p-header">
-                        <span class="p-num">02</span>
-                        <h2 class="p-title">AUDIENCE</h2>
-                    </div>
-                    <p class="p-desc">이 콘텐츠는 누구에게 닿아야 하는가.</p>
+                <div class="question-item reveal-text">
+                    <span class="q-num">02</span>
+                    <span class="q-text">이 콘텐츠는 누구에게 닿아야 하는가.</span>
                 </div>
-                <div class="process-card">
-                    <div class="p-header">
-                        <span class="p-num">03</span>
-                        <h2 class="p-title">LEGACY</h2>
-                    </div>
-                    <p class="p-desc">이 작업이 브랜드에 어떤 의미로 남을 것인가.</p>
+                <div class="question-item reveal-text">
+                    <span class="q-num">03</span>
+                    <span class="q-text">이 작업이 브랜드에 어떤 의미로 남을 것인가.</span>
                 </div>
             </div>
         </section>
 
-
+        <!-- ⑤ Process -->
+        <section class="who-section">
+            <span class="who-tag reveal-text">PROCESS</span>
+            <p class="brand-statement-body reveal-text" style="max-width:580px; margin-bottom:2.5rem;">
+                그 질문을 바탕으로, 브랜드가 자신만의 이야기를 만들어가는 과정을 함께합니다.<br>
+                이 과정은 단순한 제작 절차가 아닙니다.
+            </p>
+            <div class="process-grid reveal-text">
+                <div class="process-step">
+                    <span class="step-index">STEP 01</span>
+                    <span class="step-eng">Diagnose</span>
+                    <span class="step-kor">진단</span>
+                    <p class="step-desc">브랜드의 현재 상황을 분석하고 본질적인 과제를 정의합니다.</p>
+                </div>
+                <div class="process-step">
+                    <span class="step-index">STEP 02</span>
+                    <span class="step-eng">Design</span>
+                    <span class="step-kor">설계</span>
+                    <p class="step-desc">브랜드에 최적화된 콘텐츠 전략과 방향성을 설계합니다.</p>
+                </div>
+                <div class="process-step">
+                    <span class="step-index">STEP 03</span>
+                    <span class="step-eng">Produce</span>
+                    <span class="step-kor">제작</span>
+                    <p class="step-desc">전략을 기반으로 영상 콘텐츠를 완성합니다.</p>
+                </div>
+                <div class="process-step">
+                    <span class="step-index">STEP 04</span>
+                    <span class="step-eng">Refine</span>
+                    <span class="step-kor">정제</span>
+                    <p class="step-desc">결과물의 완성도를 세밀하게 다듬고 검토합니다.</p>
+                </div>
+                <div class="process-step">
+                    <span class="step-index">STEP 05</span>
+                    <span class="step-eng">Scale</span>
+                    <span class="step-kor">확장</span>
+                    <p class="step-desc">콘텐츠가 더 넓은 곳으로 퍼져나갈 수 있도록 돕습니다.</p>
+                </div>
+            </div>
+        </section>
 
         <!-- ⑥ Services -->
         <section class="who-section">
@@ -334,101 +527,35 @@
                 어떻게 전달되어야 하는지.
             </h2>
             <p class="brand-statement-body reveal-text"
-                style="max-width:520px; margin: 0 auto 2.5rem; text-align:center;">
+                style="max-width:520px; margin: 0 auto 3rem; text-align:center;">
                 우리는 그 질문에 가장 설득력 있는 방식으로 답하는 영상을 만듭니다.
             </p>
-
-            <!-- Standard CTA Button -->
-            <section class="cta-section reveal-text" style="padding: 0; border-top: none;">
-                <span class="cta-sub">READY TO START?</span>
-                <a href="with-us.html" class="contact-link" style="font-size: clamp(2rem, 5vw, 4rem);">WITH US →</a>
-            </section>
+            <a href="with-us.html" class="closing-cta reveal-text">
+                함께하기 <span>→</span>
+            </a>
         </div>
 
     </main>
 
     <footer>
         <div class="social-links">
-            <a href="https://www.youtube.com/@wewantwewonweone" target="_blank" rel="noopener noreferrer"
-                aria-label="YouTube">
+            <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path
                         d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                 </svg>
             </a>
-            <a href="https://www.instagram.com/wwwwwo.official/" target="_blank" rel="noopener noreferrer"
-                aria-label="Instagram">
+            <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path
                         d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
                 </svg>
             </a>
         </div>
-        <div class="footer-copy">&copy; 위원프로덕션 (wwwwwo)</div>
+        <div class="footer-copy">&copy; wwwwwo</div>
     </footer>
 
-    <!-- Chat Widget -->
-    <div class="chat-widget-container" id="chat-widget">
-        <div class="chat-trigger" id="chat-trigger" aria-label="문의하기">
-            <img src="images/chat_icon.png" alt="Icon">
-            <span>문의하기</span>
-        </div>
-
-        <div class="chat-window">
-            <div class="chat-bg-pattern"></div>
-            <div class="chat-header">
-                <div class="chat-header-info">
-                    <div class="chat-profile-img">
-                        <img src="images/chat_icon.png" alt="Profile">
-                    </div>
-                    <div class="chat-header-text">
-                        <h4>위원프로덕션 (WE WON PRODUCTION)</h4>
-                        <p>최대한 신속하게 응답드리겠습니다.</p>
-                    </div>
-                </div>
-                <div class="chat-close" id="chat-close">&times;</div>
-            </div>
-
-            <div class="chat-body" id="chat-body">
-                <div class="chat-msg-bubble bot">
-                    <p>안녕하세요? 위원프로덕션입니다. 저희에게 메시지를 전송할 수 있도록 연락처 정보를 남겨주세요.</p>
-                </div>
-
-                <div class="chat-lead-form" id="chat-lead-container">
-                    <form id="chat-form">
-                        <div class="chat-form-group">
-                            <label>이름</label>
-                            <input type="text" id="chat-name" name="name" required>
-                        </div>
-                        <div class="chat-form-group">
-                            <label>이메일</label>
-                            <input type="email" id="chat-email" name="email" required>
-                        </div>
-                        <div class="chat-form-group">
-                            <label>전화번호</label>
-                            <input type="tel" id="chat-phone" name="phone" required>
-                        </div>
-                        <div class="chat-form-group">
-                            <label>메세지</label>
-                            <textarea id="chat-message" name="message" rows="1" required></textarea>
-                        </div>
-                        <button type="submit" class="chat-submit-btn">제출</button>
-                    </form>
-                </div>
-            </div>
-
-            <form class="chat-footer" id="chat-footer-form" style="display:none;">
-                <input type="text" id="chat-footer-input" placeholder="메시지를 입력하세요..." class="chat-input-field">
-                <button type="submit" class="chat-footer-icons" id="chat-send-btn">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- EmailJS -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script type="module" src="main.js?v=20260318_v5"></script>
+    <script type="module" src="main.js"></script>
 </body>
 
 </html>

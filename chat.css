@@ -1,15 +1,4 @@
-/* --- Chat Widget Styling (Premium Overhaul) --- */
-:root {
-    --chat-bg: #0f0f0f;
-    --chat-accent: #ffffff;
-    --chat-bot-bubble: #1e1e1e;
-    --chat-user-bubble: #ffffff;
-    --chat-text-dark: #000000;
-    --chat-text-light: #ffffff;
-    --chat-glass: rgba(255, 255, 255, 0.03);
-    --chat-border: rgba(255, 255, 255, 0.08);
-}
-
+/* --- Chat Widget Styling --- */
 .chat-widget-container {
     position: fixed;
     bottom: 30px;
@@ -17,93 +6,64 @@
     z-index: 10000;
 }
 
-/* Trigger Button */
 .chat-trigger {
-    padding: 0 28px;
-    height: 64px;
-    background: #ffffff;
-    border-radius: 32px;
+    padding: 0 24px;
+    height: 60px;
+    background: #fff;
+    border-radius: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     cursor: pointer;
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
-    user-select: none;
+    color: #000;
 }
 
 .chat-trigger:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
 }
 
 .chat-trigger img {
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
     object-fit: contain;
 }
 
 .chat-trigger span {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #000;
-    letter-spacing: -0.01em;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    font-family: var(--font-display, sans-serif);
 }
 
-/* Notification Badge */
 .chat-trigger::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 12px;
-    height: 12px;
-    background: #ff3b30;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    display: var(--unread, block);
-    animation: pulse 2s infinite;
+    display: none;
+    /* 제거: 텍스트가 있으므로 온라인 점은 생략하거나 위치 조정 필요 */
 }
 
-@keyframes pulse {
-    0% {
-        transform: scale(0.95);
-        opacity: 0.9;
-    }
-
-    50% {
-        transform: scale(1.1);
-        opacity: 1;
-    }
-
-    100% {
-        transform: scale(0.95);
-        opacity: 0.9;
-    }
-}
-
-/* Chat Window */
 .chat-window {
     position: absolute;
-    bottom: 85px;
+    bottom: 80px;
     right: 0;
-    width: 400px;
-    height: min(650px, calc(100vh - 160px));
-    background: var(--chat-bg);
-    border-radius: 32px;
-    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.7);
+    width: 380px;
+    height: min(600px, calc(100vh - 150px));
+    background: #111;
+    border-radius: 24px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(30px) scale(0.98);
-    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-    border: 1px solid var(--chat-border);
-    backdrop-filter: blur(20px);
+    transform: translateY(20px) scale(0.95);
+    transition: all 0.4s var(--easing, ease-out);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 10001;
 }
 
 .chat-widget-container.active .chat-window {
@@ -118,83 +78,18 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 30px 30px;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
     z-index: 0;
     pointer-events: none;
 }
 
-/* Footer (Bottom Input) */
-.chat-footer {
-    background: #1a1a1a;
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-top: 1px solid var(--chat-border);
-}
-
-.chat-input-field {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #fff;
-    font-size: 0.95rem;
-    padding: 10px 0;
-}
-
-.chat-footer-icons {
-    background: none;
-    border: none;
-    color: #ffffff;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-size: 1.2rem;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.chat-footer-icons:hover {
-    color: #ffffff;
-    transform: scale(1.15) rotate(-10deg);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
-
-/* Quick Question Buttons */
-.chat-quick-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 5px;
-}
-
-.quick-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.quick-btn:hover {
-    background: #fff;
-    color: #000;
-}
-
-/* Header */
 .chat-header {
-    background: rgba(0, 0, 0, 0.4);
-    padding: 24px 30px;
+    background: #000;
+    padding: 20px 25px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid var(--chat-border);
     position: relative;
     z-index: 10;
 }
@@ -202,160 +97,127 @@
 .chat-header-info {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
 }
 
 .chat-profile-img {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     background: #fff;
     border-radius: 50%;
     padding: 2px;
-    /* 패딩을 줄여서 로고가 꽉 차게 함 */
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    flex-shrink: 0;
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-    /* 로고가 원을 벗어나지 않게 처리 */
 }
 
 .chat-profile-img img {
     width: 100%;
     height: 100%;
+    border-radius: 50%;
     object-fit: contain;
+}
+
+.chat-profile-img::after {
+    content: '';
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    width: 10px;
+    height: 10px;
+    background: #4caf50;
+    border-radius: 50%;
+    border: 2px solid #000;
 }
 
 .chat-header-text h4 {
     margin: 0;
-    font-size: 1rem;
-    font-weight: 800;
+    font-size: 0.95rem;
+    font-weight: 700;
     color: #fff;
-    letter-spacing: -0.02em;
 }
 
 .chat-header-text p {
-    margin: 4px 0 0 0;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
+    margin: 3px 0 0 0;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .chat-close {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.4);
+    font-size: 1.5rem;
+    color: #fff;
     cursor: pointer;
-    transition: all 0.3s;
-    border-radius: 50%;
+    opacity: 0.5;
+    transition: opacity 0.3s;
 }
 
 .chat-close:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
+    opacity: 1;
 }
 
-/* Body (Critical Fix: Using Flex for auto-stacking) */
 .chat-body {
     flex: 1;
-    padding: 30px;
+    padding: 25px;
     overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
     position: relative;
     z-index: 1;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
 }
 
-.chat-body::-webkit-scrollbar {
-    width: 4px;
-}
-
-.chat-body::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-}
-
-/* Message Bubbles */
 .chat-msg-bubble {
-    padding: 16px 22px;
-    border-radius: 20px;
-    max-width: 85%;
-    line-height: 1.6;
-    font-size: 0.92rem;
-    position: relative;
-    animation: bubbleSlide 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-}
-
-@keyframes bubbleSlide {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    background: #222;
+    padding: 15px 20px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    max-width: 90%;
+    width: fit-content;
+    clear: both;
 }
 
 .chat-msg-bubble.bot {
-    background: var(--chat-bot-bubble);
-    color: #fff;
-    align-self: flex-start;
-    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+    float: left;
 }
 
 .chat-msg-bubble.user {
-    background: var(--chat-user-bubble);
+    background: #fff;
     color: #000;
-    align-self: flex-end;
-    border-bottom-right-radius: 4px;
-    font-weight: 500;
+    border-top-right-radius: 4px;
+    float: right;
+    margin-left: auto;
 }
 
 .chat-msg-bubble p {
     margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
     word-break: keep-all;
 }
 
-/* Lead Form (Premium Styling) */
-.chat-lead-form {
-    background: var(--chat-glass);
-    padding: 28px 24px;
-    border-radius: 24px;
-    border: 1px solid var(--chat-border);
-    margin-top: 10px;
-    transition: border-color 0.3s;
+.chat-msg-bubble.bot p {
+    color: #fff;
 }
 
-.chat-lead-form:focus-within {
-    border-color: rgba(255, 255, 255, 0.2);
+.chat-msg-bubble.user p {
+    color: #000;
+}
+
+.chat-lead-form {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 25px 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .chat-form-group {
-    margin-bottom: 24px;
-}
-
-.chat-form-group:last-child {
-    margin-bottom: 0;
+    margin-bottom: 20px;
 }
 
 .chat-form-group label {
     display: block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.4);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .chat-form-group input,
@@ -365,9 +227,9 @@
     border: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     color: #fff;
-    padding: 8px 0;
+    padding: 5px 0;
     font-size: 1rem;
-    transition: all 0.3s;
+    transition: border-color 0.3s;
     border-radius: 0;
 }
 
@@ -379,55 +241,73 @@
 
 .chat-submit-btn {
     width: 100%;
-    background: #ffffff;
+    background: #fff;
     color: #000;
     border: none;
-    padding: 16px;
-    border-radius: 16px;
-    font-size: 1rem;
-    font-weight: 800;
+    padding: 14px;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 700;
     cursor: pointer;
-    margin-top: 15px;
-    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    margin-top: 10px;
+    transition: transform 0.2s, background 0.3s;
 }
 
 .chat-submit-btn:hover {
     background: #f0f0f0;
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
 }
 
-.chat-submit-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
+.chat-submit-btn:active {
+    transform: translateY(0);
+}
+
+.chat-footer {
+    background: #fff;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.chat-input-field {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 0.9rem;
+    font-family: var(--font-body, sans-serif);
+    padding: 10px 0;
+}
+
+.chat-input-field::placeholder {
+    color: #999;
+}
+
+.chat-footer-icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: #000;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.chat-footer-icons:hover {
+    transform: scale(1.05);
 }
 
 /* Mobile Adjustments */
 @media (max-width: 480px) {
-    .chat-widget-container {
-        bottom: 20px;
-        right: 20px;
-    }
-
     .chat-window {
-        bottom: env(safe-area-inset-bottom, 20px);
+        width: calc(100vw - 40px);
+        height: calc(100vh - 120px);
+        bottom: 80px;
         right: 0;
-        width: 100vw;
-        height: 80vh;
-        /* vh 대신 %나 고정 % 사용 권장하나, 일단 80vh로 안정화 */
-        border-radius: 32px 32px 0 0;
-    }
-
-    .chat-trigger {
-        height: 56px;
-        padding: 0 20px;
-    }
-
-    .chat-status-msg {
-        text-align: center;
-        font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.3);
-        margin: 10px 0;
     }
 }

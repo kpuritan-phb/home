@@ -36,7 +36,16 @@ window.openResourceModal = (category, series, docId) => {
                         // Link Check
                         let linkHtml = '';
                         const fileUrl = item.fileUrl || item.downloadUrl;
-                        if (fileUrl) linkHtml += `<a href="${fileUrl}" target="_blank" class="download-btn"><i class="fas fa-file-download"></i> 다운로드</a>`;
+                        const isPdf = fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(fileUrl);
+
+                        if (fileUrl) {
+                            if (isPdf) {
+                                linkHtml += `<a href="viewer.html?file=${encodeURIComponent(fileUrl)}&title=${encodeURIComponent(item.title)}" target="_blank" class="download-btn"><i class="fas fa-eye"></i> 열기</a>`;
+                            } else {
+                                linkHtml += `<a href="${fileUrl}" target="_blank" class="download-btn"><i class="fas fa-file-download"></i> 다운로드</a>`;
+                            }
+                        }
+
                         if (item.youtubeLink) linkHtml += `<a href="${item.youtubeLink}" target="_blank" class="download-btn youtube"><i class="fab fa-youtube"></i> 영상 보기</a>`;
                         if (!linkHtml) linkHtml = `<span style="color:#999; font-size:0.8rem;">첨부 파일 없음</span>`;
 
@@ -106,13 +115,25 @@ window.loadMainCarousels = async () => {
     }
 
     try {
-        // 한 번에 최근 100개를 가져와서 배분 (효율적 + 인덱스 문제 회피)
+        // 최신순으로 100개를 가져온 뒤, 메모리에서 recent_order 순으로 정렬합니다.
         const snapshot = await window.db.collection("posts").orderBy("createdAt", "desc").limit(100).get();
         if (snapshot.empty) return;
 
         window.isDataLoaded = true;
         const allPosts = [];
-        snapshot.forEach(doc => allPosts.push({ id: doc.id, data: doc.data() }));
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            allPosts.push({ id: doc.id, data: data });
+        });
+
+        // recent_order가 있는 경우 해당 순서로, 없는 경우 뒤로 보냅니다.
+        allPosts.sort((a, b) => {
+            const orderA = a.data.recent_order !== undefined ? a.data.recent_order : 999999;
+            const orderB = b.data.recent_order !== undefined ? b.data.recent_order : 999999;
+            if (orderA !== orderB) return orderA - orderB;
+            // 순서가 같으면 최신순
+            return (b.data.createdAt?.seconds || 0) - (a.data.createdAt?.seconds || 0);
+        });
 
         // 1. New Arrivals (무조건 최근 12개)
         const newTrack = document.getElementById('carousel-new');

@@ -621,9 +621,9 @@
 
                 // If it's a PDF, open via viewer.html for better mobile experience
                 if (post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) {
-                    window.open(`viewer.html?file=${encodeURIComponent(post.fileUrl)}&title=${encodeURIComponent(post.title)}`, '_blank');
+                    window.open(`viewer.html?file=${encodeURIComponent(post.fileUrl)}&title=${encodeURIComponent(post.title)}`, '_self');
                 } else if (post.fileUrl) {
-                    window.open(post.fileUrl, '_blank');
+                    window.open(post.fileUrl, '_self');
                 } else {
                     alert("상세보기 기능은 준비 중입니다. (index.html에서 확인 가능)");
                 }

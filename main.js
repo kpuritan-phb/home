@@ -1700,9 +1700,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const color = isPdf ? '#e74c3c' : 'var(--secondary-color)';
             const finalHref = isPdf ? `viewer.html?file=${encodeURIComponent(post.fileUrl)}&title=${encodeURIComponent(post.title)}` : post.fileUrl;
 
-            fileLinkHtml = `<a href="${finalHref}" target="_blank" class="resource-link premium-btn" style="border-color:${color}; color:${color}; margin-top:10px;" 
-                onclick="if(window.Stats) window.Stats.track('${isPdf ? 'download' : 'click'}', { id: '${post.id}', type: '${isPdf ? 'tract_pdf' : 'resource_file'}', title: '${post.title.replace(/'/g, "\\'")}', category: '${(post.tags || []).join(",")}' })">
-                <i class="fas ${icon}"></i> ${label}</a>`;
+            fileLinkHtml = `<a href="${finalHref}" target="_self" class="resource-link premium-btn" style="border-color:${color}; color:${color}; margin-top:10px;" 
+                onclick="if(window.Stats) window.Stats.track('${isPdf ? 'view' : 'click'}', { id: '${post.id}', type: '${isPdf ? 'view_pdf' : 'resource_file'}', title: '${post.title.replace(/'/g, "\\'")}', category: '${(post.tags || []).join(",")}' })">
+                <i class="fas ${isPdf ? 'fa-eye' : 'fa-file-download'}"></i> ${isPdf ? 'PDF 직접 열기' : label}</a>`;
         }
         let adminButtons = '';
         if (isAdmin) {
@@ -1791,10 +1791,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const titleHtml = primaryLink !== '#'
-            ? `<a href="${primaryLink}" target="_blank" class="title-clickable">
+            ? `<a href="${isPdf ? `viewer.html?file=${encodeURIComponent(primaryLink)}&title=${encodeURIComponent(post.title)}` : primaryLink}" target="_self" class="title-clickable">
                 ${isPdf ? '<i class="fas fa-file-pdf" style="color:#e74c3c; margin-right:5px;"></i>' : ''}
                 ${post.title}
-                <i class="fas fa-external-link-alt" style="font-size:0.7em; margin-left:8px; opacity:0.3;"></i>
+                <i class="fas ${isPdf ? 'fa-eye' : 'fa-external-link-alt'}" style="font-size:0.7em; margin-left:8px; opacity:0.3;"></i>
                </a>`
             : `${post.title}`;
 

@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --accent-color: #3498db;
-            --bg-color: #525659;
-            --toolbar-height: 50px;
+            --primary-bg: #323639;
+            --secondary-bg: #525659;
+            --accent-color: #0a7c68;
+            --toolbar-height: 55px;
         }
 
         body,
@@ -20,8 +20,8 @@
             padding: 0;
             height: 100%;
             overflow: hidden;
-            background: var(--bg-color);
-            font-family: -apple-system, BlinkMacMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--secondary-bg);
+            font-family: 'Noto Sans KR', sans-serif;
         }
 
         .viewer-container {
@@ -31,26 +31,27 @@
             flex-direction: column;
         }
 
-        /* 상단 툴바 */
+        /* 툴바 */
         .toolbar {
             height: var(--toolbar-height);
-            background: #323639;
+            background: var(--primary-bg);
             color: white;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            z-index: 10;
+            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            z-index: 100;
         }
 
         .toolbar-title {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #e8eaed;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 50%;
-            color: #e8eaed;
         }
 
         .toolbar-actions {
@@ -62,15 +63,15 @@
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
+            padding: 8px 14px;
+            border-radius: 6px;
             font-size: 0.85rem;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             text-decoration: none;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
         .btn:hover {
@@ -82,76 +83,84 @@
         }
 
         .btn-primary:hover {
-            background: #2980b9;
+            background: #0d8c76;
+        }
+
+        /* 프레임 영역 */
+        .content-area {
+            flex: 1;
+            position: relative;
+            background: var(--secondary-bg);
         }
 
         iframe {
             width: 100%;
-            flex: 1;
+            height: 100%;
             border: none;
             display: block;
-            background: var(--bg-color);
         }
 
+        /* 로딩 화면 */
         .loading-overlay {
-            position: fixed;
-            top: var(--toolbar-height);
+            position: absolute;
+            top: 0;
             left: 0;
             width: 100%;
-            height: calc(100% - var(--toolbar-height));
-            background: rgba(82, 86, 89, 0.95);
+            height: 100%;
+            background: var(--secondary-bg);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             color: white;
-            z-index: 1000;
-            transition: opacity 0.3s;
+            z-index: 50;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid #ffffff;
+            border-top: 4px solid #fff;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
         }
 
-        .loading-tip {
-            margin-top: 15px;
-            font-size: 0.8rem;
-            color: #bdc3c7;
-            text-align: center;
-            padding: 0 20px;
-            line-height: 1.5;
-        }
-
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
+            to {
                 transform: rotate(360deg);
             }
+        }
+
+        .loading-text {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .loading-tip {
+            font-size: 0.85rem;
+            color: #ccc;
+            text-align: center;
+            line-height: 1.6;
+            max-width: 320px;
         }
 
         /* 모바일 대응 */
         @media (max-width: 600px) {
             .toolbar-title {
                 display: none;
-                /* 모바일에서는 제목 생략 */
             }
 
             .btn span {
                 display: none;
-                /* 아이콘만 표시하거나 텍스트 줄임 */
             }
 
-            .btn.show-text span {
+            .btn.show-mobile span {
                 display: inline;
+            }
+
+            .toolbar {
+                padding: 0 10px;
             }
         }
     </style>
@@ -162,8 +171,11 @@
         <header class="toolbar">
             <div class="toolbar-title" id="viewer-title">PDF 뷰어</div>
             <div class="toolbar-actions">
-                <a href="#" id="direct-link" class="btn btn-primary show-text">
-                    <i class="fas fa-external-link-alt"></i> <span>원본 열기</span>
+                <button onclick="refreshIframe()" class="btn" title="다시 시도">
+                    <i class="fas fa-sync-alt"></i> <span>새로고침</span>
+                </button>
+                <a href="#" id="direct-link" class="btn btn-primary show-mobile" target="_blank">
+                    <i class="fas fa-download"></i> <span>파일 다운로드</span>
                 </a>
                 <button onclick="window.close(); if(!window.closed) history.back();" class="btn">
                     <i class="fas fa-times"></i> <span>닫기</span>
@@ -171,16 +183,17 @@
             </div>
         </header>
 
-        <div id="loading" class="loading-overlay">
-            <div class="spinner"></div>
-            <div>문서를 불러오는 중입니다...</div>
-            <div class="loading-tip">
-                파일 크기가 크거나 네트워크가 느리면 시간이 걸릴 수 있습니다.<br>
-                계속 로딩 중이라면 상단의 <b>'원본 열기'</b>를 눌러주세요.
+        <main class="content-area">
+            <div id="loading" class="loading-overlay">
+                <div class="spinner"></div>
+                <div class="loading-text">문서를 불러오는 중...</div>
+                <div class="loading-tip">
+                    구글 서버를 통해 안전하게 문서를 불러옵니다.<br>
+                    내용이 나오지 않으면 <b>[새로고침]</b> 버튼을 눌러주세요.
+                </div>
             </div>
-        </div>
-
-        <iframe id="pdf-frame" allow="fullscreen"></iframe>
+            <iframe id="pdf-frame" allow="fullscreen"></iframe>
+        </main>
     </div>
 
     <script>
@@ -193,60 +206,43 @@
             document.getElementById('viewer-title').textContent = title;
         }
 
-        if (fileUrl) {
-            const frame = document.getElementById('pdf-frame');
-            const loading = document.getElementById('loading');
-            const directLink = document.getElementById('direct-link');
+        const frame = document.getElementById('pdf-frame');
+        const loading = document.getElementById('loading');
+        const directLink = document.getElementById('direct-link');
 
+        function getViewerUrl(url) {
+            // Google Docs Viewer URL (가장 안정적인 포맷)
+            return `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(url)}`;
+        }
+
+        function refreshIframe() {
+            if (!fileUrl) return;
+            loading.style.display = 'flex';
+            loading.style.opacity = '1';
+            // 캐시 방지를 위해 랜덤 쿼리 추가 (일부 서버 대응)
+            const cacheBuster = fileUrl.includes('?') ? '&cb=' + Date.now() : '?cb=' + Date.now();
+            frame.src = getViewerUrl(fileUrl + cacheBuster);
+        }
+
+        if (fileUrl) {
             directLink.href = fileUrl;
 
-            // 디바이스 감지
-            const ua = navigator.userAgent;
-            const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-            const isAndroid = /Android/i.test(ua);
-            const isMobile = isIOS || isAndroid;
-
-            let finalUrl = fileUrl;
-
-            /**
-             * 모바일 처리 전략:
-             * 1. iOS: Safari는 PDF 인라인 뷰잉을 매우 잘 지원하므로 Google Viewer 없이 직접 연결이 가장 안정적임 (대용량 포함)
-             * 2. Android: 크롬 등에서 직접 연결 시 다운로드를 시도하는 경우가 많아 Google Viewer가 유리함.
-             *             단, 25MB 이상은 Google Viewer가 실패하므로 상단 '원본 열기' 버튼으로 유도.
-             */
-            if (isMobile) {
-                if (isAndroid) {
-                    // 안드로이드는 구글 뷰어 사용 (미리보기 목적)
-                    finalUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
-                } else if (isIOS) {
-                    // iOS는 직접 연결이 더 강력함
-                    finalUrl = fileUrl;
-                }
-            }
-
-            frame.src = finalUrl;
+            // 초기 로드
+            frame.src = getViewerUrl(fileUrl);
 
             frame.onload = () => {
                 setTimeout(() => {
                     loading.style.opacity = '0';
-                    setTimeout(() => loading.style.display = 'none', 300);
-                }, 500);
+                    setTimeout(() => { loading.style.display = 'none'; }, 500);
+                }, 1000);
             };
 
-            // 만약 8초 동안 로딩이 안되면 로딩 화면 자동 제거하고 팁 강조
+            // 10초 후에도 로딩이 안 가려지면 (구글 서버 응답 없음 등) 자동으로 로딩창 제거
             setTimeout(() => {
-                if (loading && loading.style.display !== 'none') {
-                    // 로딩 중임을 알리되, 사용자가 버튼을 누를 수 있게 투명도만 조정하거나 힌트 제공
-                    loading.querySelector('.loading-tip').style.color = '#ffeb3b';
-                    loading.querySelector('.loading-tip').style.fontSize = '0.9rem';
-
-                    // 15초 넘으면 로딩 가림막 아예 제거
-                    setTimeout(() => {
-                        loading.style.display = 'none';
-                    }, 7000);
+                if (loading.style.display !== 'none') {
+                    loading.style.display = 'none';
                 }
-            }, 8000);
-
+            }, 10000);
         } else {
             document.body.innerHTML = "<div style='color:white; text-align:center; padding-top:100px;'><h3>파일 경로가 유효하지 않습니다.</h3><button onclick='history.back()' class='btn' style='margin:auto;'>돌아가기</button></div>";
         }

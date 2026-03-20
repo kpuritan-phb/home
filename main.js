@@ -797,7 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const storageRef = storage.ref(`files/${Date.now()}_${file.name}`);
                     // RFC 5987 호환성을 위해 filename*=UTF-8''... 형식 사용 권장
                     const metadata = {
-                        contentDisposition: "attachment; filename*=UTF-8''" + encodeURIComponent(file.name)
+                        contentDisposition: "inline; filename*=UTF-8''" + encodeURIComponent(file.name)
                     };
                     await storageRef.put(file, metadata);
                     fileUrl = await storageRef.getDownloadURL();
@@ -917,7 +917,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div>
                                 <strong>[${displayTags}]</strong> ${post.title} 
                                 <div style="display:inline-flex; gap:8px; margin-left:10px;">
-                                    ${hasFile ? `<a href="${post.fileUrl}" target="_blank" style="color:var(--secondary-color);" title="첨부파일"><i class="fas fa-file-download"></i></a>` : ''}
+                                    ${hasFile ? (/(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)
+                            ? `<a href="viewer.html?file=${encodeURIComponent(post.fileUrl)}&title=${encodeURIComponent(post.title)}" target="_blank" style="color:var(--secondary-color);" title="PDF 보기"><i class="fas fa-eye"></i></a>`
+                            : `<a href="${post.fileUrl}" target="_blank" style="color:var(--secondary-color);" title="첨부파일"><i class="fas fa-file-download"></i></a>`) : ''}
                                     ${hasCover ? `<a href="${post.coverUrl}" target="_blank" style="color:#f39c12;" title="표지이미지"><i class="fas fa-image"></i></a>` : ''}
                                 </div>
                                 <br> <small>${date}</small>

@@ -617,6 +617,23 @@
         const theologyTabsWrapper = document.getElementById('theological-tabs');
         const theologyTabBtns = document.querySelectorAll('.theology-tab-btn');
 
+        const BIBLE_BOOKS = [
+            { name: "창세기", chapters: 50 }, { name: "출애굽기", chapters: 40 }, { name: "레위기", chapters: 27 }, { name: "민수기", chapters: 36 }, { name: "신명기", chapters: 34 },
+            { name: "여호수아", chapters: 24 }, { name: "사사기", chapters: 21 }, { name: "룻기", chapters: 4 }, { name: "사무엘상", chapters: 31 }, { name: "사무엘하", chapters: 24 },
+            { name: "열왕기상", chapters: 22 }, { name: "열왕기하", chapters: 25 }, { name: "역대상", chapters: 29 }, { name: "역대하", chapters: 36 }, { name: "에스라", chapters: 10 },
+            { name: "느헤미야", chapters: 13 }, { name: "에스더", chapters: 10 }, { name: "욥기", chapters: 42 }, { name: "시편", chapters: 150 }, { name: "잠언", chapters: 31 },
+            { name: "전도서", chapters: 12 }, { name: "아가", chapters: 8 }, { name: "이사야", chapters: 66 }, { name: "예레미야", chapters: 52 }, { name: "예레미야 애가", chapters: 5 },
+            { name: "에스겔", chapters: 48 }, { name: "다니엘", chapters: 12 }, { name: "호세아", chapters: 14 }, { name: "요엘", chapters: 3 }, { name: "아모스", chapters: 9 },
+            { name: "오바댜", chapters: 1 }, { name: "요나", chapters: 4 }, { name: "미가", chapters: 7 }, { name: "나훔", chapters: 3 }, { name: "하박국", chapters: 3 },
+            { name: "스바냐", chapters: 3 }, { name: "학개", chapters: 2 }, { name: "스가랴", chapters: 14 }, { name: "말라기", chapters: 4 },
+            { name: "마태복음", chapters: 28 }, { name: "마가복음", chapters: 16 }, { name: "누가복음", chapters: 24 }, { name: "요한복음", chapters: 21 }, { name: "사도행전", chapters: 28 },
+            { name: "로마서", chapters: 16 }, { name: "고린도전서", chapters: 16 }, { name: "고린도후서", chapters: 13 }, { name: "갈라디아서", chapters: 6 }, { name: "에베소서", chapters: 6 },
+            { name: "빌립보서", chapters: 4 }, { name: "골로새서", chapters: 4 }, { name: "데살로니가전서", chapters: 5 }, { name: "데살로니가후서", chapters: 3 }, { name: "디모데전서", chapters: 6 },
+            { name: "디모데후서", chapters: 4 }, { name: "디도서", chapters: 3 }, { name: "빌레몬서", chapters: 1 }, { name: "히브리서", chapters: 13 }, { name: "야고보서", chapters: 5 },
+            { name: "베드로전서", chapters: 5 }, { name: "베드로후서", chapters: 3 }, { name: "요한1서", chapters: 5 }, { name: "요한2서", chapters: 1 }, { name: "요한3서", chapters: 1 },
+            { name: "유다서", chapters: 1 }, { name: "요한계시록", chapters: 22 }
+        ];
+
         let currentType = 'topic'; // 'topic' or 'author'
         let currentCategory = null; // clicked topic/author name
         window.isAdmin = localStorage.getItem('isAdmin') === 'true';
@@ -647,13 +664,18 @@
             const urlParams = new URLSearchParams(window.location.search);
             const typeParam = urlParams.get('type');
             const catParam = urlParams.get('cat');
+            const bParam = urlParams.get('b');
 
             if (typeParam) currentType = typeParam;
 
+            currentCategory = catParam;
 
-            if (catParam) {
-                currentCategory = catParam;
-                await loadCategoryItems(catParam);
+            if (currentCategory === '구속사적 성경주석' && !bParam) {
+                loadBibleBooks();
+            } else if (currentCategory === '구속사적 성경주석' && bParam) {
+                await loadCategoryItems('구속사적 성경주석');
+            } else if (currentCategory) {
+                await loadCategoryItems(currentCategory);
             } else {
                 loadCategories();
             }
@@ -661,20 +683,51 @@
             updateUI();
         }
 
+        function loadBibleBooks() {
+            grid.innerHTML = '';
+            grid.className = 'resource-list-grid';
+            pageTitle.textContent = '구속사적 성경주석';
+
+            BIBLE_BOOKS.forEach(book => {
+                const card = document.createElement('div');
+                card.className = 'group-card';
+                card.innerHTML = `
+                    <div class="group-thumb"><div class="group-icon-wrapper"><i class="fas fa-book-bible"></i></div></div>
+                    <div class="group-info">
+                        <h3 class="group-title">${book.name}</h3>
+                        <div class="group-action">주석 보기 <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i></div>
+                    </div>
+                `;
+                card.onclick = () => {
+                    const url = new URL(window.location);
+                    url.searchParams.set('cat', '구속사적 성경주석');
+                    url.searchParams.set('b', book.name);
+                    window.history.pushState({}, '', url);
+                    loadCategoryItems('구속사적 성경주석');
+                    updateUI();
+                };
+                grid.appendChild(card);
+            });
+        }
+
         function updateUI() {
             const urlParams = new URLSearchParams(window.location.search);
             const s = urlParams.get('s') || "";
+            const b = urlParams.get('b') || "";
 
             if (currentCategory) {
                 filterWrapper.style.display = 'none';
-                pageTitle.textContent = s ? `${currentCategory} > ${s}` : currentCategory;
+                let title = currentCategory;
+                if (b) title += ` > ${b}`;
+                if (s) title += ` > ${s}`;
+                pageTitle.textContent = title;
 
                 // Toggle Theological Tabs
-                // Toggle Theological Tabs (Show for Theology, Sermon, or Bible Study)
                 const isTheology = currentCategory === '청교도 신학';
-                const isSermon = currentCategory === '강해설교' || currentCategory === '구속사적 성경주석';
+                const isSermon = currentCategory === '강해설교';
+                const isBibleComp = currentCategory === '구속사적 성경주석';
 
-                if (isTheology || isSermon) {
+                if (isTheology || isSermon || (isBibleComp && b)) {
                     theologyTabsWrapper.style.display = 'block';
                     const activeBtns = theologyTabsWrapper.querySelectorAll('.theology-tab-btn');
                     activeBtns.forEach(btn => {
@@ -698,6 +751,7 @@
             const url = new URL(window.location);
             url.searchParams.delete('cat');
             url.searchParams.delete('s');
+            url.searchParams.delete('b');
             window.history.pushState({}, '', url);
 
             // Revert container class to grid for categories
@@ -795,62 +849,70 @@
             try {
                 const urlParams = new URLSearchParams(window.location.search);
                 const s = urlParams.get('s');
+                const b = urlParams.get('b');
 
                 let posts = [];
 
                 // --- 1. Main Category Fetch ---
                 let query = db.collection("posts").where("tags", "array-contains", category);
-                if (s && category !== '청교도 신학') {
+                if (s && category !== '청교도 신학' && category !== '구속사적 성경주석') {
                     query = query.where("series", "==", s);
                 }
                 const snapshot = await query.get();
                 snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
 
-                // --- NEW: Handle Dynamic Sermon Series Tabs ---
-                if (category === '강해설교' || category === '구속사적 성경주석') {
+                // --- NEW: Handle Dynamic/Fixed Tabs ---
+                if (category === '강해설교') {
                     const uniqueSeries = [...new Set(posts.map(p => p.series).filter(v => v && v.trim()))].sort((a, b) => a.localeCompare(b, 'ko'));
                     renderSeriesTabs(category, uniqueSeries);
                 } else if (category === '청교도 신학') {
                     resetTheologyTabs();
+                } else if (category === '구속사적 성경주석') {
+                    const b = urlParams.get('b');
+                    if (b) {
+                        const bookData = BIBLE_BOOKS.find(bk => bk.name === b);
+                        if (bookData) {
+                            renderBibleChapters(b, bookData.chapters);
+                        }
+                    }
                 }
 
                 // --- 2. Hybrid Loading for Puritan Theology or Evangelism/Missions ---
-                // If cat is Puritan Theology AND we have a sub-category 's'
-                // OR if cat is '전도, 선교'
-                if ((category === '청교도 신학' && s) || category === '전도, 선교') {
-                    const bookletSnapshot = await db.collection("posts")
-                        .where("tags", "array-contains", "전도 소책자")
-                        .get();
+                if ((category === '청교도 신학' && s) || category === '전도, 선교' || (category === '구속사적 성경주석' && b)) {
+                    if (category === '구속사적 성경주석' && b) {
+                        posts = posts.filter(p => p.series === b);
+                        if (s) {
+                            posts = posts.filter(p => p.title.includes(s) || (p.content && p.content.includes(s)));
+                        }
+                    } else {
+                        const bookletSnapshot = await db.collection("posts")
+                            .where("tags", "array-contains", "전도 소책자")
+                            .get();
 
-                    bookletSnapshot.forEach(doc => {
-                        const data = doc.data();
-                        // For Puritan sub-categories 's'
+                        bookletSnapshot.forEach(doc => {
+                            const data = doc.data();
+                            if (category === '청교도 신학' && s) {
+                                if (!posts.some(p => p.id === doc.id)) {
+                                    if (determineCategory(data.title, data.content) === s) {
+                                        posts.push({ id: doc.id, ...data });
+                                    }
+                                }
+                            } else if (category === '전도, 선교') {
+                                if (!posts.some(p => p.id === doc.id)) {
+                                    if (determineCategory(data.title, data.content) === '전도, 선교') {
+                                        posts.push({ id: doc.id, ...data });
+                                    }
+                                }
+                            }
+                        });
+
                         if (category === '청교도 신학' && s) {
-                            if (!posts.some(p => p.id === doc.id)) {
-                                if (determineCategory(data.title, data.content) === s) {
-                                    posts.push({ id: doc.id, ...data });
-                                }
-                            }
+                            posts = posts.filter(p => {
+                                if (p.tags && p.tags.includes("전도 소책자")) return true;
+                                return p.series === s || determineCategory(p.title, p.content) === s;
+                            });
                         }
-                        // For Main Evangelism/Missions category
-                        else if (category === '전도, 선교') {
-                            if (!posts.some(p => p.id === doc.id)) {
-                                if (determineCategory(data.title, data.content) === '전도, 선교') {
-                                    posts.push({ id: doc.id, ...data });
-                                }
-                            }
-                        }
-                    });
-
-                    // Filter Puritan Posts that have series === s OR title matching
-                    posts = posts.filter(p => {
-                        // If it's a booklet, we already filtered it.
-                        if (p.tags && p.tags.includes("전도 소책자")) return true;
-                        // For regular Puritan Theology posts, check series or auto-categorize
-                        return p.series === s || determineCategory(p.title, p.content) === s;
-                    });
-                } else if (category === '청교도 신학' && !s) {
-                    // All Puritan Theology list - already handled by Query 1
+                    }
                 }
 
                 if (posts.length === 0) {
@@ -950,6 +1012,23 @@
             } catch (e) {
                 console.warn("PDF Thumb Error", e);
             }
+        }
+
+        function renderBibleChapters(bookName, chapterCount) {
+            const ul = theologyTabsWrapper.querySelector('ul');
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentS = urlParams.get('s') || "";
+
+            let html = `<li><a href="resources.html?cat=구속사적 성경주석&b=${encodeURIComponent(bookName)}" class="theology-tab-btn ${!currentS ? 'active' : ''}" data-s="">${bookName} 전체</a></li>`;
+
+            for (let i = 1; i <= chapterCount; i++) {
+                const sLabel = `${i}장`;
+                const isActive = currentS === sLabel ? 'active' : '';
+                html += `<li><a href="resources.html?cat=구속사적 성경주석&b=${encodeURIComponent(bookName)}&s=${encodeURIComponent(sLabel)}" class="theology-tab-btn ${isActive}" data-s="${sLabel}">${sLabel}</a></li>`;
+            }
+
+            ul.innerHTML = html;
+            theologyTabsWrapper.style.display = 'block';
         }
 
         window.onpopstate = () => init();

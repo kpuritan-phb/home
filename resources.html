@@ -1266,10 +1266,12 @@
 
             let content = post.content || '';
             if (isBible) {
-                // Format Bible content: Replace markers like ":1" or ",1:26" with double newlines
-                // This targets chapter:verse patterns or verse-only markers with colons/commas
-                content = content.replace(/[,]?[:]?(\d+:\d+)/g, '\n\n$1 ');
-                content = content.replace(/[:](\d+)([가-힣\s])/g, (m, v, next) => `\n\n${v}${next}`);
+                // One-pass regex to handle ":1", "1:26", or ",1:26". Keeps only the verse number.
+                // It captures either (Chapter:Verse) or (:Verse) or (,Chapter:Verse)
+                content = content.replace(/[,]?[:]?(\d+):(\d+)|[:](\d+)/g, (match, ch, vs, verseOnly) => {
+                    const v = vs || verseOnly;
+                    return '\n\n' + v + ' ';
+                });
                 content = content.trim();
             }
 

@@ -96,28 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
     });
 
-    // Render function for dropdowns
-    const renderMegaMenuItems = (items, container, type = 'topic') => {
-        if (!container || !Array.isArray(items)) return;
-        const grid = document.createElement('div');
-        grid.className = 'mega-menu-grid';
 
-        items.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'mega-menu-item';
-            div.textContent = item;
-            div.addEventListener('click', () => {
-                location.href = `resources.html?type=${type}&cat=${encodeURIComponent(item)}`;
-            });
-            grid.appendChild(div);
-        });
-        container.appendChild(grid);
-    };
 
-    // Populate dropdowns
-    const authorDropdown = document.getElementById('author-dropdown');
-    if (typeof topics !== 'undefined') renderMegaMenuItems(topics, topicDropdown, 'topic');
-    if (typeof authors !== 'undefined') renderMegaMenuItems(authors, authorDropdown, 'author');
+
 
 
 

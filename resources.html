@@ -338,8 +338,8 @@
             margin: 0;
             display: flex;
             justify-content: flex-start;
-            padding: 0 60px;
-            /* Signficant side padding to ensure content is never cut off */
+            padding: 0 20px;
+            /* Balanced padding to avoid huge gaps while staying safe for scrolling */
             /* Left alignment is safest for potentially long lists of series */
             gap: 15px;
             overflow-x: auto;
@@ -747,21 +747,23 @@
             });
 
             ul.innerHTML = html;
+            theologyTabsWrapper.style.display = 'block';
         }
 
         function resetTheologyTabs() {
             const ul = theologyTabsWrapper.querySelector('ul');
             ul.innerHTML = `
                 <li><a href="resources.html?cat=청교도 신학" class="theology-tab-btn" data-s="">신학 전체</a></li>
-                <li><a href="resources.html?cat=청교도 신학&s=신론" class="theology-tab-btn" data-s="신론">1. 신론</a></li>
-                <li><a href="resources.html?cat=청교도 신학&s=인간론" class="theology-tab-btn" data-s="인간론">2. 인간론</a></li>
-                <li><a href="resources.html?cat=청교도 신학&s=기독론" class="theology-tab-btn" data-s="기독론">3. 기독론</a></li>
-                <li><a href="resources.html?cat=청교도 신학&s=구원론(성령론)" class="theology-tab-btn" data-s="구원론(성령론)">4. 구원론(성령론)</a></li>
-                <li><a href="resources.html?cat=청교도 신학&s=그리스도인의 생활론" class="theology-tab-btn" data-s="그리스도인의 생활론">5. 그리스도인의 생활론</a></li>
-                <li><a href="resources.html?cat=청교도 신학&s=교회론" class="theology-tab-btn" data-s="교회론">6. 교회론</a></li>
-                <li><a href="resources.html?cat=청교도 신학&s=종말론" class="theology-tab-btn" data-s="종말론">7. 종말론</a></li>
-                <li><a href="resources.html?cat=청교도 신학&s=역사 신학" class="theology-tab-btn" data-s="역사 신학">8. 역사 신학</a></li>
+                <li><a href="resources.html?cat=청교도 신학&s=신론" class="theology-tab-btn" data-s="신론">신론</a></li>
+                <li><a href="resources.html?cat=청교도 신학&s=인간론" class="theology-tab-btn" data-s="인간론">인간론</a></li>
+                <li><a href="resources.html?cat=청교도 신학&s=기독론" class="theology-tab-btn" data-s="기독론">기독론</a></li>
+                <li><a href="resources.html?cat=청교도 신학&s=구원론(성령론)" class="theology-tab-btn" data-s="구원론(성령론)">구원론/성령론</a></li>
+                <li><a href="resources.html?cat=청교도 신학&s=그리스도인의 생활론" class="theology-tab-btn" data-s="그리스도인의 생활론">그리스도인의 생활론</a></li>
+                <li><a href="resources.html?cat=청교도 신학&s=교회론" class="theology-tab-btn" data-s="교회론">교회론</a></li>
+                <li><a href="resources.html?cat=청교도 신학&s=종말론" class="theology-tab-btn" data-s="종말론">종말론</a></li>
+                <li><a href="resources.html?cat=청교도 신학&s=역사 신학" class="theology-tab-btn" data-s="역사 신학">역사 신학</a></li>
             `;
+            theologyTabsWrapper.style.display = 'block';
             updateUI();
         }
 

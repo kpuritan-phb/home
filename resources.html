@@ -337,8 +337,8 @@
             padding: 0;
             margin: 0;
             display: flex;
-            justify-content: flex-start;
-            /* Left alignment is safer for overflow scrolling */
+            justify-content: center;
+            /* Center for desktop by default */
             align-items: stretch;
             gap: 0;
             /* No gap needed if using dividers or internal padding */
@@ -352,8 +352,8 @@
         }
 
         .theology-sub-nav li {
-            flex: 0 0 auto;
-            /* Keep original width and allow scrolling */
+            flex: 1 1 auto;
+            /* Stretch items but allow shrinking if needed */
             white-space: nowrap;
             display: flex;
         }
@@ -404,9 +404,13 @@
         }
 
         @media screen and (max-width: 992px) {
+            .theology-sub-nav ul {
+                justify-content: flex-start;
+                /* Safe for scrolling on small screens */
+            }
+
             .theology-sub-nav li {
                 flex: none;
-                /* Let them auto-size and scroll on small screens */
             }
 
             .theology-tab-btn {

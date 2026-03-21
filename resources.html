@@ -307,65 +307,86 @@
             .book-list-title {
                 font-size: 1.3rem;
             }
+        }
 
-            .book-list-info {
-                max-width: 100%;
+        /* Theology Tabs Scaling for Hero */
+        .resources-hero {
+            position: relative;
+            margin-bottom: 50px;
+        }
+
+        .theology-tabs-container {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            max-width: 1000px;
+            background: #ffffff;
+            padding: 15px 25px;
+            border-bottom: 3px solid var(--secondary-color);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .theology-sub-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .theology-sub-nav ul::-webkit-scrollbar {
+            display: none;
+        }
+
+        .theology-sub-nav li {
+            white-space: nowrap;
+        }
+
+        .theology-tab-btn {
+            font-size: 0.95rem;
+            color: #444;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .theology-tab-btn:hover {
+            color: var(--secondary-color);
+            background: #f8f9fa;
+        }
+
+        .theology-tab-btn.active {
+            color: var(--secondary-color);
+            font-weight: 700;
+            background: #f0f7f2;
+        }
+
+        @media (max-width: 768px) {
+            .resources-hero {
+                margin-bottom: 40px;
             }
 
-            /* Theology Tabs Styling */
-            .theology-tabs-wrapper {
-                background: #fff;
-                padding: 20px 0;
-                border-bottom: 1px solid #eee;
-                margin-bottom: 30px;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .theology-tabs {
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 0 20px;
-                display: flex;
-                gap: 10px;
-                flex-wrap: nowrap;
+            .theology-tabs-container {
+                padding: 12px 15px;
+                bottom: -20px;
+                width: 100%;
+                border-radius: 0;
             }
 
             .theology-tab-btn {
-                padding: 10px 20px;
-                background: #f8f9fa;
-                color: #666;
-                text-decoration: none;
-                border-radius: 30px;
-                font-size: 0.9rem;
-                font-weight: 500;
-                white-space: nowrap;
-                transition: all 0.2s;
-                border: 1px solid transparent;
+                font-size: 0.85rem;
+                padding: 6px 8px;
             }
-
-            .theology-tab-btn:hover {
-                background: #e9ecef;
-                color: var(--secondary-color);
-            }
-
-            .theology-tab-btn.active {
-                background: var(--secondary-color);
-                color: white;
-                border-color: var(--secondary-color);
-                box-shadow: 0 4px 10px rgba(44, 62, 80, 0.2);
-            }
-
-            @media screen and (max-width: 768px) {
-                .theology-tabs {
-                    gap: 8px;
-                }
-
-                .theology-tab-btn {
-                    padding: 8px 15px;
-                    font-size: 0.85rem;
-                }
-            }
+        }
     </style>
 </head>
 
@@ -427,23 +448,29 @@
                 <h1 id="page-title">모든 자료</h1>
                 <p>청교도 신학과 개혁주의 신앙의 정수를 만나보세요.</p>
             </div>
-        </section>
 
-        <!-- 신학 소분류 탭 (청교도 신학일 때만 JS로 제어) -->
-        <div id="theological-tabs" class="theology-tabs-wrapper" style="display: none;">
-            <div class="theology-tabs">
-                <a href="resources.html?cat=청교도 신학" class="theology-tab-btn active" data-s="">신학 전체</a>
-                <a href="resources.html?cat=청교도 신학&s=신론" class="theology-tab-btn" data-s="신론">1. 신론</a>
-                <a href="resources.html?cat=청교도 신학&s=인간론" class="theology-tab-btn" data-s="인간론">2. 인간론</a>
-                <a href="resources.html?cat=청교도 신학&s=기독론" class="theology-tab-btn" data-s="기독론">3. 기독론</a>
-                <a href="resources.html?cat=청교도 신학&s=구원론(성령론)" class="theology-tab-btn" data-s="구원론(성령론)">4.
-                    구원론(성령론)</a>
-                <a href="resources.html?cat=청교도 신학&s=그리스도인의 생활론" class="theology-tab-btn" data-s="그리스도인의 생활론">5. 그리스도인의
-                    생활론</a>
-                <a href="resources.html?cat=청교도 신학&s=교회론" class="theology-tab-btn" data-s="교회론">6. 교회론</a>
-                <a href="resources.html?cat=청교도 신학&s=종말론" class="theology-tab-btn" data-s="종말론">7. 종말론</a>
+            <!-- 신학 소분류 탭 (청교도 신학일 때만 JS로 제어) -->
+            <div id="theological-tabs" class="theology-tabs-container" style="display: none;">
+                <nav class="theology-sub-nav">
+                    <ul>
+                        <li><a href="resources.html?cat=청교도 신학" class="theology-tab-btn" data-s="">신학 전체</a></li>
+                        <li><a href="resources.html?cat=청교도 신학&s=신론" class="theology-tab-btn" data-s="신론">1. 신론</a></li>
+                        <li><a href="resources.html?cat=청교도 신학&s=인간론" class="theology-tab-btn" data-s="인간론">2. 인간론</a>
+                        </li>
+                        <li><a href="resources.html?cat=청교도 신학&s=기독론" class="theology-tab-btn" data-s="기독론">3. 기독론</a>
+                        </li>
+                        <li><a href="resources.html?cat=청교도 신학&s=구원론(성령론)" class="theology-tab-btn" data-s="구원론(성령론)">4.
+                                구원론(성령론)</a></li>
+                        <li><a href="resources.html?cat=청교도 신학&s=그리스도인의 생활론" class="theology-tab-btn"
+                                data-s="그리스도인의 생활론">5. 그리스도인의 생활론</a></li>
+                        <li><a href="resources.html?cat=청교도 신학&s=교회론" class="theology-tab-btn" data-s="교회론">6. 교회론</a>
+                        </li>
+                        <li><a href="resources.html?cat=청교도 신학&s=종말론" class="theology-tab-btn" data-s="종말론">7. 종말론</a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-        </div>
+        </section>
 
         <div class="resources-container">
             <div class="filter-section" id="filter-wrapper">
@@ -508,7 +535,6 @@
         const db = firebase.firestore();
 
         const grid = document.getElementById('resources-grid');
-        const backNav = document.getElementById('back-nav');
         const filterWrapper = document.getElementById('filter-wrapper');
         const pageTitle = document.getElementById('page-title');
         const theologyTabsWrapper = document.getElementById('theological-tabs');
@@ -561,7 +587,6 @@
             const s = urlParams.get('s') || "";
 
             if (currentCategory) {
-                backNav.style.display = 'block';
                 filterWrapper.style.display = 'none';
                 pageTitle.textContent = s ? `${currentCategory} > ${s}` : currentCategory;
 
@@ -576,7 +601,6 @@
                     theologyTabsWrapper.style.display = 'none';
                 }
             } else {
-                backNav.style.display = 'none';
                 filterWrapper.style.display = 'flex';
                 theologyTabsWrapper.style.display = 'none';
                 pageTitle.textContent = currentType === 'author' ? '저자별 자료' : '주제별 자료';

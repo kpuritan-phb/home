@@ -337,14 +337,20 @@
             padding: 0;
             margin: 0;
             display: flex;
-            justify-content: flex-start;
-            padding: 0 20px;
-            /* Balanced padding to avoid huge gaps while staying safe for scrolling */
-            /* Left alignment is safest for potentially long lists of series */
-            gap: 15px;
+            justify-content: center;
+            padding: 0 10px;
+            gap: 0;
             overflow-x: auto;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
+        }
+
+        /* Center few items while allowing scrolling for many items */
+        .theology-sub-nav ul::before,
+        .theology-sub-nav ul::after {
+            content: '';
+            flex: 1;
+            min-width: 10px;
         }
 
         .theology-sub-nav ul::-webkit-scrollbar {
@@ -352,10 +358,19 @@
         }
 
         .theology-sub-nav li {
-            flex: 1 1 auto;
-            /* Stretch items but allow shrinking if needed */
+            flex: 1;
+            /* Each item takes equal width */
+            min-width: fit-content;
             white-space: nowrap;
             display: flex;
+        }
+
+        /* Centering trick for flex containers that might overflow */
+        .theology-sub-nav ul::before,
+        .theology-sub-nav ul::after {
+            content: '';
+            flex: 0.001;
+            /* Minimal flex for safety, effectively centering small groups */
         }
 
         .theology-tab-btn {
@@ -454,7 +469,7 @@
             <nav>
                 <ul>
                     <li><a href="index.html#about">연구소 소개</a></li>
-                    <li class="dropdown">
+                    <li class="dropdown mega-dropdown">
                         <a href="resources.html?cat=강해설교">강해설교 <i class="fas fa-chevron-down"></i></a>
                         <div class="dropdown-content" id="sermon-dropdown">
                             <ul class="dropdown-list">
@@ -463,18 +478,18 @@
                         </div>
                     </li>
                     <li><a href="resources.html?cat=구속사적 성경주석">구속사적 성경주석</a></li>
-                    <li class="dropdown">
+                    <li class="dropdown mega-dropdown">
                         <a href="resources.html?cat=청교도 신학">청교도 신학 <i class="fas fa-chevron-down"></i></a>
                         <div class="dropdown-content" id="puritan-dropdown">
                             <ul class="dropdown-list">
-                                <li><a href="resources.html?cat=청교도 신학&s=신론">1. 신론</a></li>
-                                <li><a href="resources.html?cat=청교도 신학&s=인간론">2. 인간론</a></li>
-                                <li><a href="resources.html?cat=청교도 신학&s=기독론">3. 기독론</a></li>
-                                <li><a href="resources.html?cat=청교도 신학&s=구원론(성령론)">4. 구원론(성령론)</a></li>
-                                <li><a href="resources.html?cat=청교도 신학&s=그리스도인의 생활론">5. 그리스도인의 생활론</a></li>
-                                <li><a href="resources.html?cat=청교도 신학&s=교회론">6. 교회론</a></li>
-                                <li><a href="resources.html?cat=청교도 신학&s=종말론">7. 종말론</a></li>
-                                <li><a href="resources.html?cat=청교도 신학&s=역사 신학">8. 역사 신학</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=신론">신론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=인간론">인간론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=기독론">기독론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=구원론(성령론)">구원론/성령론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=그리스도인의 생활론">그리스도인의 생활론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=교회론">교회론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=종말론">종말론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=역사 신학">역사 신학</a></li>
                             </ul>
                         </div>
                     </li>

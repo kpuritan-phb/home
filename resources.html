@@ -464,7 +464,9 @@
             if (currentCategory) {
                 backNav.style.display = 'block';
                 filterWrapper.style.display = 'none';
-                pageTitle.textContent = currentCategory;
+                const urlParams = new URLSearchParams(window.location.search);
+                const s = urlParams.get('s');
+                pageTitle.textContent = s ? `${currentCategory} > ${s}` : currentCategory;
             } else {
                 backNav.style.display = 'none';
                 filterWrapper.style.display = 'flex';
@@ -550,9 +552,14 @@
             grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 자료를 불러오는 중...</div>';
 
             try {
-                const snapshot = await db.collection("posts")
-                    .where("tags", "array-contains", category)
-                    .get();
+                const urlParams = new URLSearchParams(window.location.search);
+                const s = urlParams.get('s');
+
+                let query = db.collection("posts").where("tags", "array-contains", category);
+                if (s) {
+                    query = query.where("series", "==", s);
+                }
+                const snapshot = await query.get();
 
                 if (snapshot.empty) {
                     grid.innerHTML = '<div class="no-results">등록된 자료가 없습니다.</div>';

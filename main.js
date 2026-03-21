@@ -134,16 +134,51 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Toggle dropdowns on mobile
-        document.querySelectorAll('.dropdown > a').forEach(dropdownMain => {
-            dropdownMain.addEventListener('click', (e) => {
-                if (window.innerWidth <= 1024) {
-                    const parent = dropdownMain.parentElement;
-                    parent.classList.toggle('active');
-                    // Removed stopPropagation and preventDefault to allow onclick attributes to fire
+        // Fetch and populate sermon series dropdown
+        const populateSermonChoices = async () => {
+            const desktopDropdown = document.querySelector('#sermon-dropdown .dropdown-list');
+            const mobileDropdown = document.getElementById('mobile-sermon-series');
+            if (!desktopDropdown && !mobileDropdown) return;
+
+            try {
+                // Fetch series for "강해설교"
+                const snapshot = await db.collection("posts")
+                    .where("tags", "array-contains", "강해설교")
+                    .get();
+
+                const seriesSet = new Set();
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.series && data.series.trim()) {
+                        seriesSet.add(data.series.trim());
+                    }
+                });
+
+                const sortedSeries = Array.from(seriesSet).sort((a, b) => a.localeCompare(b, 'ko'));
+
+                if (desktopDropdown) {
+                    desktopDropdown.innerHTML = `<li><a href="resources.html?cat=강해설교">강해설교 전체</a></li>`;
+                    sortedSeries.forEach(s => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<a href="resources.html?cat=강해설교&s=${encodeURIComponent(s)}">${s}</a>`;
+                        desktopDropdown.appendChild(li);
+                    });
                 }
-            });
-        });
+
+                if (mobileDropdown) {
+                    mobileDropdown.innerHTML = `<li><a href="resources.html?cat=강해설교" class="menu-sub-link">강해설교 전체</a></li>`;
+                    sortedSeries.forEach(s => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<a href="resources.html?cat=강해설교&s=${encodeURIComponent(s)}" class="menu-sub-link">${s}</a>`;
+                        mobileDropdown.appendChild(li);
+                    });
+                }
+            } catch (e) {
+                console.error("populateSermonChoices error:", e);
+            }
+        };
+
+        if (typeof db !== 'undefined') populateSermonChoices();
     }
 
     // --- Header Scroll Effect ---

@@ -172,7 +172,11 @@
     <main class="menu-content">
         <ul class="menu-list">
             <li class="menu-item" style="animation-delay: 0.1s;">
-                <a href="resources.html?cat=강해설교" class="menu-link">강해설교 <i class="fas fa-arrow-right"></i></a>
+                <span class="menu-link">강해설교 <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></span>
+                <ul class="menu-sub-list" id="mobile-sermon-series">
+                    <li><a href="resources.html?cat=강해설교" class="menu-sub-link">강해설교 전체</a></li>
+                    <!-- JS injected -->
+                </ul>
             </li>
             <li class="menu-item" style="animation-delay: 0.2s;">
                 <a href="resources.html?cat=구속사적 성경주석" class="menu-link">구속사적 성경주석 <i
@@ -212,6 +216,22 @@
         <div id="yt-player-container" style="display: none;"></div>
     </div>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJbOaiElCypwgtPgbwdnudn3VC737fMrs",
+            authDomain: "kpuritan-home.firebaseapp.com",
+            projectId: "kpuritan-home",
+            storageBucket: "kpuritan-home.firebasestorage.app",
+            messagingSenderId: "1071220455502",
+            appId: "1:1071220455502:web:7f6f59b48c48a73437f8f0"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
+    <script src="main.js?v=2"></script>
     <script src="bgm.js?v=1"></script>
 </body>
 

@@ -425,9 +425,6 @@
 
         const grid = document.getElementById('resources-grid');
         const pageTitle = document.getElementById('page-title');
-        const typeFilter = document.getElementById('type-filter');
-        const authorSearchGroup = document.getElementById('author-search-group');
-        const authorSearch = document.getElementById('author-search');
         const backNav = document.getElementById('back-nav');
         const filterWrapper = document.getElementById('filter-wrapper');
 
@@ -448,11 +445,11 @@
             const catParam = urlParams.get('cat');
 
             if (typeParam) currentType = typeParam;
-            typeFilter.value = currentType;
+
 
             if (catParam) {
                 currentCategory = catParam;
-                loadCategoryItems(catParam);
+                await loadCategoryItems(catParam);
             } else {
                 loadCategories();
             }
@@ -474,17 +471,7 @@
             }
         }
 
-        function handleFilterChange() {
-            currentType = typeFilter.value;
-            currentCategory = null;
-            const url = new URL(window.location);
-            url.searchParams.set('type', currentType);
-            url.searchParams.delete('cat');
-            window.history.pushState({}, '', url);
 
-            loadCategories();
-            updateUI();
-        }
 
         function goBackToCategories() {
             currentCategory = null;

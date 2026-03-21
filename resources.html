@@ -472,6 +472,27 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
             margin-top: 4px;
+            white-space: pre-line;
+            /* Handle line breaks in Bible commentary */
+        }
+
+        .resource-card.expanded .resource-card-desc {
+            -webkit-line-clamp: unset;
+            line-clamp: unset;
+            display: block;
+            overflow: visible;
+        }
+
+        .resource-card.expanded {
+            height: auto;
+            grid-column: span 3;
+            /* Take more space if expanded on grid */
+        }
+
+        @media (max-width: 768px) {
+            .resource-card.expanded {
+                grid-column: span 1;
+            }
         }
 
         /* Responsive Grid for mobile */
@@ -1147,7 +1168,13 @@
 
         function renderResourceItem(post) {
             const itemEl = document.createElement('div');
-            itemEl.className = 'resource-card';
+            const isBible = currentCategory === '구속사적 성경주석';
+
+            // Auto-expand Bible chapters if specifically selected
+            const urlParams = new URLSearchParams(window.location.search);
+            const s = urlParams.get('s');
+
+            itemEl.className = 'resource-card' + (isBible && s ? ' expanded' : '');
 
             let thumbUrl = post.coverUrl;
             let isPdf = false;
@@ -1157,15 +1184,18 @@
                 else thumbUrl = post.fileUrl;
             }
 
+            // For Bible commentary, we don't need the default icon if viewing specific chapter
+            const showThumb = !isBible || !s;
             const finalSrc = thumbUrl || 'images/puritan-study.png';
             const imgId = `res-thumb-${post.id}`;
             const containerId = `res-cover-wrap-${post.id}`;
             const category = currentCategory || (post.tags && post.tags[0]) || '자료';
 
             itemEl.innerHTML = `
+                ${showThumb ? `
                 <div id="${containerId}" class="resource-card-thumb">
                     <img id="${imgId}" src="${finalSrc}" alt="${post.title}">
-                </div>
+                </div>` : ''}
                 <div class="resource-card-info">
                     <div class="resource-card-category">${category}</div>
                     <div class="resource-card-title">${post.title}</div>
@@ -1189,7 +1219,11 @@
                 } else if (post.fileUrl) {
                     window.open(post.fileUrl, '_self');
                 } else {
-                    alert("상세보기 기능은 준비 중입니다. (index.html에서 확인 가능)");
+                    // Toggle expansion for text-only resources (Like Bible Commentary)
+                    itemEl.classList.toggle('expanded');
+                    if (itemEl.classList.contains('expanded')) {
+                        itemEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
                 }
             };
 

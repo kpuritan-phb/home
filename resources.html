@@ -1264,6 +1264,15 @@
             const containerId = `res-cover-wrap-${post.id}`;
             const category = currentCategory || (post.tags && post.tags[0]) || '자료';
 
+            let content = post.content || '';
+            if (isBible) {
+                // Format Bible content: Replace markers like ":1" or ",1:26" with double newlines
+                // This targets chapter:verse patterns or verse-only markers with colons/commas
+                content = content.replace(/[,]?[:]?(\d+:\d+)/g, '\n\n$1 ');
+                content = content.replace(/[:](\d+)([가-힣\s])/g, (m, v, next) => `\n\n${v}${next}`);
+                content = content.trim();
+            }
+
             itemEl.innerHTML = `
                 ${showThumb ? `
                 <div id="${containerId}" class="resource-card-thumb">
@@ -1272,7 +1281,7 @@
                 <div class="resource-card-info">
                     <div class="resource-card-category">${category}</div>
                     <div class="resource-card-title">${post.title}</div>
-                    <div class="resource-card-desc">${post.content || ''}</div>
+                    <div class="resource-card-desc">${content}</div>
                 </div>
             `;
 

@@ -520,6 +520,78 @@
             }
         }
 
+        /* Blog Style for Text-only Content (e.g. Bible Commentary) */
+        .resource-list-grid.blog-style {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 60px 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+        }
+
+        @media screen and (max-width: 768px) {
+            .resource-list-grid.blog-style {
+                padding: 40px 25px;
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+            }
+        }
+
+        .resource-list-grid.blog-style .resource-card {
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            background: transparent;
+            width: 100%;
+            transform: none !important;
+            cursor: default;
+        }
+
+        .resource-list-grid.blog-style .resource-card-info {
+            padding: 0;
+        }
+
+        .resource-list-grid.blog-style .resource-card-title {
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 40px;
+            font-family: 'Noto Serif KR', serif;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 20px;
+            display: block;
+            -webkit-line-clamp: unset;
+            line-clamp: unset;
+        }
+
+        @media screen and (max-width: 768px) {
+            .resource-list-grid.blog-style .resource-card-title {
+                font-size: 1.6rem;
+            }
+        }
+
+        .resource-list-grid.blog-style .resource-card-desc {
+            font-size: 1.15rem;
+            line-height: 2;
+            color: #2c3e50;
+            -webkit-line-clamp: unset;
+            line-clamp: unset;
+            display: block;
+            overflow: visible;
+            text-align: justify;
+        }
+
+        .resource-list-grid.blog-style .resource-card-category {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
         /* Theology Tabs Scaling for Hero */
         .resources-hero {
             position: relative;
@@ -1151,7 +1223,8 @@
 
                 grid.innerHTML = '';
                 // Change container class to list for items
-                grid.className = 'resource-list-grid';
+                const isBlog = currentCategory === '구속사적 성경주석' && s;
+                grid.className = 'resource-list-grid' + (isBlog ? ' blog-style' : '');
 
 
 

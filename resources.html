@@ -1088,7 +1088,9 @@
                     if (category === '구속사적 성경주석' && b) {
                         posts = posts.filter(p => p.series === b);
                         if (s) {
-                            posts = posts.filter(p => p.title.includes(s) || (p.content && p.content.includes(s)));
+                            // Perfect match check for bible chapters
+                            const target = s.endsWith('장') ? s : s + '장';
+                            posts = posts.filter(p => p.title.includes(' ' + target));
                         }
                     } else {
                         const bookletSnapshot = await db.collection("posts")

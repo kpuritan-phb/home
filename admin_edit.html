@@ -136,18 +136,17 @@
                     </div>
 
                     <div id="extra-options" style="margin-top: 15px;">
-                        <div class="input-group" id="edit-booklet-topic-group"
-                            style="display: none; margin-bottom: 15px;">
-                            <label>소책자 상세 주제</label>
-                            <select id="edit-booklet-topic" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                        <div class="input-group" id="edit-sub-topic-group" style="display: none; margin-bottom: 15px;">
+                            <label>신학 하위 분류 (청교도 신학/소책자 전용)</label>
+                            <select id="edit-sub-topic" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
                                 <option value="">-- 선택 안함 --</option>
-                                <option value="기독교의 체계">기독교의 체계</option>
-                                <option value="은혜의 방식">은혜의 방식</option>
-                                <option value="구원 점검">구원 점검</option>
-                                <option value="바른복음vs잘못된 복음">바른복음 vs 잘못된 복음</option>
-                                <option value="영적전쟁">영적전쟁</option>
-                                <option value="정통vs오류">정통vs오류</option>
-                                <option value="경건생활">경건생활</option>
+                                <option value="신론">1. 신론</option>
+                                <option value="인간론">2. 인간론</option>
+                                <option value="기독론">3. 기독론</option>
+                                <option value="구원론(성령론)">4. 구원론(성령론)</option>
+                                <option value="그리스도인의 생활론">5. 그리스도인의 생활론</option>
+                                <option value="교회론">6. 교회론</option>
+                                <option value="종말론">7. 종말론</option>
                             </select>
                         </div>
                         <div class="input-group" id="edit-lang-group" style="display: none;">
@@ -261,18 +260,28 @@
 
         // Toggle UI logic
         const otherSelect = document.getElementById('edit-other-category');
-        const bookletGroup = document.getElementById('edit-booklet-topic-group');
+        const subTopicGroup = document.getElementById('edit-sub-topic-group');
         const langGroup = document.getElementById('edit-lang-group');
 
-        otherSelect.addEventListener('change', function () {
-            if (this.value === '전도 소책자') {
-                bookletGroup.style.display = 'block';
+        function updateSubTopicVisibility() {
+            const topic = topicSelect.value;
+            const other = otherSelect.value;
+
+            if (other === '전도 소책자' || topic === '청교도 신학') {
+                subTopicGroup.style.display = 'block';
+            } else {
+                subTopicGroup.style.display = 'none';
+            }
+
+            if (other === '전도 소책자') {
                 langGroup.style.display = 'block';
             } else {
-                bookletGroup.style.display = 'none';
                 langGroup.style.display = 'none';
             }
-        });
+        }
+
+        otherSelect.addEventListener('change', updateSubTopicVisibility);
+        topicSelect.addEventListener('change', updateSubTopicVisibility);
 
         // Load Data
         const urlParams = new URLSearchParams(window.location.search);
@@ -323,9 +332,9 @@
                 document.getElementById('edit-other-category').value = data.otherCategory || "";
 
                 // Trigger change event to show/hide fields
-                otherSelect.dispatchEvent(new Event('change'));
+                updateSubTopicVisibility(); // Call the new function
 
-                document.getElementById('edit-booklet-topic').value = data.subBookletTopic || "";
+                document.getElementById('edit-sub-topic').value = data.subBookletTopic || data.series || "";
                 document.getElementById('edit-title').value = data.title || "";
                 document.getElementById('edit-series').value = data.series || "";
                 document.getElementById('edit-order').value = data.order || 0;
@@ -417,7 +426,7 @@
                 const topic = document.getElementById('edit-topic').value;
                 const author = document.getElementById('edit-author').value;
                 const other = document.getElementById('edit-other-category').value;
-                const subBookletTopic = document.getElementById('edit-booklet-topic').value;
+                const subTopic = document.getElementById('edit-sub-topic').value;
 
                 let tags = [topic, author, other].filter(t => t !== "");
                 if (other === '전도 소책자') {
@@ -439,8 +448,13 @@
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                if (other === "전도 소책자" && subBookletTopic) {
-                    updateData.subBookletTopic = subBookletTopic;
+                if ((topic === "청교도 신학" || other === "전도 소책자") && subTopic) {
+                    // Update series with the subTopic for consistency
+                    updateData.series = subTopic;
+
+                    if (other === "전도 소책자") {
+                        updateData.subBookletTopic = subTopic; // legacy compat
+                    }
                 }
 
                 // File Uploads

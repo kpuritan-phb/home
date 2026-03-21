@@ -337,11 +337,11 @@
             padding: 0;
             margin: 0;
             display: flex;
-            justify-content: center;
-            /* Center for desktop by default */
-            align-items: stretch;
-            gap: 0;
-            /* No gap needed if using dividers or internal padding */
+            justify-content: flex-start;
+            padding: 0 20px;
+            /* Extra side padding to ensure content is never cut off */
+            /* Left alignment is safest for potentially long lists of series */
+            gap: 15px;
             overflow-x: auto;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
@@ -426,7 +426,8 @@
             .theology-tabs-container {
                 width: 100%;
                 max-width: none;
-                bottom: -20px;
+                left: 0;
+                transform: none;
                 border-radius: 0;
                 box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
             }

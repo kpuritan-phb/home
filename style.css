@@ -2501,7 +2501,7 @@ footer {
         /* More subtle */
     }
 
-    nav {
+    header nav {
         position: fixed;
         top: 0;
         right: 0;
@@ -2521,13 +2521,13 @@ footer {
         border-left: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    nav.active {
+    header nav.active {
         transform: translateX(0);
         visibility: visible;
         pointer-events: all;
     }
 
-    nav ul {
+    header nav ul {
         display: flex !important;
         /* Force flex on mobile */
         flex-direction: column;
@@ -2537,14 +2537,14 @@ footer {
         padding-top: 2rem;
     }
 
-    nav ul li a {
+    header nav ul li a {
         color: #ffffff !important;
         font-size: 1.25rem;
         display: block;
         padding: 0.8rem;
     }
 
-    nav ul li {
+    header nav ul li {
         width: 100%;
         text-align: center;
     }

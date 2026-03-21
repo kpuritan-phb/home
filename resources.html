@@ -597,7 +597,8 @@
             '구원론(성령론)': ['구원', '성령', '중생', '회심', '믿음', '칭의', '성화', '거듭남', '은혜', '자유의지', '회개', '부르심', '양자', '견인', '확신', '점검', '유사 그리스도인', '위선', '아버지의 이끄심', '의심하는 영혼', '구원 얻는 믿음의 증거', '거짓 믿음', '영혼의 진단', '참된 믿음인가', '위선적인', '진정으로 거듭났습니까', '확신의 길', '열 처녀 비유', '거지믐', '영접하는 자', '뱀에 물린 자', '인생이라는 여행', '회개와 하나님 나라', '회심의 사역', '그리스도께 나아가야', '현대 복음주의', '영혼의 의사', '미국교회 1차 대각성', '뉴욕 대부흥', '칭의와 성화'],
             '그리스도인의 생활론': ['기도', '묵상', '생활', '경건', '고난', '가정', '결혼', '자녀', '양육', '순종', '영적전쟁', '시험', '유혹', '마귀', '사탄', '전투', '계략', '상한 갈대', '심령이 가난한', '유익', '세속적 마음', '위로와 회복', '경건의 큰 유익', '땅의 일을 생각하는 자', '약함과 능력', '그리스도인의 위대한 관심사', '사람을 낚는 기술', '경건의 실천', '사탄의 최초의 전략', '영혼의 도성', '죄인의 정죄', '거룩한 전쟁', '영적 전장', '사탄의 계략', '사탄의 전략', '현대 심리학'],
             '교회론': ['교회', '회원', '예배', '성례', '세례', '성찬', '권징', '직분', '목사', '장로', '집사', '장로교', '공의회', '로마 카톨릭', '미국과 한국 장로교회', '예루살렘 공의회', '유산'],
-            '종말론': ['심판', '재림', '종말', '부활', '마지막', '천국', '지옥', '사후', '영생', '최후의 심판']
+            '종말론': ['심판', '재림', '종말', '부활', '마지막', '천국', '지옥', '사후', '영생', '최후의 심판'],
+            '전도, 선교': ['전도', '선교', '복음', '구령', '영혼 구원', '전도자', '선교사', '대위임령', '잃어버린 양', '전도 소책자']
         };
 
         function determineCategory(title, content) {
@@ -735,20 +736,30 @@
                 const snapshot = await query.get();
                 snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
 
-                // --- 2. Hybrid Loading for Puritan Theology ---
+                // --- 2. Hybrid Loading for Puritan Theology or Evangelism/Missions ---
                 // If cat is Puritan Theology AND we have a sub-category 's'
-                // We also check booklets (tag "전도 소책자") and filter them by determineCategory
-                if (category === '청교도 신학' && s) {
+                // OR if cat is '전도, 선교'
+                if ((category === '청교도 신학' && s) || category === '전도, 선교') {
                     const bookletSnapshot = await db.collection("posts")
                         .where("tags", "array-contains", "전도 소책자")
                         .get();
 
                     bookletSnapshot.forEach(doc => {
                         const data = doc.data();
-                        // Only add if not already present AND matches theological category
-                        if (!posts.some(p => p.id === doc.id)) {
-                            if (determineCategory(data.title, data.content) === s) {
-                                posts.push({ id: doc.id, ...data });
+                        // For Puritan sub-categories 's'
+                        if (category === '청교도 신학' && s) {
+                            if (!posts.some(p => p.id === doc.id)) {
+                                if (determineCategory(data.title, data.content) === s) {
+                                    posts.push({ id: doc.id, ...data });
+                                }
+                            }
+                        }
+                        // For Main Evangelism/Missions category
+                        else if (category === '전도, 선교') {
+                            if (!posts.some(p => p.id === doc.id)) {
+                                if (determineCategory(data.title, data.content) === '전도, 선교') {
+                                    posts.push({ id: doc.id, ...data });
+                                }
                             }
                         }
                     });

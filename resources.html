@@ -1114,7 +1114,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const currentSub = urlParams.get('s') || "";
 
-            let html = '';
+            let html = `<li><a href="resources.html?cat=${encodeURIComponent(category)}" class="theology-tab-btn ${!currentSub ? 'active' : ''}" data-s="">전체</a></li>`;
 
             uniqueSeries.forEach(s => {
                 const isActive = s === currentSub ? 'active' : '';
@@ -1128,6 +1128,7 @@
         function resetTheologyTabs() {
             const ul = theologyTabsWrapper.querySelector('ul');
             ul.innerHTML = `
+                <li><a href="resources.html?cat=청교도 신학" class="theology-tab-btn" data-s="">전체</a></li>
                 <li><a href="resources.html?cat=청교도 신학&s=신론" class="theology-tab-btn" data-s="신론">신론</a></li>
                 <li><a href="resources.html?cat=청교도 신학&s=인간론" class="theology-tab-btn" data-s="인간론">인간론</a></li>
                 <li><a href="resources.html?cat=청교도 신학&s=기독론" class="theology-tab-btn" data-s="기독론">기독론</a></li>

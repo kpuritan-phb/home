@@ -147,7 +147,109 @@
             font-size: 1.5rem;
         }
 
-        /* Chapter Grid Selector for Bible (Instead of long tabs) */
+        /* ---------------------------------------------------------
+           Bible Navigation Styles (Index & Chapters)
+           --------------------------------------------------------- */
+
+        /* 1. Bible Book Index (Main View) */
+        .bible-index-container {
+            width: 100%;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .bible-index-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f0f0f0;
+        }
+
+        .bible-section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f8f8f8;
+        }
+
+        .bible-section-title {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            font-weight: 800;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .bible-section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 24px;
+            background: var(--secondary-color);
+            border-radius: 3px;
+        }
+
+        .bible-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+        }
+
+        .bible-book-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 10px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            color: #444;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            word-break: keep-all;
+        }
+
+        .bible-book-btn span {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .bible-book-btn:hover {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+            background: #fffdf9;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(212, 175, 55, 0.1);
+        }
+
+        @media screen and (max-width: 1200px) {
+            .bible-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .bible-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* 2. Chapter Selector Grid (Selected Book View) */
         .chapter-grid-container {
             width: 100%;
             margin-bottom: 40px;

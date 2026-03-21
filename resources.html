@@ -366,6 +366,7 @@
                     <label>분류 선택</label>
                     <select id="type-filter" onchange="handleFilterChange()">
                         <option value="topic">주제별 자료</option>
+                        <option value="author">저자별 자료</option>
                     </select>
                 </div>
             </div>
@@ -472,7 +473,7 @@
             } else {
                 backNav.style.display = 'none';
                 filterWrapper.style.display = 'flex';
-                pageTitle.textContent = '주제별 자료';
+                pageTitle.textContent = currentType === 'author' ? '저자별 자료' : '주제별 자료';
             }
         }
 
@@ -504,7 +505,7 @@
         function loadCategories() {
             grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 로딩 중...</div>';
 
-            let list = topics;
+            let list = currentType === 'author' ? authors : topics;
 
             if (list.length === 0) {
                 grid.innerHTML = '<div class="no-results">검색 결과가 없습니다.</div>';
@@ -521,7 +522,7 @@
                 card.innerHTML = `
                     <div class="group-thumb">
                         <div class="group-icon-wrapper">
-                            <i class="fas fa-bookmark"></i>
+                            <i class="fas ${currentType === 'author' ? 'fa-user' : 'fa-bookmark'}"></i>
                         </div>
                     </div>
                     <div class="group-info">

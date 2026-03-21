@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Render function for dropdowns
-    const renderMegaMenuItems = (items, container) => {
+    const renderMegaMenuItems = (items, container, type = 'topic') => {
         if (!container || !Array.isArray(items)) return;
         const grid = document.createElement('div');
         grid.className = 'mega-menu-grid';
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             div.className = 'mega-menu-item';
             div.textContent = item;
             div.addEventListener('click', () => {
-                location.href = `resources.html?type=topic&cat=${encodeURIComponent(item)}`;
+                location.href = `resources.html?type=${type}&cat=${encodeURIComponent(item)}`;
             });
             grid.appendChild(div);
         });
@@ -115,7 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Populate dropdowns
-    if (typeof topics !== 'undefined') renderMegaMenuItems(topics, topicDropdown);
+    const authorDropdown = document.getElementById('author-dropdown');
+    if (typeof topics !== 'undefined') renderMegaMenuItems(topics, topicDropdown, 'topic');
+    if (typeof authors !== 'undefined') renderMegaMenuItems(authors, authorDropdown, 'author');
 
 
 

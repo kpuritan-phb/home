@@ -328,9 +328,29 @@
             </button>
             <nav>
                 <ul>
-                    <li><a href="resources.html?cat=강해설교">강해설교</a></li>
+                    <li class="dropdown">
+                        <a href="resources.html?cat=강해설교">강해설교 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="sermon-dropdown">
+                            <ul class="dropdown-list">
+                                <!-- JS injected content -->
+                            </ul>
+                        </div>
+                    </li>
                     <li><a href="resources.html?cat=구속사적 성경주석">구속사적 성경주석</a></li>
-                    <li><a href="resources.html?cat=청교도 신학">청교도 신학</a></li>
+                    <li class="dropdown">
+                        <a href="resources.html?cat=청교도 신학">청교도 신학 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="puritan-dropdown">
+                            <ul class="dropdown-list">
+                                <li><a href="resources.html?cat=청교도 신학&s=신론">1. 신론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=인간론">2. 인간론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=기독론">3. 기독론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=구원론(성령론)">4. 구원론(성령론)</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=그리스도인의 생활론">5. 그리스도인의 생활론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=교회론">6. 교회론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=종말론">7. 종말론</a></li>
+                            </ul>
+                        </div>
+                    </li>
                     <li><a href="resources.html?cat=전도, 선교">전도, 선교</a></li>
                     <li class="dropdown">
                         <a href="javascript:void(0)">퓨리탄헤리티지북스(PHB) <i class="fas fa-chevron-down"></i></a>
@@ -432,11 +452,24 @@
         let currentCategory = null; // clicked topic/author name
         window.isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-        function getInitialConsonant(str) {
-            const code = str.charCodeAt(0) - 0xAC00;
-            if (code < 0 || code > 11171) return str[0].toUpperCase();
-            const chosen = Math.floor(code / 588);
-            return String.fromCharCode(chosen + 0x1100);
+        const topicKeywords = {
+            '신론': ['하나님', '삼위일체', '성경', '계시', '섭리', '창조', '주권', '속성', '영광', '작정', '예정', '섭리의 신비', '성경 연구의 정석', '율법의 변호', '율법의 옹호', '성교촬리', '진리이지', '사도신경', '웨스트민스터 소교리문답'],
+            '인간론': ['죄', '타락', '인간', '율법', '심성', '부패', '전적 부패', '양심', '도덕률폐기론', '불편한 거울', '죄: 하나님을 향한 타격'],
+            '기독론': ['그리스도', '예수', '성육신', '속죄', '십자가', '중보자', '부활', '직무', '비하', '승귀'],
+            '구원론(성령론)': ['구원', '성령', '중생', '회심', '믿음', '칭의', '성화', '거듭남', '은혜', '자유의지', '회개', '부르심', '양자', '견인', '확신', '점검', '유사 그리스도인', '위선', '아버지의 이끄심', '의심하는 영혼', '구원 얻는 믿음의 증거', '거짓 믿음', '영혼의 진단', '참된 믿음인가', '위선적인', '진정으로 거듭났습니까', '확신의 길', '열 처녀 비유', '거지믐', '영접하는 자', '뱀에 물린 자', '인생이라는 여행', '회개와 하나님 나라', '회심의 사역', '그리스도께 나아가야', '현대 복음주의', '영혼의 의사', '미국교회 1차 대각성', '뉴욕 대부흥', '칭의와 성화'],
+            '그리스도인의 생활론': ['기도', '묵상', '생활', '경건', '고난', '가정', '결혼', '자녀', '양육', '순종', '영적전쟁', '시험', '유혹', '마귀', '사탄', '전투', '계략', '상한 갈대', '심령이 가난한', '유익', '세속적 마음', '위로와 회복', '경건의 큰 유익', '땅의 일을 생각하는 자', '약함과 능력', '그리스도인의 위대한 관심사', '사람을 낚는 기술', '경건의 실천', '사탄의 최초의 전략', '영혼의 도성', '죄인의 정죄', '거룩한 전쟁', '영적 전장', '사탄의 계략', '사탄의 전략', '현대 심리학'],
+            '교회론': ['교회', '회원', '예배', '성례', '세례', '성찬', '권징', '직분', '목사', '장로', '집사', '장로교', '공의회', '로마 카톨릭', '미국과 한국 장로교회', '예루살렘 공의회', '유산'],
+            '종말론': ['심판', '재림', '종말', '부활', '마지막', '천국', '지옥', '사후', '영생', '최후의 심판']
+        };
+
+        function determineCategory(title, content) {
+            const combined = (title + ' ' + (content || '')).toLowerCase();
+            for (const [category, keywords] of Object.entries(topicKeywords)) {
+                if (keywords.some(keyword => combined.includes(keyword.toLowerCase()))) {
+                    return category;
+                }
+            }
+            return null;
         }
 
         async function init() {
@@ -542,13 +575,46 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const s = urlParams.get('s');
 
+                let posts = [];
+
+                // --- 1. Main Category Fetch ---
                 let query = db.collection("posts").where("tags", "array-contains", category);
-                if (s) {
+                if (s && category !== '청교도 신학') {
                     query = query.where("series", "==", s);
                 }
                 const snapshot = await query.get();
+                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
 
-                if (snapshot.empty) {
+                // --- 2. Hybrid Loading for Puritan Theology ---
+                // If cat is Puritan Theology AND we have a sub-category 's'
+                // We also check booklets (tag "전도 소책자") and filter them by determineCategory
+                if (category === '청교도 신학' && s) {
+                    const bookletSnapshot = await db.collection("posts")
+                        .where("tags", "array-contains", "전도 소책자")
+                        .get();
+
+                    bookletSnapshot.forEach(doc => {
+                        const data = doc.data();
+                        // Only add if not already present AND matches theological category
+                        if (!posts.some(p => p.id === doc.id)) {
+                            if (determineCategory(data.title, data.content) === s) {
+                                posts.push({ id: doc.id, ...data });
+                            }
+                        }
+                    });
+
+                    // Filter Puritan Posts that have series === s OR title matching
+                    posts = posts.filter(p => {
+                        // If it's a booklet, we already filtered it.
+                        if (p.tags && p.tags.includes("전도 소책자")) return true;
+                        // For regular Puritan Theology posts, check series or auto-categorize
+                        return p.series === s || determineCategory(p.title, p.content) === s;
+                    });
+                } else if (category === '청교도 신학' && !s) {
+                    // All Puritan Theology list - already handled by Query 1
+                }
+
+                if (posts.length === 0) {
                     grid.innerHTML = '<div class="no-results">등록된 자료가 없습니다.</div>';
                     return;
                 }
@@ -557,8 +623,7 @@
                 // Change container class to list for items
                 grid.className = 'book-list';
 
-                let posts = [];
-                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+
 
                 // Sort by date (latest first) to match booklets.html behavior
                 posts.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));

@@ -135,9 +135,29 @@
             </button>
             <nav>
                 <ul>
-                    <li><a href="resources.html?cat=강해설교">강해설교</a></li>
+                    <li class="dropdown">
+                        <a href="resources.html?cat=강해설교">강해설교 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="sermon-dropdown">
+                            <ul class="dropdown-list">
+                                <!-- JS injected content -->
+                            </ul>
+                        </div>
+                    </li>
                     <li><a href="resources.html?cat=구속사적 성경주석">구속사적 성경주석</a></li>
-                    <li><a href="resources.html?cat=청교도 신학">청교도 신학</a></li>
+                    <li class="dropdown">
+                        <a href="resources.html?cat=청교도 신학">청교도 신학 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="puritan-dropdown">
+                            <ul class="dropdown-list">
+                                <li><a href="resources.html?cat=청교도 신학&s=신론">1. 신론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=인간론">2. 인간론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=기독론">3. 기독론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=구원론(성령론)">4. 구원론(성령론)</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=그리스도인의 생활론">5. 그리스도인의 생활론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=교회론">6. 교회론</a></li>
+                                <li><a href="resources.html?cat=청교도 신학&s=종말론">7. 종말론</a></li>
+                            </ul>
+                        </div>
+                    </li>
                     <li><a href="resources.html?cat=전도, 선교">전도, 선교</a></li>
                     <li class="dropdown">
                         <a href="javascript:void(0)" class="active">퓨리탄헤리티지북스(PHB) <i

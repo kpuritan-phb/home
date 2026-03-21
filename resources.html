@@ -147,111 +147,79 @@
             font-size: 1.5rem;
         }
 
-        /* Dynamic Bible Index Styles */
-        .bible-index-container {
+        /* Chapter Grid Selector for Bible (Instead of long tabs) */
+        .chapter-grid-container {
             width: 100%;
-            padding: 20px 0;
+            margin-bottom: 40px;
             display: flex;
             flex-direction: column;
-            gap: 50px;
+            gap: 15px;
         }
 
-        .bible-index-section {
+        .chapter-grid-header {
+            font-weight: 700;
+            color: var(--primary-color);
+            padding-left: 10px;
+            border-left: 4px solid var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
             background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             border: 1px solid #f0f0f0;
         }
 
-        .bible-section-header {
+        .chapter-btn {
             display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f8f8f8;
-        }
-
-        .bible-section-title {
-            font-size: 1.4rem;
-            color: var(--primary-color);
-            font-weight: 800;
-            position: relative;
-            padding-left: 20px;
-        }
-
-        .bible-section-title::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 6px;
-            height: 24px;
-            background: var(--secondary-color);
-            border-radius: 3px;
-        }
-
-        .bible-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 12px;
-        }
-
-        .bible-book-btn {
-            display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 15px 10px;
-            background: #fff;
+            padding: 10px;
+            background: #f9f9f9;
             border: 1px solid #eee;
-            border-radius: 12px;
-            color: #444;
-            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
             font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            color: #666;
             cursor: pointer;
-            text-align: center;
-            word-break: keep-all;
+            transition: all 0.2s;
+            text-decoration: none;
         }
 
-        .bible-book-btn span {
-            font-size: 0.75rem;
-            color: #999;
-            margin-top: 4px;
-            font-weight: 400;
-        }
-
-        .bible-book-btn:hover {
+        .chapter-btn:hover {
             border-color: var(--secondary-color);
             color: var(--secondary-color);
-            background: #fffdf9;
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(212, 175, 55, 0.1);
+            background: #fff;
+            transform: translateY(-2px);
         }
 
-        @media screen and (max-width: 1200px) {
-            .bible-grid {
-                grid-template-columns: repeat(5, 1fr);
+        .chapter-btn.active {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2);
+        }
+
+        @media screen and (max-width: 992px) {
+            .chapter-grid {
+                grid-template-columns: repeat(8, 1fr);
             }
         }
 
         @media screen and (max-width: 768px) {
-            .bible-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-
-            .bible-index-section {
-                padding: 25px;
+            .chapter-grid {
+                grid-template-columns: repeat(5, 1fr);
             }
         }
 
         @media screen and (max-width: 480px) {
-            .bible-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .chapter-grid {
+                grid-template-columns: repeat(4, 1fr);
             }
         }
 
@@ -658,9 +626,9 @@
         </section>
 
         <div class="resources-container">
-            <div class="filter-section" id="filter-wrapper">
-
-            </div>
+            <div id="bible-grid-wrapper" style="display: none;"></div>
+            <div id="chapter-grid-wrapper" class="chapter-grid-container" style="display: none;"></div>
+            <div class="filter-section" id="filter-wrapper">...</div>
 
             <div id="resources-grid" class="resource-list-grid">
                 <div class="loading-spinner">
@@ -721,6 +689,8 @@
 
         const grid = document.getElementById('resources-grid');
         const filterWrapper = document.getElementById('filter-wrapper');
+        const bibleWrapper = document.getElementById('bible-grid-wrapper');
+        const chapterWrapper = document.getElementById('chapter-grid-wrapper');
         const pageTitle = document.getElementById('page-title');
         const theologyTabsWrapper = document.getElementById('theological-tabs');
         const theologyTabBtns = document.querySelectorAll('.theology-tab-btn');
@@ -779,12 +749,24 @@
             currentCategory = catParam;
 
             if (currentCategory === '구속사적 성경주석' && !bParam) {
+                grid.style.display = 'none';
+                bibleWrapper.style.display = 'block';
+                chapterWrapper.style.display = 'none';
                 loadBibleBooks();
             } else if (currentCategory === '구속사적 성경주석' && bParam) {
+                grid.style.display = 'grid';
+                bibleWrapper.style.display = 'none';
+                chapterWrapper.style.display = 'block';
                 await loadCategoryItems('구속사적 성경주석');
             } else if (currentCategory) {
+                grid.style.display = 'grid';
+                bibleWrapper.style.display = 'none';
+                chapterWrapper.style.display = 'none';
                 await loadCategoryItems(currentCategory);
             } else {
+                grid.style.display = 'grid';
+                bibleWrapper.style.display = 'none';
+                chapterWrapper.style.display = 'none';
                 loadCategories();
             }
 
@@ -792,8 +774,8 @@
         }
 
         function loadBibleBooks() {
-            grid.innerHTML = '';
-            grid.className = 'bible-index-container'; // Changed from 'resource-list-grid'
+            bibleWrapper.innerHTML = '';
+            bibleWrapper.className = 'bible-index-container';
             pageTitle.textContent = '구속사적 성경주석';
 
             const oldTestament = BIBLE_BOOKS.filter(b => b.test === 'old');
@@ -818,14 +800,13 @@
                         const url = new URL(window.location);
                         url.searchParams.set('cat', '구속사적 성경주석');
                         url.searchParams.set('b', book.name);
-                        url.searchParams.delete('s'); // Clear chapter when switching book
+                        url.searchParams.delete('s');
                         window.history.pushState({}, '', url);
-                        loadCategoryItems('구속사적 성경주석');
-                        updateUI();
+                        init();
                     };
                     bibleGrid.appendChild(btn);
                 });
-                grid.appendChild(section);
+                bibleWrapper.appendChild(section);
             };
 
             renderBibleSection('구약 성서 (Old Testament)', oldTestament);
@@ -847,9 +828,8 @@
                 // Toggle Theological Tabs
                 const isTheology = currentCategory === '청교도 신학';
                 const isSermon = currentCategory === '강해설교';
-                const isBibleComp = currentCategory === '구속사적 성경주석';
 
-                if (isTheology || isSermon || (isBibleComp && b)) {
+                if (isTheology || isSermon) {
                     theologyTabsWrapper.style.display = 'block';
                     const activeBtns = theologyTabsWrapper.querySelectorAll('.theology-tab-btn');
                     activeBtns.forEach(btn => {
@@ -862,6 +842,8 @@
             } else {
                 filterWrapper.style.display = 'flex';
                 theologyTabsWrapper.style.display = 'none';
+                bibleWrapper.style.display = 'none';
+                chapterWrapper.style.display = 'none';
                 pageTitle.textContent = currentType === 'author' ? '저자별 자료' : '주제별 자료';
             }
         }
@@ -994,7 +976,7 @@
                     if (b) {
                         const bookData = BIBLE_BOOKS.find(bk => bk.name === b);
                         if (bookData) {
-                            renderBibleChapters(b, bookData.chapters);
+                            renderBibleChaptersGrid(b, bookData.chapters);
                         }
                     }
                 }
@@ -1136,21 +1118,33 @@
             }
         }
 
-        function renderBibleChapters(bookName, chapterCount) {
-            const ul = theologyTabsWrapper.querySelector('ul');
+        function renderBibleChaptersGrid(bookName, chapterCount) {
             const urlParams = new URLSearchParams(window.location.search);
-            const currentS = urlParams.get('s') || "";
+            const currentTag = urlParams.get('cat');
+            const currentSub = urlParams.get('s') || "";
 
-            let html = `<li><a href="resources.html?cat=구속사적 성경주석&b=${encodeURIComponent(bookName)}" class="theology-tab-btn ${!currentS ? 'active' : ''}" data-s="">${bookName} 전체</a></li>`;
+            chapterWrapper.innerHTML = `
+                <div class="chapter-grid-header">${bookName} 장 선택</div>
+                <div class="chapter-grid"></div>
+            `;
+            const chapterGrid = chapterWrapper.querySelector('.chapter-grid');
+
+            // Add 'All' button
+            const allBtn = document.createElement('a');
+            allBtn.className = `chapter-btn ${!currentSub ? 'active' : ''}`;
+            allBtn.href = `resources.html?cat=${currentTag}&b=${encodeURIComponent(bookName)}`;
+            allBtn.textContent = '전체';
+            chapterGrid.appendChild(allBtn);
 
             for (let i = 1; i <= chapterCount; i++) {
                 const sLabel = `${i}장`;
-                const isActive = currentS === sLabel ? 'active' : '';
-                html += `<li><a href="resources.html?cat=구속사적 성경주석&b=${encodeURIComponent(bookName)}&s=${encodeURIComponent(sLabel)}" class="theology-tab-btn ${isActive}" data-s="${sLabel}">${sLabel}</a></li>`;
+                const btn = document.createElement('a');
+                btn.className = `chapter-btn ${currentSub === sLabel ? 'active' : ''}`;
+                btn.href = `resources.html?cat=${currentTag}&b=${encodeURIComponent(bookName)}&s=${encodeURIComponent(sLabel)}`;
+                btn.textContent = `${i}`;
+                chapterGrid.appendChild(btn);
             }
-
-            ul.innerHTML = html;
-            theologyTabsWrapper.style.display = 'block';
+            chapterWrapper.style.display = 'block';
         }
 
         window.onpopstate = () => init();

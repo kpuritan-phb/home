@@ -1266,6 +1266,10 @@
             const category = currentCategory || (post.tags && post.tags[0]) || '자료';
 
             let content = post.content || '';
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            const urlsInContent = content.match(urlRegex) || [];
+            let primaryLink = post.fileUrl || (urlsInContent.length > 0 ? urlsInContent[0] : null);
+
             if (isBible) {
                 // One-pass regex to handle ":1", "1:26", or ",1:26". Keeps only the verse number.
                 // It captures either (Chapter:Verse) or (:Verse) or (,Chapter:Verse)
@@ -1276,6 +1280,9 @@
                 content = content.trim();
             }
 
+            // Autolink content for display
+            const displayContent = content.replace(urlRegex, '<a href="$1" target="_blank" onclick="event.stopPropagation()">$1</a>');
+
             itemEl.innerHTML = `
                 ${showThumb ? `
                 <div id="${containerId}" class="resource-card-thumb">
@@ -1284,7 +1291,7 @@
                 <div class="resource-card-info">
                     <div class="resource-card-category">${category}</div>
                     <div class="resource-card-title">${post.title}</div>
-                    <div class="resource-card-desc">${content}</div>
+                    <div class="resource-card-desc">${displayContent}</div>
                 </div>
             `;
 
@@ -1299,10 +1306,10 @@
                 }
 
                 // If it's a PDF, open via viewer.html for better mobile experience
-                if (post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) {
-                    window.open(`viewer.html?file=${encodeURIComponent(post.fileUrl)}&title=${encodeURIComponent(post.title)}`, '_self');
-                } else if (post.fileUrl) {
-                    window.open(post.fileUrl, '_self');
+                if (primaryLink && /(?:\.|%2E)pdf($|\?|#)/i.test(primaryLink)) {
+                    window.open(`viewer.html?file=${encodeURIComponent(primaryLink)}&title=${encodeURIComponent(post.title)}`, '_self');
+                } else if (primaryLink) {
+                    window.open(primaryLink, '_self');
                 } else {
                     // Toggle expansion for text-only resources (Like Bible Commentary)
                     itemEl.classList.toggle('expanded');

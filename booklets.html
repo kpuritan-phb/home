@@ -699,6 +699,11 @@
                 const finalSrc = thumbUrl || 'images/puritan-study.png';
                 const imgId = `book-thumb-${item.id}`;
                 const containerId = `book-cover-wrap-${item.id}`;
+                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                const contentText = item.content || '';
+                const urlsInContent = contentText.match(urlRegex) || [];
+                let primaryLink = item.fileUrl || (urlsInContent.length > 0 ? urlsInContent[0] : null);
+                const displayContent = contentText.replace(urlRegex, '<a href="$1" target="_blank" onclick="event.stopPropagation()">$1</a>');
                 const category = (currentMainCat === '한국어') ? item.topicCategory : currentLang;
 
                 itemEl.innerHTML = `
@@ -708,13 +713,15 @@
     <div class="book-list-info">
         <div class="book-list-category">${category}</div>
         <div class="book-list-title">${item.title}</div>
-        <div class="book-list-desc">${item.content || ''}</div>
+        <div class="book-list-desc">${displayContent}</div>
     </div>
     `;
 
                 itemEl.onclick = () => {
-                    if (item.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(item.fileUrl)) {
-                        window.open(`viewer.html?file=${encodeURIComponent(item.fileUrl)}&title=${encodeURIComponent(item.title)}`, '_self');
+                    if (primaryLink && /(?:\.|%2E)pdf($|\?|#)/i.test(primaryLink)) {
+                        window.open(`viewer.html?file=${encodeURIComponent(primaryLink)}&title=${encodeURIComponent(item.title)}`, '_self');
+                    } else if (primaryLink) {
+                        window.open(primaryLink, '_self');
                     } else {
                         openDetail(item);
                     }

@@ -310,6 +310,16 @@ nav ul li:hover a i {
     border-top: 4px solid var(--primary-color);
 }
 
+.dropdown-content::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: transparent;
+}
+
 .mega-menu {
     width: 90vw;
     max-width: 1000px;

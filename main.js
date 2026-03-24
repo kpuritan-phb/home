@@ -29,9 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Sort Categories Alphabetically as requested
     // Bible books kept in canonical order.
+    /* 
     if (typeof topics !== 'undefined' && Array.isArray(topics)) {
         topics.sort((a, b) => a.localeCompare(b, 'ko'));
     }
+    */
     if (typeof authors !== 'undefined' && Array.isArray(authors)) {
         authors.sort((a, b) => a.localeCompare(b, 'ko'));
     }
@@ -748,7 +750,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!tags.includes("청교도 신학")) tags.push("청교도 신학");
                 if (!finalSeries) finalSeries = topic; // 주제를 시리즈(폴더)로 자동 지정
             }
-            if (topic === "전도" || topic === "선교") {
+            if (topic === "전도" || topic === "선교" || topic === "전도, 선교") {
                 if (!tags.includes("전도, 선교")) tags.push("전도, 선교");
             }
 

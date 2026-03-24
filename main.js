@@ -2098,8 +2098,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // 한 번에 최근 300개를 가져와서 배분 (설교 부족 문제 해결 위해 상향)
-            const snapshot = await window.db.collection("posts").orderBy("createdAt", "desc").limit(300).get();
+            // 전체 자료에서 충분히 랜덤하게 뽑기 위해 최대 2000개를 가져옴
+            const snapshot = await window.db.collection("posts").orderBy("createdAt", "desc").limit(2000).get();
             if (snapshot.empty) {
                 console.log("No posts found");
                 return;
@@ -2148,13 +2148,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const sermonTrack = document.getElementById('carousel-sermon');
             if (sermonTrack) {
                 sermonTrack.innerHTML = '';
-                // 무작위 추천을 위해 전체 자료 중 최근자료와 중복되지 않는 PDF 자료들을 필터링
-                let recommendedItems = allPosts.filter(item => {
-                    if (latestIds.has(item.id)) return false;
+                // 무작위 추천을 위해 상위 30개는 무조건 배제하고, PDF 자료들을 필터링
+                let recommendedItems = allPosts.slice(30).filter(item => {
                     const url = item.data.fileUrl || "";
-                    // PDF 파일명이거나 .pdf 확장자가 포함된 경우
                     return /(?:\.|%2E)pdf($|\?|#)/i.test(url);
                 });
+
+                if (recommendedItems.length < 10) {
+                    // 상위 30개를 제외하니 너무 적으면, 상위 12개만 제외하고 다시 시도
+                    recommendedItems = allPosts.slice(12).filter(item => {
+                        const url = item.data.fileUrl || "";
+                        return /(?:\.|%2E)pdf($|\?|#)/i.test(url);
+                    });
+                }
 
                 if (recommendedItems.length < 5) {
                     // PDF 자료가 너무 적으면 중복(최근 자료)를 허용해서라도 PDF만 가져옴

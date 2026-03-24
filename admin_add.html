@@ -354,6 +354,19 @@
                 const subTopic = document.getElementById('add-sub-topic').value;
 
                 let tags = [topic, author, other].filter(t => t !== "");
+
+                // --- [추가] 주제별 자동 태깅 및 시리즈 매칭 ---
+                const puritanTopics = ["신론", "인간론", "기독론", "구원론(성령론)", "그리스도인의 생활론", "교회론", "종말론", "역사 신학"];
+                let finalSeries = document.getElementById('add-series').value.trim() || '';
+
+                if (puritanTopics.includes(topic)) {
+                    if (!tags.includes("청교도 신학")) tags.push("청교도 신학");
+                    if (!finalSeries) finalSeries = topic; // 주제를 시리즈(폴더)로 자동 지정
+                }
+                if (topic === "전도" || topic === "선교") {
+                    if (!tags.includes("전도, 선교")) tags.push("전도, 선교");
+                }
+
                 if (other === '전도 소책자') {
                     const lang = document.getElementById('add-lang').value;
                     if (lang) tags.push(lang);
@@ -366,9 +379,9 @@
                 const addData = {
                     topic, author, otherCategory: other, tags,
                     title: document.getElementById('add-title').value.trim() || "제목 없음",
-                    series: document.getElementById('add-series').value.trim() || "",
+                    series: finalSeries,
                     order: Number(document.getElementById('add-order').value),
-                    recent_order: 0, // 초기값 세팅 (최상단 노출 위해 0 부여)
+                    recent_order: 0,
                     price: document.getElementById('add-price').value.trim() || "",
                     content: document.getElementById('add-content').value,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()

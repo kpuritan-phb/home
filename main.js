@@ -739,11 +739,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const subBookletTopic = document.getElementById('post-booklet-topic').value;
 
             let tags = [topic, author, other].filter(t => t !== "");
+
+            // --- [추가] 주제별 자동 태깅 및 시리즈 매칭 ---
+            const puritanTopics = ["신론", "인간론", "기독론", "구원론(성령론)", "그리스도인의 생활론", "교회론", "종말론", "역사 신학"];
+            let finalSeries = document.getElementById('post-series').value.trim() || '';
+
+            if (puritanTopics.includes(topic)) {
+                if (!tags.includes("청교도 신학")) tags.push("청교도 신학");
+                if (!finalSeries) finalSeries = topic; // 주제를 시리즈(폴더)로 자동 지정
+            }
+            if (topic === "전도" || topic === "선교") {
+                if (!tags.includes("전도, 선교")) tags.push("전도, 선교");
+            }
+
             if (currentUploadTarget) {
                 if (!tags.includes(currentUploadTarget)) tags.push(currentUploadTarget);
             }
             const title = document.getElementById('post-title').value.trim() || '제목 없음';
-            const series = document.getElementById('post-series').value.trim() || '';
+            const series = finalSeries;
             const order = parseInt(document.getElementById('post-order').value) || 0;
             const price = document.getElementById('post-price').value.trim() || '';
             const content = document.getElementById('post-content').value;

@@ -2052,8 +2052,8 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'mock_s4', title: "에베소서 강해 (3): 교회란 무엇인가", cat: "강해설교", date: "2025.12.15", series: "에베소서 강해" },
             { id: 'mock_s5', title: "시편 강해 (23): 목자되신 여호와", cat: "강해설교", date: "2025.12.10", series: "시편 강해" }
         ];
-        // 설교도 좀 더 늘리기
-        const extendedSermons = [...mockSermons, ...mockSermons.map(s => ({ ...s, id: s.id + '_dup' }))];
+        // 설교도 좀 더 늘리고 랜덤으로 섞음
+        const extendedSermons = [...mockSermons, ...mockSermons.map(s => ({ ...s, id: s.id + '_dup' }))].sort(() => 0.5 - Math.random());
 
         const populateTrack = (trackId, data) => {
             const track = document.getElementById(trackId);
@@ -2131,19 +2131,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // 3. Expository Sermons (강해 태그가 있는 것들)
+            // 3. Recommended Materials (랜덤 추천 자료)
             const sermonTrack = document.getElementById('carousel-sermon');
             if (sermonTrack) {
                 sermonTrack.innerHTML = '';
-                const sermonItems = allPosts.filter(item => {
-                    const tags = item.data.tags || [];
-                    return tags.includes('강해') || tags.includes('강해설교') || tags.includes('설교');
-                });
+                // 무작위 추천을 위해 전체 자료 중 최근자료와 중복되지 않는 것 위주로 섞음
+                let recommendedItems = allPosts.filter(item => !latestIds.has(item.id));
+                if (recommendedItems.length < 5) recommendedItems = allPosts; // 부족하면 전체에서
 
-                // 설교가 부족하면 New Arrivals 제외한 나머지도 일부 포함
-                const displaySermons = sermonItems.length >= 4 ? sermonItems : allPosts;
+                // 무작위 섞기
+                const shuffledRecs = [...recommendedItems].sort(() => 0.5 - Math.random());
 
-                displaySermons.slice(0, 20).forEach(item => {
+                shuffledRecs.slice(0, 20).forEach(item => {
                     sermonTrack.appendChild(createCarouselCard(item.data, item.id));
                 });
             }

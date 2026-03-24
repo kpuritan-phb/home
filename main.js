@@ -2135,9 +2135,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const sermonTrack = document.getElementById('carousel-sermon');
             if (sermonTrack) {
                 sermonTrack.innerHTML = '';
-                // 무작위 추천을 위해 전체 자료 중 최근자료와 중복되지 않는 것 위주로 섞음
-                let recommendedItems = allPosts.filter(item => !latestIds.has(item.id));
-                if (recommendedItems.length < 5) recommendedItems = allPosts; // 부족하면 전체에서
+                // 무작위 추천을 위해 전체 자료 중 최근자료와 중복되지 않는 PDF 자료들을 필터링
+                let recommendedItems = allPosts.filter(item => {
+                    if (latestIds.has(item.id)) return false;
+                    const url = item.data.fileUrl || "";
+                    // PDF 파일명이거나 .pdf 확장자가 포함된 경우
+                    return /(?:\.|%2E)pdf($|\?|#)/i.test(url);
+                });
+
+                if (recommendedItems.length < 5) {
+                    // PDF 자료가 너무 적으면 중복(최근 자료)를 허용해서라도 PDF만 가져옴
+                    recommendedItems = allPosts.filter(item => {
+                        const url = item.data.fileUrl || "";
+                        return /(?:\.|%2E)pdf($|\?|#)/i.test(url);
+                    });
+                }
 
                 // 무작위 섞기
                 const shuffledRecs = [...recommendedItems].sort(() => 0.5 - Math.random());

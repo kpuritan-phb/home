@@ -1709,9 +1709,9 @@ footer {
 
 /* Resource Modal Styles */
 .resource-modal-content {
-    max-width: 800px !important;
-    width: 90% !important;
-    max-height: 80vh;
+    max-width: 1400px !important;
+    width: 95% !important;
+    max-height: 92vh;
     display: flex;
     flex-direction: column;
 }

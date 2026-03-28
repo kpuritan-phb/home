@@ -143,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!desktopDropdown && !mobileDropdown) return;
 
             try {
-                // Fetch series for "강해설교"
                 const snapshot = await db.collection("posts")
                     .where("tags", "array-contains", "강해설교")
                     .get();
@@ -151,9 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const seriesSet = new Set();
                 snapshot.forEach(doc => {
                     const data = doc.data();
-                    if (data.series && data.series.trim()) {
-                        seriesSet.add(data.series.trim());
-                    }
+                    if (data.series && data.series.trim()) seriesSet.add(data.series.trim());
                 });
 
                 const sortedSeries = Array.from(seriesSet).sort((a, b) => a.localeCompare(b, 'ko'));
@@ -175,12 +172,51 @@ document.addEventListener('DOMContentLoaded', () => {
                         mobileDropdown.appendChild(li);
                     });
                 }
-            } catch (e) {
-                console.error("populateSermonChoices error:", e);
-            }
+            } catch (e) { console.error("populateSermonChoices error:", e); }
         };
 
-        if (typeof db !== 'undefined') populateSermonChoices();
+        const populateSeminarChoices = async () => {
+            const desktopDropdown = document.querySelector('#seminar-dropdown .dropdown-list');
+            const mobileDropdown = document.getElementById('mobile-seminar-series');
+            if (!desktopDropdown && !mobileDropdown) return;
+
+            try {
+                const snapshot = await db.collection("posts")
+                    .where("tags", "array-contains", "세미나, 강의")
+                    .get();
+
+                const seriesSet = new Set();
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.series && data.series.trim()) seriesSet.add(data.series.trim());
+                });
+
+                const sortedSeries = Array.from(seriesSet).sort((a, b) => a.localeCompare(b, 'ko'));
+
+                if (desktopDropdown) {
+                    desktopDropdown.innerHTML = `<li><a href="resources.html?cat=세미나, 강의">세미나, 강의 전체</a></li>`;
+                    sortedSeries.forEach(s => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<a href="resources.html?cat=세미나, 강의&s=${encodeURIComponent(s)}">${s}</a>`;
+                        desktopDropdown.appendChild(li);
+                    });
+                }
+
+                if (mobileDropdown) {
+                    mobileDropdown.innerHTML = `<li><a href="resources.html?cat=세미나, 강의" class="menu-sub-link">세미나, 강의 전체</a></li>`;
+                    sortedSeries.forEach(s => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<a href="resources.html?cat=세미나, 강의&s=${encodeURIComponent(s)}" class="menu-sub-link">${s}</a>`;
+                        mobileDropdown.appendChild(li);
+                    });
+                }
+            } catch (e) { console.error("populateSeminarChoices error:", e); }
+        };
+
+        if (typeof db !== 'undefined') {
+            populateSermonChoices();
+            populateSeminarChoices();
+        }
     }
 
     // --- Header Scroll Effect ---
@@ -720,7 +756,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = new URL('admin_add.html', window.location.href);
         if (topics.includes(categoryName)) url.searchParams.set('topic', categoryName);
         if (authors.includes(categoryName)) url.searchParams.set('author', categoryName);
-        if (['전도 소책자', '도서 목록', '강해설교', '기타'].includes(categoryName)) url.searchParams.set('category', categoryName);
+        if (['전도 소책자', '도서 목록', '강해설교', '세미나, 강의', '기타'].includes(categoryName)) url.searchParams.set('category', categoryName);
 
         window.open(url.href, '_blank', 'width=1000,height=800');
     };

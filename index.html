@@ -383,204 +383,205 @@
                         <p id="firebase-status"
                             style="font-size: 0.9em; margin-top: 0.5rem; color: var(--secondary-color);">연결 상태: 확인됨</p>
                     </div>
-                    <button id="admin-logout-btn" class="cta-btn secondary"
-                        style="padding: 0.6rem 1.2rem; font-size: 0.9rem; border-color: #e74c3c; color: #e74c3c; background: transparent;">
-                        <i class="fas fa-sign-out-alt"></i> 로그아웃
-                    </button>
-                </div>
 
-                <!-- 관리자 메뉴 선택 (3단 분리 포털) -->
-                <div class="admin-portal-grid"
-                    style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 40px; margin-top: 20px;">
-                    <div class="admin-portal-card active" onclick="switchAdminTab('general')" id="tab-general"
-                        style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid var(--primary-color); text-align: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
-                        <i class="fas fa-book"
-                            style="font-size: 1.5rem; color: var(--primary-color); margin-bottom: 12px;"></i>
-                        <h3 style="margin-bottom: 5px; font-size: 1rem;">일반 자료 관리</h3>
+                    <!-- 관리자 메뉴 선택 (3단 분리 포털) -->
+                    <div class="admin-portal-grid"
+                        style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 40px; margin-top: 20px;">
+                        <div class="admin-portal-card active" onclick="switchAdminTab('general')" id="tab-general"
+                            style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid var(--primary-color); text-align: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
+                            <i class="fas fa-book"
+                                style="font-size: 1.5rem; color: var(--primary-color); margin-bottom: 12px;"></i>
+                            <h3 style="margin-bottom: 5px; font-size: 1rem;">일반 자료 관리</h3>
+                        </div>
+                        <div class="admin-portal-card" onclick="switchAdminTab('bible-study')" id="tab-bible-study"
+                            style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
+                            <i class="fas fa-scroll"
+                                style="font-size: 1.5rem; color: var(--secondary-color); margin-bottom: 12px;"></i>
+                            <h3 style="margin-bottom: 5px; font-size: 1rem;">강해설교 관리</h3>
+                        </div>
+                        <div class="admin-portal-card" onclick="switchAdminTab('booklet')" id="tab-booklet"
+                            style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
+                            <i class="fas fa-bullhorn"
+                                style="font-size: 1.5rem; color: #e67e22; margin-bottom: 12px;"></i>
+                            <h3 style="margin-bottom: 5px; font-size: 1rem;">소책자 관리</h3>
+                        </div>
+
+                        <div class="admin-portal-card" onclick="switchAdminTab('stats')" id="tab-stats"
+                            style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
+                            <i class="fas fa-chart-line"
+                                style="font-size: 1.5rem; color: #9b59b6; margin-bottom: 12px;"></i>
+                            <h3 style="margin-bottom: 5px; font-size: 1rem;">통합 통계</h3>
+                        </div>
+                        <div class="admin-portal-card" onclick="switchAdminTab('order')" id="tab-order"
+                            style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
+                            <i class="fas fa-sort-amount-down-alt"
+                                style="font-size: 1.5rem; color: #1abc9c; margin-bottom: 12px;"></i>
+                            <h3 style="margin-bottom: 5px; font-size: 1rem;">자료 순서 관리</h3>
+                        </div>
                     </div>
-                    <div class="admin-portal-card" onclick="switchAdminTab('bible-study')" id="tab-bible-study"
-                        style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
-                        <i class="fas fa-scroll"
-                            style="font-size: 1.5rem; color: var(--secondary-color); margin-bottom: 12px;"></i>
-                        <h3 style="margin-bottom: 5px; font-size: 1rem;">강해설교 관리</h3>
-                    </div>
-                    <div class="admin-portal-card" onclick="switchAdminTab('booklet')" id="tab-booklet"
-                        style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
-                        <i class="fas fa-bullhorn" style="font-size: 1.5rem; color: #e67e22; margin-bottom: 12px;"></i>
-                        <h3 style="margin-bottom: 5px; font-size: 1rem;">소책자 관리</h3>
-                    </div>
 
-                    <div class="admin-portal-card" onclick="switchAdminTab('stats')" id="tab-stats"
-                        style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
-                        <i class="fas fa-chart-line"
-                            style="font-size: 1.5rem; color: #9b59b6; margin-bottom: 12px;"></i>
-                        <h3 style="margin-bottom: 5px; font-size: 1rem;">통합 통계</h3>
-                    </div>
-                    <div class="admin-portal-card" onclick="switchAdminTab('order')" id="tab-order"
-                        style="background: #fff; padding: 20px 15px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
-                        <i class="fas fa-sort-amount-down-alt"
-                            style="font-size: 1.5rem; color: #1abc9c; margin-bottom: 12px;"></i>
-                        <h3 style="margin-bottom: 5px; font-size: 1rem;">자료 순서 관리</h3>
-                    </div>
-                </div>
-
-                <!-- 1. 일반 자료 섹션 -->
-                <div class="admin-grid admin-tab-content" id="admin-general-section">
-                    <form id="post-upload-form" class="upload-form"
-                        style="background: #fff; border: 1px solid #eee; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-                        <div
-                            style="background: var(--primary-color); color: white; padding: 15px 25px; border-radius: 12px 12px 0 0; margin: -25px -25px 25px -25px; display: flex; align-items: center; gap: 10px; margin-bottom: 25px;">
-                            <i class="fas fa-edit"></i>
-                            <h3 style="margin:0; font-size: 1.1rem; color: white;">일반 자료 관리하기</h3>
-                        </div>
-
-                        <div class="admin-form-tags-grid">
-
-                            <div class="input-group">
-                                <label>주제별 분류</label>
-                                <select id="post-topic">
-                                    <option value="">-- 선택 안함 --</option>
-                                    <!-- Injected via JS -->
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label>저자별 분류</label>
-                                <select id="post-author">
-                                    <option value="">-- 선택 안함 --</option>
-                                    <!-- Injected via JS -->
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label>기타 분류 (최신자료 전용)</label>
-                                <select id="post-other-category">
-                                    <option value="">-- 선택 안함 --</option>
-                                    <option value="기타">기타 자료</option>
-                                    <option value="도서 목록">도서 목록</option>
-                                    <option value="전도 소책자">전도 소책자</option>
-                                    <option value="강해설교">강해설교</option>
-                                    <option value="세미나, 강의">세미나, 강의</option>
-                                    <option value="5분 신학강론">5분 신학강론</option>
-                                </select>
-                            </div>
-                            <div class="input-group" id="post-booklet-topic-group" style="display: none;">
-                                <label>소책자 상세 분류</label>
-                                <select id="post-booklet-topic">
-                                    <option value="">-- 선택 안함 --</option>
-                                    <option value="기독교의 체계">기독교의 체계</option>
-                                    <option value="은혜의 방식">은혜의 방식</option>
-                                    <option value="구원 점검">구원 점검</option>
-                                    <option value="바른복음vs잘못된 복음">바른복음 vs 잘못된 복음</option>
-                                    <option value="영적전쟁">영적전쟁</option>
-                                    <option value="정통vs오류">정통vs오류</option>
-                                    <option value="경건생활">경건생활</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <label>제목</label>
-                            <input type="text" id="post-title" placeholder="자료 제목을 입력하세요" required>
-                        </div>
-
-                        <div class="input-row" style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
-                            <div class="input-group">
-                                <label>시리즈/연재 이름 (폴더명 - 선택사항)</label>
-                                <input type="text" id="post-series" placeholder="예: 요한복음 강해 시리즈, 청교도 역사 강의 등">
-                            </div>
-                            <div class="input-group">
-                                <label>정렬 순서 (숫자)</label>
-                                <input type="number" id="post-order" value="0">
-                            </div>
-                            <div class="input-group">
-                                <label>가격 (도서 목록 전용)</label>
-                                <input type="text" id="post-price" placeholder="예: 18,000원">
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <label>내용 (또는 유튜브 링크)</label>
-                            <textarea id="post-content" rows="6" placeholder="내용을 입력하거나 유튜브 주소를 넣어주세요"></textarea>
-                        </div>
-
-                        <div class="input-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div class="input-group">
-                                <label>도서 표지 이미지 (목록용)</label>
-                                <input type="file" id="post-cover" accept="image/*" style="margin-bottom: 5px;">
-                            </div>
-                            <div class="input-group">
-                                <label>도서 상세/내용 이미지 (본문용)</label>
-                                <input type="file" id="post-file" style="margin-bottom: 5px;">
-                            </div>
-                        </div>
-                        <p style="font-size: 0.8rem; color: #888; margin-bottom: 15px;">* 도서의 경우 '표지'와 '상세 이미지'를 각각 등록할
-                            수 있습니다. (상세 이미지는 PDF도 가능)</p>
-
-                        <div id="upload-progress-container"
-                            style="display: none; width: 100%; margin: 15px 0; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
+                    <!-- 1. 일반 자료 섹션 -->
+                    <div class="admin-grid admin-tab-content" id="admin-general-section">
+                        <form id="post-upload-form" class="upload-form"
+                            style="background: #fff; border: 1px solid #eee; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
                             <div
-                                style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; font-weight: 700;">
-                                <span id="upload-status-text" style="color: var(--secondary-color);">업로드 준비 중...</span>
-                                <span id="upload-perc-text">0%</span>
+                                style="background: var(--primary-color); color: white; padding: 15px 25px; border-radius: 12px 12px 0 0; margin: -25px -25px 25px -25px; display: flex; align-items: center; gap: 10px; margin-bottom: 25px;">
+                                <i class="fas fa-edit"></i>
+                                <h3 style="margin:0; font-size: 1.1rem; color: white;">일반 자료 관리하기</h3>
                             </div>
-                            <div class="progress-bar-bg"
-                                style="width: 100%; height: 10px; background: #eee; border-radius: 5px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
-                                <div id="upload-progress-bar"
-                                    style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--secondary-color), #d4af37); transition: width 0.3s; box-shadow: 0 0 10px rgba(201, 156, 94, 0.5);">
+
+                            <div class="admin-form-tags-grid">
+
+                                <div class="input-group">
+                                    <label>주제별 분류</label>
+                                    <select id="post-topic">
+                                        <option value="">-- 선택 안함 --</option>
+                                        <!-- Injected via JS -->
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>저자별 분류</label>
+                                    <select id="post-author">
+                                        <option value="">-- 선택 안함 --</option>
+                                        <!-- Injected via JS -->
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>기타 분류 (최신자료 전용)</label>
+                                    <select id="post-other-category">
+                                        <option value="">-- 선택 안함 --</option>
+                                        <option value="기타">기타 자료</option>
+                                        <option value="도서 목록">도서 목록</option>
+                                        <option value="전도 소책자">전도 소책자</option>
+                                        <option value="강해설교">강해설교</option>
+                                        <option value="세미나, 강의">세미나, 강의</option>
+                                        <option value="5분 신학강론">5분 신학강론</option>
+                                    </select>
+                                </div>
+                                <div class="input-group" id="post-booklet-topic-group" style="display: none;">
+                                    <label>소책자 상세 분류</label>
+                                    <select id="post-booklet-topic">
+                                        <option value="">-- 선택 안함 --</option>
+                                        <option value="기독교의 체계">기독교의 체계</option>
+                                        <option value="은혜의 방식">은혜의 방식</option>
+                                        <option value="구원 점검">구원 점검</option>
+                                        <option value="바른복음vs잘못된 복음">바른복음 vs 잘못된 복음</option>
+                                        <option value="영적전쟁">영적전쟁</option>
+                                        <option value="정통vs오류">정통vs오류</option>
+                                        <option value="경건생활">경건생활</option>
+                                    </select>
                                 </div>
                             </div>
-                        </div>
 
-                        <button type="submit" class="cta-btn primary"
-                            style="width: 100%; padding: 15px; font-size: 1.1rem;">자료 게시하기</button>
-
-                    </form>
-                </div>
-
-                <!-- 2. 강해설교 시리즈 관리 섹션 -->
-                <div class="admin-tab-content" id="admin-bible-study-section" style="display: none;">
-                    <div
-                        style="background: #fff; padding: 30px; border-radius: 15px; border: 1px solid #eee; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-                        <div
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
-                            <div>
-                                <h3 style="margin:0; color: var(--primary-color);"><i class="fas fa-scroll"></i> 강해설교
-                                    시리즈 관리</h3>
-                                <p style="font-size: 0.9rem; color: #777; margin-top: 5px;">시리즈 폴더를 생성하고 설교 자료를 체계적으로
-                                    관리하세요.</p>
+                            <div class="input-group">
+                                <label>제목</label>
+                                <input type="text" id="post-title" placeholder="자료 제목을 입력하세요" required>
                             </div>
-                            <button class="cta-btn primary" onclick="createNewSeriesPrompt('강해설교')"
-                                style="padding: 12px 25px;">
-                                <i class="fas fa-folder-plus"></i> 새 시리즈(폴더) 만들기
-                            </button>
-                        </div>
 
-                        <div id="admin-series-list-container" class="series-management-grid"
-                            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
-                            <div class="loading-msg">시리즈 목록을 불러오는 중...</div>
-                        </div>
+                            <div class="input-row" style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+                                <div class="input-group">
+                                    <label>시리즈/연재 이름 (폴더명 - 선택사항)</label>
+                                    <input type="text" id="post-series" placeholder="예: 요한복음 강해 시리즈, 청교도 역사 강의 등">
+                                </div>
+                                <div class="input-group">
+                                    <label>정렬 순서 (숫자)</label>
+                                    <input type="number" id="post-order" value="0">
+                                </div>
+                                <div class="input-group">
+                                    <label>가격 (도서 목록 전용)</label>
+                                    <input type="text" id="post-price" placeholder="예: 18,000원">
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label>내용 (또는 유튜브 링크)</label>
+                                <textarea id="post-content" rows="6" placeholder="내용을 입력하거나 유튜브 주소를 넣어주세요"></textarea>
+                            </div>
+
+                            <div class="input-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="input-group">
+                                    <label>도서 표지 이미지 (목록용)</label>
+                                    <input type="file" id="post-cover" accept="image/*" style="margin-bottom: 5px;">
+                                </div>
+                                <div class="input-group">
+                                    <label>도서 상세/내용 이미지 (본문용)</label>
+                                    <input type="file" id="post-file" style="margin-bottom: 5px;">
+                                </div>
+                            </div>
+                            <p style="font-size: 0.8rem; color: #888; margin-bottom: 15px;">* 도서의 경우 '표지'와 '상세 이미지'를 각각
+                                등록할
+                                수 있습니다. (상세 이미지는 PDF도 가능)</p>
+
+                            <div id="upload-progress-container"
+                                style="display: none; width: 100%; margin: 15px 0; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
+                                <div
+                                    style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; font-weight: 700;">
+                                    <span id="upload-status-text" style="color: var(--secondary-color);">업로드 준비
+                                        중...</span>
+                                    <span id="upload-perc-text">0%</span>
+                                </div>
+                                <div class="progress-bar-bg"
+                                    style="width: 100%; height: 10px; background: #eee; border-radius: 5px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
+                                    <div id="upload-progress-bar"
+                                        style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--secondary-color), #d4af37); transition: width 0.3s; box-shadow: 0 0 10px rgba(201, 156, 94, 0.5);">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="cta-btn primary"
+                                style="width: 100%; padding: 15px; font-size: 1.1rem;">자료 게시하기</button>
+
+                        </form>
                     </div>
-                </div>
 
-                <!-- 3. 전도 소책자 관리 섹션 -->
-                <div class="admin-tab-content" id="admin-booklet-section" style="display: none;">
-                    <div
-                        style="background: #fff; padding: 30px; border-radius: 15px; border: 1px solid #eee; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                    <!-- 2. 강해설교 시리즈 관리 섹션 -->
+                    <div class="admin-tab-content" id="admin-bible-study-section" style="display: none;">
                         <div
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                            <h3 style="margin:0; color: #e67e22;"><i class="fas fa-bullhorn"></i> 전도 소책자 PDF 관리</h3>
-                            <button class="cta-btn primary" onclick="openResourceModal('전도 소책자')"
-                                style="background: #e67e22; border-color: #e67e22;">
-                                <i class="fas fa-plus-circle"></i> 소책자 목록 보기/편집
-                            </button>
-                        </div>
-                        <div id="admin-booklet-list-container">
-                            <p style="text-align:center; color:#999; padding: 40px;">소책자 카드를 클릭하여 관리하거나 새 소책자를 추가하세요.
-                            </p>
+                            style="background: #fff; padding: 30px; border-radius: 15px; border: 1px solid #eee; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
+                                <div>
+                                    <h3 style="margin:0; color: var(--primary-color);"><i class="fas fa-scroll"></i>
+                                        강해설교
+                                        시리즈 관리</h3>
+                                    <p style="font-size: 0.9rem; color: #777; margin-top: 5px;">시리즈 폴더를 생성하고 설교 자료를
+                                        체계적으로
+                                        관리하세요.</p>
+                                </div>
+                                <button class="cta-btn primary" onclick="createNewSeriesPrompt('강해설교')"
+                                    style="padding: 12px 25px;">
+                                    <i class="fas fa-folder-plus"></i> 새 시리즈(폴더) 만들기
+                                </button>
+                            </div>
+
+                            <div id="admin-series-list-container" class="series-management-grid"
+                                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                                <div class="loading-msg">시리즈 목록을 불러오는 중...</div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-            </div>
+                    <!-- 3. 전도 소책자 관리 섹션 -->
+                    <div class="admin-tab-content" id="admin-booklet-section" style="display: none;">
+                        <div
+                            style="background: #fff; padding: 30px; border-radius: 15px; border: 1px solid #eee; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                                <h3 style="margin:0; color: #e67e22;"><i class="fas fa-bullhorn"></i> 전도 소책자 PDF 관리</h3>
+                                <button class="cta-btn primary" onclick="openResourceModal('전도 소책자')"
+                                    style="background: #e67e22; border-color: #e67e22;">
+                                    <i class="fas fa-plus-circle"></i> 소책자 목록 보기/편집
+                                </button>
+                            </div>
+                            <div id="admin-booklet-list-container">
+                                <p style="text-align:center; color:#999; padding: 40px;">소책자 카드를 클릭하여 관리하거나 새 소책자를
+                                    추가하세요.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
             </div>
 

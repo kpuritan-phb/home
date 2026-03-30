@@ -1282,16 +1282,17 @@
                             const data = doc.data();
                             const dbTopic = data.topic || data.subBookletTopic || data.series;
                             const dTopic = determineCategory(data.title, data.content);
+                            const finalTopic = dbTopic || dTopic;
 
                             if (category === '청교도 신학') {
                                 if (!posts.some(p => p.id === doc.id)) {
-                                    if (!s || dbTopic === s || dTopic === s) {
+                                    if (!s || finalTopic === s) {
                                         posts.push({ id: doc.id, ...data });
                                     }
                                 }
                             } else if (category === '전도, 선교') {
                                 if (!posts.some(p => p.id === doc.id)) {
-                                    if (dbTopic === '전도, 선교' || dTopic === '전도, 선교') {
+                                    if (finalTopic === '전도, 선교') {
                                         posts.push({ id: doc.id, ...data });
                                     }
                                 }
@@ -1300,9 +1301,13 @@
 
                         if (category === '청교도 신학' && s) {
                             posts = posts.filter(p => {
-                                if (p.tags && (p.tags.includes("전도 소책자") || p.tags.includes("전도 소책자 PDF"))) return true;
                                 const dbTopic = p.topic || p.subBookletTopic || p.series;
-                                return dbTopic === s || determineCategory(p.title, p.content) === s;
+                                const dTopic = determineCategory(p.title, p.content);
+
+                                // Prefer DB topic if available, otherwise fallback to keyword guess
+                                const finalTopic = dbTopic || dTopic;
+
+                                return finalTopic === s;
                             });
                         }
                     }

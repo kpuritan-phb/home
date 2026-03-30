@@ -951,7 +951,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <strong>[${displayTags}]</strong> ${post.title} 
                                 <div style="display:inline-flex; gap:8px; margin-left:10px;">
                                     ${hasFile ? (/(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)
-                            ? `<a href="viewer.html?file=${encodeURIComponent(post.fileUrl)}&title=${encodeURIComponent(post.title)}" target="_blank" style="color:var(--secondary-color);" title="PDF 보기"><i class="fas fa-eye"></i></a>`
+                            ? `<a href="${post.fileUrl}" target="_blank" style="color:var(--secondary-color);" title="PDF 보기"><i class="fas fa-eye"></i></a>`
                             : `<a href="${post.fileUrl}" target="_blank" style="color:var(--secondary-color);" title="첨부파일"><i class="fas fa-file-download"></i></a>`) : ''}
                                     ${hasCover ? `<a href="${post.coverUrl}" target="_blank" style="color:#f39c12;" title="표지이미지"><i class="fas fa-image"></i></a>` : ''}
                                 </div>

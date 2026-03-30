@@ -1280,15 +1280,18 @@
 
                         bookletSnapshot.forEach(doc => {
                             const data = doc.data();
+                            const dbTopic = data.topic || data.subBookletTopic || data.series;
+                            const dTopic = determineCategory(data.title, data.content);
+
                             if (category === '청교도 신학') {
                                 if (!posts.some(p => p.id === doc.id)) {
-                                    if (!s || determineCategory(data.title, data.content) === s) {
+                                    if (!s || dbTopic === s || dTopic === s) {
                                         posts.push({ id: doc.id, ...data });
                                     }
                                 }
                             } else if (category === '전도, 선교') {
                                 if (!posts.some(p => p.id === doc.id)) {
-                                    if (determineCategory(data.title, data.content) === '전도, 선교') {
+                                    if (dbTopic === '전도, 선교' || dTopic === '전도, 선교') {
                                         posts.push({ id: doc.id, ...data });
                                     }
                                 }
@@ -1298,7 +1301,8 @@
                         if (category === '청교도 신학' && s) {
                             posts = posts.filter(p => {
                                 if (p.tags && (p.tags.includes("전도 소책자") || p.tags.includes("전도 소책자 PDF"))) return true;
-                                return p.series === s || determineCategory(p.title, p.content) === s;
+                                const dbTopic = p.topic || p.subBookletTopic || p.series;
+                                return dbTopic === s || determineCategory(p.title, p.content) === s;
                             });
                         }
                     }

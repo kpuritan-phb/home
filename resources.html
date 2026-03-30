@@ -1186,7 +1186,7 @@
                 }
 
                 // --- 2. Hybrid Loading for Puritan Theology or Evangelism/Missions ---
-                if ((category === '청교도 신학' && s) || category === '전도, 선교' || (category === '구속사적 성경주석' && b)) {
+                if (category === '청교도 신학' || category === '전도, 선교' || (category === '구속사적 성경주석' && b)) {
                     if (category === '구속사적 성경주석' && b) {
                         posts = posts.filter(p => p.series === b);
                         if (s) {
@@ -1196,14 +1196,14 @@
                         }
                     } else {
                         const bookletSnapshot = await db.collection("posts")
-                            .where("tags", "array-contains", "전도 소책자")
+                            .where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"])
                             .get();
 
                         bookletSnapshot.forEach(doc => {
                             const data = doc.data();
-                            if (category === '청교도 신학' && s) {
+                            if (category === '청교도 신학') {
                                 if (!posts.some(p => p.id === doc.id)) {
-                                    if (determineCategory(data.title, data.content) === s) {
+                                    if (!s || determineCategory(data.title, data.content) === s) {
                                         posts.push({ id: doc.id, ...data });
                                     }
                                 }
@@ -1218,7 +1218,7 @@
 
                         if (category === '청교도 신학' && s) {
                             posts = posts.filter(p => {
-                                if (p.tags && p.tags.includes("전도 소책자")) return true;
+                                if (p.tags && (p.tags.includes("전도 소책자") || p.tags.includes("전도 소책자 PDF"))) return true;
                                 return p.series === s || determineCategory(p.title, p.content) === s;
                             });
                         }

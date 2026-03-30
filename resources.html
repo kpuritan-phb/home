@@ -960,6 +960,12 @@
         let currentCategory = null; // clicked topic/author name
         window.isAdmin = localStorage.getItem('isAdmin') === 'true';
 
+        // Add hook for main.js deletion/update to refresh this page
+        window.loadAdminPosts = () => {
+            if (currentCategory) loadCategoryItems(currentCategory);
+            else if (typeof loadCategories === 'function') loadCategories();
+        };
+
         const topicKeywords = {
             '신론': ['하나님', '삼위일체', '성경', '계시', '섭리', '창조', '주권', '속성', '영광', '작정', '예정', '섭리의 신비', '성경 연구의 정석', '율법의 변호', '율법의 옹호', '성교촬리', '진리이지', '사도신경', '웨스트민스터 소교리문답'],
             '인간론': ['죄', '타락', '인간', '율법', '심성', '부패', '전적 부패', '양심', '도덕률폐기론', '불편한 거울', '죄: 하나님을 향한 타격'],
@@ -1374,6 +1380,15 @@
                     <div class="resource-card-category">${category}</div>
                     <div class="resource-card-title">${post.title}</div>
                     <div class="resource-card-desc">${displayContent}</div>
+                    ${window.isAdmin ? `
+                    <div class="resource-admin-actions" style="margin-top: 15px; display: flex; gap: 10px; border-top: 1px solid #eee; padding-top: 15px;" onclick="event.stopPropagation()">
+                        <button onclick="window.openEditModal('${post.id}')" class="admin-btn edit" style="background:#f39c12; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; font-size:0.85rem;">
+                            <i class="fas fa-edit"></i> 수정
+                        </button>
+                        <button onclick="window.deletePost('${post.id}')" class="admin-btn delete" style="background:#e74c3c; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; font-size:0.85rem;">
+                            <i class="fas fa-trash"></i> 삭제
+                        </button>
+                    </div>` : ''}
                 </div>
             `;
 

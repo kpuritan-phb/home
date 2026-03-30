@@ -17,6 +17,34 @@ if (localStorage.getItem('isAdmin') === 'true') {
     window.isAdmin = true;
 }
 
+// --- Global Admin Functions (TOP LEVEL to ensure availability for onclick) ---
+window.openEditModal = (id) => {
+    const width = 1000;
+    const height = 900;
+    const left = (window.screen.width - width) / 2;
+    const top = (window.screen.height - height) / 2;
+    window.open(`admin_edit.html?id=${id}`, `EditPost_${id}`, `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`);
+};
+
+window.deletePost = async (id) => {
+    if (!confirm("정말 이 자료를 삭제하시겠습니까?")) return;
+    try {
+        if (!db) {
+            alert("DB 연결이 되지 않았습니다.");
+            return;
+        }
+        await db.collection("posts").doc(id).delete();
+        alert("삭제되었습니다.");
+        // Refresh lists globally
+        if (typeof window.loadAdminPosts === 'function') window.loadAdminPosts();
+        if (typeof window.loadRecentPostsGrid === 'function') window.loadRecentPostsGrid();
+        if (typeof window.init === 'function') window.init(); // For resources.html
+    } catch (error) {
+        console.error("Delete error:", error);
+        alert("삭제 실패: " + error.message);
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- Global Variable Declarations (DOM References) ---
     const resourceModal = document.getElementById('resource-modal');
@@ -997,27 +1025,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    window.openEditModal = (id) => {
-        const width = 1000;
-        const height = 900;
-        const left = (window.screen.width - width) / 2;
-        const top = (window.screen.height - height) / 2;
-        window.open(`admin_edit.html?id=${id}`, `EditPost_${id}`, `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`);
-    };
 
-    window.deletePost = async (id) => {
-        if (!confirm("정말 이 자료를 삭제하시겠습니까?")) return;
-        try {
-            await db.collection("posts").doc(id).delete();
-            alert("삭제되었습니다.");
-            // Refresh lists
-            if (window.loadAdminPosts) window.loadAdminPosts();
-            if (window.loadRecentPostsGrid) window.loadRecentPostsGrid();
-        } catch (error) {
-            console.error("Delete error:", error);
-            alert("삭제 실패: " + error.message);
-        }
-    };
 
     const editForm = document.getElementById('edit-form');
     // [추가] 기타 분류 변경 시 언어 선택창 노출 제어

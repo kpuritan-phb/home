@@ -973,6 +973,7 @@
         };
 
         function determineCategory(title, content) {
+            if (!title) return null; // Defensive check for missing title
             const combined = (title + ' ' + (content || '')).toLowerCase();
             for (const [category, keywords] of Object.entries(topicKeywords)) {
                 if (keywords.some(keyword => combined.includes(keyword.toLowerCase()))) {
@@ -1067,7 +1068,7 @@
                 let title = currentCategory;
                 if (b) title += ` > ${b}`;
                 if (s) title += ` > ${s}`;
-                pageTitle.textContent = title;
+                if (pageTitle) pageTitle.textContent = title;
 
                 // Toggle Theological Tabs
                 const isTheology = currentCategory === '청교도 신학';
@@ -1087,8 +1088,8 @@
                 filterWrapper.style.display = 'flex';
                 theologyTabsWrapper.style.display = 'none';
                 bibleWrapper.style.display = 'none';
-                chapterWrapper.style.display = 'none';
-                pageTitle.textContent = currentType === 'author' ? '저자별 자료' : '주제별 자료';
+                if (chapterWrapper) chapterWrapper.style.display = 'none';
+                if (pageTitle) pageTitle.textContent = currentType === 'author' ? '저자별 자료' : '주제별 자료';
             }
         }
 

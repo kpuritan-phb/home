@@ -735,6 +735,40 @@
                 padding: 15px 18px;
             }
         }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 50px;
+            margin-bottom: 50px;
+            grid-column: 1 / -1;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #333;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .page-btn.active {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        .page-btn:hover:not(.active) {
+            background: #f0f0f0;
+        }
     </style>
 </head>
 
@@ -839,6 +873,7 @@
                     <i class="fas fa-spinner fa-spin"></i> 자료를 불러오는 중...
                 </div>
             </div>
+            <div id="pagination" class="pagination"></div>
         </div>
     </main>
 
@@ -895,9 +930,13 @@
         const filterWrapper = document.getElementById('filter-wrapper');
         const bibleWrapper = document.getElementById('bible-grid-wrapper');
         const chapterWrapper = document.getElementById('chapter-grid-wrapper');
-        const pageTitle = document.getElementById('page-title');
         const theologyTabsWrapper = document.getElementById('theological-tabs');
         const theologyTabBtns = document.querySelectorAll('.theology-tab-btn');
+        const paginationEl = document.getElementById('pagination');
+
+        let allCurrentPosts = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
 
         const BIBLE_BOOKS = [
             { name: "창세기", chapters: 50, test: 'old' }, { name: "출애굽기", chapters: 40, test: 'old' }, { name: "레위기", chapters: 27, test: 'old' }, { name: "민수기", chapters: 36, test: 'old' }, { name: "신명기", chapters: 34, test: 'old' },
@@ -1052,6 +1091,37 @@
             }
         }
 
+        function renderPage(page) {
+            currentPage = page;
+            grid.innerHTML = '';
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageItems = allCurrentPosts.slice(start, end);
+
+            pageItems.forEach(post => renderResourceItem(post));
+            renderPagination();
+
+            // Scroll to top of container
+            const container = document.querySelector('.resources-container');
+            if (container) container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function renderPagination() {
+            if (!paginationEl) return;
+            paginationEl.innerHTML = '';
+
+            const totalPages = Math.ceil(allCurrentPosts.length / itemsPerPage);
+            if (totalPages <= 1) return;
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                btn.innerText = i;
+                btn.onclick = () => renderPage(i);
+                paginationEl.appendChild(btn);
+            }
+        }
+
 
 
         function goBackToCategories() {
@@ -1067,6 +1137,7 @@
 
             loadCategories();
             updateUI();
+            if (paginationEl) paginationEl.innerHTML = '';
         }
 
         function loadCategories() {
@@ -1238,9 +1309,10 @@
 
 
                 // Sort by date (latest first) to match booklets.html behavior
-                posts.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                allCurrentPosts = posts;
+                allCurrentPosts.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
-                posts.forEach(post => renderResourceItem(post));
+                renderPage(1);
 
             } catch (err) {
                 console.error(err);

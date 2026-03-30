@@ -727,7 +727,7 @@
 
                 itemEl.onclick = () => {
                     if (primaryLink && /(?:\.|%2E)pdf($|\?|#)/i.test(primaryLink)) {
-                        window.open(`viewer.html?file=${encodeURIComponent(primaryLink)}&title=${encodeURIComponent(item.title)}`, '_self');
+                        window.open(primaryLink, '_blank');
                     } else if (primaryLink) {
                         window.open(primaryLink, '_self');
                     } else {
@@ -849,7 +849,7 @@
                 // 인터넷 주소 뒷부분이 나오는 것은 감수하고, 별도 페이지 없이 바로 열리도록 원복
                 const fileUrlWithCacheBust = item.fileUrl;
 
-                fileHtml = `<a href="viewer.html?file=${encodeURIComponent(item.fileUrl)}&title=${encodeURIComponent(item.title)}" target="_self" class="book-buy-btn"
+                fileHtml = `<a href="${item.fileUrl}" target="_blank" class="book-buy-btn"
             style="display:inline-block; text-decoration:none; text-align:center; background:#0a7c68; color:white; padding:12px 30px; border-radius:8px; font-weight:700;"
             onclick="if(window.Stats) window.Stats.track('download', { id: '${item.id}', type: 'tract_pdf', title: '${item.title.replace(/'/g, "\\'")}', category: '전도 소책자' })">
             <i class="fas fa-file-pdf"></i>자료 열기</a>`;

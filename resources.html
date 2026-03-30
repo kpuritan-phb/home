@@ -1387,9 +1387,9 @@
                     });
                 }
 
-                // If it's a PDF, open via viewer.html for better mobile experience
+                // If it's a PDF, open directly in a new tab (Reverted to original style as requested)
                 if (primaryLink && /(?:\.|%2E)pdf($|\?|#)/i.test(primaryLink)) {
-                    window.open(`viewer.html?file=${encodeURIComponent(primaryLink)}&title=${encodeURIComponent(post.title)}`, '_self');
+                    window.open(primaryLink, '_blank');
                 } else if (primaryLink) {
                     window.open(primaryLink, '_self');
                 } else {

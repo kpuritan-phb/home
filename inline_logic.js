@@ -40,7 +40,7 @@ window.openResourceModal = (category, series, docId) => {
 
                         if (fileUrl) {
                             if (isPdf) {
-                                linkHtml += `<a href="viewer.html?file=${encodeURIComponent(fileUrl)}&title=${encodeURIComponent(item.title)}" target="_self" class="download-btn"><i class="fas fa-eye"></i> 열기</a>`;
+                                linkHtml += `<a href="${fileUrl}" target="_blank" class="download-btn"><i class="fas fa-eye"></i> 열기</a>`;
                             } else {
                                 linkHtml += `<a href="${fileUrl}" target="_blank" class="download-btn"><i class="fas fa-file-download"></i> 다운로드</a>`;
                             }

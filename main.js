@@ -2124,12 +2124,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const allPosts = [];
             snapshot.forEach(doc => allPosts.push({ id: doc.id, data: doc.data() }));
 
-            // 1. New Arrivals (무조건 최근 12개)
+            // 1. New Arrivals (무조건 최근 12개, 단 요청에 의해 특정 카테고리 제외)
             const newTrack = document.getElementById('carousel-new');
             const latestIds = new Set();
             if (newTrack) {
                 newTrack.innerHTML = '';
-                allPosts.slice(0, 12).forEach(item => {
+
+                // [요청] 구속사적 성경주석, 세미나, 강의 제외
+                const filteredLatest = allPosts.filter(item => {
+                    const tags = item.data.tags || [];
+                    const excluded = ['구속사적 성경주석', '세미나, 강의', '세미나', '강의'];
+                    return !tags.some(tag => excluded.includes(tag));
+                });
+
+                filteredLatest.slice(0, 12).forEach(item => {
                     latestIds.add(item.id);
                     newTrack.appendChild(createCarouselCard(item.data, item.id));
                 });
@@ -2284,9 +2292,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     adminHeader.style.display = 'none';
                 }
             }
-
             snapshot.forEach(doc => {
-                const post = { id: doc.id, ...doc.data() };
+                const data = doc.data();
+                const tags = data.tags || [];
+                const excluded = ['구속사적 성경주석', '세미나, 강의', '세미나', '강의'];
+                if (tags.some(tag => excluded.includes(tag))) {
+                    return;
+                }
+                const post = { id: doc.id, ...data };
                 renderSingleResource(post, resourceListContainer);
             });
 

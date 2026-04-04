@@ -2133,7 +2133,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // [요청] 구속사적 성경주석, 세미나, 강의 제외
                 const filteredLatest = allPosts.filter(item => {
                     const tags = item.data.tags || [];
-                    const excluded = ['구속사적 성경주석', '세미나, 강의', '세미나', '강의'];
+                    const excluded = ['구속사적 성경주석', '세미나, 강의', '세미나', '강의', '5분 신학강론', '오분 신학 강론'];
                     return !tags.some(tag => excluded.includes(tag));
                 });
 
@@ -2295,7 +2295,7 @@ document.addEventListener('DOMContentLoaded', () => {
             snapshot.forEach(doc => {
                 const data = doc.data();
                 const tags = data.tags || [];
-                const excluded = ['구속사적 성경주석', '세미나, 강의', '세미나', '강의'];
+                const excluded = ['구속사적 성경주석', '세미나, 강의', '세미나', '강의', '5분 신학강론', '오분 신학 강론'];
                 if (tags.some(tag => excluded.includes(tag))) {
                     return;
                 }

@@ -617,48 +617,101 @@
                     <div
                         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
                         <div
-                            style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 5px solid #3498db;">
-                            <p style="font-size: 0.8rem; color: #666; margin-bottom: 5px;">총 방문객(세션)</p>
-                            <h2 id="stat-total-visitors" style="margin:0; color: #2c3e50;">0</h2>
+                            style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 5px solid #3498db; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                            <p style="font-size: 0.8rem; color: #666; margin-bottom: 5px; font-weight: 600;">총 방문객(신규
+                                세션)</p>
+                            <h2 id="stat-total-visitors" style="margin:0; color: #2c3e50; font-size: 1.8rem;">0</h2>
                         </div>
                         <div
-                            style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 5px solid #2ecc71;">
-                            <p style="font-size: 0.8rem; color: #666; margin-bottom: 5px;">총 페이지뷰(조회)</p>
-                            <h2 id="stat-total-views" style="margin:0; color: #2c3e50;">0</h2>
+                            style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 5px solid #2ecc71; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                            <p style="font-size: 0.8rem; color: #666; margin-bottom: 5px; font-weight: 600;">총 페이지뷰(조회)
+                            </p>
+                            <h2 id="stat-total-views" style="margin:0; color: #2c3e50; font-size: 1.8rem;">0</h2>
                         </div>
                         <div
-                            style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 5px solid #f1c40f;">
-                            <p style="font-size: 0.8rem; color: #666; margin-bottom: 5px;">총 클릭수</p>
-                            <h2 id="stat-total-clicks" style="margin:0; color: #2c3e50;">0</h2>
+                            style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 5px solid #f1c40f; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                            <p style="font-size: 0.8rem; color: #666; margin-bottom: 5px; font-weight: 600;">총 클릭수</p>
+                            <h2 id="stat-total-clicks" style="margin:0; color: #2c3e50; font-size: 1.8rem;">0</h2>
                         </div>
                         <div
-                            style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 5px solid #e74c3c;">
-                            <p style="font-size: 0.8rem; color: #666; margin-bottom: 5px;">총 다운로드</p>
-                            <h2 id="stat-total-downloads" style="margin:0; color: #2c3e50;">0</h2>
+                            style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 5px solid #e74c3c; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                            <p style="font-size: 0.8rem; color: #666; margin-bottom: 5px; font-weight: 600;">총 다운로드</p>
+                            <h2 id="stat-total-downloads" style="margin:0; color: #2c3e50; font-size: 1.8rem;">0</h2>
                         </div>
                     </div>
 
-                    <!-- Ranking Table -->
-                    <div style="overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-                            <thead>
-                                <tr style="background: #f8f9fa; border-bottom: 2px solid #eee;">
-                                    <th style="padding: 12px; text-align: left; width: 60px;">순위</th>
-                                    <th style="padding: 12px; text-align: left;">콘텐츠 제목</th>
-                                    <th style="padding: 12px; text-align: left; width: 100px;">타입</th>
-                                    <th style="padding: 12px; text-align: center; width: 80px;">조회</th>
-                                    <th style="padding: 12px; text-align: center; width: 80px;">클릭</th>
-                                    <th style="padding: 12px; text-align: center; width: 80px;">다운</th>
-                                    <th style="padding: 12px; text-align: right; width: 120px;">최근 활동</th>
-                                </tr>
-                            </thead>
-                            <tbody id="stats-ranking-body">
-                                <tr>
-                                    <td colspan="7" style="padding: 40px; text-align: center; color: #999;">데이터를
-                                        불러오는 중입니다...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <!-- Charts Section -->
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 30px;">
+                        <div style="background: #fcfcfc; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                            <h4 style="margin-top: 0; margin-bottom: 15px; font-size: 0.9rem; color: #555;"><i
+                                    class="fas fa-chart-line"></i> 시간별 트래픽 추이</h4>
+                            <div style="height: 250px; position: relative;">
+                                <canvas id="traffic-chart"></canvas>
+                            </div>
+                        </div>
+                        <div style="background: #fcfcfc; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                            <h4 style="margin-top: 0; margin-bottom: 15px; font-size: 0.9rem; color: #555;"><i
+                                    class="fas fa-chart-pie"></i> 카테고리별 비중</h4>
+                            <div style="height: 250px; position: relative;">
+                                <canvas id="category-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ranking and Activity Feed -->
+                    <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; margin-bottom: 30px;">
+                        <!-- Ranking Table -->
+                        <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                            <h4 style="margin-top: 0; margin-bottom: 15px; font-size: 0.9rem; color: #555;"><i
+                                    class="fas fa-trophy"></i> 콘텐츠 랭킹 Top 20</h4>
+                            <div style="overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                                    <thead>
+                                        <tr style="text-align: left; border-bottom: 2px solid #eee;">
+                                            <th style="padding: 8px;">제목</th>
+                                            <th style="padding: 8px; text-align: center;">조회</th>
+                                            <th style="padding: 8px; text-align: center;">클릭</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="stats-ranking-body">
+                                        <tr>
+                                            <td colspan="3" style="padding: 20px; text-align: center; color: #999;">분석
+                                                중...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Real-time Activity Feed -->
+                        <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                            <h4 style="margin-top: 0; margin-bottom: 15px; font-size: 0.9rem; color: #555;"><i
+                                    class="fas fa-bolt"></i> 실시간 활동 피드</h4>
+                            <div id="activity-feed" style="max-height: 400px; overflow-y: auto; font-size: 0.8rem;">
+                                <div style="padding: 10px; color: #999; text-align: center;">기다리는 중...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Device & Referrer Row -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div style="background: #fcfcfc; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                            <h4 style="margin-top: 0; margin-bottom: 15px; font-size: 0.9rem; color: #555;"><i
+                                    class="fas fa-laptop-code"></i> 브라우저 및 유입 경로</h4>
+                            <div id="stats-referrers" style="font-size: 0.85rem; color: #666;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span>Loading...</span></div>
+                            </div>
+                        </div>
+                        <div style="background: #fcfcfc; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                            <h4 style="margin-top: 0; margin-bottom: 15px; font-size: 0.9rem; color: #555;"><i
+                                    class="fas fa-info-circle"></i> 통계 안내</h4>
+                            <p style="font-size: 0.8rem; color: #888; line-height: 1.6;">
+                                * 모든 통계는 30분 단위 세션을 기준으로 집계됩니다.<br>
+                                * 동일 사용자의 반복 클릭(새로고침 등)은 필터링되어 정확도를 높였습니다.<br>
+                                * 트래픽 추이는 최근 7일간의 데이터를 시각화하여 보여줍니다 (7일/30일 모드 시).
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1148,6 +1201,7 @@
             }
         }, 500);
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="bgm.js?v=1"></script>
     <script src="stats.js?v=1"></script>
     <script src="admin-stats.js?v=1"></script>

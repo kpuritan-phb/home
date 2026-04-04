@@ -1413,10 +1413,37 @@ footer {
 
 /* Admin Dashboard Styles */
 #admin-dashboard {
-    background: var(--white);
-    padding: 6rem 2rem;
+    background: #f4f7f6;
+    padding: 6rem 1rem;
     border-top: 1px solid #eee;
 }
+
+#activity-feed::-webkit-scrollbar {
+    width: 6px;
+}
+
+#activity-feed::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 10px;
+}
+
+#activity-feed::-webkit-scrollbar-track {
+    background: #f9f9f9;
+}
+
+.stats-period-filter button {
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.stats-period-filter button:hover {
+    background: #e2e8f0 !important;
+}
+
+#stats-ranking-body tr:hover {
+    background-color: #f8fafc;
+}
+
 
 .admin-container {
     max-width: 1200px;

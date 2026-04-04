@@ -45,7 +45,7 @@ const AdminStats = (() => {
         const viewData = [];
 
         const summaryCol = db.collection("analytics_summary");
-        let query = summaryCol.orderBy("date", "asc");
+        let query = summaryCol;
 
         if (period !== 'all') {
             const days = period === 'today' ? 0 : (period === '7d' ? 7 : 30);
@@ -56,13 +56,18 @@ const AdminStats = (() => {
             } else {
                 targetDate.setDate(targetDate.getDate() - days);
                 const dateStr = targetDate.toISOString().split('T')[0];
-                query = summaryCol.where("date", ">=", dateStr).orderBy("date", "asc");
+                query = summaryCol.where("date", ">=", dateStr);
             }
         }
 
         const snapshot = await query.get();
-        snapshot.forEach(doc => {
-            const data = doc.data();
+        const docs = [];
+        snapshot.forEach(doc => docs.push(doc.data()));
+
+        // 데이터 정렬 (Firestore 인덱스 오류 방지를 위해 메모리에서 정렬)
+        docs.sort((a, b) => a.date.localeCompare(b.date));
+
+        docs.forEach(data => {
             totalVisitors += data.total_visitors || 0;
             totalViews += data.total_views || 0;
             totalClicks += data.total_clicks || 0;
@@ -114,12 +119,16 @@ const AdminStats = (() => {
 
             const snapshot = await db.collection("analytics_events")
                 .where("timestamp", ">=", start)
-                .orderBy("timestamp", "desc")
-                .limit(500) // 비용 방지
+                .limit(500)
                 .get();
 
-            snapshot.forEach((doc, idx) => {
-                const ev = doc.data();
+            const evDocs = [];
+            snapshot.forEach(doc => evDocs.push(doc.data()));
+
+            // 시간순 정렬 (최신순)
+            evDocs.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+
+            evDocs.forEach((ev, idx) => {
                 if (idx < 20) recentEvents.push(ev);
 
                 const cid = ev.content_id;
@@ -209,6 +218,7 @@ const AdminStats = (() => {
     }
 
     function renderTrafficChart(labels, visitors, views) {
+        if (typeof Chart === 'undefined') return;
         const canvas = document.getElementById('traffic-chart');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
@@ -250,6 +260,7 @@ const AdminStats = (() => {
     }
 
     function renderCategoryChart(labels, data) {
+        if (typeof Chart === 'undefined') return;
         const canvas = document.getElementById('category-chart');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');

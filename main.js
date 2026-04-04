@@ -776,7 +776,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let tags = [topic, author, other].filter(t => t !== "");
 
             // --- [추가] 주제별 자동 태깅 및 시리즈 매칭 ---
-            const puritanTopics = ["신론", "인간론", "기독론", "구원론(성령론)", "그리스도인의 생활론", "교회론", "종말론", "역사 신학"];
+            const puritanTopics = ["신론", "인간론", "기독론", "구원론(성령론)", "그리스도인의 생활론", "교회론", "영적전쟁", "종말론", "역사 신학"];
             let finalSeries = document.getElementById('post-series').value.trim() || '';
 
             if (puritanTopics.includes(topic)) {

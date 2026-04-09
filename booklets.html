@@ -453,11 +453,12 @@
                     <button class="sub-tab-btn" data-topic="기독론" onclick="switchTopic('기독론')">3. 기독론</button>
                     <button class="sub-tab-btn" data-topic="구원론(성령론)" onclick="switchTopic('구원론(성령론)')">4.
                         구원론(성령론)</button>
-                    <button class="sub-tab-btn" data-topic="그리스도인의 생활론" onclick="switchTopic('그리스도인의 생활론')">5. 그리스도인의
+                    <button class="sub-tab-btn" data-topic="율법과 복음" onclick="switchTopic('율법과 복음')">5. 율법과 복음</button>
+                    <button class="sub-tab-btn" data-topic="그리스도인의 생활론" onclick="switchTopic('그리스도인의 생활론')">6. 그리스도인의
                         생활론</button>
-                    <button class="sub-tab-btn" data-topic="교회론" onclick="switchTopic('교회론')">6. 교회론</button>
-                    <button class="sub-tab-btn" data-topic="영적전쟁" onclick="switchTopic('영적전쟁')">7. 영적전쟁</button>
-                    <button class="sub-tab-btn" data-topic="종말론" onclick="switchTopic('종말론')">8. 종말론</button>
+                    <button class="sub-tab-btn" data-topic="교회론" onclick="switchTopic('교회론')">7. 교회론</button>
+                    <button class="sub-tab-btn" data-topic="영적전쟁" onclick="switchTopic('영적전쟁')">8. 영적전쟁</button>
+                    <button class="sub-tab-btn" data-topic="종말론" onclick="switchTopic('종말론')">9. 종말론</button>
                 </div>
             </div>
             <div id="foreign-sub-tabs" class="sub-tabs-wrapper">
@@ -536,10 +537,11 @@
         // 주제별 키워드 매핑 (제목/내용에 포함된 단어를 기준으로 자동 분류)
         const topicKeywords = {
             '신론': ['하나님', '삼위일체', '성경', '계시', '섭리', '창조', '주권', '속성', '영광', '작정', '예정'],
-            '인간론': ['죄', '타락', '인간', '율법', '심성', '부패', '전적 부패', '양심'],
+            '인간론': ['죄', '타락', '인간', '심성', '부패', '전적 부패', '양심'],
             '기독론': ['그리스도', '예수', '성육신', '속죄', '십자가', '중보자', '부활', '직무', '비하', '승귀'],
             '구원론(성령론)': ['구원', '성령', '중생', '회심', '믿음', '칭의', '성화', '거듭남', '은혜', '자유의지', '회개', '부르심', '양자', '견인', '확신', '점검', '유사 그리스도인', '위선'],
-            '그리스도인의 생활론': ['기도', '묵상', '생활', '경건', '고난', '가정', '결혼', '자녀', '양육', '순종', '영적전쟁', '시험', '유혹', '마귀', '사탄', '전투', '계략', '상한 갈대', '심령이 가난한', '유익', '세속적 마음', '위로와 회복'],
+            '율법과 복음': ['율법', '복음', '도덕률', '도덕률폐기론', '율법의 변호', '율법의 옹호'],
+            '그리스도인의 생활론': ['기도', '묵상', '생활', '경건', '고난', '가정', '결혼', '자녀', '양육', '순종', '상한 갈대', '심령이 가난한', '유익', '세속적 마음', '위로와 회복'],
             '교회론': ['교회', '회원', '예배', '성례', '세례', '성찬', '권징', '직분', '목사', '장로', '집사', '장로교', '공의회'],
             '영적전쟁': ['영적전쟁', '시험', '유혹', '마귀', '사탄', '전투', '계략', '거룩한 전쟁', '영적 전장'],
             '종말론': ['심판', '재림', '종말', '부활', '마지막', '천국', '지옥', '사후', '영생']

@@ -776,7 +776,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let tags = [topic, author, other].filter(t => t !== "");
 
             // --- [추가] 주제별 자동 태깅 및 시리즈 매칭 ---
-            const puritanTopics = ["신론", "인간론", "기독론", "구원론(성령론)", "그리스도인의 생활론", "교회론", "영적전쟁", "종말론", "역사 신학"];
+            const puritanTopics = ["신론", "인간론", "기독론", "구원론(성령론)", "율법과 복음", "그리스도인의 생활론", "교회론", "영적전쟁", "종말론", "역사 신학"];
             let finalSeries = document.getElementById('post-series').value.trim() || '';
 
             if (puritanTopics.includes(topic)) {
@@ -1271,6 +1271,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         window.open(url.href, '_blank', 'width=1000,height=800');
                     };
+
+                    // [Add] Category Migration Button
+                    const migrateBtn = document.createElement('button');
+                    migrateBtn.className = 'admin-action-btn';
+                    migrateBtn.style.marginLeft = '10px';
+                    migrateBtn.style.background = '#e67e22';
+                    migrateBtn.textContent = '율법 카테고리 이동';
+                    migrateBtn.onclick = async () => {
+                        if (typeof migrateLawCategory === 'function') {
+                            await migrateLawCategory();
+                        } else {
+                            alert('마이그레이션 함수를 찾을 수 없습니다.');
+                        }
+                    };
+                    toggleBtn.parentNode.insertBefore(migrateBtn, toggleBtn.nextSibling);
                 }
 
                 // "이 폴더에 새 자료 추가" 텍스트 클릭 시에도 새 창 열기

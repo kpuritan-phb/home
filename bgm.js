@@ -102,12 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const style = document.createElement('style');
     style.textContent = `
         .bgm-player.playing .music-icon {
-            animation: rotate 3s linear infinite;
-            color: var(--secondary-color, #c99c5e);
-        }
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            color: #1a2a44;
         }
     `;
     document.head.appendChild(style);

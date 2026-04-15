@@ -834,19 +834,19 @@
     <!-- Login Modal -->
     <div id="login-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" id="login-close-btn">&times;</span>
+            <span class="close-btn" onclick="document.getElementById('login-modal').classList.remove('show')">&times;</span>
             <h2>관리자 로그인</h2>
             <p>연구소 운영을 위한 관리자 계정으로 로그인해주세요.</p>
             <form id="login-form">
-                <div class="input-group">
-                    <label for="admin-id">아이디</label>
-                    <input type="text" id="admin-id" placeholder="ID" required>
+                <div class="input-group" style="margin-bottom: 1.5rem;">
+                    <label for="admin-id" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">아이디</label>
+                    <input type="text" id="admin-id" placeholder="ID" required style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px;">
                 </div>
-                <div class="input-group">
-                    <label for="admin-pw">비밀번호</label>
-                    <input type="password" id="admin-pw" placeholder="Password" required>
+                <div class="input-group" style="margin-bottom: 2rem;">
+                    <label for="admin-pw" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">비밀번호</label>
+                    <input type="password" id="admin-pw" placeholder="Password" required style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px;">
                 </div>
-                <button type="submit" class="login-submit">로그인</button>
+                <button type="submit" class="cta-btn primary" style="width: 100%; padding: 1rem; border: none; border-radius: 4px; background: var(--primary-color); color: white; cursor: pointer; font-weight: 700;">로그인</button>
             </form>
         </div>
     </div>
@@ -1136,11 +1136,6 @@
         <div id="yt-player-container" style="display: none;"></div>
     </div>
 
-    <div id="admin-access-btn" class="login-trigger"
-        style="position: fixed !important; bottom: 2rem !important; right: 2rem !important; z-index: 99999 !important; pointer-events: auto !important; cursor: pointer !important; display: flex !important;">
-        <i class="fas fa-user-lock"></i> <span>관리자</span>
-    </div>
-
     <!-- Drag and Drop Library -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
@@ -1177,11 +1172,9 @@
                 window.storage = firebase.storage();
                 window.auth = firebase.auth();
                 console.log("✅ Firebase (HTML) 연결 성공! Auth 추가됨");
-                // alert("DEBUG: 1. Firebase (HTML) 연결 성공!"); 
             }
         } catch (e) {
             console.error("❌ Firebase 초기화 실패:", e);
-            // alert("DEBUG: Firebase 초기화 실패: " + e.message);
             window.useMock = true;
         }
 
@@ -1198,7 +1191,6 @@
         // --- Core Logic handled by main.js ---
         console.log("Waiting for main.js to handle application logic...");
 
-        // Auto-run if DB connected
         // Auto-run regardless of DB status (for Mock fallback)
         setTimeout(() => {
             if (typeof window.loadMainCarousels === 'function') {
@@ -1214,7 +1206,6 @@
     <script src="main.js?v=reorder_v3_restore"></script>
     <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">
         <i class="fas fa-envelope"></i>
-        <span>문의하기</span>
     </a>
 </body>
 

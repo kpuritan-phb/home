@@ -231,7 +231,31 @@
     <footer class="menu-footer">
         <span class="footer-logo">KPI</span>
         <div class="footer-copy">&copy; 2026 Korea Puritan Institute.</div>
+        <div style="margin-top: 15px;">
+            <a href="javascript:void(0)" onclick="document.getElementById('login-modal').classList.add('show')"
+                style="color: rgba(10, 124, 104, 0.6); text-decoration: none; font-size: 0.8rem;">관리자 로그인</a>
+        </div>
     </footer>
+    
+    <!-- Login Modal for mobile -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content" style="background: white; color: #333; padding: 2.5rem; border-radius: 12px; max-width: 400px; width: 90%; margin: auto; position: relative; top: 50%; transform: translateY(-50%); box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+            <span class="close-btn" onclick="document.getElementById('login-modal').classList.remove('show')" style="position: absolute; right: 1.5rem; top: 1rem; font-size: 2rem; color: #999; cursor: pointer;">&times;</span>
+            <h2 style="color: #2a2d32; margin-bottom: 0.5rem; text-align: center; font-family: 'Montserrat', sans-serif; font-weight: 900;">ADMIN LOGIN</h2>
+            <p style="color: #666; text-align: center; margin-bottom: 2rem; font-size: 0.9rem;">연구소 운영을 위한 계정으로 로그인해주세요.</p>
+            <form id="login-form">
+                <div class="input-group" style="margin-bottom: 1.5rem;">
+                    <label for="admin-id" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">아이디</label>
+                    <input type="text" id="admin-id" placeholder="ID" required style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9;">
+                </div>
+                <div class="input-group" style="margin-bottom: 2rem;">
+                    <label for="admin-pw" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">비밀번호</label>
+                    <input type="password" id="admin-pw" placeholder="Password" required style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9;">
+                </div>
+                <button type="submit" style="width: 100%; padding: 1rem; border: none; border-radius: 4px; background: #2a2d32; color: white; cursor: pointer; font-weight: 700; font-size: 1rem;">로그인</button>
+            </form>
+        </div>
+    </div>
     <!-- Music Player Container -->
     <div class="bgm-player" id="bgm-player"
         style="position: fixed; bottom: 2rem; left: 2rem; z-index: 1500; pointer-events: none;">

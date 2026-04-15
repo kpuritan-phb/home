@@ -555,7 +555,11 @@ nav ul li:hover a i {
     font-size: 0.9rem;
 }
 
-/* Floating Inquiry Button (Premium Weone Style) */
+.login-trigger {
+    display: none !important;
+}
+
+/* Floating Inquiry Button (Icon only) */
 .floating-inquiry-btn {
     position: fixed;
     bottom: 2rem;
@@ -564,28 +568,30 @@ nav ul li:hover a i {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
     background-color: var(--secondary-color);
     color: white;
-    padding: 0.8rem 1.8rem;
-    border-radius: 50px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
     text-decoration: none;
-    font-weight: 700;
-    font-size: 0.95rem;
-    box-shadow: 0 10px 30px rgba(10, 124, 104, 0.3);
+    box-shadow: 0 10px 30px rgba(10, 124, 104, 0.4);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border: none;
     cursor: pointer;
 }
 
 .floating-inquiry-btn i {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
+}
+
+.floating-inquiry-btn span {
+    display: none;
 }
 
 .floating-inquiry-btn:hover {
-    transform: translateY(-8px) scale(1.05);
+    transform: translateY(-8px) scale(1.1);
     background-color: #0d8a74;
-    box-shadow: 0 15px 40px rgba(10, 124, 104, 0.4);
+    box-shadow: 0 15px 40px rgba(10, 124, 104, 0.5);
     color: white;
 }
 

@@ -259,6 +259,14 @@
             style="color: #666; text-decoration: none;">관리자 로그인</a>
     </p>
 </footer>
+    <div class="bgm-player" id="bgm-player"
+        style="position: fixed; bottom: 2rem; left: 2rem; z-index: 1500; pointer-events: none;">
+        <button id="bgm-toggle-btn" class="bgm-control" onclick="if(window.toggleBGM) window.toggleBGM(event)"
+            style="pointer-events: auto;">
+            <span class="music-icon"><i class="fas fa-music"></i></span>
+        </button>
+        <div id="yt-player-container" style="display: none;"></div>
+    </div>
 <script src="bgm.js"></script>
 <script src="stats.js"></script>
 <script src="main.js"></script>

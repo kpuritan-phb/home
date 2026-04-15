@@ -1647,37 +1647,43 @@ footer {
 }
 
 .bgm-control {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(201, 156, 94, 0.4);
-    padding: 12px 24px;
-    border-radius: 50px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     color: #1a2a44;
+    padding: 0;
 }
 
 .bgm-control:hover {
     background: #ffffff;
-    transform: translateY(-5px);
+    transform: translateY(-5px) scale(1.1);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
 .music-icon {
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
     background: #c99c5e;
     color: #fff;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 1.1rem;
     transition: all 0.3s ease;
+}
+
+.music-text {
+    display: none !important;
 }
 
 .music-text {

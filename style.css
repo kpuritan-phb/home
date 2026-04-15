@@ -504,7 +504,7 @@ nav ul li:hover a i {
 .login-trigger {
     /* Layout & Position */
     position: fixed !important;
-    bottom: 2rem !important;
+    bottom: 6.5rem !important;
     right: 2rem !important;
     z-index: 2147483647 !important;
     /* Max signed 32-bit integer */
@@ -553,6 +553,58 @@ nav ul li:hover a i {
 
 .login-trigger i {
     font-size: 0.9rem;
+}
+
+/* Floating Inquiry Button (Premium Weone Style) */
+.floating-inquiry-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 2500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 0.8rem 1.8rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 10px 30px rgba(10, 124, 104, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: none;
+    cursor: pointer;
+}
+
+.floating-inquiry-btn i {
+    font-size: 1.2rem;
+}
+
+.floating-inquiry-btn:hover {
+    transform: translateY(-8px) scale(1.05);
+    background-color: #0d8a74;
+    box-shadow: 0 15px 40px rgba(10, 124, 104, 0.4);
+    color: white;
+}
+
+.floating-inquiry-btn:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 1024px) {
+    .floating-inquiry-btn {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        padding: 0.7rem 1.4rem;
+        font-size: 0.85rem;
+    }
+    
+    .login-trigger {
+        bottom: 5.5rem !important;
+        right: 1.5rem !important;
+    }
 }
 
 

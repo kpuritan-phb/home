@@ -319,6 +319,17 @@
                     return timeB - timeA;
                 });
 
+                // [요청] 특정 게시물 고정 (2주간: ~2026-05-05)
+                const PINNED_TITLE = "히브리서의 경고와 심판: 영적 몰락의 해부학";
+                const PINNED_UNTIL = new Date('2026-05-05');
+                if (new Date() < PINNED_UNTIL) {
+                    const idx = books.findIndex(p => p.title && p.title.includes(PINNED_TITLE)); // Book titles often have authors like "Author: Title"
+                    if (idx > -1) {
+                        const [pinned] = books.splice(idx, 1);
+                        books.unshift(pinned);
+                    }
+                }
+
                 booksGrid.innerHTML = '';
                 books.forEach(book => {
                     renderBookCard(book);

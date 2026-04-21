@@ -2175,10 +2175,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // [요청] "영적 표류를 멈출 한국교회갱신의 청사진"을 "도르트 신조" 자료 바로 앞(8번째 정도)으로 이동
                 const BLUEPRINT_TITLE = "영적 표류를 멈출 한국교회갱신의 청사진";
-                const bIdx = filteredLatest.findIndex(item => item.data.title === BLUEPRINT_TITLE);
+                const bIdx = filteredLatest.findIndex(item => item.data.title.trim() === BLUEPRINT_TITLE);
                 if (bIdx > -1) {
                     const [bItem] = filteredLatest.splice(bIdx, 1);
-                    const dIdx = filteredLatest.findIndex(item => item.data.title.includes("도르트 신조"));
+                    const dIdx = filteredLatest.findIndex(item => /도르트\s*신조/.test(item.data.title));
                     if (dIdx > -1) {
                         filteredLatest.splice(dIdx, 0, bItem);
                     } else {
@@ -2378,10 +2378,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // [요청] "영적 표류를 멈출 한국교회갱신의 청사진"을 "도르트 신조" 자료 바로 앞으로 이동
-            const bIdxModal = modalPosts.findIndex(p => p.title === "영적 표류를 멈출 한국교회갱신의 청사진");
+            const bIdxModal = modalPosts.findIndex(p => p.title.trim() === "영적 표류를 멈출 한국교회갱신의 청사진");
             if (bIdxModal > -1) {
                 const [bItem] = modalPosts.splice(bIdxModal, 1);
-                const dIdxModal = modalPosts.findIndex(p => p.title.includes("도르트 신조"));
+                const dIdxModal = modalPosts.findIndex(p => /도르트\s*신조/.test(p.title));
                 if (dIdxModal > -1) {
                     modalPosts.splice(dIdxModal, 0, bItem);
                 } else {

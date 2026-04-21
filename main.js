@@ -883,7 +883,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     title,
                     series,
                     order,
-                    recent_order: 0,
+                    recent_order: 999999,
                     price,
                     content,
                     subBookletTopic: (other === "전도 소책자") ? subBookletTopic : null,
@@ -2152,7 +2152,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     return !tags.some(tag => excluded.includes(tag));
                 });
 
-                // [요청] 특정 게시물 고정 (2주간: ~2026-05-05)
+                // [수정] 순서변경(recent_order) 반영
+                filteredLatest.sort((a, b) => {
+                    const orderA = a.data.recent_order ?? 999999;
+                    const orderB = b.data.recent_order ?? 999999;
+                    if (orderA !== orderB) return orderA - orderB;
+                    const dateA = a.data.createdAt ? (a.data.createdAt.toMillis ? a.data.createdAt.toMillis() : 0) : 0;
+                    const dateB = b.data.createdAt ? (b.data.createdAt.toMillis ? b.data.createdAt.toMillis() : 0) : 0;
+                    return dateB - dateA;
+                });
+
+                // [요청] 특정 게시물 고정 (2주간: ~2026-05-05) - 정렬 후에 실행하여 무조건 최상단 유지
                 const PINNED_TITLE = "히브리서의 경고와 심판: 영적 몰락의 해부학";
                 const PINNED_UNTIL = new Date('2026-05-05');
                 if (new Date() < PINNED_UNTIL) {
@@ -2160,6 +2170,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (idx > -1) {
                         const [pinned] = filteredLatest.splice(idx, 1);
                         filteredLatest.unshift(pinned);
+                    }
+                }
+
+                // [요청] "영적 표류를 멈출 한국교회갱신의 청사진"을 "도르트 신조" 자료 바로 앞(8번째 정도)으로 이동
+                const BLUEPRINT_TITLE = "영적 표류를 멈출 한국교회갱신의 청사진";
+                const bIdx = filteredLatest.findIndex(item => item.data.title === BLUEPRINT_TITLE);
+                if (bIdx > -1) {
+                    const [bItem] = filteredLatest.splice(bIdx, 1);
+                    const dIdx = filteredLatest.findIndex(item => item.data.title.includes("도르트 신조"));
+                    if (dIdx > -1) {
+                        filteredLatest.splice(dIdx, 0, bItem);
+                    } else {
+                        // 도르트 신조가 없으면 2번째(index 1)에 배치하여 맨 앞(0) 피함
+                        filteredLatest.splice(1, 0, bItem);
                     }
                 }
 
@@ -2296,8 +2320,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const snapshot = await db.collection("posts")
-                .orderBy("createdAt", "desc")
-                .limit(200)
+                .limit(400)
                 .get();
 
             if (snapshot.empty) {
@@ -2305,7 +2328,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            const allPosts = [];
+            snapshot.forEach(doc => allPosts.push({ id: doc.id, ...doc.data() }));
+
+            // [수정] 순서변경(recent_order) 반영
+            allPosts.sort((a, b) => {
+                const orderA = a.recent_order ?? 999999;
+                const orderB = b.recent_order ?? 999999;
+                if (orderA !== orderB) return orderA - orderB;
+                const dateA = a.createdAt ? (a.createdAt.toMillis ? a.createdAt.toMillis() : 0) : 0;
+                const dateB = b.createdAt ? (b.createdAt.toMillis ? b.createdAt.toMillis() : 0) : 0;
+                return dateB - dateA;
+            });
+
             resourceListContainer.innerHTML = '';
+            // (allPosts를 직접 렌더링하지 않고 필터링된 modalPosts를 사용합니다.)
 
             // 전체보기 모달에서도 관리자 기능을 위해 UI 설정 로직 추가
             const adminHeader = document.getElementById('resource-modal-admin-header');
@@ -2337,6 +2374,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (idx > -1) {
                     const [pinned] = modalPosts.splice(idx, 1);
                     modalPosts.unshift(pinned);
+                }
+            }
+
+            // [요청] "영적 표류를 멈출 한국교회갱신의 청사진"을 "도르트 신조" 자료 바로 앞으로 이동
+            const bIdxModal = modalPosts.findIndex(p => p.title === "영적 표류를 멈출 한국교회갱신의 청사진");
+            if (bIdxModal > -1) {
+                const [bItem] = modalPosts.splice(bIdxModal, 1);
+                const dIdxModal = modalPosts.findIndex(p => p.title.includes("도르트 신조"));
+                if (dIdxModal > -1) {
+                    modalPosts.splice(dIdxModal, 0, bItem);
+                } else {
+                    modalPosts.splice(1, 0, bItem);
                 }
             }
 

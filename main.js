@@ -2182,8 +2182,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (dIdx > -1) {
                         filteredLatest.splice(dIdx, 0, bItem);
                     } else {
-                        // 도르트 신조가 없으면 2번째(index 1)에 배치하여 맨 앞(0) 피함
-                        filteredLatest.splice(1, 0, bItem);
+                        // 도르트 신조가 캐러셀(12개) 내에 없으면, 가장 뒤로 보내서 '맨 앞'을 피하고 도르트 신조와 가까워지게 함
+                        filteredLatest.push(bItem);
                     }
                 }
 

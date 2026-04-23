@@ -478,12 +478,15 @@
                         <span style="font-size: 0.9rem; font-weight: 500; color: #888; margin-left: 0.5rem;">(배송비 별도)</span>
                     </div>
                     ${contentText.trim() ? `<div class="book-detail-description">${contentText.replace(/(https?:\/\/[^\s]+)/g, '').trim()}</div>` : ''}
-                    <div class="book-detail-actions">
-                        <button onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${book.id}', type: 'book_purchase_intent', title: '${title.replace(/'/g, "\\'")}' }); requestPay('${title}', '${priceStr}')" class="book-buy-btn" style="padding: 1.2rem 3rem; font-size: 1.1rem; border:none; cursor:pointer;">
-                            바로 구매하기
+                    <div class="book-detail-actions" style="display: flex; flex-direction: column; gap: 10px;">
+                        <button onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${book.id}', type: 'book_purchase_intent', title: '${title.replace(/'/g, "\\'")}' }); requestPay('${title}', '${priceStr}')" class="book-buy-btn" style="padding: 1rem 2rem; font-size: 1.1rem; border:none; cursor:pointer; width: 100%;">
+                            일반 결제 (카드/계좌이체)
                         </button>
-                        <a href="mailto:kpuritan.phb@gmail.com?subject=구매 문의: ${title}" class="book-buy-btn" style="padding: 1.2rem 3rem; font-size: 1.1rem; background: transparent; border: 1px solid var(--secondary-color); color: var(--secondary-color);">
-                            메일 문의
+                        <button onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${book.id}', type: 'naverpay_click', title: '${title.replace(/'/g, "\\'")}' }); requestPay('${title}', '${priceStr}', 'naverpay')" class="book-buy-btn" style="padding: 1rem 2rem; font-size: 1.1rem; border:none; cursor:pointer; width: 100%; background: #22cc00; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <img src="https://clova-phinf.pstatic.net/MjAxODAzMjlfMTY1/MDAxNTIyMjg3Njk0NzY0.9S9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z.PNG/naverpay_logo.png" style="height: 20px; filter: brightness(0) invert(1);"> 네이버페이 구매
+                        </button>
+                        <a href="mailto:kpuritan.phb@gmail.com?subject=구매 문의: ${title}" class="book-buy-btn" style="padding: 1rem 2rem; font-size: 1.1rem; background: transparent; border: 1px solid var(--secondary-color); color: var(--secondary-color); text-align: center; text-decoration: none;">
+                            대량 구매 및 메일 문의
                         </a>
                     </div>
                 </div>
@@ -505,41 +508,7 @@
             }
         }
 
-        function requestPay(title, priceStr) {
-            if (!window.IMP) return alert("결제 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
-
-            const IMP = window.IMP;
-            // 가맹점 식별코드 (사용자님 실제 코드로 업데이트 완료)
-            IMP.init("imp67545025");
-
-            // 숫자만 추출
-            const amount = parseInt(priceStr.replace(/[^0-9]/g, '')) || 0;
-            if (amount <= 0) {
-                alert("가격을 확인할 수 없어 구매 문의로 연결됩니다.");
-                window.location.href = `mailto:kpuritan.phb@gmail.com?subject=구매 문의: ${title}`;
-                return;
-            }
-
-            if (!confirm(`'${title}'을(를) ${amount.toLocaleString()}원에 구매하시겠습니까?`)) return;
-
-            IMP.request_pay({
-                pg: "html5_inicis", // PG사 설정 (기본 KG이니시스)
-                pay_method: "card",
-                merchant_uid: `mid_${new Date().getTime()}`,
-                name: title,
-                amount: amount,
-                buyer_email: "",
-                buyer_name: "구매자",
-                buyer_tel: "010-0000-0000",
-            }, function (rsp) {
-                if (rsp.success) {
-                    alert('결제가 완료되었습니다! 배송지 확인을 위해 곧 연락드리겠습니다.');
-                    // 여기서 결제 성공 정보를 DB에 저장할 수도 있습니다.
-                } else {
-                    alert('결제에 실패하였습니다. 사유: ' + rsp.error_msg);
-                }
-            });
-        }
+        // requestPay is now globally handled by main.js
 
         function renderMockBooks() {
             booksGrid.innerHTML = '';

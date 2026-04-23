@@ -1805,10 +1805,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (priceNum > 0) {
                 buyButtonHtml = `
-                    <button class="premium-btn" style="background: var(--secondary-color); color: white; border: none; width: 100%; margin-top: 15px; padding: 12px;" 
-                        onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${post.id}', type: 'book_purchase_intent', title: '${post.title.replace(/'/g, "\\'")}' }); window.requestPay('${post.title.replace(/'/g, "\\'")}', ${priceNum})">
-                        <i class="fas fa-shopping-cart"></i> 바로 구매하기
-                    </button>
+                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
+                        <button class="premium-btn" style="background: var(--secondary-color); color: white; border: none; width: 100%; padding: 12px;" 
+                            onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${post.id}', type: 'book_purchase_intent', title: '${post.title.replace(/'/g, "\\'")}' }); window.requestPay('${post.title.replace(/'/g, "\\'")}', ${priceNum})">
+                            <i class="fas fa-credit-card"></i> 일반 결제
+                        </button>
+                        <button class="premium-btn" style="background: #22cc00; color: white; border: none; width: 100%; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;" 
+                            onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${post.id}', type: 'naverpay_click', title: '${post.title.replace(/'/g, "\\'")}' }); window.requestPay('${post.title.replace(/'/g, "\\'")}', ${priceNum}, 'naverpay')">
+                            <img src="https://clova-phinf.pstatic.net/MjAxODAzMjlfMTY1/MDAxNTIyMjg3Njk0NzY0.9S9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z.PNG/naverpay_logo.png" style="height: 16px; filter: brightness(0) invert(1);"> 네이버페이 구매
+                        </button>
+                    </div>
                 `;
             } else {
                 buyButtonHtml = `
@@ -1819,32 +1825,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // PortOne Payment Function
-        window.requestPay = (title, amount) => {
-            if (!window.IMP) return alert("결제 모듈을 불러오는 중입니다. 잠시 후 타시 시도해주세요.");
-            const IMP = window.IMP;
-            IMP.init("imp67545025"); // 사용자 실가맹점 식별코드 업데이트
-
-            if (!confirm(`'${title}'을(를) ${amount.toLocaleString()}원에 구매하시겠습니까?`)) return;
-
-            IMP.request_pay({
-                pg: "html5_inicis",
-                pay_method: "card",
-                merchant_uid: `mid_${new Date().getTime()}`,
-                name: title,
-                amount: amount,
-                buyer_email: "customer@example.com",
-                buyer_name: "구매자",
-                buyer_tel: "010-0000-0000",
-            }, function (rsp) {
-                if (rsp.success) {
-                    alert('결제가 성공적으로 완료되었습니다! 감사합니다.');
-                    // 실제 환경에서는 여기서 서버(Firebase)에 결제 정보를 저장합니다.
-                } else {
-                    alert('결제에 실패하였습니다. 사유: ' + rsp.error_msg);
-                }
-            });
-        };
+        // Note: Global window.requestPay is now used
 
         const titleHtml = primaryLink !== '#'
             ? `<a href="${primaryLink}" target="_blank" class="title-clickable">
@@ -2728,6 +2709,73 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 });
+
+/**
+ * [결제 연동] 포트원(Portone) 전역 결제 함수
+ * @param {string} title 상품명
+ * @param {number} amount 결제 금액
+ * @param {string} method 결제 수단 (card, naverpay 등)
+ */
+window.requestPay = (title, amount, method = 'card') => {
+    if (!window.IMP) {
+        return alert("결제 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+    }
+    
+    const IMP = window.IMP;
+    IMP.init("imp67545025"); // 가맹점 식별코드 (KPI 연구소)
+
+    const isNaverPay = method === 'naverpay';
+    const confirmMsg = isNaverPay 
+        ? `'${title}'을(를) 네이버페이로 ${amount.toLocaleString()}원에 구매하시겠습니까?`
+        : `'${title}'을(를) ${amount.toLocaleString()}원에 구매하시겠습니까?`;
+
+    if (!confirm(confirmMsg)) return;
+
+    // 결제 요청 데이터
+    const data = {
+        pg: isNaverPay ? "naverpay" : "html5_inicis",
+        pay_method: isNaverPay ? "card" : method, 
+        merchant_uid: `mid_${new Date().getTime()}`,
+        name: title,
+        amount: amount,
+        buyer_email: "", 
+        buyer_name: "구매자",
+        buyer_tel: "010-0000-0000",
+    };
+
+    if (isNaverPay) {
+        data.naverPopupMode = true; 
+    }
+
+    IMP.request_pay(data, function (rsp) {
+        if (rsp.success) {
+            alert('✅ 결제가 성공적으로 완료되었습니다! 감사합니다.\n배송 및 확인을 위해 곧 연락드리겠습니다.');
+            
+            if (window.db) {
+                window.db.collection("orders").add({
+                    order_id: rsp.merchant_uid,
+                    payment_id: rsp.imp_uid,
+                    title: title,
+                    amount: amount,
+                    status: 'paid',
+                    pay_method: method,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(err => console.error("Order save error:", err));
+            }
+
+            if (window.Stats) {
+                window.Stats.track('purchase', {
+                    id: rsp.merchant_uid,
+                    title: title,
+                    amount: amount,
+                    method: method
+                });
+            }
+        } else {
+            alert('❌ 결제에 실패하였습니다.\n사유: ' + rsp.error_msg);
+        }
+    });
+};
 
 // End of main.js (BGM logic moved to bgm.js)
 

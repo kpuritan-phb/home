@@ -64,7 +64,7 @@ header {
 }
 
 header.scrolled {
-    background: #2a2d32;
+    background: var(--primary-color);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 

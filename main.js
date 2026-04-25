@@ -1805,14 +1805,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (priceNum > 0) {
                 buyButtonHtml = `
-                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
-                        <button class="premium-btn" style="background: var(--secondary-color); color: white; border: none; width: 100%; padding: 12px;" 
+                    <div style="margin-top: 15px;">
+                        <button class="premium-btn" style="background: var(--secondary-color); color: white; border: none; width: 100%; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; font-size: 1rem;" 
                             onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${post.id}', type: 'book_purchase_intent', title: '${post.title.replace(/'/g, "\\'")}' }); window.requestPay('${post.title.replace(/'/g, "\\'")}', ${priceNum})">
-                            <i class="fas fa-credit-card"></i> 일반 결제
-                        </button>
-                        <button class="premium-btn" style="background: #22cc00; color: white; border: none; width: 100%; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;" 
-                            onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${post.id}', type: 'naverpay_click', title: '${post.title.replace(/'/g, "\\'")}' }); window.requestPay('${post.title.replace(/'/g, "\\'")}', ${priceNum}, 'naverpay')">
-                            <img src="https://clova-phinf.pstatic.net/MjAxODAzMjlfMTY1/MDAxNTIyMjg3Njk0NzY0.9S9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z.PNG/naverpay_logo.png" style="height: 16px; filter: brightness(0) invert(1);"> 네이버페이 구매
+                            <i class="fas fa-shopping-cart"></i> 바로 구매하기
                         </button>
                     </div>
                 `;

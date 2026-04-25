@@ -5,10 +5,9 @@
     /* User Requested Neutral Dark Gray */
     --secondary-color: #0a7c68;
     /* Deep Green Accent */
-    --accent-color: #f0ede6;
-    /* PANTONE 11-0701 TCX - Cream */
-    --bg-warm: #f0ede6;
-    /* Base Cream Background */
+    --accent-color: #ffffff;
+    --bg-warm: #ffffff;
+    /* Pure White Background */
     --text-color: #2a2d32;
     --text-light: #525a66;
     --white: #ffffff;
@@ -75,7 +74,7 @@ header.scrolled .nav-container {
 /* Ticker Banner Style - Premium LED Sign Aesthetic */
 /* Ticker Banner Style - Ticket/Paper Aesthetic (Similar to Musical Gathering Image) */
 .ticker-banner {
-    background: #fdfbf7;
+    background: #ffffff;
     /* Bright Ivory/Paper Background */
     color: #1a1a1a;
     padding: 0.8rem 0;
@@ -1877,7 +1876,7 @@ footer {
     font-size: 0.95rem;
     font-weight: 800;
     color: var(--secondary-color);
-    background: #f0ede6;
+    background: #ffffff;
     padding: 0.6rem 1.2rem;
     margin: 2rem 0 1rem;
     border-radius: 8px;
@@ -3118,7 +3117,7 @@ footer {
 
 .book-cover-wrapper {
     height: 380px;
-    background: #f0ede6;
+    background: #ffffff;
     position: relative;
     overflow: hidden;
 }

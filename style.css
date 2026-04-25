@@ -180,25 +180,23 @@ header.scrolled .nav-container {
 
 .logo {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    /* Ensure left alignment */
     text-decoration: none;
     line-height: normal;
+    /* Reset tight line-height */
     flex-shrink: 0;
 }
 
-.logo-img {
-    height: 60px;
-    width: auto;
-    object-fit: contain;
-}
-
-.logo-text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
+.logo-eng {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--white);
+    letter-spacing: -0.04em;
+    display: block;
+    line-height: 1;
 }
 
 .logo-kor {
@@ -208,6 +206,7 @@ header.scrolled .nav-container {
     color: var(--white);
     letter-spacing: -0.02em;
     display: block;
+    margin-top: 2px;
 }
 
 .logo-since {

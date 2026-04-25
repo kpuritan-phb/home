@@ -260,8 +260,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
-    <!-- PortOne SDK -->
-    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 
     <script>
         // Firebase Config (Must match index.html)
@@ -479,10 +477,12 @@
                     </div>
                     ${contentText.trim() ? `<div class="book-detail-description">${contentText.replace(/(https?:\/\/[^\s]+)/g, '').trim()}</div>` : ''}
                     <div class="book-detail-actions" style="display: flex; flex-direction: column; gap: 12px;">
-                        <button onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${book.id}', type: 'book_purchase_intent', title: '${title.replace(/'/g, "\\'")}' }); requestPay('${title}', '${priceStr}')" class="book-buy-btn" style="padding: 1.2rem 2rem; font-size: 1.1rem; border:none; cursor:pointer; width: 100%;">
-                            바로 구매하기 (카드 / 계좌이체)
-                        </button>
-                        <a href="mailto:kpuritan.phb@gmail.com?subject=구매 문의: ${title}" class="book-buy-btn" style="padding: 1.2rem 2rem; font-size: 1.1rem; background: transparent; border: 1px solid var(--secondary-color); color: var(--secondary-color); text-align: center; text-decoration: none;">
+                        <a href="${book.naver_link || 'https://smartstore.naver.com/kpuritan'}" target="_blank" 
+                           onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${book.id}', type: 'naver_store_redirect', title: '${title.replace(/'/g, "\\'")}' });"
+                           class="book-buy-btn" style="padding: 1.2rem 2rem; font-size: 1.1rem; border:none; cursor:pointer; width: 100%; background: #22cc00; display: flex; align-items: center; justify-content: center; gap: 10px; color: white; text-decoration: none; font-weight: 700;">
+                            <img src="https://clova-phinf.pstatic.net/MjAxODAzMjlfMTY1/MDAxNTIyMjg3Njk0NzY0.9S9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z.PNG/naverpay_logo.png" style="height: 22px; filter: brightness(0) invert(1);"> 네이버 스마트스토어 구매
+                        </a>
+                        <a href="mailto:kpuritan.phb@gmail.com?subject=구매 문의: ${title}" class="book-buy-btn" style="padding: 1rem 2rem; font-size: 1rem; background: transparent; border: 1px solid var(--secondary-color); color: var(--secondary-color); text-align: center; text-decoration: none; border-radius: 8px;">
                             대량 구매 및 메일 문의
                         </a>
                     </div>

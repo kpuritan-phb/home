@@ -477,7 +477,7 @@
                     </div>
                     ${contentText.trim() ? `<div class="book-detail-description">${contentText.replace(/(https?:\/\/[^\s]+)/g, '').trim()}</div>` : ''}
                     <div class="book-detail-actions" style="display: flex; flex-direction: column; gap: 12px;">
-                        <a href="${book.naver_link || 'https://smartstore.naver.com/kpuritan'}" target="_blank" 
+                        <a href="${book.naver_link || 'https://smartstore.naver.com/kpuritan_phb'}" target="_blank" 
                            onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${book.id}', type: 'naver_store_redirect', title: '${title.replace(/'/g, "\\'")}' });"
                            class="book-buy-btn" style="padding: 1.2rem 2rem; font-size: 1.1rem; border:none; cursor:pointer; width: 100%; background: #22cc00; display: flex; align-items: center; justify-content: center; gap: 10px; color: white; text-decoration: none; font-weight: 700;">
                             <img src="https://clova-phinf.pstatic.net/MjAxODAzMjlfMTY1/MDAxNTIyMjg3Njk0NzY0.9S9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z.PNG/naverpay_logo.png" style="height: 22px; filter: brightness(0) invert(1);"> 네이버 스마트스토어 구매

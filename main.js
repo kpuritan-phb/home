@@ -1806,7 +1806,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (priceNum > 0) {
                 buyButtonHtml = `
                     <div style="margin-top: 15px;">
-                        <a href="${post.naver_link || 'https://smartstore.naver.com/kpuritan'}" target="_blank"
+                        <a href="${post.naver_link || 'https://smartstore.naver.com/kpuritan_phb'}" target="_blank"
                             class="premium-btn" style="background: #22cc00; color: white; border: none; width: 100%; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; font-size: 1rem; text-decoration: none;" 
                             onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${post.id}', type: 'naver_store_redirect', title: '${post.title.replace(/'/g, "\\'")}' });">
                             <img src="https://clova-phinf.pstatic.net/MjAxODAzMjlfMTY1/MDAxNTIyMjg3Njk0NzY0.9S9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z.PNG/naverpay_logo.png" style="height: 16px; filter: brightness(0) invert(1);"> 스마트스토어에서 구매

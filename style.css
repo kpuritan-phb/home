@@ -3,8 +3,8 @@
 :root {
     --primary-color: #2d2f31;
     /* User Requested Neutral Dark Gray */
-    --secondary-color: #0a7c68;
-    /* Deep Green Accent */
+    --secondary-color: #1a342a;
+    /* Deep Olive Green Accent */
     --accent-color: #ffffff;
     --bg-warm: #ffffff;
     /* Pure White Background */
@@ -257,7 +257,7 @@ nav ul li a:hover {
     background: #ffffff !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    color: #0a7c68 !important;
+    color: #1a342a !important;
 } */
 
 

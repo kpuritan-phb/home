@@ -2637,7 +2637,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Highlight items that can be dragged
             list.querySelectorAll('.post-item').forEach(li => {
-                li.style.border = '2px dashed #0a7c68';
+                li.style.border = '2px dashed #1a342a';
                 li.style.background = '#f0fdfa';
             });
 

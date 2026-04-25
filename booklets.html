@@ -27,7 +27,7 @@
             justify-content: center;
             text-align: center;
             color: white;
-            border-bottom: 5px solid #0a7c68;
+            border-bottom: 5px solid #1a342a;
         }
 
         .booklets-hero h1 {
@@ -76,7 +76,7 @@
         }
 
         .tab-btn.active {
-            background: #0a7c68;
+            background: #1a342a;
             color: white;
         }
 
@@ -111,8 +111,8 @@
         }
 
         .sub-tab-btn.active {
-            border-color: #0a7c68;
-            color: #0a7c68;
+            border-color: #1a342a;
+            color: #1a342a;
             background: rgba(10, 124, 104, 0.05);
         }
 
@@ -132,7 +132,7 @@
             text-align: center;
             padding: 5rem;
             font-size: 1.5rem;
-            color: #0a7c68;
+            color: #1a342a;
         }
 
         .no-content {
@@ -142,7 +142,7 @@
         }
 
         .book-card-premium .book-tag {
-            background: #0a7c68;
+            background: #1a342a;
         }
 
         @media screen and (max-width: 768px) {
@@ -211,7 +211,7 @@
         .book-list-item:hover {
             transform: translateY(-8px);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-            border-color: #0a7c68;
+            border-color: #1a342a;
         }
 
         .book-list-thumb {
@@ -254,7 +254,7 @@
         .book-list-category {
             display: inline-block;
             background: rgba(10, 124, 104, 0.1);
-            color: #0a7c68;
+            color: #1a342a;
             padding: 4px 10px;
             border-radius: 4px;
             font-size: 0.75rem;
@@ -315,9 +315,9 @@
         }
 
         .page-btn.active {
-            background: #0a7c68;
+            background: #1a342a;
             color: white;
-            border-color: #0a7c68;
+            border-color: #1a342a;
         }
 
         .page-btn:hover:not(.active) {
@@ -852,7 +852,7 @@
                 const fileUrlWithCacheBust = item.fileUrl;
 
                 fileHtml = `<a href="${item.fileUrl}" target="_blank" class="book-buy-btn"
-            style="display:inline-block; text-decoration:none; text-align:center; background:#0a7c68; color:white; padding:12px 30px; border-radius:8px; font-weight:700;"
+            style="display:inline-block; text-decoration:none; text-align:center; background:#1a342a; color:white; padding:12px 30px; border-radius:8px; font-weight:700;"
             onclick="if(window.Stats) window.Stats.track('download', { id: '${item.id}', type: 'tract_pdf', title: '${item.title.replace(/'/g, "\\'")}', category: '전도 소책자' })">
             <i class="fas fa-file-pdf"></i>자료 열기</a>`;
 

@@ -254,7 +254,7 @@ nav ul li a:hover {
 }
 
 .nav-seminary-link:hover {
-    background: #fdfcf9 !important;
+    background: #ffffff !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     color: #0a7c68 !important;
@@ -1090,7 +1090,7 @@ nav ul li:hover a i {
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 1rem;
-    background: #f9f9f9;
+    background: #ffffff;
 }
 
 .newsletter-form button {
@@ -1344,7 +1344,7 @@ nav ul li:hover a i {
     border-radius: 4px;
     font-family: inherit;
     font-size: 1rem;
-    background: #fcfcfc;
+    background: #ffffff;
     transition: border-color 0.3s;
 }
 
@@ -1485,7 +1485,7 @@ footer {
 }
 
 #activity-feed::-webkit-scrollbar-track {
-    background: #f9f9f9;
+    background: #ffffff;
 }
 
 .stats-period-filter button {
@@ -1543,7 +1543,7 @@ footer {
 }
 
 #edit-form {
-    background-color: #fdfdfd !important;
+    background-color: #ffffff !important;
     opacity: 1 !important;
     visibility: visible !important;
     position: relative;
@@ -1552,7 +1552,7 @@ footer {
 
 #edit-form .input-group input,
 #edit-form .input-group select {
-    background: #fdfdfd !important;
+    background: #ffffff !important;
     border: 1px solid #ccc;
     color: #333;
     width: 100%;
@@ -1747,7 +1747,7 @@ footer {
 }
 
 .resource-item {
-    background: #fcfaf7;
+    background: #ffffff;
     border: 1px solid #eee;
     padding: 1.2rem;
     border-radius: 8px;
@@ -2065,7 +2065,7 @@ footer {
     align-items: flex-end;
     text-align: left;
     margin-bottom: 3.5rem;
-    border-bottom: 2px solid #f8f8f8;
+    border-bottom: 2px solid #ffffff;
     padding-bottom: 1.5rem;
 }
 
@@ -2352,7 +2352,7 @@ footer {
 }
 
 .series-folder-item.expanded .series-folder-header {
-    background: #fcfcfc;
+    background: #ffffff;
     border-bottom-color: #f0f0f0;
 }
 
@@ -2457,7 +2457,7 @@ footer {
 
 .series-sub-list .resource-card-modern {
     border: none;
-    border-bottom: 1px solid #f8f8f8;
+    border-bottom: 1px solid #ffffff;
     border-radius: 0;
     box-shadow: none;
     margin-bottom: 0;
@@ -2470,7 +2470,7 @@ footer {
 
 .series-sub-list .resource-card-modern:hover {
     transform: none;
-    background: #fafafa;
+    background: #ffffff;
 }
 
 .series-sub-list .resource-content-padding {
@@ -2762,7 +2762,7 @@ footer {
 .sortable-ghost {
     opacity: 0.4;
     border: 2px dashed var(--secondary-color) !important;
-    background: #fdfdfd !important;
+    background: #ffffff !important;
 }
 
 .resource-item-wrapper {
@@ -3239,7 +3239,7 @@ footer {
 }
 
 .book-detail-image-wrapper {
-    background: #f8f8f8;
+    background: #ffffff;
     border-radius: 20px;
     padding: 2rem;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);

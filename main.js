@@ -2716,14 +2716,23 @@ window.requestPay = (title, amount, method = 'card') => {
     if (!window.IMP) {
         return alert("결제 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
     }
+
+    // 금액 처리: 문자열(예: '1,000원')이 들어오면 숫자만 추출
+    let finalAmount = typeof amount === 'string' 
+        ? parseInt(amount.replace(/[^0-9]/g, '')) 
+        : amount;
+
+    if (!finalAmount || finalAmount <= 0) {
+        return alert("결제 금액이 올바르지 않습니다. (추출된 금액: " + finalAmount + ")");
+    }
     
     const IMP = window.IMP;
     IMP.init("imp67545025"); // 가맹점 식별코드 (KPI 연구소)
 
     const isNaverPay = method === 'naverpay';
     const confirmMsg = isNaverPay 
-        ? `'${title}'을(를) 네이버페이로 ${amount.toLocaleString()}원에 구매하시겠습니까?`
-        : `'${title}'을(를) ${amount.toLocaleString()}원에 구매하시겠습니까?`;
+        ? `'${title}'을(를) 네이버페이로 ${finalAmount.toLocaleString()}원에 구매하시겠습니까?`
+        : `'${title}'을(를) ${finalAmount.toLocaleString()}원에 구매하시겠습니까?`;
 
     if (!confirm(confirmMsg)) return;
 
@@ -2733,7 +2742,7 @@ window.requestPay = (title, amount, method = 'card') => {
         pay_method: isNaverPay ? "card" : method, 
         merchant_uid: `mid_${new Date().getTime()}`,
         name: title,
-        amount: amount,
+        amount: finalAmount,
         buyer_email: "", 
         buyer_name: "구매자",
         buyer_tel: "010-0000-0000",

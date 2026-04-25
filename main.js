@@ -2711,19 +2711,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * [결제 연동] 토스페이먼츠(Toss Payments) 전역 결제 함수
+ * [결제 연동] 포트원(Portone) 전역 결제 함수
  * @param {string} title 상품명
  * @param {number} amount 결제 금액
  * @param {string} method 결제 수단 (card, naverpay 등)
  */
 window.requestPay = (title, amount, method = 'card') => {
-    if (typeof TossPayments === 'undefined') {
+    if (!window.IMP) {
         return alert("결제 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
     }
     
-    // 토스페이먼츠 테스트 클라이언트 키 (KPI 연구소용 - 실제 운영 시 실서버 키로 변경 필수)
-    const clientKey = 'test_ck_D5b9M59GW0RE7966Y5jV4N660qvg'; 
-    const tossPayments = TossPayments(clientKey);
+    const IMP = window.IMP;
+    IMP.init("imp67545025"); // 가맹점 식별코드 (KPI 연구소)
 
     const isNaverPay = method === 'naverpay';
     const confirmMsg = isNaverPay 
@@ -2732,45 +2731,51 @@ window.requestPay = (title, amount, method = 'card') => {
 
     if (!confirm(confirmMsg)) return;
 
-    // 토스페이먼츠 결제 수단 매핑
-    const tossMethod = isNaverPay ? '네이버페이' : '카드';
-
-    // 결제 요청
-    tossPayments.requestPayment(tossMethod, {
+    // 결제 요청 데이터
+    const data = {
+        pg: isNaverPay ? "naverpay" : "html5_inicis", // 네이버페이 혹은 KG이니시스
+        pay_method: isNaverPay ? "card" : method, 
+        merchant_uid: `mid_${new Date().getTime()}`,
+        name: title,
         amount: amount,
-        orderId: `KPI_${new Date().getTime()}`,
-        orderName: title,
-        customerName: '구매자',
-        successUrl: window.location.origin + window.location.pathname + '?payment=success',
-        failUrl: window.location.origin + window.location.pathname + '?payment=fail',
-    }).catch(function (error) {
-        if (error.code === 'USER_CANCEL') {
-            // 사용자가 결제창을 닫은 경우 별도 메시지 없이 종료
+        buyer_email: "", 
+        buyer_name: "구매자",
+        buyer_tel: "010-0000-0000",
+    };
+
+    if (isNaverPay) {
+        data.naverPopupMode = true; 
+    }
+
+    IMP.request_pay(data, function (rsp) {
+        if (rsp.success) {
+            alert('✅ 결제가 성공적으로 완료되었습니다! 감사합니다.\n배송 및 확인을 위해 곧 연락드리겠습니다.');
+            
+            if (window.db) {
+                window.db.collection("orders").add({
+                    order_id: rsp.merchant_uid,
+                    payment_id: rsp.imp_uid,
+                    title: title,
+                    amount: amount,
+                    status: 'paid',
+                    pay_method: method,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(err => console.error("Order save error:", err));
+            }
+
+            if (window.Stats) {
+                window.Stats.track('purchase', {
+                    id: rsp.merchant_uid,
+                    title: title,
+                    amount: amount,
+                    method: method
+                });
+            }
         } else {
-            alert('❌ 결제 요청 중 오류가 발생했습니다: ' + error.message);
+            alert('❌ 결제에 실패하였습니다.\n사유: ' + rsp.error_msg);
         }
     });
-
-    // 참고: 실제 결제 승인은 서버측(Firebase Functions 등)에서 
-    // 토스페이먼츠 API(/v1/payments/confirm)를 호출하여 최종 완료해야 안전합니다.
 };
-
-// 결제 성공/실패 쿼리 파라미터 처리 (데모용)
-function checkPaymentStatus() {
-    const params = new URLSearchParams(window.location.search);
-    const status = params.get('payment');
-    if (status === 'success') {
-        alert('✅ 결제가 성공적으로 처리되었습니다! 배송지 확인을 위해 곧 연락드리겠습니다.');
-        // URL에서 파라미터 제거
-        const newUrl = window.location.origin + window.location.pathname;
-        window.history.replaceState({}, document.title, newUrl);
-    } else if (status === 'fail') {
-        alert('❌ 결제에 실패하였습니다. 다시 시도해 주세요.');
-        const newUrl = window.location.origin + window.location.pathname;
-        window.history.replaceState({}, document.title, newUrl);
-    }
-}
-document.addEventListener('DOMContentLoaded', checkPaymentStatus);
 
 // End of main.js (BGM logic moved to bgm.js)
 

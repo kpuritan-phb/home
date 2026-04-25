@@ -187,7 +187,7 @@ const AdminStats = (() => {
             item.style.padding = '8px 0';
             item.style.borderBottom = '1px solid #f5f5f5';
             let icon = 'eye';
-            let color = '#2ecc71';
+            let color = '#1a342a';
             let actionText = '조회';
             if (ev.event_type === 'click') { icon = 'mouse-pointer'; color = '#f1c40f'; actionText = '클릭'; }
             if (ev.event_type === 'download') { icon = 'download'; color = '#e74c3c'; actionText = '다운'; }
@@ -240,7 +240,7 @@ const AdminStats = (() => {
                     {
                         label: '페이지뷰',
                         data: views,
-                        borderColor: '#2ecc71',
+                        borderColor: '#1a342a',
                         backgroundColor: 'rgba(46, 204, 113, 0.1)',
                         fill: true,
                         tension: 0.4
@@ -274,7 +274,7 @@ const AdminStats = (() => {
                 labels: labels,
                 datasets: [{
                     data: data,
-                    backgroundColor: ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6', '#34495e', '#16a085', '#e67e22'],
+                    backgroundColor: ['#e74c3c', '#3498db', '#1a342a', '#f1c40f', '#9b59b6', '#34495e', '#1a342a', '#e67e22'],
                     borderWidth: 0
                 }]
             },

@@ -2542,7 +2542,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 li.style.cssText = 'background: white; border: 1px solid #eee; margin-bottom: 10px; padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 15px; cursor: move; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02);';
 
                 // Hover effect logic
-                li.onmouseover = () => { li.style.borderColor = '#1abc9c'; li.style.background = '#f0fdfa'; };
+                li.onmouseover = () => { li.style.borderColor = '#1a342a'; li.style.background = '#f0fdfa'; };
                 li.onmouseout = () => { li.style.borderColor = '#eee'; li.style.background = 'white'; };
 
                 const date = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : '날짜 없음';

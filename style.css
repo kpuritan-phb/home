@@ -5,10 +5,10 @@
     /* PANTONE 433 C - Dark Gray */
     --secondary-color: #0a7c68;
     /* Deep Green Accent */
-    --accent-color: #f0ede6;
-    /* PANTONE 11-0701 TCX - Cream */
-    --bg-warm: #f0ede6;
-    /* Base Cream Background */
+    --accent-color: #ffffff;
+    /* PANTONE 11-0701 TCX - Cream -> Changed to White */
+    --bg-warm: #ffffff;
+    /* Base White Background */
     --text-color: #2a2d32;
     --text-light: #525a66;
     --white: #ffffff;
@@ -75,8 +75,8 @@ header.scrolled .nav-container {
 /* Ticker Banner Style - Premium LED Sign Aesthetic */
 /* Ticker Banner Style - Ticket/Paper Aesthetic (Similar to Musical Gathering Image) */
 .ticker-banner {
-    background: #fdfbf7;
-    /* Bright Ivory/Paper Background */
+    background: #ffffff;
+    /* Bright Ivory/Paper Background -> White */
     color: #1a1a1a;
     padding: 0.8rem 0;
     /* Height reduced from 1.2rem */
@@ -255,7 +255,7 @@ nav ul li a:hover {
 }
 
 .nav-seminary-link:hover {
-    background: #fdfcf9 !important;
+    background: #ffffff !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     color: #0a7c68 !important;
@@ -1877,7 +1877,7 @@ footer {
     font-size: 0.95rem;
     font-weight: 800;
     color: var(--secondary-color);
-    background: #f0ede6;
+    background: #ffffff;
     padding: 0.6rem 1.2rem;
     margin: 2rem 0 1rem;
     border-radius: 8px;
@@ -3118,7 +3118,7 @@ footer {
 
 .book-cover-wrapper {
     height: 380px;
-    background: #f0ede6;
+    background: #ffffff;
     position: relative;
     overflow: hidden;
 }

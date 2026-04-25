@@ -2733,7 +2733,7 @@ window.requestPay = (title, amount, method = 'card') => {
 
     // 결제 요청 데이터
     const data = {
-        pg: isNaverPay ? "naverpay" : "danal_tpay", // 네이버페이 전용 채널 혹은 다날
+        pg: isNaverPay ? "naverpay" : "tosspayments", // 네이버페이 전용 채널 혹은 토스페이먼츠
         pay_method: isNaverPay ? "card" : method, 
         merchant_uid: `mid_${new Date().getTime()}`,
         name: title,

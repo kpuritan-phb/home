@@ -2730,11 +2730,7 @@ window.requestPay = (title, amount, method = 'card') => {
     IMP.init("imp67545025"); // 가맹점 식별코드 (KPI 연구소)
 
     const isNaverPay = method === 'naverpay';
-    const confirmMsg = isNaverPay 
-        ? `'${title}'을(를) 네이버페이로 ${finalAmount.toLocaleString()}원에 구매하시겠습니까?`
-        : `'${title}'을(를) ${finalAmount.toLocaleString()}원에 구매하시겠습니까?`;
-
-    if (!confirm(confirmMsg)) return;
+    // 확인창 없이 바로 결제 호출
 
     // 결제 요청 데이터
     const data = {

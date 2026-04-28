@@ -2130,16 +2130,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     return !tags.some(tag => excluded.includes(tag));
                 });
 
-                // [요청] 특정 게시물 고정 (2주간: ~2026-05-05)
-                const PINNED_TITLE = "히브리서의 경고와 심판: 영적 몰락의 해부학";
-                const PINNED_UNTIL = new Date('2026-05-05');
-                if (new Date() < PINNED_UNTIL) {
-                    const idx = filteredLatest.findIndex(item => item.data.title === PINNED_TITLE);
-                    if (idx > -1) {
-                        const [pinned] = filteredLatest.splice(idx, 1);
-                        filteredLatest.unshift(pinned);
-                    }
-                }
 
                 filteredLatest.slice(0, 12).forEach(item => {
                     latestIds.add(item.id);
@@ -2307,16 +2297,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 modalPosts.push({ id: doc.id, ...data });
             });
 
-            // [요청] 특정 게시물 고정 (2주간: ~2026-05-05)
-            const PINNED_TITLE = "히브리서의 경고와 심판: 영적 몰락의 해부학";
-            const PINNED_UNTIL = new Date('2026-05-05');
-            if (new Date() < PINNED_UNTIL) {
-                const idx = modalPosts.findIndex(p => p.title === PINNED_TITLE);
-                if (idx > -1) {
-                    const [pinned] = modalPosts.splice(idx, 1);
-                    modalPosts.unshift(pinned);
-                }
-            }
 
             modalPosts.forEach(post => {
                 renderSingleResource(post, resourceListContainer);

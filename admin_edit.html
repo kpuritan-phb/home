@@ -148,11 +148,12 @@
                                 <option value="구원론(성령론)">4. 구원론(성령론)</option>
                                 <option value="율법과 복음">5. 율법과 복음</option>
                                 <option value="그리스도인의 생활론">6. 그리스도인의 생활론</option>
-                                <option value="교회론">7. 교회론</option>
-                                <option value="설교론">8. 설교론</option>
-                                <option value="영적전쟁">9. 영적전쟁</option>
-                                <option value="종말론">10. 종말론</option>
-                                <option value="역사 신학">11. 역사 신학</option>
+                                <option value="그리스도인의 가정">7. 그리스도인의 가정</option>
+                                <option value="교회론">8. 교회론</option>
+                                <option value="설교론">9. 설교론</option>
+                                <option value="영적전쟁">10. 영적전쟁</option>
+                                <option value="종말론">11. 종말론</option>
+                                <option value="역사 신학">12. 역사 신학</option>
 
                             </select>
                         </div>
@@ -438,7 +439,7 @@
                 let tags = [topic, author, other].filter(t => t !== "");
 
                 // --- [추가] 주제별 자동 태깅 및 시리즈 매칭 ---
-                const puritanTopics = ["신론", "인간론", "기독론", "구원론(성령론)", "율법과 복음", "그리스도인의 생활론", "교회론", "설교론", "영적전쟁", "종말론", "역사 신학"];
+                const puritanTopics = ["신론", "인간론", "기독론", "구원론(성령론)", "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론", "설교론", "영적전쟁", "종말론", "역사 신학"];
                 let finalSeries = document.getElementById('edit-series').value.trim() || '';
 
                 if (puritanTopics.includes(topic)) {

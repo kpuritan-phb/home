@@ -294,6 +294,24 @@ nav ul li:hover a i {
     /* 메가 메뉴는 nav-container를 기준으로 위치 잡기 위해 static 설정 */
 }
 
+.dropdown.mega-dropdown .dropdown-content {
+    width: 100%;
+    left: 0;
+    transform: none;
+    padding: 1.5rem 2rem;
+}
+
+.dropdown.mega-dropdown .dropdown-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.dropdown.mega-dropdown .dropdown-list li {
+    margin-bottom: 0;
+}
+
 .dropdown-content {
     display: none;
     position: absolute;

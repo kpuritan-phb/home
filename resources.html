@@ -605,7 +605,7 @@
             left: 4%;
             right: 4%;
             margin: 0 auto;
-            max-width: 1100px;
+            max-width: 1400px;
             background: #ffffff;
             padding: 0;
             /* Let buttons handle padding for cleaner vertical alignment */
@@ -620,7 +620,7 @@
             padding: 0;
             margin: 0;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             padding: 0 10px;
             gap: 0;
             overflow-x: auto;
@@ -652,8 +652,7 @@
         .theology-sub-nav ul::before,
         .theology-sub-nav ul::after {
             content: '';
-            flex: 0.001;
-            /* Minimal flex for safety, effectively centering small groups */
+            margin: auto;
         }
 
         .theology-tab-btn {
@@ -661,10 +660,10 @@
             align-items: center;
             justify-content: center;
             flex: 1;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: #555;
             text-decoration: none;
-            padding: 22px 15px;
+            padding: 20px 10px;
             /* Taller items for premium feel */
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 500;

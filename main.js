@@ -1953,6 +1953,117 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const initCarouselDrag = () => {
+        const tracks = document.querySelectorAll('.carousel-track');
+        tracks.forEach(track => {
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            let startTime;
+            let lastMoveTime = 0;
+            let lastX = 0;
+            let preventClick = false;
+
+            const handleStart = (e) => {
+                if (window.innerWidth > 768) return;
+                isDown = true;
+                track.style.scrollBehavior = 'auto';
+                
+                startX = (e.pageX || (e.touches && e.touches[0].pageX)) - track.offsetLeft;
+                scrollLeft = track.scrollLeft;
+                startTime = Date.now();
+                lastX = e.pageX || (e.touches && e.touches[0].pageX);
+                preventClick = false;
+            };
+
+            const handleMove = (e) => {
+                if (!isDown) return;
+                if (e.cancelable) e.preventDefault();
+
+                const x = (e.pageX || (e.touches && e.touches[0].pageX)) - track.offsetLeft;
+                const walk = (x - startX);
+                track.scrollLeft = scrollLeft - walk;
+
+                const now = Date.now();
+                const currentX = e.pageX || (e.touches && e.touches[0].pageX);
+                if (now - lastMoveTime > 10) {
+                    lastX = currentX;
+                    lastMoveTime = now;
+                }
+
+                if (Math.abs(walk) > 10) {
+                    preventClick = true;
+                }
+            };
+
+            const handleEnd = (e) => {
+                if (!isDown) return;
+                isDown = false;
+                track.style.scrollBehavior = 'smooth';
+
+                const card = track.querySelector('.carousel-item-wrapper') || track.querySelector('.carousel-card');
+                if (!card) return;
+
+                const cardWidth = card.offsetWidth;
+                const style = window.getComputedStyle(track);
+                const gap = parseInt(style.getPropertyValue('column-gap')) || parseInt(style.getPropertyValue('gap')) || 16;
+                const stepWidth = cardWidth + gap;
+
+                const currentScrollLeft = track.scrollLeft;
+                const duration = Date.now() - startTime;
+                const finalX = e.changedTouches ? e.changedTouches[0].pageX : (e.pageX || lastX);
+                const walk = (finalX - (startX + track.offsetLeft));
+
+                let targetScrollLeft;
+
+                if (duration < 250 && Math.abs(walk) > 30) {
+                    if (walk > 0) {
+                        targetScrollLeft = Math.floor(currentScrollLeft / stepWidth) * stepWidth;
+                    } else {
+                        targetScrollLeft = Math.ceil(currentScrollLeft / stepWidth) * stepWidth;
+                    }
+                } else {
+                    targetScrollLeft = Math.round(currentScrollLeft / stepWidth) * stepWidth;
+                }
+
+                const maxScrollLeft = track.scrollWidth - track.clientWidth;
+                targetScrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScrollLeft));
+
+                track.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+            };
+
+            track.addEventListener('mousedown', handleStart);
+            track.addEventListener('mousemove', handleMove);
+            track.addEventListener('mouseup', handleEnd);
+            track.addEventListener('mouseleave', () => {
+                if (isDown) {
+                    isDown = false;
+                    track.style.scrollBehavior = 'smooth';
+                    const card = track.querySelector('.carousel-item-wrapper') || track.querySelector('.carousel-card');
+                    if (card) {
+                        const cardWidth = card.offsetWidth;
+                        const style = window.getComputedStyle(track);
+                        const gap = parseInt(style.getPropertyValue('column-gap')) || parseInt(style.getPropertyValue('gap')) || 16;
+                        const stepWidth = cardWidth + gap;
+                        const targetScrollLeft = Math.round(track.scrollLeft / stepWidth) * stepWidth;
+                        track.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+                    }
+                }
+            });
+
+            track.addEventListener('touchstart', handleStart);
+            track.addEventListener('touchmove', handleMove, { passive: false });
+            track.addEventListener('touchend', handleEnd);
+
+            track.addEventListener('click', (e) => {
+                if (preventClick) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, true);
+        });
+    };
+
     window.createCarouselCard = (post, docId) => {
         const date = post.createdAt ? (typeof post.createdAt.toDate === 'function' ? post.createdAt.toDate().toLocaleDateString() : '최근') : '최근';
         const displayCategory = post.tags ? post.tags[0] : '자료';
@@ -2107,6 +2218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const shuffledMock = [...mockData].sort(() => 0.5 - Math.random());
         populateTrack('carousel-topic', shuffledMock);
         populateTrack('carousel-sermon', extendedSermons);
+        initCarouselDrag();
     };
 
     window.loadMainCarousels = async () => {
@@ -2205,6 +2317,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     sermonTrack.appendChild(createCarouselCard(item.data, item.id));
                 });
             }
+            initCarouselDrag();
 
         } catch (e) {
             console.error("Load Carousels Error:", e);

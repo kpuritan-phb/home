@@ -2422,7 +2422,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span style="font-size:0.9rem; font-weight:500; color:#333;">${item}</span>
                     `;
                     div.addEventListener('click', () => {
-                        window.closeModal(resourceModal);
+                        window.closeAllModals(false);
                         // resources.html로 상세 주제 파라미터를 실어 이동
                         location.href = `resources.html?subTopic=${encodeURIComponent(item)}`;
                     });

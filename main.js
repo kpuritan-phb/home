@@ -55,6 +55,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const editModal = document.getElementById('edit-modal');
     const recentGrid = document.getElementById('recent-posts-grid');
 
+    // 주제별 검색 메뉴 동적 주입
+    const navUl = document.querySelector('header nav ul');
+    if (navUl) {
+        const li = document.createElement('li');
+        li.id = 'nav-detailed-search';
+        li.style.cssText = 'border-radius: 8px; transition: all 0.3s;';
+        li.innerHTML = `
+            <a href="javascript:void(0)" onclick="openAllTopicsModal()" style="color: #c59c5e !important; font-weight:700; display: flex; align-items: center; gap: 6px;">
+                <i class="fas fa-search-plus" style="color: #c59c5e;"></i> 주제별 검색
+            </a>
+        `;
+        navUl.appendChild(li);
+    }
+
     // Sort Categories Alphabetically as requested
     // Bible books kept in canonical order.
     /* 
@@ -2315,75 +2329,149 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!resourceModal) return;
         window.openModal(resourceModal);
         resourceListContainer.classList.remove('compact-view');
-        resourceModalTitle.textContent = `전체 주제 목록`;
+        resourceModalTitle.textContent = `상세 주제별 검색`;
 
-        // 검색/카테고리 선택 모달에서는 업로드 헤더 숨김
         const adminHeader = document.getElementById('resource-modal-admin-header');
         if (adminHeader) adminHeader.style.display = 'none';
 
-        // 정렬
-        const sortedTopics = [...topics].sort((a, b) => a.localeCompare(b, 'ko'));
+        // 128개 상세 주제 목록
+        const targetTopics = (typeof detailedTopics !== 'undefined' && Array.isArray(detailedTopics)) ? detailedTopics : topics;
+        const sortedTopics = [...targetTopics].sort((a, b) => a.localeCompare(b, 'ko'));
 
-        // 그룹화
-        const groups = {};
-        sortedTopics.forEach(item => {
-            const initial = getInitialConsonant(item);
-            if (!groups[initial]) groups[initial] = [];
-            groups[initial].push(item);
-        });
-
-        const consonants = Object.keys(groups).sort();
-
-        // UI 생성
+        // UI 기본 템플릿 주입
         resourceListContainer.innerHTML = `
-            <div class="modal-nav-container">
-                <div class="modal-content-scroll" id="modal-topic-scroll">
-                    <div class="main-grid-container" id="modal-topic-grid"></div>
+            <div class="detailed-search-wrapper" style="display:flex; flex-direction:column; gap:20px; height:100%;">
+                <div class="detailed-search-header" style="background:var(--primary-color); padding:20px; border-radius:12px; color:white; display:flex; flex-direction:column; gap:12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div style="font-weight: 600; font-size:1.1rem;"><i class="fas fa-search"></i> 원하는 신학 주제를 검색하세요</div>
+                    <div class="search-input-wrap" style="position:relative; width:100%;">
+                        <input type="text" id="detailed-topic-search-input" placeholder="예: 예정론, 십계명, 그리스도의 순종..." style="width:100%; padding:12px 45px 12px 15px; border-radius:8px; border:none; outline:none; font-size:1rem; color:#333; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);">
+                        <i class="fas fa-times" id="detailed-topic-search-clear" style="position:absolute; right:15px; top:50%; transform:translateY(-50%); color:#999; cursor:pointer; display:none;"></i>
+                    </div>
+                    <div style="font-size:0.85rem; opacity:0.85;">* 총 ${sortedTopics.length}개의 정밀 분류된 청교도/개혁주의 신학 주제가 준비되어 있습니다.</div>
                 </div>
-                <div class="modal-index-nav" id="modal-topic-index"></div>
+                <div class="modal-nav-container" style="flex:1; display:flex; min-height:0; position:relative;">
+                    <div class="modal-content-scroll" id="modal-topic-scroll" style="flex:1; overflow-y:auto; padding-right:15px; min-height: 250px; max-height: 450px;">
+                        <div class="main-grid-container" id="modal-topic-grid"></div>
+                    </div>
+                    <div class="modal-index-nav" id="modal-topic-index" style="display:flex; flex-direction:column; justify-content:space-between; padding-left:10px; font-size:0.75rem; color:#888; font-weight:600; cursor:pointer;"></div>
+                </div>
             </div>
         `;
 
         const grid = document.getElementById('modal-topic-grid');
         const indexNav = document.getElementById('modal-topic-index');
         const scrollContainer = document.getElementById('modal-topic-scroll');
+        const searchInput = document.getElementById('detailed-topic-search-input');
+        const searchClear = document.getElementById('detailed-topic-search-clear');
 
-        consonants.forEach(consonant => {
-            // 인덱스 바 추가
-            const span = document.createElement('span');
-            span.textContent = consonant;
-            span.addEventListener('click', () => {
-                const header = document.getElementById(`header-topic-${consonant}`);
-                if (header) {
-                    scrollContainer.scrollTo({
-                        top: header.offsetTop - 10,
-                        behavior: 'smooth'
+        // 초성별 그룹화 및 렌더링 함수
+        const renderTopics = (filterText = '') => {
+            grid.innerHTML = '';
+            indexNav.innerHTML = '';
+
+            const filtered = sortedTopics.filter(t => t.toLowerCase().includes(filterText.toLowerCase()));
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px; color:#999;"><i class="fas fa-info-circle" style="font-size:2rem; margin-bottom:10px;"></i><br>일치하는 주제가 없습니다. 다른 검색어를 입력해보세요.</div>';
+                return;
+            }
+
+            // 초성 그룹 생성
+            const groups = {};
+            filtered.forEach(item => {
+                const initial = getInitialConsonant(item);
+                if (!groups[initial]) groups[initial] = [];
+                groups[initial].push(item);
+            });
+
+            const consonants = Object.keys(groups).sort();
+
+            consonants.forEach(consonant => {
+                // 초성 내비게이션 추가 (검색 필터가 작동 중이지 않을 때만)
+                if (!filterText) {
+                    const span = document.createElement('span');
+                    span.textContent = consonant;
+                    span.style.padding = '2px 5px';
+                    span.addEventListener('click', () => {
+                        const header = document.getElementById(`header-topic-${consonant}`);
+                        if (header && scrollContainer) {
+                            scrollContainer.scrollTo({
+                                top: header.offsetTop - 10,
+                                behavior: 'smooth'
+                            });
+                        }
                     });
+                    indexNav.appendChild(span);
                 }
-            });
-            indexNav.appendChild(span);
 
-            // 섹션 헤더 추가
-            const header = document.createElement('div');
-            header.className = 'modal-section-header';
-            header.id = `header-topic-${consonant}`;
-            header.textContent = consonant;
-            grid.appendChild(header);
+                // 초성 섹션 헤더 추가
+                const header = document.createElement('div');
+                header.className = 'modal-section-header';
+                header.id = `header-topic-${consonant}`;
+                header.textContent = consonant;
+                header.style.cssText = 'grid-column: 1/-1; background:#f4f6f5; color:var(--primary-color); padding:8px 15px; border-radius:6px; font-weight:700; margin-top:15px; margin-bottom:10px; font-size:0.9rem;';
+                grid.appendChild(header);
 
-            // 항목 추가
-            groups[consonant].forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'main-grid-item';
-                div.innerHTML = `
-                    <i class="fas fa-tags"></i>
-                    <span>${item}</span>
-                `;
-                div.addEventListener('click', () => {
-                    openResourceModal(item);
+                // 항목 추가
+                groups[consonant].forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'main-grid-item';
+                    div.style.cssText = 'padding:12px 15px; background:white; border:1px solid #eef2f0; border-radius:8px; display:flex; align-items:center; gap:10px; cursor:pointer; transition:all 0.2s;';
+                    div.innerHTML = `
+                        <i class="fas fa-tag" style="color:var(--secondary-color); font-size:0.85rem;"></i>
+                        <span style="font-size:0.9rem; font-weight:500; color:#333;">${item}</span>
+                    `;
+                    div.addEventListener('click', () => {
+                        window.closeModal(resourceModal);
+                        // resources.html로 상세 주제 파라미터를 실어 이동
+                        location.href = `resources.html?subTopic=${encodeURIComponent(item)}`;
+                    });
+                    
+                    // 호버 효과
+                    div.addEventListener('mouseenter', () => {
+                        div.style.borderColor = 'var(--secondary-color)';
+                        div.style.background = '#fcfaf7';
+                        div.style.transform = 'translateY(-2px)';
+                    });
+                    div.addEventListener('mouseleave', () => {
+                        div.style.borderColor = '#eef2f0';
+                        div.style.background = 'white';
+                        div.style.transform = 'none';
+                    });
+                    
+                    grid.appendChild(div);
                 });
-                grid.appendChild(div);
             });
-        });
+        };
+
+        // 초기 렌더링
+        renderTopics();
+
+        // 실시간 검색 이벤트
+        if (searchInput) {
+            searchInput.focus();
+            searchInput.addEventListener('input', (e) => {
+                const val = e.target.value.trim();
+                if (val) {
+                    if (searchClear) searchClear.style.display = 'block';
+                } else {
+                    if (searchClear) searchClear.style.display = 'none';
+                }
+                renderTopics(val);
+            });
+        }
+
+        // 지우기 버튼
+        if (searchClear) {
+            searchClear.addEventListener('click', () => {
+                if (searchInput) {
+                    searchInput.value = '';
+                    searchInput.focus();
+                }
+                searchClear.style.display = 'none';
+                renderTopics('');
+            });
+        }
     };
 
     window.openAllAuthorsModal = () => {

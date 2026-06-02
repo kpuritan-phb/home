@@ -1010,12 +1010,18 @@
             const typeParam = urlParams.get('type');
             const catParam = urlParams.get('cat');
             const bParam = urlParams.get('b');
+            const subTopicParam = urlParams.get('subTopic');
 
             if (typeParam) currentType = typeParam;
 
             currentCategory = catParam;
 
-            if (currentCategory === '구속사적 성경주석' && !bParam) {
+            if (subTopicParam) {
+                grid.style.display = 'grid';
+                bibleWrapper.style.display = 'none';
+                chapterWrapper.style.display = 'none';
+                await loadSubtopicItems(subTopicParam);
+            } else if (currentCategory === '구속사적 성경주석' && !bParam) {
                 grid.style.display = 'none';
                 bibleWrapper.style.display = 'block';
                 chapterWrapper.style.display = 'none';
@@ -1084,8 +1090,12 @@
             const urlParams = new URLSearchParams(window.location.search);
             const s = urlParams.get('s') || "";
             const b = urlParams.get('b') || "";
+            const subTopic = urlParams.get('subTopic') || "";
 
-            if (currentCategory) {
+            if (subTopic) {
+                filterWrapper.style.display = 'none';
+                if (pageTitle) pageTitle.textContent = `신학 주제: ${subTopic}`;
+            } else if (currentCategory) {
                 filterWrapper.style.display = 'none';
                 let title = currentCategory;
                 if (b) title += ` > ${b}`;
@@ -1248,6 +1258,84 @@
             `;
             theologyTabsWrapper.style.display = 'block';
             updateUI();
+        }
+
+        let originalSubtopicPosts = [];
+
+        async function loadSubtopicItems(subTopic) {
+            grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 자료를 불러오는 중...</div>';
+            
+            try {
+                let query = db.collection("posts").where("subTopics", "array-contains", subTopic);
+                const snapshot = await query.get();
+                let posts = [];
+                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+
+                if (posts.length === 0) {
+                    grid.innerHTML = '<div class="no-results">해당 주제로 등록된 자료(슬라이드/동영상)가 아직 없습니다.</div>';
+                    if (paginationEl) paginationEl.innerHTML = '';
+                    theologyTabsWrapper.style.display = 'none';
+                    return;
+                }
+
+                grid.innerHTML = '';
+                const isBlog = false;
+                grid.className = 'resource-list-grid';
+
+                posts.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+                originalSubtopicPosts = posts;
+                allCurrentPosts = posts;
+
+                renderSubtopicFilterTabs(subTopic);
+                renderPage(1);
+
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = '<div class="no-results">자료를 불러오는 중에 오류가 발생했습니다.</div>';
+            }
+        }
+
+        function renderSubtopicFilterTabs(subTopic) {
+            const pdfCount = originalSubtopicPosts.filter(p => p.fileUrl && p.fileUrl.toLowerCase().includes('.pdf')).length;
+            const ytCount = originalSubtopicPosts.filter(p => p.content && (p.content.includes('youtube.com') || p.content.includes('youtu.be'))).length;
+            const totalCount = originalSubtopicPosts.length;
+
+            theologyTabsWrapper.style.display = 'block';
+            const ul = theologyTabsWrapper.querySelector('ul');
+            
+            ul.innerHTML = `
+                <li><a href="javascript:void(0)" class="theology-tab-btn active" id="btn-filter-all" onclick="filterSubtopic('all')">전체 자료 (${totalCount})</a></li>
+                <li><a href="javascript:void(0)" class="theology-tab-btn" id="btn-filter-pdf" onclick="filterSubtopic('pdf')">슬라이드 (PDF) (${pdfCount})</a></li>
+                <li><a href="javascript:void(0)" class="theology-tab-btn" id="btn-filter-yt" onclick="filterSubtopic('yt')">유튜브 동영상 (${ytCount})</a></li>
+            `;
+        }
+
+        window.filterSubtopic = function(type) {
+            const btns = theologyTabsWrapper.querySelectorAll('.theology-tab-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+
+            if (type === 'all') {
+                const btn = document.getElementById('btn-filter-all');
+                if (btn) btn.classList.add('active');
+                allCurrentPosts = originalSubtopicPosts;
+            } else if (type === 'pdf') {
+                const btn = document.getElementById('btn-filter-pdf');
+                if (btn) btn.classList.add('active');
+                allCurrentPosts = originalSubtopicPosts.filter(p => p.fileUrl && p.fileUrl.toLowerCase().includes('.pdf'));
+            } else if (type === 'yt') {
+                const btn = document.getElementById('btn-filter-yt');
+                if (btn) btn.classList.add('active');
+                allCurrentPosts = originalSubtopicPosts.filter(p => p.content && (p.content.includes('youtube.com') || p.content.includes('youtu.be')));
+            }
+
+            if (allCurrentPosts.length === 0) {
+                grid.innerHTML = '<div class="no-results">해당 분류의 자료가 없습니다.</div>';
+                if (paginationEl) paginationEl.innerHTML = '';
+            } else {
+                grid.innerHTML = '';
+                renderPage(1);
+            }
         }
 
         async function loadCategoryItems(category) {

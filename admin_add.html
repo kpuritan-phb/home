@@ -200,6 +200,22 @@
                         <textarea id="add-content" rows="8"
                             style="width: 100%; padding: 10px; border: 1px solid #ddd;"></textarea>
                     </div>
+                    
+                    <!-- 추천 태그 UI 삽입 -->
+                    <div id="subtopics-recommendation-wrapper" style="margin-top: 15px; background: #fcfaf7; padding: 15px; border-radius: 8px; border: 1px dashed var(--secondary-color); display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <label style="font-weight: 700; color: var(--primary-color); display: block; margin: 0;">
+                                <i class="fas fa-magic"></i> 자동 분석된 신학 상세 주제 (본문/제목 기반)
+                            </label>
+                            <button type="button" id="btn-add-manual-subtopic" style="padding: 3px 10px; font-size: 0.75rem; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                <i class="fas fa-plus"></i> 주제 직접 추가
+                            </button>
+                        </div>
+                        <div id="recommended-subtopics-tags" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            <!-- 칩이 들어갈 자리 -->
+                        </div>
+                        <p style="font-size: 0.75rem; color: #888; margin-top: 8px; margin-bottom: 0;">* 지우고 싶은 주제가 있다면 태그의 X 버튼을 클릭하세요. 자동으로 분석되어 포함됩니다.</p>
+                    </div>
                 </div>
 
                 <div class="form-section">
@@ -284,6 +300,93 @@
 
         otherSelect.addEventListener('change', updateSubTopicVisibility);
         topicSelect.addEventListener('change', updateSubTopicVisibility);
+
+        // --- 상세 주제 자동 분석 및 수동 추가를 위한 State ---
+        const excludedSubtopics = new Set();
+        const manuallyAddedSubtopics = [];
+
+        function updateRecommendedSubtopics() {
+            const title = (document.getElementById('add-title').value || '').trim();
+            const content = (document.getElementById('add-content').value || '').trim();
+            const wrapper = document.getElementById('subtopics-recommendation-wrapper');
+            const tagsContainer = document.getElementById('recommended-subtopics-tags');
+
+            if (!wrapper || !tagsContainer) return;
+
+            const combinedText = (title + ' ' + content).toLowerCase();
+            const detected = [];
+
+            if (typeof detailedTopicKeywords !== 'undefined') {
+                for (const [topicKey, keywords] of Object.entries(detailedTopicKeywords)) {
+                    if (keywords.some(kw => combinedText.includes(kw.toLowerCase()))) {
+                        detected.push(topicKey);
+                    }
+                }
+            }
+
+            // 합치기 (수동 추가 포함 & 제외된 것 제외)
+            const finalSubtopics = [
+                ...new Set([
+                    ...detected.filter(t => !excludedSubtopics.has(t)),
+                    ...manuallyAddedSubtopics
+                ])
+            ];
+
+            if (finalSubtopics.length === 0 && detected.length === 0 && manuallyAddedSubtopics.length === 0) {
+                wrapper.style.display = 'none';
+                return;
+            }
+
+            wrapper.style.display = 'block';
+            tagsContainer.innerHTML = '';
+
+            finalSubtopics.forEach(sub => {
+                const isManual = manuallyAddedSubtopics.includes(sub);
+                const tagEl = document.createElement('span');
+                tagEl.style.cssText = 'display:inline-flex; align-items:center; gap:5px; padding:5px 12px; font-size:0.85rem; border-radius:15px; border: 1px solid ' + (isManual ? '#1a342a' : '#c59c5e') + '; background:' + (isManual ? '#eef6f3' : '#fdfaf5') + '; color:' + (isManual ? '#1a342a' : '#c59c5e') + '; font-weight:500;';
+                tagEl.innerHTML = `
+                    <span>${sub}</span>
+                    <i class="fas fa-times-circle" style="cursor:pointer; font-size:0.95rem; opacity:0.75;" onclick="removeSubtopicTag('${sub}')"></i>
+                `;
+                tagsContainer.appendChild(tagEl);
+            });
+        }
+
+        window.removeSubtopicTag = function(sub) {
+            excludedSubtopics.add(sub);
+            const idx = manuallyAddedSubtopics.indexOf(sub);
+            if (idx > -1) {
+                manuallyAddedSubtopics.splice(idx, 1);
+            }
+            updateRecommendedSubtopics();
+        };
+
+        // 수동 추가 버튼 바인딩
+        document.getElementById('btn-add-manual-subtopic').addEventListener('click', () => {
+            const val = prompt("추가하고 싶은 신학 주제를 입력하세요 (예: 예정론, 십계명 등):");
+            if (!val) return;
+            const trimmed = val.trim();
+            if (!trimmed) return;
+
+            // detailedTopics에 실제로 있는 주제인지 체크
+            if (typeof detailedTopics !== 'undefined' && !detailedTopics.includes(trimmed)) {
+                if (!confirm(`'${trimmed}'은(는) 정의된 128개 신학 주제 목록에 없습니다. 그래도 추가하시겠습니까?`)) {
+                    return;
+                }
+            }
+
+            if (excludedSubtopics.has(trimmed)) {
+                excludedSubtopics.delete(trimmed);
+            }
+            if (!manuallyAddedSubtopics.includes(trimmed)) {
+                manuallyAddedSubtopics.push(trimmed);
+            }
+            updateRecommendedSubtopics();
+        });
+
+        // 입력창에 변경 리스너 바인딩
+        document.getElementById('add-title').addEventListener('input', updateRecommendedSubtopics);
+        document.getElementById('add-content').addEventListener('input', updateRecommendedSubtopics);
 
         // Pre-fill from URL Params
         const urlParams = new URLSearchParams(window.location.search);
@@ -382,6 +485,24 @@
                     throw new Error("최소 하나 이상의 분류를 선택해야 합니다.");
                 }
 
+                // 현재 매칭/직접 추가된 최종 상세 주제 목록 계산
+                const finalMatchedSubtopics = [];
+                const titleText = (document.getElementById('add-title').value || '').trim();
+                const contentText = (document.getElementById('add-content').value || '').trim();
+                const combinedText = (titleText + ' ' + contentText).toLowerCase();
+
+                if (typeof detailedTopicKeywords !== 'undefined') {
+                    for (const [topicKey, keywords] of Object.entries(detailedTopicKeywords)) {
+                        if (keywords.some(kw => combinedText.includes(kw.toLowerCase())) && !excludedSubtopics.has(topicKey)) {
+                            finalMatchedSubtopics.push(topicKey);
+                        }
+                    }
+                }
+                // 수동 추가 병합
+                manuallyAddedSubtopics.forEach(ms => {
+                    if (!finalMatchedSubtopics.includes(ms)) finalMatchedSubtopics.push(ms);
+                });
+
                 const addData = {
                     topic, author, otherCategory: other, tags,
                     title: document.getElementById('add-title').value.trim() || "제목 없음",
@@ -390,6 +511,7 @@
                     recent_order: 0,
                     price: document.getElementById('add-price').value.trim() || "",
                     content: document.getElementById('add-content').value,
+                    subTopics: finalMatchedSubtopics,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 

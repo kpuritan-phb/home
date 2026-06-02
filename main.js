@@ -55,19 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const editModal = document.getElementById('edit-modal');
     const recentGrid = document.getElementById('recent-posts-grid');
 
-    // 주제별 검색 메뉴 동적 주입
-    const navUl = document.querySelector('header nav ul');
-    if (navUl) {
-        const li = document.createElement('li');
-        li.id = 'nav-detailed-search';
-        li.style.cssText = 'border-radius: 8px; transition: all 0.3s;';
-        li.innerHTML = `
-            <a href="javascript:void(0)" onclick="openAllTopicsModal()" style="color: #c59c5e !important; font-weight:700; display: flex; align-items: center; gap: 6px;">
-                <i class="fas fa-search-plus" style="color: #c59c5e;"></i> 주제별 검색
-            </a>
-        `;
-        navUl.appendChild(li);
-    }
+    // 주제별 검색 메뉴는 우측 상단 검색창에 통합되었으므로 동적 주입 제거
+
 
     // Sort Categories Alphabetically as requested
     // Bible books kept in canonical order.

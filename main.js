@@ -373,7 +373,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (navLogout) navLogout.remove();
 
             alert('로그아웃 되었습니다.');
-            // Go to home if on admin-heavy page
+            // Go to home if on admin page
+            if (location.pathname.includes('admin.html')) {
+                location.href = 'index.html';
+                return;
+            }
             if (location.pathname.includes('seminary.html')) {
                 // Stay or go home
             }
@@ -395,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.logoutAdmin();
             } else {
                 if (loginModal) window.openModal(loginModal);
-                else location.href = 'index.html'; // Modal only on index
+                else location.href = 'admin.html'; // Redirect to admin page if modal doesn't exist
             }
         });
     }

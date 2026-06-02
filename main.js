@@ -99,12 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!modal) return;
         if (modal.classList.contains('show')) return;
 
-        // 리소스 모달 초기화: 주제별 검색 모달이 열리면서 block/100% 스타일로 오버라이드한 것을 복구
-        if (modal.id === 'resource-modal' && typeof resourceListContainer !== 'undefined' && resourceListContainer) {
-            resourceListContainer.style.display = '';
-            resourceListContainer.style.width = '';
-        }
-
         modal.classList.add('show');
         // Push a state to history so back button closes the modal
         // Using window.location.href to keep the same URL
@@ -118,6 +112,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 m.classList.remove('show');
                 anyModalWasOpen = true;
                 window.selectionTargetSlot = null; // Selection mode reset
+
+                // 모달 닫힐 때 리소스 리스트 스타일 리셋
+                if (m.id === 'resource-modal' && typeof resourceListContainer !== 'undefined' && resourceListContainer) {
+                    resourceListContainer.style.display = '';
+                    resourceListContainer.style.width = '';
+                }
             }
         });
 
@@ -2321,15 +2321,15 @@ document.addEventListener('DOMContentLoaded', () => {
     window.openAllTopicsModal = () => {
         if (!resourceModal) return;
         
-        // 상세 주제별 검색 모달은 전체 너비의 블록 형태로 채워져야 한쪽 쏠림이 해결된다.
-        if (resourceListContainer) {
-            resourceListContainer.style.display = 'block';
-            resourceListContainer.style.width = '100%';
-        }
-        
         window.openModal(resourceModal);
         resourceListContainer.classList.remove('compact-view');
         resourceModalTitle.textContent = `상세 주제별 검색`;
+
+        // 상세 주제별 검색 모달은 전체 너비의 블록 형태로 채워져야 한쪽 쏠림이 해결된다.
+        if (resourceListContainer) {
+            resourceListContainer.style.setProperty('display', 'block', 'important');
+            resourceListContainer.style.setProperty('width', '100%', 'important');
+        }
 
         const adminHeader = document.getElementById('resource-modal-admin-header');
         if (adminHeader) adminHeader.style.display = 'none';

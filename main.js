@@ -95,11 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const authorDropdownGrid = document.getElementById('author-dropdown-grid');
 
 
-    // --- Modal Management with Browser Back Button Support ---
-    // --- Modal Management with Browser Back Button Support ---
     window.openModal = (modal) => {
         if (!modal) return;
         if (modal.classList.contains('show')) return;
+
+        // 리소스 모달 초기화: 주제별 검색 모달이 열리면서 block/100% 스타일로 오버라이드한 것을 복구
+        if (modal.id === 'resource-modal' && typeof resourceListContainer !== 'undefined' && resourceListContainer) {
+            resourceListContainer.style.display = '';
+            resourceListContainer.style.width = '';
+        }
 
         modal.classList.add('show');
         // Push a state to history so back button closes the modal
@@ -2316,6 +2320,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.openAllTopicsModal = () => {
         if (!resourceModal) return;
+        
+        // 상세 주제별 검색 모달은 전체 너비의 블록 형태로 채워져야 한쪽 쏠림이 해결된다.
+        if (resourceListContainer) {
+            resourceListContainer.style.display = 'block';
+            resourceListContainer.style.width = '100%';
+        }
+        
         window.openModal(resourceModal);
         resourceListContainer.classList.remove('compact-view');
         resourceModalTitle.textContent = `상세 주제별 검색`;
@@ -2327,26 +2338,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetTopics = (typeof detailedTopics !== 'undefined' && Array.isArray(detailedTopics)) ? detailedTopics : topics;
         const sortedTopics = [...targetTopics].sort((a, b) => a.localeCompare(b, 'ko'));
 
-        // UI 기본 템플릿 주입
+        // UI 기본 템플릿 주입 (중앙 정렬 및 크기 확대 조정)
         resourceListContainer.innerHTML = `
-            <div class="detailed-search-wrapper" style="display:flex; flex-direction:column; gap:20px; height:100%;">
-                <div class="detailed-search-header" style="background:var(--primary-color); padding:20px; border-radius:12px; color:white; display:flex; flex-direction:column; gap:12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <div style="font-weight: 600; font-size:1.1rem;"><i class="fas fa-search"></i> 원하는 신학 주제를 검색하세요</div>
-                    <div class="search-input-wrap" style="position:relative; width:100%;">
-                        <input type="text" id="detailed-topic-search-input" placeholder="예: 예정론, 십계명, 그리스도의 순종..." style="width:100%; padding:12px 45px 12px 15px; border-radius:8px; border:none; outline:none; font-size:1rem; color:#333; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);">
-                        <i class="fas fa-times" id="detailed-topic-search-clear" style="position:absolute; right:15px; top:50%; transform:translateY(-50%); color:#999; cursor:pointer; display:none;"></i>
+            <div class="detailed-search-wrapper" style="display:flex; flex-direction:column; gap:20px; height:100%; width:100%; box-sizing:border-box;">
+                <div class="detailed-search-header" style="background:var(--primary-color); padding:30px 20px; border-radius:12px; color:white; display:flex; flex-direction:column; gap:12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align:center; align-items:center;">
+                    <div style="font-weight: 700; font-size:1.3rem; letter-spacing:-0.02em;"><i class="fas fa-search"></i> 원하는 신학 주제를 검색하세요</div>
+                    <div class="search-input-wrap" style="position:relative; width:100%; max-width:600px;">
+                        <input type="text" id="detailed-topic-search-input" placeholder="예: 예정론, 십계명, 그리스도의 순종..." style="width:100%; padding:14px 45px 14px 20px; border-radius:30px; border:none; outline:none; font-size:1.05rem; color:#333; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);">
+                        <i class="fas fa-times" id="detailed-topic-search-clear" style="position:absolute; right:20px; top:50%; transform:translateY(-50%); color:#999; cursor:pointer; display:none; font-size:1.1rem;"></i>
                     </div>
-                    <div style="font-size:0.85rem; opacity:0.85;">* 총 ${sortedTopics.length}개의 정밀 분류된 청교도/개혁주의 신학 주제가 준비되어 있습니다.</div>
+                    <div style="font-size:0.9rem; opacity:0.85; font-weight:500;">* 총 ${sortedTopics.length}개의 정밀 분류된 청교도/개혁주의 신학 주제가 준비되어 있습니다.</div>
                 </div>
-                <div class="modal-nav-container" style="flex:1; display:flex; min-height:0; position:relative;">
-                    <div class="modal-content-scroll" id="modal-topic-scroll" style="flex:1; overflow-y:auto; padding-right:15px; min-height: 250px; max-height: 450px;">
-                        <div class="main-grid-container" id="modal-topic-grid"></div>
+                <div class="modal-nav-container" style="flex:1; display:flex; min-height:0; position:relative; width:100%;">
+                    <div class="modal-content-scroll" id="modal-topic-scroll" style="flex:1; overflow-y:auto; padding-right:15px; min-height: 250px; max-height: 55vh;">
+                        <div class="main-grid-container" id="modal-topic-grid" style="width:100%;"></div>
                     </div>
-                    <div class="modal-index-nav" id="modal-topic-index" style="display:flex; flex-direction:column; justify-content:space-between; padding-left:10px; font-size:0.75rem; color:#888; font-weight:600; cursor:pointer;"></div>
+                    <div class="modal-index-nav" id="modal-topic-index" style="display:flex; flex-direction:column; justify-content:space-between; padding-left:15px; font-size:0.8rem; color:#888; font-weight:600; cursor:pointer; user-select:none;"></div>
                 </div>
             </div>
         `;
-
         const grid = document.getElementById('modal-topic-grid');
         const indexNav = document.getElementById('modal-topic-index');
         const scrollContainer = document.getElementById('modal-topic-scroll');

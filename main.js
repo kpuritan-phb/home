@@ -2179,7 +2179,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Mock Data Rendering for Carousel ---
     window.renderMockCarousels = () => {
-        // 데이터를 2배로 늘려서 화면 꽉 차게 (8개 이상)
         const baseData = [
             { title: "청교도 신학의 정수: 존 오웬의 성령론", cat: "청교도 신학", date: "2026.01.15", series: "" },
             { title: "현대 교회를 위한 웨스트민스터 신앙고백 해설", cat: "신앙고백", date: "2026.01.12", series: "" },
@@ -2188,7 +2187,11 @@ document.addEventListener('DOMContentLoaded', () => {
             { title: "가정 예배의 회복과 실제적인 지침", cat: "신자의 삶", date: "2026.01.05", series: "" },
             { title: "은혜의 수단으로서의 기도", cat: "청교도 신학", date: "2026.01.03", series: "" },
             { title: "참된 회심의 성경적 표지", cat: "회심", date: "2026.01.01", series: "" },
-            { title: "그리스도의 위격과 사역", cat: "기독론", date: "2025.12.28", series: "" }
+            { title: "그리스도의 위격과 사역", cat: "기독론", date: "2025.12.28", series: "" },
+            { title: "영적 전쟁과 사탄의 계략", cat: "영적전쟁", date: "2025.12.25", series: "" },
+            { title: "부부의 사랑과 기독교적 혼인", cat: "그리스도인의 가정", date: "2025.12.20", series: "" },
+            { title: "세계 선교와 복음 전파의 사명", cat: "전도, 선교", date: "2025.12.15", series: "" },
+            { title: "장로교 역사와 신조의 성립", cat: "역사 신학", date: "2025.12.10", series: "" }
         ];
 
         const mockData = baseData.map((item, index) => ({ ...item, id: `mock_new_${index}` }));

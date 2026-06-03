@@ -153,15 +153,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             // Fallback or Desktop behavior if toggle exists but screen is large
-            if (nav) nav.classList.toggle('active');
+            if (nav) {
+                const isActive = nav.classList.toggle('active');
+                mobileMenuToggle.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+            }
             if (navOverlay) navOverlay.classList.toggle('active');
         });
 
         // Close menu when clicking outside or overlay
         const closeMenu = () => {
-            nav.classList.remove('active');
-            navOverlay.classList.remove('active');
-            mobileMenuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+            if (nav) nav.classList.remove('active');
+            if (navOverlay) navOverlay.classList.remove('active');
+            mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (icon) icon.classList.replace('fa-times', 'fa-bars');
         };
 
         navOverlay.addEventListener('click', closeMenu);

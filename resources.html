@@ -955,7 +955,7 @@
 
         let allCurrentPosts = [];
         let currentPage = 1;
-        const itemsPerPage = 10;
+        const itemsPerPage = 12; // 대칭 3행 렌더링을 위해 12로 확대
 
         const BIBLE_BOOKS = [
             { name: "창세기", chapters: 50, test: 'old' }, { name: "출애굽기", chapters: 40, test: 'old' }, { name: "레위기", chapters: 27, test: 'old' }, { name: "민수기", chapters: 36, test: 'old' }, { name: "신명기", chapters: 34, test: 'old' },
@@ -1046,7 +1046,8 @@
                 grid.style.display = 'grid';
                 bibleWrapper.style.display = 'none';
                 chapterWrapper.style.display = 'none';
-                loadCategories();
+                // 기존의 대주제 탭폴더 구조 대신, 전체 리스트가 바로 나오도록 변경
+                await loadAllResources(typeParam || 'latest');
             }
 
             updateUI();
@@ -1123,11 +1124,18 @@
                     theologyTabsWrapper.style.display = 'none';
                 }
             } else {
-                filterWrapper.style.display = 'flex';
+                // 전체보기 뷰이므로 불필요한 필터와 저자별 탭을 가려줌
+                if (filterWrapper) filterWrapper.style.display = 'none';
                 theologyTabsWrapper.style.display = 'none';
                 bibleWrapper.style.display = 'none';
                 if (chapterWrapper) chapterWrapper.style.display = 'none';
-                if (pageTitle) pageTitle.textContent = currentType === 'author' ? '저자별 자료' : '주제별 자료';
+                
+                const type = urlParams.get('type');
+                if (pageTitle) {
+                    if (type === 'latest') pageTitle.textContent = '최신 업데이트 전체 자료';
+                    else if (type === 'recommended') pageTitle.textContent = '추천 자료 전체 목록';
+                    else pageTitle.textContent = '최신 업데이트 전체 자료';
+                }
             }
         }
 
@@ -1175,9 +1183,63 @@
             // Revert container class to grid for categories
             grid.className = 'resource-list-grid';
 
-            loadCategories();
+            loadAllResources(url.searchParams.get('type') || 'latest');
             updateUI();
             if (paginationEl) paginationEl.innerHTML = '';
+        }
+
+        async function loadAllResources(type) {
+            grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 자료를 불러오는 중...</div>';
+            if (paginationEl) paginationEl.innerHTML = '';
+
+            try {
+                // 전체 포스트 가져오기 (가장 많은 수 2000개 정도 한도 설정)
+                const snapshot = await db.collection("posts").orderBy("createdAt", "desc").limit(1000).get();
+                let posts = [];
+                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+
+                if (posts.length === 0) {
+                    grid.innerHTML = '<div class="no-results">등록된 자료가 없습니다.</div>';
+                    return;
+                }
+
+                grid.innerHTML = '';
+                grid.className = 'resource-list-grid';
+
+                if (type === 'latest') {
+                    // 최신 업데이트 전체 목록: 
+                    // '구속사적 성경주석', '세미나, 강의', '세미나', '강의', '5분 신학강론', '오분 신학 강론'을 제외
+                    allCurrentPosts = posts.filter(post => {
+                        const tags = post.tags || [];
+                        const excluded = ['구속사적 성경주석', '세미나, 강의', '세미나', '강의', '5분 신학강론', '오분 신학 강론'];
+                        return !tags.some(tag => excluded.includes(tag));
+                    });
+                    if (pageTitle) pageTitle.textContent = '최신 업데이트 전체 자료';
+                } else if (type === 'recommended') {
+                    // 추천 자료 전체 목록: PDF 자료들을 필터링
+                    allCurrentPosts = posts.filter(post => {
+                        const url = post.fileUrl || "";
+                        return /(?:\.|%2E)pdf($|\?|#)/i.test(url);
+                    });
+                    if (pageTitle) pageTitle.textContent = '추천 자료 전체 목록';
+                } else {
+                    // 기본 백업
+                    allCurrentPosts = posts;
+                    if (pageTitle) pageTitle.textContent = '전체 자료 목록';
+                }
+
+                if (allCurrentPosts.length === 0) {
+                    grid.innerHTML = '<div class="no-results">해당 조건의 자료가 없습니다.</div>';
+                    return;
+                }
+
+                // 1페이지 렌더링
+                renderPage(1);
+
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = '<div class="no-results">자료를 불러오는 중에 오류가 발생했습니다.</div>';
+            }
         }
 
         function loadCategories() {

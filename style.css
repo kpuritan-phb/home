@@ -51,8 +51,9 @@ h4 {
 
 /* Header & Navigation */
 header {
-    background-color: var(--primary-color);
+    background-color: var(--white);
     box-shadow: var(--shadow);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     position: sticky;
     top: 0;
     z-index: 2100;
@@ -63,8 +64,8 @@ header {
 }
 
 header.scrolled {
-    background: var(--primary-color);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 header.scrolled .nav-container {
@@ -192,7 +193,7 @@ header.scrolled .nav-container {
     font-family: 'Montserrat', sans-serif;
     font-size: 2rem;
     font-weight: 900;
-    color: var(--white);
+    color: var(--primary-color);
     letter-spacing: -0.04em;
     display: block;
     line-height: 1;
@@ -202,7 +203,7 @@ header.scrolled .nav-container {
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 1.1rem;
     font-weight: 900;
-    color: var(--white);
+    color: var(--primary-color);
     letter-spacing: -0.02em;
     display: block;
     margin-top: 2px;
@@ -212,7 +213,7 @@ header.scrolled .nav-container {
     font-family: 'Montserrat', sans-serif;
     font-size: 0.65rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(45, 47, 49, 0.5);
     letter-spacing: 0.12em;
     display: block;
     margin-top: 3px;
@@ -221,7 +222,7 @@ header.scrolled .nav-container {
 
 nav ul li a {
     text-decoration: none;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(45, 47, 49, 0.85);
     font-weight: 700;
     /* Bold English / Gothic feel */
     font-size: 0.95rem;
@@ -236,7 +237,7 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-    color: var(--white);
+    color: var(--secondary-color);
 }
 
 /* .nav-seminary-link {
@@ -324,7 +325,7 @@ nav ul li:hover a i {
     border-radius: 4px;
     padding: 1rem;
     z-index: 1001;
-    border-top: 4px solid var(--primary-color);
+    border-top: 4px solid var(--secondary-color);
 }
 
 .dropdown-content::before {
@@ -375,7 +376,7 @@ nav ul li:hover a i {
 }
 
 .dropdown-list li a:hover {
-    background-color: var(--accent-color);
+    background-color: rgba(26, 52, 42, 0.06);
     color: var(--secondary-color);
     padding-left: 1.5rem;
 }
@@ -489,12 +490,17 @@ nav ul li:hover a i {
 .search-bar {
     display: flex;
     align-items: center;
-    background: var(--accent-color);
-    padding: 0.4rem 0.8rem;
+    background: #f1f3f1;
+    padding: 0.5rem 1rem;
     border-radius: 50px;
-    border: 1px solid #e0e0e0;
+    border: none;
     flex-shrink: 1;
-    max-width: 200px;
+    max-width: 220px;
+    transition: var(--transition);
+}
+
+.search-bar:hover {
+    background: #e4e7e4;
 }
 
 .search-bar input {
@@ -2504,7 +2510,7 @@ footer {
     display: none;
     background: none;
     border: none;
-    color: var(--white);
+    color: var(--primary-color);
     font-size: 1.8rem;
     cursor: pointer;
     z-index: 2001;
@@ -2550,8 +2556,7 @@ footer {
 
     .search-bar {
         max-width: 100%;
-        background: rgba(255, 255, 255, 0.08);
-        /* More subtle */
+        background: #f1f3f1;
     }
 
     header nav {

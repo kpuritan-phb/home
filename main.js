@@ -2352,13 +2352,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Real Search Logic
     const searchInput = document.querySelector('.search-bar input');
 
-    const performSearch = async (query) => {
+    window.performSearch = async (query) => {
         if (!query) return;
-        if (!resourceModal) return;
+        
+        const rModal = document.getElementById('resource-modal');
+        const rTitle = document.getElementById('resource-modal-title');
+        const rList = document.getElementById('resource-list-container');
 
-        window.openModal(resourceModal);
-        resourceModalTitle.textContent = `'${query}' 검색 결과`;
-        resourceListContainer.innerHTML = '<li class="no-resource-msg">검색 중입니다...</li>';
+        if (!rModal || !rTitle || !rList) {
+            console.error("Search modal DOM elements missing!");
+            return;
+        }
+
+        if (window.openModal) {
+            window.openModal(rModal);
+        } else {
+            rModal.classList.add('open');
+            rModal.style.display = 'block';
+        }
+
+        rTitle.textContent = `'${query}' 검색 결과`;
+        rList.innerHTML = '<li class="no-resource-msg">검색 중입니다...</li>';
 
         try {
             const snapshot = await db.collection("posts")
@@ -2367,31 +2381,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 .get();
 
             if (snapshot.empty) {
-                resourceListContainer.innerHTML = '<li class="no-resource-msg">검색 결과가 없습니다.</li>';
+                rList.innerHTML = '<li class="no-resource-msg">검색 결과가 없습니다.</li>';
                 return;
             }
 
-            resourceListContainer.innerHTML = '';
+            rList.innerHTML = '';
             snapshot.forEach(doc => {
                 const post = { id: doc.id, ...doc.data() };
-                renderSingleResource(post, resourceListContainer);
+                renderSingleResource(post, rList);
             });
 
         } catch (error) {
             console.error("Search Error: ", error);
-            resourceListContainer.innerHTML = `<li class="no-resource-msg">검색 중 오류가 발생했습니다.<br>(${error.message})</li>`;
+            rList.innerHTML = `<li class="no-resource-msg">검색 중 오류가 발생했습니다.<br>(${error.message})</li>`;
         }
     };
 
     if (searchInput) {
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                performSearch(searchInput.value.trim());
+                window.performSearch(searchInput.value.trim());
             }
         });
         const searchIcon = document.querySelector('.search-icon');
         if (searchIcon) {
-            searchIcon.addEventListener('click', () => performSearch(searchInput.value.trim()));
+            searchIcon.addEventListener('click', () => window.performSearch(searchInput.value.trim()));
         }
     }
 

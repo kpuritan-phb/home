@@ -881,8 +881,20 @@
             };
 
             btnShowAll.addEventListener('click', () => {
+                // 사이드바 카테고리 활성화 상태 및 아코디언 초기화
                 document.querySelectorAll('.sidebar-topic-item').forEach(el => el.classList.remove('active'));
                 btnShowAll.classList.add('active');
+                
+                // 열려있던 모든 서브 아코디언 닫기 및 화살표 각도 원복
+                document.querySelectorAll('.sidebar-subtopics-container').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.major-item .toggle-icon').forEach(icon => icon.style.transform = 'rotate(0deg)');
+                
+                // 검색창 인풋 및 클리어 버튼 초기화
+                if (searchInput) {
+                    searchInput.value = '';
+                    if (searchClear) searchClear.style.display = 'none';
+                }
+                renderSidebarTopics(''); // 사이드바 주제 목록 원상 복귀
                 
                 filteredView.style.display = 'none';
                 defaultView.style.display = 'block';
@@ -1054,6 +1066,7 @@
                 }
             };
 
+            // 검색바 입력 시 사이드바 실시간 카테고리 필터링
             searchInput.addEventListener('input', (e) => {
                 const query = e.target.value.trim();
                 if (query) {
@@ -1063,6 +1076,28 @@
                 }
                 renderSidebarTopics(query);
             });
+
+            // Enter 키를 누르면 메인 우상단과 동일하게 팝업 검색 실행
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = searchInput.value.trim();
+                    if (query && typeof window.performSearch === 'function') {
+                        window.performSearch(query);
+                    }
+                }
+            });
+
+            // 사이드바 검색 돋보기 아이콘 클릭 시 검색 실행
+            const sidebarSearchIcon = document.querySelector('.sidebar-search-icon');
+            if (sidebarSearchIcon) {
+                sidebarSearchIcon.style.cursor = 'pointer';
+                sidebarSearchIcon.addEventListener('click', () => {
+                    const query = searchInput.value.trim();
+                    if (query && typeof window.performSearch === 'function') {
+                        window.performSearch(query);
+                    }
+                });
+            }
 
             searchClear.addEventListener('click', () => {
                 searchInput.value = '';

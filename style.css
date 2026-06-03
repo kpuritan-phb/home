@@ -3805,6 +3805,42 @@ footer {
     margin-top: auto;
 }
 
+/* PC/Mobile UX Enhancements */
+
+/* 1. 사이드바 토글 버튼 펄스 효과 */
+.sidebar-toggle-btn.pulse-effect {
+    animation: sidebarPulse 1.2s infinite;
+}
+
+@keyframes sidebarPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(26, 52, 42, 0.5);
+    }
+    70% {
+        box-shadow: 0 0 0 8px rgba(26, 52, 42, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(26, 52, 42, 0);
+    }
+}
+
+/* 2. 카러셀 드래그 텍스트 선택 방지 */
+.carousel-track, .carousel-card {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* 3. 모바일 전용 닫기 헤더 및 플로팅 탐색 버튼 기본 숨김 */
+.sidebar-mobile-header {
+    display: none;
+}
+
+.mobile-explore-btn {
+    display: none;
+}
+
 /* Responsive Styles */
 @media (max-width: 1024px) {
     .explore-layout-container {
@@ -3818,9 +3854,32 @@ footer {
     .sidebar-inner-content {
         padding: 1.5rem;
     }
+    
+    /* PC 모니터 그리드 2열 */
+    #resource-list-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+    #resource-list-container li {
+        margin-bottom: 0 !important;
+    }
 }
 
 @media (max-width: 768px) {
+    /* 모바일에서는 검색 결과 그리드를 다시 1열로 환원 */
+    #resource-list-container {
+        display: block;
+    }
+    #resource-list-container li {
+        margin-bottom: 1.5rem !important;
+    }
+
+    /* 모바일 모달 dvh 대응 */
+    .modal-content {
+        max-height: 85dvh !important;
+    }
+
     .explore-layout-container {
         flex-direction: column;
         gap: 1.5rem;
@@ -3831,65 +3890,166 @@ footer {
         display: none !important;
     }
 
+    /* 모바일 플로팅 탐색 버튼 활성화 */
+    .mobile-explore-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        position: fixed;
+        bottom: 85px;
+        right: 20px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.8rem 1.2rem;
+        border-radius: 50px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(26, 52, 42, 0.3);
+        z-index: 9999;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.2s;
+    }
+
+    .mobile-explore-btn:active {
+        transform: scale(0.92);
+        background: #12251e;
+    }
+
+    /* 모바일 사이드바 -> 바텀시트 모달 드로어 전환 */
     .explore-sidebar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
         width: 100%;
-        position: static;
+        height: 75dvh;
+        background: #ffffff;
+        z-index: 10000;
+        border-top-left-radius: 24px;
+        border-top-right-radius: 24px;
+        box-shadow: 0 -10px 30px rgba(0,0,0,0.15);
+        transform: translateY(105%);
+        transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        display: block !important;
+        margin: 0;
+        overflow: hidden;
+        border: none;
         max-height: none;
         padding: 0;
+    }
+
+    .explore-sidebar.mobile-open {
+        transform: translateY(0);
+    }
+
+    /* 모바일 전용 헤더 */
+    .sidebar-mobile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 1rem;
+        margin-bottom: 0.8rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .sidebar-mobile-header span {
+        font-weight: 800;
+        font-size: 1.05rem;
+        color: var(--primary-color);
+    }
+    .sidebar-mobile-header button {
+        background: none;
         border: none;
-        box-shadow: none;
-        background: transparent;
+        font-size: 1.2rem;
+        color: #64748b;
+        cursor: pointer;
+        padding: 0.5rem;
     }
 
     .sidebar-inner-content {
-        padding: 1rem;
-        border-radius: 12px;
-        max-height: none;
-        overflow: visible;
+        padding: 1.5rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
         box-shadow: none;
+        border-radius: 0;
     }
 
-    /* Horizontal Categories Slider for Mobile */
     .sidebar-topic-list {
-        display: flex;
-        overflow-x: auto;
-        gap: 0.6rem;
-        padding: 0.2rem 0 0.8rem 0;
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
+        display: block !important;
+        flex: 1;
+        overflow-y: auto;
+        padding-right: 0.5rem;
     }
 
     .sidebar-topic-list::-webkit-scrollbar {
-        display: none;
+        width: 4px;
+    }
+    .sidebar-topic-list::-webkit-scrollbar-thumb {
+        background: rgba(0,0,0,0.1);
+        border-radius: 4px;
     }
 
     .sidebar-divider {
-        display: none;
+        display: block;
+        margin: 1rem 0 0.5rem 0;
     }
 
+    /* 터치 타겟 44px 이상 확보 */
     .sidebar-topic-item {
-        flex-shrink: 0;
-        margin-bottom: 0;
-        padding: 0.6rem 1rem;
-        font-size: 0.88rem;
-        background: #f1f5f9;
-        border-radius: 30px;
+        margin-bottom: 0.4rem;
+        padding: 12px 16px !important;
+        font-size: 0.95rem;
+        background: #f8fafc;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        transition: background 0.2s;
     }
 
     .sidebar-topic-item.active {
-        background: var(--secondary-color);
+        background: var(--secondary-color) !important;
+        color: white !important;
     }
-    
+
+    /* 모바일 서브 아코디언 허용 */
     .sidebar-subtopics-container {
-        display: none !important;
+        display: block !important;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+        padding: 0 0 0 1rem;
+    }
+
+    .sidebar-subtopics-container.open {
+        opacity: 1;
+        max-height: 500px;
+        padding: 0.5rem 0 0.5rem 1.2rem;
+    }
+
+    .sub-item {
+        padding: 10px 14px !important;
+        font-size: 0.88rem;
+        background: transparent;
     }
 
     .major-item {
-        padding-right: 1rem;
+        padding-right: 1.2rem;
     }
 
     .major-item .toggle-icon {
-        display: none;
+        display: inline-block !important;
+    }
+
+    /* 카러셀 행 밀도 완화 (2행 그리드로 축소) */
+    .carousel-track {
+        grid-template-rows: repeat(2, 1fr) !important;
+        grid-auto-columns: 210px !important;
+        gap: 0.8rem 0.8rem !important;
     }
 
     .explorer-result-card {
@@ -3897,6 +4057,7 @@ footer {
     }
 
     .explorer-result-thumb {
-        height: 95px;
+        height: 120px;
+        width: 100%;
     }
 }

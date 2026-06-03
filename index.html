@@ -141,6 +141,13 @@
                     </button>
                     
                     <div class="sidebar-inner-content" id="sidebar-inner-content">
+                        <!-- 모바일 전용 닫기 헤더 -->
+                        <div class="sidebar-mobile-header">
+                            <span>신학 주제 탐색</span>
+                            <button id="sidebar-mobile-close" aria-label="메뉴 닫기">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                         <div class="sidebar-search-box">
                             <i class="fas fa-search sidebar-search-icon"></i>
                             <input type="text" id="sidebar-search-input" placeholder="원하는 주제 검색..." autocomplete="off">
@@ -1107,8 +1114,66 @@
             });
 
             renderSidebarTopics();
+
+            // --- PC/Mobile UX Enhancements ---
+            
+            // 1. 최초 진입 시 토글 버튼 펄스 안내 모션 효과 (3.5초간 적용 후 해제)
+            const pcToggleBtn = document.getElementById('sidebar-toggle-btn');
+            if (pcToggleBtn) {
+                pcToggleBtn.classList.add('pulse-effect');
+                setTimeout(() => {
+                    pcToggleBtn.classList.remove('pulse-effect');
+                }, 3500);
+            }
+
+            // 2. 모바일 토픽 탐색 바텀시트 열기/닫기 제어
+            const mobileTrigger = document.getElementById('mobile-explore-trigger');
+            const mobileCloseBtn = document.getElementById('sidebar-mobile-close');
+            
+            if (mobileTrigger && sidebar) {
+                mobileTrigger.addEventListener('click', () => {
+                    sidebar.classList.add('mobile-open');
+                    document.body.style.overflow = 'hidden'; // 뒷배경 스크롤 잠금
+                });
+            }
+
+            const closeMobileSidebar = () => {
+                if (sidebar) {
+                    sidebar.classList.remove('mobile-open');
+                    document.body.style.overflow = 'auto'; // 스크롤 잠금 해제
+                }
+            };
+
+            if (mobileCloseBtn) {
+                mobileCloseBtn.addEventListener('click', closeMobileSidebar);
+            }
+
+            // 카테고리 클릭 시 모바일 드로어가 자동으로 닫히도록 연동
+            const topicItems = document.querySelectorAll('.sidebar-topic-item, #btn-show-all-resources');
+            topicItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    if (!item.classList.contains('major-item') || !item.querySelector('.toggle-icon')) {
+                        closeMobileSidebar();
+                    }
+                });
+            });
+
+            // 동적으로 로드되는 서브 카테고리 내부 클릭 이벤트 바인딩 보정
+            if (majorTopicsContainer) {
+                majorTopicsContainer.addEventListener('click', (e) => {
+                    const subItem = e.target.closest('.sub-item');
+                    if (subItem) {
+                        closeMobileSidebar();
+                    }
+                });
+            }
         }
     </script>
+    <!-- 모바일 전용 주제 탐색 플로팅 버튼 -->
+    <button id="mobile-explore-trigger" class="mobile-explore-btn">
+        <i class="fas fa-bars"></i> 주제 탐색
+    </button>
+
     <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">
         <i class="fas fa-envelope"></i>
     </a>

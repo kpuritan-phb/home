@@ -3395,9 +3395,9 @@ footer {
 .explore-layout-container {
     display: flex;
     gap: 3rem;
-    max-width: 1400px;
+    max-width: 100%;
     margin: 2rem auto 4rem auto;
-    padding: 0 2rem;
+    padding: 0 3rem;
     align-items: flex-start;
 }
 

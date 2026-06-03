@@ -122,6 +122,53 @@
             </div>
         </section>
 
+        <!-- Theology Explorer Section -->
+        <section id="theology-explorer" class="theology-explorer-section">
+            <div class="explorer-container">
+                <div class="section-title modern-flex" style="margin-bottom: 2rem; border-bottom: none; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                    <div class="title-text-group" style="text-align: center; width: 100%;">
+                        <h2 style="font-size: 2.2rem; color: var(--secondary-color);">THEOLOGY EXPLORER</h2>
+                        <p style="color: #666; font-size: 1.05rem; margin-top: 0.5rem; white-space: normal;">새 창 이동 없이 메인 화면에서 신학 자료를 즉시 탐색해보세요.</p>
+                    </div>
+                </div>
+
+                <!-- 검색창 및 제어 영역 -->
+                <div class="explorer-controls">
+                    <div class="explorer-search-wrapper">
+                        <i class="fas fa-search explorer-search-icon"></i>
+                        <input type="text" id="explorer-search-input" placeholder="원하는 신학 주제를 검색하세요 (예: 예정론, 십계명, 성령...)" autocomplete="off">
+                        <i class="fas fa-times" id="explorer-search-clear" style="display: none;"></i>
+                    </div>
+                    
+                    <div class="explorer-tabs">
+                        <button class="explorer-tab-btn active" data-tab="topics">대주제 분류</button>
+                        <button class="explorer-tab-btn" data-tab="subtopics">상세 주제 분류</button>
+                    </div>
+                </div>
+
+                <!-- 대주제 그리드 -->
+                <div id="explorer-topics-grid" class="explorer-grid active">
+                    <!-- JS로 대주제 카드들 주입 -->
+                </div>
+
+                <!-- 상세주제 그리드 -->
+                <div id="explorer-subtopics-grid" class="explorer-grid">
+                    <!-- JS로 상세 주제 주입 -->
+                </div>
+
+                <!-- 결과 표시 패널 -->
+                <div id="explorer-results-panel" class="explorer-results-panel" style="display: none;">
+                    <div class="explorer-results-header">
+                        <h3 id="explorer-results-title">선택된 주제 자료</h3>
+                        <button id="explorer-results-close-btn" class="explorer-close-btn"><i class="fas fa-times"></i> 닫기</button>
+                    </div>
+                    <div id="explorer-results-list" class="explorer-results-list">
+                        <!-- 결과 포스트 카드들 주입 -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
 
 
         <section id="recent-updates">
@@ -672,6 +719,312 @@
     <script src="bgm.js?v=1"></script>
     <script src="stats.js?v=1"></script>
     <script src="main.js?v=reorder_v3_restore"></script>
+    <script>
+        // --- Theology Explorer Script ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait for data.js to fully load
+            setTimeout(() => {
+                if (typeof topics === 'undefined' || typeof detailedTopics === 'undefined') {
+                    console.error("Theology data not loaded!");
+                    return;
+                }
+                initTheologyExplorer();
+            }, 800);
+        });
+
+        function initTheologyExplorer() {
+            const topicsGrid = document.getElementById('explorer-topics-grid');
+            const subtopicsGrid = document.getElementById('explorer-subtopics-grid');
+            const searchInput = document.getElementById('explorer-search-input');
+            const searchClear = document.getElementById('explorer-search-clear');
+            const resultsPanel = document.getElementById('explorer-results-panel');
+            const resultsList = document.getElementById('explorer-results-list');
+            const resultsTitle = document.getElementById('explorer-results-title');
+            const resultsCloseBtn = document.getElementById('explorer-results-close-btn');
+            const tabBtns = document.querySelectorAll('.explorer-tab-btn');
+
+            const topicIcons = {
+                "신론": "fa-cloud",
+                "인간론": "fa-user",
+                "기독론": "fa-cross",
+                "구원론(성령론)": "fa-dove",
+                "율법과 복음": "fa-scroll",
+                "그리스도인의 생활론": "fa-praying-hands",
+                "그리스도인의 가정": "fa-home",
+                "교회론": "fa-church",
+                "설교론": "fa-comment-alt",
+                "영적전쟁": "fa-shield-alt",
+                "종말론": "fa-hourglass-end",
+                "역사 신학": "fa-landmark",
+                "전도, 선교": "fa-globe-americas"
+            };
+
+            const renderMajorTopics = (filterText = "") => {
+                topicsGrid.innerHTML = "";
+                const filtered = topics.filter(t => t.toLowerCase().includes(filterText.toLowerCase()));
+                
+                if (filtered.length === 0) {
+                    topicsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #999; padding: 2rem;">일치하는 대주제가 없습니다.</div>`;
+                    return;
+                }
+
+                filtered.forEach(topic => {
+                    const iconClass = topicIcons[topic] || "fa-bookmark";
+                    const card = document.createElement('div');
+                    card.className = "explorer-card";
+                    card.innerHTML = `
+                        <div class="explorer-card-icon">
+                            <i class="fas ${iconClass}"></i>
+                        </div>
+                        <div class="explorer-card-title">${topic}</div>
+                    `;
+                    card.onclick = () => loadTopicResources(topic, 'major');
+                    topicsGrid.appendChild(card);
+                });
+            };
+
+            const renderSubTopics = (filterText = "") => {
+                subtopicsGrid.innerHTML = "";
+                const sortedSubtopics = [...detailedTopics].sort((a, b) => a.localeCompare(b, 'ko'));
+                const filtered = sortedSubtopics.filter(t => t.toLowerCase().includes(filterText.toLowerCase()));
+
+                if (filtered.length === 0) {
+                    subtopicsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #999; padding: 2rem;">일치하는 상세주제가 없습니다.</div>`;
+                    return;
+                }
+
+                filtered.forEach(sub => {
+                    const card = document.createElement('div');
+                    card.className = "explorer-card";
+                    card.style.padding = "1rem";
+                    card.innerHTML = `
+                        <div class="explorer-card-icon" style="width: 35px; height: 35px; font-size: 0.95rem;">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div class="explorer-card-title" style="font-size: 0.95rem; font-weight: 500;">${sub}</div>
+                    `;
+                    card.onclick = () => loadTopicResources(sub, 'sub');
+                    subtopicsGrid.appendChild(card);
+                });
+            };
+
+            const loadTopicResources = async (name, type) => {
+                resultsTitle.textContent = `${name} 관련 자료`;
+                resultsList.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--secondary-color); grid-column: 1/-1;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2.5rem; margin-bottom: 1rem;"></i>
+                        <p style="font-weight: 500;">자료를 안전하게 불러오는 중입니다...</p>
+                    </div>
+                `;
+                resultsPanel.style.display = "block";
+                
+                setTimeout(() => {
+                    resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+
+                const isOffline = (typeof db === 'undefined' || !db);
+                const useMockMode = (typeof useMock !== 'undefined' && useMock) || isOffline;
+
+                if (useMockMode) {
+                    setTimeout(() => {
+                        const mockPosts = [
+                            { id: "mock1", title: `[샘플] ${name} 신학의 정수와 실제`, content: `${name}에 대한 깊이 있는 분석과 개혁주의 교리적 핵심 해설입니다. 신자들의 경건 향상과 교회의 바른 세워짐을 위해 추천하는 강론 자료입니다.`, tags: [name] },
+                            { id: "mock2", title: `[샘플] ${name}과 신앙의 고백`, content: `역사적 개혁주의 신앙고백서들에 담긴 ${name}의 역사적 배경과 신학적 전개를 다루는 연구 논문 및 텍스트입니다.`, tags: [name] }
+                        ];
+                        renderResults(mockPosts, name);
+                    }, 600);
+                    return;
+                }
+
+                try {
+                    let posts = [];
+                    if (type === 'major') {
+                        let q = db.collection("posts").where("tags", "array-contains", name);
+                        const snapshot = await q.get();
+                        snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+
+                        if (name === '청교도 신학' || name === '전도, 선교') {
+                            const bookletSnapshot = await db.collection("posts")
+                                .where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"])
+                                .get();
+                            bookletSnapshot.forEach(doc => {
+                                const data = doc.data();
+                                const dbTopic = data.topic || data.subBookletTopic || data.series;
+                                const dTopic = (typeof determineCategory === 'function') ? determineCategory(data.title, data.content) : null;
+                                const finalTopic = dbTopic || dTopic;
+                                if (name === '청교도 신학') {
+                                    if (!posts.some(p => p.id === doc.id)) {
+                                        posts.push({ id: doc.id, ...data });
+                                    }
+                                } else if (name === '전도, 선교') {
+                                    if (!posts.some(p => p.id === doc.id) && finalTopic === '전도, 선교') {
+                                        posts.push({ id: doc.id, ...data });
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+                        let q = db.collection("posts").where("subTopics", "array-contains", name);
+                        const snapshot = await q.get();
+                        snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                    }
+
+                    posts.sort((a, b) => {
+                        const timeA = a.createdAt?.seconds || 0;
+                        const timeB = b.createdAt?.seconds || 0;
+                        return timeB - timeA;
+                    });
+
+                    renderResults(posts, name);
+
+                } catch (err) {
+                    console.error("Explorer query error:", err);
+                    resultsList.innerHTML = `<div style="text-align: center; padding: 2rem; color: red; grid-column: 1/-1;">자료를 불러오는 중에 오류가 발생했습니다.</div>`;
+                }
+            };
+
+            const renderResults = (posts, selectedTopic) => {
+                resultsList.innerHTML = "";
+                if (posts.length === 0) {
+                    resultsList.innerHTML = `<div style="text-align: center; padding: 3rem; color: #999; grid-column: 1/-1;">해당 주제로 등록된 자료가 아직 없습니다.</div>`;
+                    return;
+                }
+
+                posts.forEach(post => {
+                    const card = document.createElement('div');
+                    card.className = "explorer-result-card";
+
+                    let thumbUrl = post.coverUrl;
+                    let isPdf = false;
+                    if (!thumbUrl && post.fileUrl) {
+                        if (/(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) isPdf = true;
+                        else thumbUrl = post.fileUrl;
+                    }
+
+                    const finalSrc = thumbUrl || 'images/puritan-study.png';
+                    const tag = (post.tags && post.tags[0]) || selectedTopic;
+                    const dateText = post.createdAt ? new Date(post.createdAt.seconds * 1000).toLocaleDateString() : '최근 자료';
+
+                    let content = post.content || '';
+                    const urlRegex = /(https?:\/\/[^\s]+)/g;
+                    const urlsInContent = content.match(urlRegex) || [];
+                    let primaryLink = post.fileUrl || (urlsInContent.length > 0 ? urlsInContent[0] : null);
+
+                    const displayContent = content.replace(urlRegex, '<a href="$1" target="_blank" onclick="event.stopPropagation()">$1</a>');
+                    const imgId = `exp-thumb-${post.id}`;
+                    const thumbWrapId = `exp-thumb-wrap-${post.id}`;
+
+                    card.innerHTML = `
+                        <div id="${thumbWrapId}" class="explorer-result-thumb">
+                            <img id="${imgId}" src="${finalSrc}" alt="${post.title}">
+                        </div>
+                        <div class="explorer-result-content">
+                            <div class="explorer-result-meta">
+                                <span class="explorer-result-tag">${tag}</span>
+                                <span>${dateText}</span>
+                            </div>
+                            <div class="explorer-result-title">${post.title}</div>
+                            <div class="explorer-result-desc">${displayContent}</div>
+                            <div class="explorer-result-action">
+                                ${primaryLink ? '<i class="fas fa-external-link-alt"></i> 자료 열기/다운로드' : '<i class="fas fa-book-open"></i> 상세 내용 보기'}
+                            </div>
+                        </div>
+                    `;
+
+                    card.onclick = () => {
+                        if (primaryLink) {
+                            window.open(primaryLink, '_blank');
+                        } else {
+                            card.classList.toggle('expanded');
+                        }
+                    };
+
+                    resultsList.appendChild(card);
+
+                    if (isPdf && !thumbUrl) {
+                        renderPdfThumbForExplorer(post.fileUrl, imgId, thumbWrapId);
+                    }
+                });
+            };
+
+            const renderPdfThumbForExplorer = async (url, imgId, wrapId) => {
+                const img = document.getElementById(imgId);
+                const wrap = document.getElementById(wrapId);
+                if (typeof pdfjsLib === 'undefined' || !img) return;
+
+                try {
+                    const loadingTask = pdfjsLib.getDocument(url);
+                    const pdf = await loadingTask.promise;
+                    const page = await pdf.getPage(1);
+                    const viewport = page.getViewport({ scale: 0.5 });
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    await page.render({ canvasContext: context, viewport: viewport }).promise;
+                    img.src = canvas.toDataURL();
+                } catch (e) {
+                    console.warn("Explorer PDF rendering warning:", e);
+                }
+            };
+
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                if (query) {
+                    searchClear.style.display = 'block';
+                } else {
+                    searchClear.style.display = 'none';
+                }
+
+                const activeTab = document.querySelector('.explorer-tab-btn.active').dataset.tab;
+                if (activeTab === 'topics') {
+                    renderMajorTopics(query);
+                } else {
+                    renderSubTopics(query);
+                }
+            });
+
+            searchClear.addEventListener('click', () => {
+                searchInput.value = '';
+                searchClear.style.display = 'none';
+                const activeTab = document.querySelector('.explorer-tab-btn.active').dataset.tab;
+                if (activeTab === 'topics') {
+                    renderMajorTopics('');
+                } else {
+                    renderSubTopics('');
+                }
+                searchInput.focus();
+            });
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const tab = btn.dataset.tab;
+                    const query = searchInput.value.trim();
+
+                    if (tab === 'topics') {
+                        topicsGrid.classList.add('active');
+                        subtopicsGrid.classList.remove('active');
+                        renderMajorTopics(query);
+                    } else {
+                        topicsGrid.classList.remove('active');
+                        subtopicsGrid.classList.add('active');
+                        renderSubTopics(query);
+                    }
+                });
+            });
+
+            resultsCloseBtn.addEventListener('click', () => {
+                resultsPanel.style.display = 'none';
+                document.getElementById('theology-explorer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+
+            renderMajorTopics();
+            renderSubTopics();
+        }
+    </script>
     <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">
         <i class="fas fa-envelope"></i>
     </a>

@@ -2187,14 +2187,17 @@ document.addEventListener('DOMContentLoaded', () => {
             { title: "가정 예배의 회복과 실제적인 지침", cat: "신자의 삶", date: "2026.01.05", series: "" },
             { title: "은혜의 수단으로서의 기도", cat: "청교도 신학", date: "2026.01.03", series: "" },
             { title: "참된 회심의 성경적 표지", cat: "회심", date: "2026.01.01", series: "" },
-            { title: "그리스도의 위격과 사역", cat: "기독론", date: "2025.12.28", series: "" },
+            { title: "그ريس도의 위격과 사역", cat: "기독론", date: "2025.12.28", series: "" },
             { title: "영적 전쟁과 사탄의 계략", cat: "영적전쟁", date: "2025.12.25", series: "" },
             { title: "부부의 사랑과 기독교적 혼인", cat: "그리스도인의 가정", date: "2025.12.20", series: "" },
             { title: "세계 선교와 복음 전파의 사명", cat: "전도, 선교", date: "2025.12.15", series: "" },
             { title: "장로교 역사와 신조의 성립", cat: "역사 신학", date: "2025.12.10", series: "" }
         ];
 
-        const mockData = baseData.map((item, index) => ({ ...item, id: `mock_new_${index}` }));
+        const mockData = [
+            ...baseData.map((item, index) => ({ ...item, id: `mock_new_${index}` })),
+            ...baseData.map((item, index) => ({ ...item, title: "[추천] " + item.title, id: `mock_new_ext_${index}` }))
+        ];
 
         const mockSermons = [
             { id: 'mock_s1', title: "요한계시록 강해 (1): 승리하신 그리스도", cat: "강해설교", date: "2026.01.01", series: "요한계시록 강해" },
@@ -2203,8 +2206,14 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'mock_s4', title: "에베소서 강해 (3): 교회란 무엇인가", cat: "강해설교", date: "2025.12.15", series: "에베소서 강해" },
             { id: 'mock_s5', title: "시편 강해 (23): 목자되신 여호와", cat: "강해설교", date: "2025.12.10", series: "시편 강해" }
         ];
-        // 설교도 좀 더 늘리고 랜덤으로 섞음
-        const extendedSermons = [...mockSermons, ...mockSermons.map(s => ({ ...s, id: s.id + '_dup' }))].sort(() => 0.5 - Math.random());
+        
+        const extendedSermons = [
+            ...mockSermons,
+            ...mockSermons.map(s => ({ ...s, id: s.id + '_dup1' })),
+            ...mockSermons.map(s => ({ ...s, id: s.id + '_dup2' })),
+            ...mockSermons.map(s => ({ ...s, id: s.id + '_dup3' })),
+            ...mockSermons.map(s => ({ ...s, id: s.id + '_dup4' }))
+        ].slice(0, 24).sort(() => 0.5 - Math.random());
 
         const populateTrack = (trackId, data) => {
             const track = document.getElementById(trackId);
@@ -2262,7 +2271,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
 
-                filteredLatest.slice(0, 12).forEach(item => {
+                filteredLatest.slice(0, 24).forEach(item => {
                     latestIds.add(item.id);
                     newTrack.appendChild(createCarouselCard(item.data, item.id));
                 });
@@ -2287,7 +2296,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // [추가] 추천 자료 줄은 랜덤으로 섞어서 노출
                 displayTopics = [...displayTopics].sort(() => 0.5 - Math.random());
 
-                displayTopics.slice(0, 12).forEach(item => {
+                displayTopics.slice(0, 24).forEach(item => {
                     topicTrack.appendChild(createCarouselCard(item.data, item.id));
                 });
             }
@@ -2321,7 +2330,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 무작위 섞기
                 const shuffledRecs = [...recommendedItems].sort(() => 0.5 - Math.random());
 
-                shuffledRecs.slice(0, 20).forEach(item => {
+                shuffledRecs.slice(0, 24).forEach(item => {
                     sermonTrack.appendChild(createCarouselCard(item.data, item.id));
                 });
             }
@@ -2970,6 +2979,21 @@ window.requestPay = (title, amount, method = 'card') => {
         }
     });
 };
+
+// --- Carousel Mouse Wheel Scroll Listener ---
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const tracks = document.querySelectorAll('.carousel-track');
+        tracks.forEach(track => {
+            track.addEventListener('wheel', (e) => {
+                if (e.deltaY !== 0) {
+                    e.preventDefault();
+                    track.scrollLeft += e.deltaY * 1.2;
+                }
+            }, { passive: false });
+        });
+    }, 1000);
+});
 
 // End of main.js (BGM logic moved to bgm.js)
 

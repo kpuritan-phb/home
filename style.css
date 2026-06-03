@@ -2884,13 +2884,25 @@ footer {
     overflow-x: auto;
     scroll-behavior: smooth;
     padding: 1rem 0.5rem 1.5rem 0.5rem;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
 }
 
 .carousel-track::-webkit-scrollbar {
-    display: none;
-    /* Chrome, Safari, Opera */
+    height: 6px;
+}
+
+.carousel-track::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.carousel-track::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.carousel-track::-webkit-scrollbar-thumb:hover {
+    background: rgba(26, 52, 42, 0.25);
 }
 
 /* Navigation Buttons */
@@ -3492,6 +3504,15 @@ footer {
     transform: translateX(-15px);
     border: none;
     box-shadow: none;
+}
+
+/* 사이드바가 닫혔을 때 우측 콘텐츠 영역에 패딩을 줘서 토글 버튼과의 겹침 현상 완벽 방지 */
+.explore-main-content {
+    transition: padding-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.explore-sidebar.collapsed + .explore-main-content {
+    padding-left: 45px;
 }
 
 /* Search Box */

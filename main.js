@@ -196,19 +196,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const sortedSeries = Array.from(seriesSet).sort((a, b) => a.localeCompare(b, 'ko'));
 
                 if (desktopDropdown) {
-                    desktopDropdown.innerHTML = `<li><a href="resources.html?cat=강해설교">강해설교 전체</a></li>`;
+                    desktopDropdown.innerHTML = `<li><a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90">강해설교 전체</a></li>`;
                     sortedSeries.forEach(s => {
                         const li = document.createElement('li');
-                        li.innerHTML = `<a href="resources.html?cat=강해설교&s=${encodeURIComponent(s)}">${s}</a>`;
+                        li.innerHTML = `<a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90&s=${encodeURIComponent(s)}">${s}</a>`;
                         desktopDropdown.appendChild(li);
                     });
                 }
 
                 if (mobileDropdown) {
-                    mobileDropdown.innerHTML = `<li><a href="resources.html?cat=강해설교" class="menu-sub-link">강해설교 전체</a></li>`;
+                    mobileDropdown.innerHTML = `<li><a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90" class="menu-sub-link">강해설교 전체</a></li>`;
                     sortedSeries.forEach(s => {
                         const li = document.createElement('li');
-                        li.innerHTML = `<a href="resources.html?cat=강해설교&s=${encodeURIComponent(s)}" class="menu-sub-link">${s}</a>`;
+                        li.innerHTML = `<a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90&s=${encodeURIComponent(s)}" class="menu-sub-link">${s}</a>`;
                         mobileDropdown.appendChild(li);
                     });
                 }
@@ -234,19 +234,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const sortedSeries = Array.from(seriesSet).sort((a, b) => a.localeCompare(b, 'ko'));
 
                 if (desktopDropdown) {
-                    desktopDropdown.innerHTML = `<li><a href="resources.html?cat=세미나, 강의">세미나, 강의 전체</a></li>`;
+                    desktopDropdown.innerHTML = `<li><a href="resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98">세미나, 강의 전체</a></li>`;
                     sortedSeries.forEach(s => {
                         const li = document.createElement('li');
-                        li.innerHTML = `<a href="resources.html?cat=세미나, 강의&s=${encodeURIComponent(s)}">${s}</a>`;
+                        li.innerHTML = `<a href="resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98&s=${encodeURIComponent(s)}">${s}</a>`;
                         desktopDropdown.appendChild(li);
                     });
                 }
 
                 if (mobileDropdown) {
-                    mobileDropdown.innerHTML = `<li><a href="resources.html?cat=세미나, 강의" class="menu-sub-link">세미나, 강의 전체</a></li>`;
+                    mobileDropdown.innerHTML = `<li><a href="resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98" class="menu-sub-link">세미나, 강의 전체</a></li>`;
                     sortedSeries.forEach(s => {
                         const li = document.createElement('li');
-                        li.innerHTML = `<a href="resources.html?cat=세미나, 강의&s=${encodeURIComponent(s)}" class="menu-sub-link">${s}</a>`;
+                        li.innerHTML = `<a href="resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98&s=${encodeURIComponent(s)}" class="menu-sub-link">${s}</a>`;
                         mobileDropdown.appendChild(li);
                     });
                 }

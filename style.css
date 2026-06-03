@@ -3405,27 +3405,93 @@ footer {
 .explore-sidebar {
     width: 310px;
     flex-shrink: 0;
+    position: sticky;
+    top: 90px;
+    z-index: 100;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    overflow: visible;
+}
+
+.sidebar-inner-content {
     background: #ffffff;
     border: 1px solid #eef2f0;
     border-radius: 16px;
     padding: 1.8rem;
-    position: sticky;
-    top: 90px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
     max-height: calc(100vh - 120px);
     overflow-y: auto;
-    z-index: 10;
     scrollbar-width: thin;
     scrollbar-color: #e2e8f0 transparent;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    width: 100%;
 }
 
-.explore-sidebar::-webkit-scrollbar {
+.sidebar-inner-content::-webkit-scrollbar {
     width: 5px;
 }
 
-.explore-sidebar::-webkit-scrollbar-thumb {
+.sidebar-inner-content::-webkit-scrollbar-thumb {
     background: #e2e8f0;
     border-radius: 10px;
+}
+
+/* Sidebar Toggle Drawer Button (Monergism Inspired) */
+.sidebar-toggle-btn {
+    position: absolute;
+    top: 50px;
+    left: 100%;
+    transform: translateX(-1px);
+    background: var(--secondary-color);
+    color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-left: none;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    padding: 14px 7px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 50;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    outline: none;
+}
+
+.sidebar-toggle-btn:hover {
+    background: #254d3e;
+    padding-left: 10px;
+}
+
+.sidebar-toggle-btn .toggle-icon {
+    font-size: 0.85rem;
+    transition: transform 0.3s;
+}
+
+.sidebar-toggle-btn .toggle-text {
+    writing-mode: vertical-lr;
+    text-orientation: mixed;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    font-family: 'Montserrat', sans-serif;
+    white-space: nowrap;
+    text-transform: uppercase;
+}
+
+/* Collapsed Sidebar State */
+.explore-sidebar.collapsed {
+    width: 0;
+    margin-right: -3rem; /* Offset explore-layout-container gap */
+}
+
+.explore-sidebar.collapsed .sidebar-inner-content {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-15px);
+    border: none;
+    box-shadow: none;
 }
 
 /* Search Box */
@@ -3726,6 +3792,9 @@ footer {
     
     .explore-sidebar {
         width: 260px;
+    }
+
+    .sidebar-inner-content {
         padding: 1.5rem;
     }
 }
@@ -3737,12 +3806,26 @@ footer {
         padding: 0 1rem;
     }
 
+    .sidebar-toggle-btn {
+        display: none !important;
+    }
+
     .explore-sidebar {
         width: 100%;
         position: static;
         max-height: none;
+        padding: 0;
+        border: none;
+        box-shadow: none;
+        background: transparent;
+    }
+
+    .sidebar-inner-content {
         padding: 1rem;
         border-radius: 12px;
+        max-height: none;
+        overflow: visible;
+        box-shadow: none;
     }
 
     /* Horizontal Categories Slider for Mobile */

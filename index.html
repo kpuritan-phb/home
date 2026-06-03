@@ -133,20 +133,28 @@
 
             <div class="explore-layout-container">
                 <!-- Left Sidebar: Topic Navigation -->
-                <aside class="explore-sidebar">
-                    <div class="sidebar-search-box">
-                        <i class="fas fa-search sidebar-search-icon"></i>
-                        <input type="text" id="sidebar-search-input" placeholder="원하는 주제 검색..." autocomplete="off">
-                        <i class="fas fa-times" id="sidebar-search-clear" style="display: none;"></i>
-                    </div>
+                <aside class="explore-sidebar" id="explore-sidebar">
+                    <!-- Sidebar Drawer Toggle Button (Monergism Inspired) -->
+                    <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" aria-label="주제 메뉴 토글">
+                        <i class="fas fa-chevron-left toggle-icon"></i>
+                        <span class="toggle-text">CLOSE TOPICS</span>
+                    </button>
                     
-                    <div class="sidebar-topic-list">
-                        <div class="sidebar-topic-item active" data-topic="all" id="btn-show-all-resources">
-                            <i class="fas fa-th-large"></i> <span>전체 자료 보기</span>
+                    <div class="sidebar-inner-content" id="sidebar-inner-content">
+                        <div class="sidebar-search-box">
+                            <i class="fas fa-search sidebar-search-icon"></i>
+                            <input type="text" id="sidebar-search-input" placeholder="원하는 주제 검색..." autocomplete="off">
+                            <i class="fas fa-times" id="sidebar-search-clear" style="display: none;"></i>
                         </div>
-                        <div class="sidebar-divider">신학 주제 분류</div>
-                        <div id="sidebar-major-topics">
-                            <!-- Injected by JS -->
+                        
+                        <div class="sidebar-topic-list">
+                            <div class="sidebar-topic-item active" data-topic="all" id="btn-show-all-resources">
+                                <i class="fas fa-th-large"></i> <span>전체 자료 보기</span>
+                            </div>
+                            <div class="sidebar-divider">신학 주제 분류</div>
+                            <div id="sidebar-major-topics">
+                                <!-- Injected by JS -->
+                            </div>
                         </div>
                     </div>
                 </aside>
@@ -725,6 +733,25 @@
             const searchInput = document.getElementById('sidebar-search-input');
             const searchClear = document.getElementById('sidebar-search-clear');
             const btnShowAll = document.getElementById('btn-show-all-resources');
+            
+            // Sidebar toggle logic
+            const sidebar = document.getElementById('explore-sidebar');
+            const toggleBtn = document.getElementById('sidebar-toggle-btn');
+            if (sidebar && toggleBtn) {
+                const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+                const toggleText = toggleBtn.querySelector('.toggle-text');
+                
+                toggleBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('collapsed');
+                    if (sidebar.classList.contains('collapsed')) {
+                        toggleIcon.className = 'fas fa-chevron-right toggle-icon';
+                        toggleText.textContent = 'OPEN TOPICS';
+                    } else {
+                        toggleIcon.className = 'fas fa-chevron-left toggle-icon';
+                        toggleText.textContent = 'CLOSE TOPICS';
+                    }
+                });
+            }
             
             const defaultView = document.getElementById('default-carousel-view');
             const filteredView = document.getElementById('filtered-results-view');

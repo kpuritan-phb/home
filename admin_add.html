@@ -207,8 +207,8 @@
                             <label style="font-weight: 700; color: var(--primary-color); display: block; margin: 0;">
                                 <i class="fas fa-magic"></i> 자동 분석된 신학 상세 주제 (본문/제목 기반)
                             </label>
-                            <button type="button" id="btn-add-manual-subtopic" style="padding: 3px 10px; font-size: 0.75rem; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">
-                                <i class="fas fa-plus"></i> 주제 직접 추가
+                            <button type="button" id="btn-add-manual-subtopic" onclick="openSubtopicsPicker()" style="padding: 3px 10px; font-size: 0.75rem; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                <i class="fas fa-plus"></i> 주제 직접 선택
                             </button>
                         </div>
                         <div id="recommended-subtopics-tags" style="display: flex; flex-wrap: wrap; gap: 8px;">
@@ -361,28 +361,103 @@
             updateRecommendedSubtopics();
         };
 
-        // 수동 추가 버튼 바인딩
-        document.getElementById('btn-add-manual-subtopic').addEventListener('click', () => {
-            const val = prompt("추가하고 싶은 신학 주제를 입력하세요 (예: 예정론, 십계명 등):");
-            if (!val) return;
-            const trimmed = val.trim();
-            if (!trimmed) return;
+        // --- 신학 상세 소주제 선택기 모달 관련 로직 ---
+        const detailedTopics = [
+            "십계명", "그리스도의 순종", "양자됨", "예정론", "고통", "적그리스도", "도덕률폐기론", "변증론", "배교", "사도신경", 
+            "성령의 유효한 부르심", "예산 편성, 교리", "알미니안주의", "무신론", "속죄", "하나님의 속성", "성경", "세례", "팔복", 
+            "거짓 믿음", "교리 교육", "독신", "성령의 은사", "은혜 언약", "행위 언약 (생명언약)", "성례", "그리스도의 인성", 
+            "그리스도의 신성", "그리스도의 사역", "그리스도의 두 가지 의지", "예배", "기독교 교육", "그리스도인의 자유", 
+            "기독론", "교회", "교회 정치", "교회 역사", "교회 사역", "성령의 일반 사역", "성도들의 교제", "성찬식", "양심", 
+            "상담", "구속 언약", "창조", "신조", "죽음", "하나님의 섭리", "사탄의 계략", "오류", "종말론", "영생", "복음주의", 
+            "복음 전도", "믿음", "가정 예배", "죄 용서", "자유의지", "성령의 열매", "일반 계시", "삼위일체", "지옥", "천국", 
+            "하이델베르크 교리문답서", "칼빈주의", "하이퍼 칼빈주의", "위선자", "주일 성수", "주기도문", "결혼", "원죄", 
+            "신칼빈주의", "신율법주의", "헌금과 십일조", "교회의 직무", "구원의 순서 (서정)", "웨스트민스터 표준 문서", 
+            "펠라기우스주의", "경건", "기도", "설교", "청교도 역사", "종교개혁 역사", "중생", "회개", "칭의", "성화", "영화", 
+            "율법", "부활", "그리스도의 재림", "자기부정", "자가 점검", "성령을 거스르는 죄", "소시니안주의", "영적 전쟁", 
+            "전적 타락", "그리스도와의 연합", "아담", "잘못된 신학", "성경 공부", "성경적 상담", "그리스도인의 삶", 
+            "신조와 신앙고백", "이단, 그리고 이단자들", "집사와 장로들", "우울증과 슬픔", "제자도", "이혼과 재혼", "교리 연구", 
+            "교회론", "교육 및 학문", "선택", "윤리학", "가족과 결혼", "하나님의 언약", "하나님의 영광", "하나님의 뜻", 
+            "하나님의 심판", "하나님의 나라", "율법과 복음", "은혜의 수단", "성도의 견인", "죄와 유혹", "인간의 전적 타락", 
+            "삼위 일체", "세계 선교", "세속화"
+        ].sort((a, b) => a.localeCompare(b, 'ko'));
 
-            // detailedTopics에 실제로 있는 주제인지 체크
-            if (typeof detailedTopics !== 'undefined' && !detailedTopics.includes(trimmed)) {
-                if (!confirm(`'${trimmed}'은(는) 정의된 128개 신학 주제 목록에 없습니다. 그래도 추가하시겠습니까?`)) {
-                    return;
-                }
+        const pickerModal = document.getElementById('subtopics-picker-modal');
+        const pickerListContainer = document.getElementById('picker-list-container');
+        const pickerSearchInput = document.getElementById('picker-search-input');
+        let tempSelectedSubtopics = [];
+
+        window.openSubtopicsPicker = function() {
+            tempSelectedSubtopics = [...manuallyAddedSubtopics];
+            pickerSearchInput.value = '';
+            renderPickerList('');
+            pickerModal.style.display = 'flex';
+        };
+
+        window.closeSubtopicsPicker = function() {
+            pickerModal.style.display = 'none';
+        };
+
+        function renderPickerList(filterText = '') {
+            if (!pickerListContainer) return;
+            pickerListContainer.innerHTML = '';
+
+            const listData = detailedTopics.filter(t => 
+                !filterText || t.toLowerCase().includes(filterText.toLowerCase())
+            );
+
+            if (listData.length === 0) {
+                pickerListContainer.innerHTML = '<div style="text-align:center; color:#999; padding:20px 0;">검색 결과가 없습니다.</div>';
+                return;
             }
 
-            if (excludedSubtopics.has(trimmed)) {
-                excludedSubtopics.delete(trimmed);
-            }
-            if (!manuallyAddedSubtopics.includes(trimmed)) {
-                manuallyAddedSubtopics.push(trimmed);
-            }
-            updateRecommendedSubtopics();
+            listData.forEach(topic => {
+                const isChecked = tempSelectedSubtopics.includes(topic);
+                const label = document.createElement('label');
+                label.style.cssText = 'display: flex; align-items: center; gap: 10px; padding: 8px 12px; margin-bottom: 6px; border-radius: 6px; background: #ffffff; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s;';
+                
+                label.onmouseover = () => label.style.background = '#f8fafc';
+                label.onmouseout = () => label.style.background = '#ffffff';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = isChecked;
+                checkbox.style.cssText = 'width: 16px; height: 16px; accent-color: #1a342a; cursor: pointer;';
+                
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        if (!tempSelectedSubtopics.includes(topic)) {
+                            tempSelectedSubtopics.push(topic);
+                        }
+                    } else {
+                        tempSelectedSubtopics = tempSelectedSubtopics.filter(t => t !== topic);
+                    }
+                });
+
+                const textSpan = document.createElement('span');
+                textSpan.textContent = topic;
+                textSpan.style.cssText = 'font-size: 0.9rem; font-weight: 500; color: #334155;';
+
+                label.appendChild(checkbox);
+                label.appendChild(textSpan);
+                pickerListContainer.appendChild(label);
+            });
+        }
+
+        pickerSearchInput.addEventListener('input', (e) => {
+            renderPickerList(e.target.value.trim());
         });
+
+        window.applySelectedSubtopics = function() {
+            manuallyAddedSubtopics.length = 0;
+            tempSelectedSubtopics.forEach(t => {
+                if (excludedSubtopics.has(t)) {
+                    excludedSubtopics.delete(t);
+                }
+                manuallyAddedSubtopics.push(t);
+            });
+            updateRecommendedSubtopics();
+            closeSubtopicsPicker();
+        };
 
         // 입력창에 변경 리스너 바인딩
         document.getElementById('add-title').addEventListener('input', updateRecommendedSubtopics);
@@ -572,6 +647,25 @@
             }
         });
     </script>
+    <!-- 주제 선택 멀티 모달 레이어 -->
+    <div id="subtopics-picker-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 480px; height: 80vh; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.2); box-sizing: border-box;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 15px;">
+                <h3 style="margin: 0; font-size: 1.1rem; color: #1a342a; font-weight: 700;">신학 주제 선택 (중복 가능)</h3>
+                <button type="button" onclick="closeSubtopicsPicker()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #888; line-height: 1;">&times;</button>
+            </div>
+            <!-- 실시간 검색 인풋 -->
+            <input type="text" id="picker-search-input" placeholder="원하는 주제 검색..." style="width: 100%; padding: 10px 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 0.9rem;">
+            <!-- 체크박스 스크롤 목록 -->
+            <div id="picker-list-container" style="flex: 1; overflow-y: auto; border: 1px solid #eee; border-radius: 6px; padding: 10px; margin-bottom: 15px; background: #fafafa;">
+                <!-- JavaScript로 동적 삽입 -->
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #eee; padding-top: 15px;">
+                <button type="button" onclick="closeSubtopicsPicker()" style="padding: 10px 20px; background: #f1f5f9; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; color: #475569;">취소</button>
+                <button type="button" onclick="applySelectedSubtopics()" style="padding: 10px 25px; background: #1a342a; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">선택 완료</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

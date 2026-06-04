@@ -784,10 +784,10 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const topic = document.getElementById('post-topic').value;
-            const author = document.getElementById('post-author').value;
-            const other = document.getElementById('post-other-category').value;
-            const subBookletTopic = document.getElementById('post-booklet-topic').value;
+            const topic = document.getElementById('post-topic')?.value || "";
+            const author = document.getElementById('post-author')?.value || "";
+            const other = document.getElementById('post-other-category')?.value || "";
+            const subBookletTopic = document.getElementById('post-booklet-topic')?.value || "";
 
             let tags = [topic, author, other].filter(t => t !== "");
 
@@ -1063,10 +1063,10 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const id = document.getElementById('edit-post-id').value;
 
-            const topic = document.getElementById('edit-topic').value;
-            const author = document.getElementById('edit-author').value;
-            const other = document.getElementById('edit-other-category').value;
-            const subBookletTopic = document.getElementById('edit-booklet-topic').value;
+            const topic = document.getElementById('edit-topic')?.value || "";
+            const author = document.getElementById('edit-author')?.value || "";
+            const other = document.getElementById('edit-other-category')?.value || "";
+            const subBookletTopic = document.getElementById('edit-booklet-topic')?.value || "";
             const tags = [topic, author, other].filter(t => t !== "");
 
             // [추가] 소책자 언어 태그 추가
@@ -1106,7 +1106,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     order,
                     price,
                     content,
-                    isRecommended: document.getElementById('edit-is-recommended').checked,
+                    isRecommended: document.getElementById('edit-is-recommended')?.checked || false,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 

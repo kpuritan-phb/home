@@ -642,7 +642,7 @@ nav ul li:hover a i {
     height: 85vh;
     position: relative;
     /* 웨스트민스터 신앙고백서 회의 삽화 적용 */
-    background: linear-gradient(rgba(42, 45, 50, 0.4), rgba(42, 45, 50, 0.4)), url('hero-bg.png');
+    background: linear-gradient(rgba(42, 45, 50, 0.4), rgba(42, 45, 50, 0.4)), url('hero-bg.jpg?v=2');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

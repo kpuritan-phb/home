@@ -3558,6 +3558,60 @@ footer {
     cursor: pointer;
 }
 
+/* Sidebar Search Dropdown (십계명, 예정론 등 주제 목록 리스트) */
+.sidebar-search-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 100%;
+    max-height: 250px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    z-index: 100;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f8fafc;
+    text-align: left;
+}
+
+.sidebar-search-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebar-search-dropdown::-webkit-scrollbar-track {
+    background: #f8fafc;
+}
+.sidebar-search-dropdown::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.sidebar-search-dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-search-dropdown li {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.sidebar-search-dropdown li:last-child {
+    border-bottom: none;
+}
+
+.sidebar-search-dropdown li:hover {
+    background: #f1f5f9;
+    color: var(--secondary-color);
+}
+
 /* Topic List Items */
 .sidebar-divider {
     font-size: 0.8rem;

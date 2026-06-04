@@ -900,6 +900,8 @@
                 if (searchInput) {
                     searchInput.value = '';
                     if (searchClear) searchClear.style.display = 'none';
+                    const dropdown = document.getElementById('sidebar-search-dropdown');
+                    if (dropdown) dropdown.style.display = 'none';
                 }
                 renderSidebarTopics(''); // 사이드바 주제 목록 원상 복귀
                 
@@ -1073,7 +1075,75 @@
                 }
             };
 
-            // 검색바 입력 시 사이드바 실시간 카테고리 필터링
+            // 검색어 추천 목록 데이터 정의 및 정렬
+            const suggestionTopics = [
+                "십계명", "그리스도의 순종", "양자됨", "예정론", "고통", "적그리스도", "도덕률폐기론", "변증론", "배교", "사도신경", 
+                "성령의 유효한 부르심", "예산 편성, 교리", "알미니안주의", "무신론", "속죄", "하나님의 속성", "성경", "세례", "팔복", 
+                "거짓 믿음", "교리 교육", "독신", "성령의 은사", "은혜 언약", "행위 언약 (생명언약)", "성례", "그리스도의 인성", 
+                "그리스도의 신성", "그리스도의 사역", "그리스도의 두 가지 의지", "예배", "기독교 교육", "그리스도인의 자유", 
+                "기독론", "교회", "교회 정치", "교회 역사", "교회 사역", "성령의 일반 사역", "성도들의 교제", "성찬식", "양심", 
+                "상담", "구속 언약", "창조", "신조", "죽음", "하나님의 섭리", "사탄의 계략", "오류", "종말론", "영생", "복음주의", 
+                "복음 전도", "믿음", "가정 예배", "죄 용서", "자유의지", "성령의 열매", "일반 계시", "삼위일체", "지옥", "천국", 
+                "하이델베르크 교리문답서", "칼빈주의", "하이퍼 칼빈주의", "위선자", "주일 성수", "주기도문", "결혼", "원죄", 
+                "신칼빈주의", "신율법주의", "헌금과 십일조", "교회의 직무", "구원의 순서 (서정)", "웨스트민스터 표준 문서", 
+                "펠라기우스주의", "경건", "기도", "설교", "청교도 역사", "종교개혁 역사", "중생", "회개", "칭의", "성화", "영화", 
+                "율법", "부활", "그리스도의 재림", "자기부정", "자가 점검", "성령을 거스르는 죄", "소시니안주의", "영적 전쟁", 
+                "전적 타락", "그리스도와의 연합", "아담", "잘못된 신학", "성경 공부", "성경적 상담", "그리스도인의 삶", 
+                "신조와 신앙고백", "이단, 그리고 이단자들", "집사와 장로들", "우울증과 슬픔", "제자도", "이혼과 재혼", "교리 연구", 
+                "교회론", "교육 및 학문", "선택", "윤리학", "가족과 결혼", "하나님의 언약", "하나님의 영광", "하나님의 뜻", 
+                "하나님의 심판", "하나님의 나라", "율법과 복음", "은혜의 수단", "성도의 견인", "죄와 유혹", "인간의 전적 타락", 
+                "삼위 일체", "세계 선교", "세속화"
+            ].sort((a, b) => a.localeCompare(b, 'ko'));
+
+            // 드롭다운 돔 엘리먼트 동적 생성
+            const searchBoxContainer = document.querySelector('.sidebar-search-box');
+            let dropdownEl = document.getElementById('sidebar-search-dropdown');
+            if (!dropdownEl && searchBoxContainer) {
+                dropdownEl = document.createElement('div');
+                dropdownEl.id = 'sidebar-search-dropdown';
+                dropdownEl.className = 'sidebar-search-dropdown';
+                dropdownEl.style.display = 'none';
+                dropdownEl.innerHTML = '<ul id="sidebar-search-dropdown-list"></ul>';
+                searchBoxContainer.appendChild(dropdownEl);
+            }
+            const dropdownList = document.getElementById('sidebar-search-dropdown-list');
+
+            const renderDropdown = (filterText = "") => {
+                if (!dropdownList) return;
+                dropdownList.innerHTML = "";
+                
+                const filtered = suggestionTopics.filter(topic => 
+                    !filterText || topic.toLowerCase().includes(filterText.toLowerCase())
+                );
+                
+                if (filtered.length === 0) {
+                    const li = document.createElement('li');
+                    li.style.color = '#999';
+                    li.style.cursor = 'default';
+                    li.textContent = "일치하는 주제가 없습니다.";
+                    dropdownList.appendChild(li);
+                    return;
+                }
+                
+                filtered.forEach(topic => {
+                    const li = document.createElement('li');
+                    li.textContent = topic;
+                    li.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        searchInput.value = topic;
+                        if (searchClear) searchClear.style.display = 'block';
+                        dropdownEl.style.display = 'none';
+                        
+                        // 메인 화면 우상단 검색과 동일하게 검색 팝업 실행
+                        if (typeof window.performSearch === 'function') {
+                            window.performSearch(topic);
+                        }
+                    });
+                    dropdownList.appendChild(li);
+                });
+            };
+
+            // 검색바 입력 시 사이드바 실시간 카테고리 필터링 및 추천 리스트 갱신
             searchInput.addEventListener('input', (e) => {
                 const query = e.target.value.trim();
                 if (query) {
@@ -1082,14 +1152,38 @@
                     searchClear.style.display = 'none';
                 }
                 renderSidebarTopics(query);
+                renderDropdown(query);
+                dropdownEl.style.display = 'block';
+            });
+
+            // 포커스 또는 클릭 시 드롭다운 표출
+            searchInput.addEventListener('focus', () => {
+                renderDropdown(searchInput.value.trim());
+                dropdownEl.style.display = 'block';
+            });
+            
+            searchInput.addEventListener('click', (e) => {
+                e.stopPropagation();
+                renderDropdown(searchInput.value.trim());
+                dropdownEl.style.display = 'block';
+            });
+
+            // 바깥 영역 클릭 시 드롭다운 숨김
+            document.addEventListener('click', (e) => {
+                if (dropdownEl && !searchBoxContainer.contains(e.target)) {
+                    dropdownEl.style.display = 'none';
+                }
             });
 
             // Enter 키를 누르면 메인 우상단과 동일하게 팝업 검색 실행
             searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     const query = searchInput.value.trim();
-                    if (query && typeof window.performSearch === 'function') {
-                        window.performSearch(query);
+                    if (query) {
+                        if (dropdownEl) dropdownEl.style.display = 'none';
+                        if (typeof window.performSearch === 'function') {
+                            window.performSearch(query);
+                        }
                     }
                 }
             });
@@ -1100,8 +1194,11 @@
                 sidebarSearchIcon.style.cursor = 'pointer';
                 sidebarSearchIcon.addEventListener('click', () => {
                     const query = searchInput.value.trim();
-                    if (query && typeof window.performSearch === 'function') {
-                        window.performSearch(query);
+                    if (query) {
+                        if (dropdownEl) dropdownEl.style.display = 'none';
+                        if (typeof window.performSearch === 'function') {
+                            window.performSearch(query);
+                        }
                     }
                 });
             }
@@ -1110,6 +1207,8 @@
                 searchInput.value = '';
                 searchClear.style.display = 'none';
                 renderSidebarTopics('');
+                renderDropdown('');
+                dropdownEl.style.display = 'block';
                 searchInput.focus();
             });
 

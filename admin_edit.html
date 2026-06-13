@@ -155,7 +155,6 @@
                                 <option value="종말론">11. 종말론</option>
                                 <option value="역사 신학">12. 역사 신학</option>
                                 <option value="잘못된 신학">13. 잘못된 신학</option>
-
                             </select>
                         </div>
                         <div class="input-group" id="edit-lang-group" style="display: none;">
@@ -287,13 +286,42 @@
         const otherSelect = document.getElementById('edit-other-category');
         const subTopicGroup = document.getElementById('edit-sub-topic-group');
         const langGroup = document.getElementById('edit-lang-group');
+        const subSelect = document.getElementById('edit-sub-topic');
+
+        const puritanSubTopics = [
+            "신론", "인간론", "기독론", "구원론(성령론)", "율법과 복음", 
+            "그리스도인의 생활론", "그리스도인의 가정", "교회론", "설교론", 
+            "영적전쟁", "종말론", "역사 신학", "잘못된 신학"
+        ];
+
+        const falseTheologySubTopics = [
+            "알미니안주의", "도덕률폐기론", "율법주의", "신칼빈주의", "신사도운동", 
+            "오순절신학", "완전주의", "바울의 새관점", "신복음주의", "R.T 캔달", 
+            "세대주의", "횐상주의", "찰스 피니", "하이퍼 칼빈주의"
+        ];
 
         function updateSubTopicVisibility() {
             const topic = topicSelect.value;
             const other = otherSelect.value;
 
-            if (other === '전도 소책자' || topic === '청교도 신학') {
+            if (other === '전도 소책자' || topic === '청교도 신학' || topic === '잘못된 신학') {
                 subTopicGroup.style.display = 'block';
+                
+                // 옵션 동적 생성
+                subSelect.innerHTML = '<option value="">-- 선택 안함 --</option>';
+                let currentOptions = [];
+                if (topic === '잘못된 신학') {
+                    currentOptions = falseTheologySubTopics;
+                } else {
+                    currentOptions = puritanSubTopics;
+                }
+
+                currentOptions.forEach((opt, idx) => {
+                    const op = document.createElement('option');
+                    op.value = opt;
+                    op.innerText = `${idx + 1}. ${opt}`;
+                    subSelect.appendChild(op);
+                });
             } else {
                 subTopicGroup.style.display = 'none';
             }
@@ -447,7 +475,7 @@
                 
                 // --- 신학 상세 소주제 선택기 모달 관련 로직 ---
                 const detailedTopics = [
-                    "십계명", "그리스도의 순종", "양자됨", "예정론", "고통", "적그리스도", "도닥률폐기론", "변증론", "배교", "사도신경", 
+                    "십계명", "그리스도의 순종", "양자됨", "예정론", "고통", "적그리스도", "도덕률폐기론", "변증론", "배교", "사도신경", 
                     "성령의 유효한 부르심", "예산 편성, 교리", "알미니안주의", "무신론", "속죄", "하나님의 속성", "성경", "세례", "팔복", 
                     "거짓 믿음", "교리 교육", "독신", "성령의 은사", "은혜 언약", "행위 언약 (생명언약)", "성례", "그리스도의 인성", 
                     "그리스도의 신성", "그리스도의 사역", "그리스도의 두 가지 의지", "예배", "기독교 교육", "그리스도인의 자유", 
@@ -668,6 +696,13 @@
                     if (!finalMatchedSubtopics.includes(ms)) finalMatchedSubtopics.push(ms);
                 });
 
+                // 드롭다운 선택 소주제 강제 포함
+                if (subTopic && (topic === "청교도 신학" || topic === "잘못된 신학" || other === "전도 소책자")) {
+                    if (!finalMatchedSubtopics.includes(subTopic)) {
+                        finalMatchedSubtopics.push(subTopic);
+                    }
+                }
+
                 const updateData = {
                     topic, author, otherCategory: other, tags,
                     title: document.getElementById('edit-title').value,
@@ -679,7 +714,7 @@
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                if ((topic === "청교도 신학" || other === "전도 소책자") && subTopic) {
+                if ((topic === "청교도 신학" || topic === "잘못된 신학" || other === "전도 소책자") && subTopic) {
                     // Update series with the subTopic for consistency
                     updateData.series = subTopic;
 

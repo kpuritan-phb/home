@@ -886,7 +886,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const series = finalSeries;
             const order = parseInt(document.getElementById('post-order').value) || 0;
             const price = document.getElementById('post-price').value.trim() || '';
-            const content = document.getElementById('post-content').value;
             const fileInput = document.getElementById('post-file');
             const coverInput = document.getElementById('post-cover');
             const file = fileInput.files[0];

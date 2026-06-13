@@ -643,6 +643,7 @@ nav ul li:hover a i {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    /* iOS Safari는 fixed attachment를 지원 안 함 → 모바일에서 scroll로 override */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -2785,12 +2786,12 @@ footer {
     }
 
     .hero {
-        padding: 100px 0 60px;
-        /* Reduced top padding */
-        min-height: auto;
+        padding: 80px 0 50px;
+        min-height: 60vh;
         display: flex;
         align-items: center;
         justify-content: center;
+        background-attachment: scroll; /* iOS Safari fixed 버그 수정 */
     }
 
     .hero::before {
@@ -4099,7 +4100,7 @@ footer {
         justify-content: center;
         gap: 0.5rem;
         position: fixed;
-        bottom: 85px;
+        bottom: 110px;
         right: 20px;
         background: var(--primary-color);
         color: white;
@@ -4317,9 +4318,9 @@ footer {
         width: 100% !important;
     }
 
-    * {
-        max-width: 100% !important;
-        box-sizing: border-box !important;
+    /* max-width: 100% !important 전체 적용은 carousel 등 가로 스크롤 요소를 깨뜨림 → 제거 */
+    *:not(.carousel-track):not(.carousel-item-wrapper):not(img):not(video) {
+        box-sizing: border-box;
     }
 
     /* 캐러셀 트랙의 경우 모바일 터치 스크롤이 되도록 유연성 확보 */

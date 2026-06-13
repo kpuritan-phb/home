@@ -1,18 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@300;400;500;600&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nanum+Myeongjo:wght@400;700;800&display=swap');
 
 :root {
-    --primary-color: #2d2f31;
-    /* User Requested Neutral Dark Gray */
-    --secondary-color: #1a342a;
-    /* Deep Olive Green Accent */
-    --accent-color: #ffffff;
-    --bg-warm: #ffffff;
-    /* Pure White Background */
-    --text-color: #2a2d32;
-    --text-light: #525a66;
+    --primary-color: #0b1a30;      /* 짙은 네이비 */
+    --secondary-color: #5c4033;    /* 다크 브라운 */
+    --accent-color: #7d5a44;       /* 포인트 브라운 */
+    --bg-warm: #fdfbf7;            /* 따뜻한 미색 배경 */
+    --text-color: #2b2b2b;         /* 본문 짙은 회색 */
+    --text-light: #5f5f5f;         /* 본문 밝은 회색 */
     --white: #ffffff;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
 * {
@@ -376,7 +373,7 @@ nav ul li:hover a i {
 }
 
 .dropdown-list li a:hover {
-    background-color: rgba(26, 52, 42, 0.06);
+    background-color: rgba(92, 64, 51, 0.06);
     color: var(--secondary-color);
     padding-left: 1.5rem;
 }
@@ -597,7 +594,7 @@ nav ul li:hover a i {
     height: 60px;
     border-radius: 50%;
     text-decoration: none;
-    box-shadow: 0 10px 30px rgba(10, 124, 104, 0.4);
+    box-shadow: 0 10px 30px rgba(92, 64, 51, 0.3);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border: none;
     cursor: pointer;
@@ -613,8 +610,8 @@ nav ul li:hover a i {
 
 .floating-inquiry-btn:hover {
     transform: translateY(-8px) scale(1.1);
-    background-color: #0d8a74;
-    box-shadow: 0 15px 40px rgba(10, 124, 104, 0.5);
+    background-color: var(--accent-color);
+    box-shadow: 0 15px 40px rgba(92, 64, 51, 0.4);
     color: white;
 }
 
@@ -670,29 +667,152 @@ nav ul li:hover a i {
     max-width: 1200px;
     width: 100%;
     text-align: left;
-    /* Left align as per image */
-    padding: 2rem 4rem;
-    /* Reduced padding */
+    padding: 2rem 1.5rem;
     z-index: 10;
+}
+
+@media (min-width: 768px) {
+    .hero-content {
+        padding: 2rem 4rem;
+    }
+}
+
+.hero-subtitle {
+    display: block;
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--secondary-color);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.8rem;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.9);
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+}
+
+@media (min-width: 768px) {
+    .hero-subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
 }
 
 .hero h1 {
     color: #ffffff;
-    font-size: 5.5rem;
-    margin-bottom: 1.5rem;
-    line-height: 0.95;
+    font-size: 2.8rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.05;
     font-weight: 900;
-    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     letter-spacing: -0.04em;
 }
 
-.hero p {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 1.5rem;
-    margin-bottom: 2.5rem;
-    font-weight: 400;
+@media (min-width: 768px) {
+    .hero h1 {
+        font-size: 4.5rem;
+        line-height: 0.95;
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero h1 {
+        font-size: 5.5rem;
+    }
+}
+
+.hero-description {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-size: 1rem !important;
+    margin-bottom: 1.8rem !important;
+    font-weight: 500 !important;
     max-width: 600px;
-    line-height: 1.5;
+    line-height: 1.6 !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+@media (min-width: 768px) {
+    .hero-description {
+        font-size: 1.25rem !important;
+        margin-bottom: 2.5rem !important;
+    }
+}
+
+/* 메인 통합 신학 검색창 */
+.main-search-wrapper {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 1rem;
+}
+
+.main-search-box {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 50px;
+    padding: 0.3rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 2px solid transparent;
+    transition: var(--transition);
+}
+
+.main-search-box:focus-within {
+    border-color: var(--secondary-color);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
+}
+
+.main-search-icon {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    margin-left: 1.2rem;
+    margin-right: 0.6rem;
+}
+
+#main-search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 1rem;
+    color: var(--text-color);
+    padding: 0.6rem 0;
+    min-height: 44px; /* Touch target size */
+}
+
+@media (min-width: 768px) {
+    #main-search-input {
+        font-size: 1.1rem;
+    }
+}
+
+#main-search-btn {
+    background: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 50px;
+    padding: 0 1.5rem;
+    height: 44px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+@media (min-width: 768px) {
+    #main-search-btn {
+        padding: 0 2rem;
+        height: 48px;
+        font-size: 1rem;
+    }
+}
+
+#main-search-btn:hover {
+    background: var(--secondary-color);
 }
 
 .hero-btns {
@@ -2565,18 +2685,17 @@ footer {
         right: 0;
         transform: translateX(100%);
         width: 85%;
-        max-width: 340px;
+        max-width: 320px;
         height: 100vh;
-        background: rgba(42, 45, 50, 0.98);
-        backdrop-filter: blur(15px);
-        padding: 5rem 1.5rem;
-        transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        background: var(--white);
+        padding: 5rem 1.5rem 2rem 1.5rem;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 3000;
         overflow-y: auto;
         visibility: hidden;
         pointer-events: none;
-        box-shadow: -15px 0 45px rgba(0, 0, 0, 0.5);
-        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.08);
+        border-left: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     header nav.active {
@@ -2587,53 +2706,82 @@ footer {
 
     header nav ul {
         display: flex !important;
-        /* Force flex on mobile */
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 2rem;
-        padding-top: 2rem;
-    }
-
-    header nav ul li a {
-        color: #ffffff !important;
-        font-size: 1.25rem;
-        display: block;
-        padding: 0.8rem;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 0.5rem;
+        padding-top: 1rem;
+        width: 100%;
     }
 
     header nav ul li {
         width: 100%;
-        text-align: center;
+        text-align: left;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
 
-    nav ul li a {
-        font-size: 1.4rem;
-        display: block;
-    }
-
-    .dropdown-content.mega-menu {
-        position: static;
+    header nav ul li a {
+        color: var(--primary-color) !important;
+        font-size: 1.15rem;
+        font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         width: 100%;
-        box-shadow: none;
-        padding: 1rem;
-        background: rgba(42, 45, 50, 0.98);
-        backdrop-filter: blur(10px);
-        display: none;
-        margin-top: 1rem;
-        border-radius: 8px;
-        z-index: 2050;
-        max-height: 60vh;
-        overflow-y: auto;
+        padding: 1rem 0.5rem;
+        min-height: 48px; /* Touch target size */
     }
 
-    .dropdown.active .dropdown-content.mega-menu {
-        display: block;
+    header nav ul li a:hover {
+        color: var(--secondary-color) !important;
     }
 
-    .mega-menu-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
+    /* 모바일 아코디언 드롭다운 컨텐츠 */
+    .dropdown-content {
+        display: none !important;
+        position: static !important;
+        transform: none !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        background: #fdfdfd !important;
+        border: none !important;
+        border-left: 3px solid var(--secondary-color) !important;
+        padding: 0.5rem 0 0.5rem 1rem !important;
+        margin: 0.5rem 0 !important;
+        border-radius: 0 !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+    }
+
+    .dropdown.open > .dropdown-content {
+        display: block !important;
+        animation: slideDown 0.2s ease-out forwards;
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-list li a {
+        padding: 0.8rem 0.5rem !important;
+        font-size: 1rem !important;
+        color: var(--text-color) !important;
+        font-weight: 500 !important;
+        min-height: 44px; /* Touch target size */
+        border: none !important;
+    }
+
+    .dropdown-list li a:hover {
+        background: none !important;
+        color: var(--secondary-color) !important;
+        padding-left: 0.8rem !important;
+    }
+
+    .dropdown-content.mega-dropdown .dropdown-list {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.5rem !important;
     }
 
     .hero {
@@ -2902,7 +3050,7 @@ footer {
 }
 
 .carousel-track::-webkit-scrollbar-thumb:hover {
-    background: rgba(26, 52, 42, 0.25);
+    background: rgba(92, 64, 51, 0.25);
 }
 
 /* Navigation Buttons */
@@ -3247,7 +3395,7 @@ footer {
 .book-buy-btn:hover {
     background: var(--secondary-color);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(10, 124, 104, 0.3);
+    box-shadow: 0 5px 15px rgba(92, 64, 51, 0.3);
 }
 
 /* Mobile Adjustments for Books */
@@ -3536,7 +3684,7 @@ footer {
 .sidebar-search-box input:focus {
     border-color: var(--secondary-color);
     background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(26, 52, 42, 0.08);
+    box-shadow: 0 0 0 3px rgba(92, 64, 51, 0.08);
 }
 
 .sidebar-search-icon {
@@ -3868,13 +4016,13 @@ footer {
 
 @keyframes sidebarPulse {
     0% {
-        box-shadow: 0 0 0 0 rgba(26, 52, 42, 0.5);
+        box-shadow: 0 0 0 0 rgba(92, 64, 51, 0.5);
     }
     70% {
-        box-shadow: 0 0 0 8px rgba(26, 52, 42, 0);
+        box-shadow: 0 0 0 8px rgba(92, 64, 51, 0);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(26, 52, 42, 0);
+        box-shadow: 0 0 0 0 rgba(92, 64, 51, 0);
     }
 }
 
@@ -3960,7 +4108,7 @@ footer {
         border-radius: 50px;
         font-size: 0.95rem;
         font-weight: 700;
-        box-shadow: 0 4px 15px rgba(26, 52, 42, 0.3);
+        box-shadow: 0 4px 15px rgba(11, 26, 48, 0.25);
         z-index: 9999;
         cursor: pointer;
         transition: transform 0.2s, background 0.2s;
@@ -3968,7 +4116,7 @@ footer {
 
     .mobile-explore-btn:active {
         transform: scale(0.92);
-        background: #12251e;
+        background: #050d18;
     }
 
     /* 모바일 사이드바 -> 바텀시트 모달 드로어 전환 */
@@ -4113,5 +4261,90 @@ footer {
     .explorer-result-thumb {
         height: 120px;
         width: 100%;
+    }
+}
+
+/* ==========================================================================
+   Mobile First Global UX & Accessibility Rules
+   ========================================================================== */
+@media screen and (max-width: 768px) {
+    /* 1. 모바일 본문 가독성 강화 (중장년층 대응 16px+, 줄간격 1.6+) */
+    body, p, li, span, input, textarea, select {
+        font-size: 16px !important;
+        line-height: 1.65 !important;
+    }
+
+    /* 2. 터치 타겟 최소 44px 이상 및 오터치 방지 간격 확보 */
+    button, 
+    .cta-btn, 
+    .floating-inquiry-btn, 
+    .mobile-explore-btn,
+    .carousel-nav-btn,
+    .sidebar-topic-item,
+    .dropdown-list li a,
+    header nav ul li a,
+    #main-search-btn {
+        min-height: 44px !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    /* 3. 모바일(768px 이하)에서 모든 레이아웃 1열 구조 강제 */
+    .mega-menu-grid,
+    .main-grid-container,
+    .books-grid,
+    .about-container,
+    .explore-layout-container {
+        grid-template-columns: 1fr !important;
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 1.5rem !important;
+    }
+
+    .main-grid-item,
+    .explorer-result-card,
+    .carousel-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 4. 가로 스크롤 완전 제거를 위한 너비 안전 장치 */
+    html, body {
+        overflow-x: hidden !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    * {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 캐러셀 트랙의 경우 모바일 터치 스크롤이 되도록 유연성 확보 */
+    .carousel-track {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        -webkit-overflow-scrolling: touch !important;
+        gap: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
+
+    .carousel-card {
+        flex: 0 0 85% !important; /* 모바일에서 카드가 가로 85%씩 보여 스와이프를 유도 */
+        max-width: 320px !important;
+    }
+
+    .carousel-nav-btn {
+        display: none !important; /* 모바일에서는 캐러셀 내비게이션 버튼을 숨기고 터치 스와이프로 유도 */
+    }
+
+    /* 네이버 페이 로고 등을 개혁주의 서재 톤에 어울리게 흑백 필터 씌우기 */
+    .naver-pay-logo, .naver-link img {
+        filter: grayscale(1) contrast(1.2);
     }
 }

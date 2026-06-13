@@ -110,14 +110,15 @@
     <main>
         <section class="hero">
             <div class="hero-content">
+                <span class="hero-subtitle">한국 청교도 연구소</span>
                 <h1>KOREA PURITAN <br>INSTITUTE</h1>
-            </div>
-            <div class="ticker-banner">
-                <div class="ticker-track">
-                    <div class="ticker-item">이 시대에 한국교회의 갱신과 회복을 위해서는 바른 교리의 가르침과 전도 그리고 성경 본문을 깊이 강해하는 설교가 필요합니다.</div>
-                    <div class="ticker-item">이 시대에 한국교회의 갱신과 회복을 위해서는 바른 교리의 가르침과 전도 그리고 성경 본문을 깊이 강해하는 설교가 필요합니다.</div>
-                    <div class="ticker-item">이 시대에 한국교회의 갱신과 회복을 위해서는 바른 교리의 가르침과 전도 그리고 성경 본문을 깊이 강해하는 설교가 필요합니다.</div>
-                    <div class="ticker-item">이 시대에 한국교회의 갱신과 회복을 위해서는 바른 교리의 가르침과 전도 그리고 성경 본문을 깊이 강해하는 설교가 필요합니다.</div>
+                <p class="hero-description">청교도 신학과 개혁주의 신앙을 연구하고 성경적 자료를 제공하여 한국교회의 갱신과 회복을 섬깁니다.</p>
+                <div class="main-search-wrapper">
+                    <div class="main-search-box">
+                        <i class="fas fa-search main-search-icon"></i>
+                        <input type="text" id="main-search-input" placeholder="신학 주제, 설교, 도서 검색..." autocomplete="off">
+                        <button id="main-search-btn" aria-label="검색"><i class="fas fa-search"></i> 검색</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -498,7 +499,7 @@
 
                 <div class="about-right">
                     <!-- Background Illustration (Grayscale, Transparent, Frameless via crop) -->
-                    <img src="images/puritan-study.png" class="about-bg-image" alt="Background Study Scene">
+                    <img src="images/puritan-study.png" class="about-bg-image" alt="Background Study Scene" loading="lazy">
 
                     <div class="about-goals-container">
                         <h4>연구소의 지향점</h4>
@@ -1026,7 +1027,7 @@
 
                     card.innerHTML = `
                         <div id="${thumbWrapId}" class="explorer-result-thumb">
-                            <img id="${imgId}" src="${finalSrc}" alt="${post.title}">
+                            <img id="${imgId}" src="${finalSrc}" alt="${post.title}" loading="lazy">
                         </div>
                         <div class="explorer-result-content">
                             <div class="explorer-result-meta">

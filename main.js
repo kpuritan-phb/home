@@ -55,6 +55,69 @@ document.addEventListener('DOMContentLoaded', () => {
     const editModal = document.getElementById('edit-modal');
     const recentGrid = document.getElementById('recent-posts-grid');
 
+    // --- 비로그인 일반 사용자용 관리자 UI 차단 가드 ---
+    if (!window.isAdmin) {
+        const adminHeader = document.getElementById('resource-modal-admin-header');
+        const uploadForm = document.getElementById('modal-upload-form');
+        const adminDashboard = document.getElementById('admin-dashboard');
+        
+        if (adminHeader) adminHeader.remove();
+        if (uploadForm) uploadForm.remove();
+        if (adminDashboard) adminDashboard.remove();
+        
+        // CSS 클래스로도 한 번 더 안전 차단
+        const style = document.createElement('style');
+        style.innerHTML = `
+            #resource-modal-admin-header,
+            #modal-upload-form,
+            #admin-dashboard,
+            .admin-only,
+            .edit-btn,
+            .delete-btn {
+                display: none !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // --- 메인 통합 검색창 연동 ---
+    const mainSearchInput = document.getElementById('main-search-input');
+    const mainSearchBtn = document.getElementById('main-search-btn');
+    
+    const triggerMainSearch = () => {
+        if (!mainSearchInput) return;
+        const query = mainSearchInput.value.trim();
+        if (!query) {
+            alert('검색어를 입력해 주세요.');
+            return;
+        }
+        
+        // 상세 주제별 검색 모달 열기
+        if (typeof window.openAllTopicsModal === 'function') {
+            window.openAllTopicsModal();
+            
+            // 모달 내 검색창 엘리먼트 찾기
+            const modalSearchInput = document.getElementById('modal-search-input');
+            if (modalSearchInput) {
+                modalSearchInput.value = query;
+                // input 이벤트 트리거해서 모달 내 필터링 작동시키기
+                const event = new Event('input', { bubbles: true });
+                modalSearchInput.dispatchEvent(event);
+            }
+        }
+    };
+    
+    if (mainSearchBtn) {
+        mainSearchBtn.addEventListener('click', triggerMainSearch);
+    }
+    if (mainSearchInput) {
+        mainSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                triggerMainSearch();
+            }
+        });
+    }
+
     // 주제별 검색 메뉴는 우측 상단 검색창에 통합되었으므로 동적 주입 제거
 
 
@@ -139,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // --- Mobile Menu Toggle ---
+    // --- Mobile Menu Toggle & Accordion ---
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const nav = document.querySelector('nav');
     const navOverlay = document.querySelector('.nav-overlay');
@@ -148,19 +211,21 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileMenuToggle.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            if (window.innerWidth <= 1024) {
-                window.location.href = 'menu.html';
-                return;
-            }
-            // Fallback or Desktop behavior if toggle exists but screen is large
             if (nav) {
                 const isActive = nav.classList.toggle('active');
                 mobileMenuToggle.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+                const icon = mobileMenuToggle.querySelector('i');
+                if (icon) {
+                    if (isActive) {
+                        icon.classList.replace('fa-bars', 'fa-times');
+                    } else {
+                        icon.classList.replace('fa-times', 'fa-bars');
+                    }
+                }
             }
             if (navOverlay) navOverlay.classList.toggle('active');
         });
 
-        // Close menu when clicking outside or overlay
         const closeMenu = () => {
             if (nav) nav.classList.remove('active');
             if (navOverlay) navOverlay.classList.remove('active');
@@ -169,12 +234,34 @@ document.addEventListener('DOMContentLoaded', () => {
             if (icon) icon.classList.replace('fa-times', 'fa-bars');
         };
 
-        navOverlay.addEventListener('click', closeMenu);
+        if (navOverlay) navOverlay.addEventListener('click', closeMenu);
         document.addEventListener('click', (e) => {
-            if (!nav.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+            if (nav && !nav.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
                 closeMenu();
             }
         });
+    }
+
+    // 모바일 아코디언 드롭다운 토글
+    const dropdowns = document.querySelectorAll('nav ul li.dropdown');
+    dropdowns.forEach(dropdown => {
+        const link = dropdown.querySelector('a');
+        if (link) {
+            link.addEventListener('click', (e) => {
+                if (window.innerWidth <= 1024) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const isOpen = dropdown.classList.contains('open');
+                    dropdowns.forEach(d => d.classList.remove('open'));
+                    
+                    if (!isOpen) {
+                        dropdown.classList.add('open');
+                    }
+                }
+            });
+        }
+    });
 
         // Fetch and populate sermon series dropdown
         const populateSermonChoices = async () => {
@@ -257,7 +344,6 @@ document.addEventListener('DOMContentLoaded', () => {
             populateSermonChoices();
             populateSeminarChoices();
         }
-    }
 
     // --- Header Scroll Effect ---
     window.addEventListener('scroll', () => {
@@ -1941,7 +2027,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (actualPreviewUrl) {
             coverImgHtml = `
                 <div class="resource-cover-modern" style="width: 100%; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #f9f9f9; display: flex; justify-content: center; align-items: center; min-height: 200px;">
-                    <img src="${actualPreviewUrl}" alt="${post.title}" style="max-width: 100%; max-height: 400px; object-fit: contain; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <img src="${actualPreviewUrl}" alt="${post.title}" style="max-width: 100%; max-height: 400px; object-fit: contain; box-shadow: 0 5px 15px rgba(0,0,0,0.1);" loading="lazy">
                 </div>
             `;
         }

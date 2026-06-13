@@ -544,6 +544,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // [추가] 일반 자료 업로드 폼에서 대주제/기타분류 변경 시 세부 하위 분류 제어
+    const postTopicSelect = document.getElementById('post-topic');
+    const postOtherSelect = document.getElementById('post-other-category');
+    const postSubTopicGroup = document.getElementById('post-sub-topic-group');
+    const postSubSelect = document.getElementById('post-sub-topic');
+
+    const puritanSubTopics = [
+        "신론", "인간론", "기독론", "구원론(성령론)", "율법과 복음", 
+        "그리스도인의 생활론", "그리스도인의 가정", "교회론", "설교론", 
+        "영적전쟁", "종말론", "역사 신학", "잘못된 신학"
+    ];
+
+    const falseTheologySubTopics = [
+        "알미니안주의", "도덕률폐기론", "율법주의", "신칼빈주의", "신사도운동", 
+        "오순절신학", "완전주의", "바울의 새관점", "신복음주의", "R.T 캔달", 
+        "세대주의", "횐상주의", "찰스 피니", "하이퍼 칼빈주의"
+    ];
+
+    function updatePostSubTopicVisibility() {
+        if (!postTopicSelect || !postOtherSelect || !postSubTopicGroup || !postSubSelect) return;
+        const topic = postTopicSelect.value;
+        const other = postOtherSelect.value;
+
+        if (other === '전도 소책자' || topic === '청교도 신학' || topic === '잘못된 신학') {
+            postSubTopicGroup.style.display = 'block';
+            
+            // 옵션 동적 생성
+            postSubSelect.innerHTML = '<option value="">-- 선택 안함 --</option>';
+            let currentOptions = [];
+            if (topic === '잘못된 신학') {
+                currentOptions = falseTheologySubTopics;
+            } else {
+                currentOptions = puritanSubTopics;
+            }
+
+            currentOptions.forEach((opt, idx) => {
+                const op = document.createElement('option');
+                op.value = opt;
+                op.innerText = `${idx + 1}. ${opt}`;
+                postSubSelect.appendChild(op);
+            });
+        } else {
+            postSubTopicGroup.style.display = 'none';
+        }
+    }
+
+    if (postTopicSelect && postOtherSelect) {
+        postTopicSelect.addEventListener('change', updatePostSubTopicVisibility);
+        postOtherSelect.addEventListener('change', updatePostSubTopicVisibility);
+    }
+
     // Real Database Upload Logic
     const uploadForm = document.getElementById('post-upload-form');
     const recentPostsList = document.getElementById('admin-recent-posts');
@@ -788,11 +839,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const author = document.getElementById('post-author')?.value || "";
             const other = document.getElementById('post-other-category')?.value || "";
             const subBookletTopic = document.getElementById('post-booklet-topic')?.value || "";
+            const subTopic = document.getElementById('post-sub-topic')?.value || "";
 
             let tags = [topic, author, other].filter(t => t !== "");
 
             // --- [추가] 주제별 자동 태깅 및 시리즈 매칭 ---
-            const puritanTopics = ["신론", "인간론", "기독론", "구원론(성령론)", "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론", "설교론", "영적전쟁", "종말론", "역사 신학"];
+            const puritanTopics = ["신론", "인간론", "기독론", "구원론(성령론)", "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론", "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학"];
             let finalSeries = document.getElementById('post-series').value.trim() || '';
 
             if (puritanTopics.includes(topic)) {
@@ -807,6 +859,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!tags.includes(currentUploadTarget)) tags.push(currentUploadTarget);
             }
             const title = document.getElementById('post-title').value.trim() || '제목 없음';
+            const content = document.getElementById('post-content').value;
+
+            // 상세 주제 분석 로직
+            const finalMatchedSubtopics = [];
+            const combinedText = (title + ' ' + content).toLowerCase();
+            if (typeof detailedTopicKeywords !== 'undefined') {
+                for (const [topicKey, keywords] of Object.entries(detailedTopicKeywords)) {
+                    if (keywords.some(kw => combinedText.includes(kw.toLowerCase()))) {
+                        finalMatchedSubtopics.push(topicKey);
+                    }
+                }
+            }
+
+            // 드롭다운 선택 소주제 강제 포함
+            if (subTopic && (topic === "청교도 신학" || topic === "잘못된 신학" || other === "전도 소책자")) {
+                if (!finalMatchedSubtopics.includes(subTopic)) {
+                    finalMatchedSubtopics.push(subTopic);
+                }
+            }
+
+            if ((topic === "청교도 신학" || topic === "잘못된 신학" || other === "전도 소책자") && subTopic) {
+                finalSeries = subTopic;
+            }
+
             const series = finalSeries;
             const order = parseInt(document.getElementById('post-order').value) || 0;
             const price = document.getElementById('post-price').value.trim() || '';
@@ -902,6 +978,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     recent_order: 0,
                     price,
                     content,
+                    subTopics: finalMatchedSubtopics,
                     subBookletTopic: (other === "전도 소책자") ? subBookletTopic : null,
                     fileUrl,
                     coverUrl,

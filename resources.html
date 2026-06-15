@@ -801,7 +801,7 @@
                             </ul>
                         </div>
                     </li>
-                    <li><a href="resources.html?cat=%EA%B5%AC%EC%86%8D%EC%82%AC%EC%A0%81%20%EC%84%B1%EA%B2%BD%EC%A3%BC%EC%84%9D">구속사적 성경주석</a></li>
+                    <li><a href="resources.html?cat=%EC%84%B1%EA%B2%BD%EC%A3%BC%EC%84%9D">성경주석</a></li>
                     <li class="dropdown mega-dropdown">
                         <a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99">청교도 신학 <i class="fas fa-chevron-down"></i></a>
                         <div class="dropdown-content" id="puritan-dropdown">
@@ -1031,16 +1031,16 @@
                 bibleWrapper.style.display = 'none';
                 chapterWrapper.style.display = 'none';
                 await loadSubtopicItems(subTopicParam);
-            } else if (currentCategory === '구속사적 성경주석' && !bParam) {
+            } else if (currentCategory === '성경주석' && !bParam) {
                 grid.style.display = 'none';
                 bibleWrapper.style.display = 'block';
                 chapterWrapper.style.display = 'none';
                 loadBibleBooks();
-            } else if (currentCategory === '구속사적 성경주석' && bParam) {
+            } else if (currentCategory === '성경주석' && bParam) {
                 grid.style.display = 'grid';
                 bibleWrapper.style.display = 'none';
                 chapterWrapper.style.display = 'block';
-                await loadCategoryItems('구속사적 성경주석');
+                await loadCategoryItems('성경주석');
             } else if (currentCategory) {
                 grid.style.display = 'grid';
                 bibleWrapper.style.display = 'none';
@@ -1060,7 +1060,7 @@
         function loadBibleBooks() {
             bibleWrapper.innerHTML = '';
             bibleWrapper.className = 'bible-index-container';
-            pageTitle.textContent = '구속사적 성경주석';
+            pageTitle.textContent = '성경주석';
 
             const oldTestament = BIBLE_BOOKS.filter(b => b.test === 'old');
             const newTestament = BIBLE_BOOKS.filter(b => b.test === 'new');
@@ -1082,7 +1082,7 @@
                     btn.innerHTML = `${book.name}<span>${book.chapters} CH</span>`;
                     btn.onclick = () => {
                         const url = new URL(window.location);
-                        url.searchParams.set('cat', '구속사적 성경주석');
+                        url.searchParams.set('cat', '성경주석');
                         url.searchParams.set('b', book.name);
                         url.searchParams.delete('s');
                         window.history.pushState({}, '', url);
@@ -1093,8 +1093,8 @@
                 bibleWrapper.appendChild(section);
             };
 
-            renderBibleSection('구약 성서 (Old Testament)', oldTestament);
-            renderBibleSection('신약 성서 (New Testament)', newTestament);
+            renderBibleSection('구약 (Old Testament)', oldTestament);
+            renderBibleSection('신약 (New Testament)', newTestament);
         }
 
         function updateUI() {
@@ -1212,10 +1212,10 @@
 
                 if (type === 'latest') {
                     // 최신 업데이트 전체 목록: 
-                    // '구속사적 성경주석', '세미나, 강의', '세미나', '강의', '신학강론', '5분 신학강론', '오분 신학 강론'을 제외
+                    // '성경주석', '세미나, 강의', '세미나', '강의', '신학강론', '5분 신학강론', '오분 신학 강론'을 제외
                     allCurrentPosts = posts.filter(post => {
                         const tags = post.tags || [];
-                        const excluded = ['구속사적 성경주석', '세미나, 강의', '세미나', '강의', '신학강론', '5분 신학강론', '오분 신학 강론'];
+                        const excluded = ['성경주석', '세미나, 강의', '세미나', '강의', '신학강론', '5분 신학강론', '오분 신학 강론'];
                         return !tags.some(tag => excluded.includes(tag));
                     });
                     if (pageTitle) pageTitle.textContent = '최신 업데이트 전체 자료';
@@ -1443,7 +1443,7 @@
                 } else {
                     // --- 1. Main Category Fetch (기타 카테고리) ---
                     let query = db.collection("posts").where("tags", "array-contains", category);
-                    if (s && category !== '청교도 신학' && category !== '구속사적 성경주석') {
+                    if (s && category !== '청교도 신학' && category !== '성경주석') {
                         query = query.where("series", "==", s);
                     }
                     const snapshot = await query.get();
@@ -1456,7 +1456,7 @@
                     renderSeriesTabs(category, uniqueSeries);
                 } else if (category === '청교도 신학') {
                     resetTheologyTabs();
-                } else if (category === '구속사적 성경주석') {
+                } else if (category === '성경주석') {
                     const b = urlParams.get('b');
                     if (b) {
                         const bookData = BIBLE_BOOKS.find(bk => bk.name === b);
@@ -1467,8 +1467,8 @@
                 }
 
                 // --- 2. Hybrid Loading for Puritan Theology or Evangelism/Missions ---
-                if (category === '청교도 신학' || category === '전도, 선교' || (category === '구속사적 성경주석' && b)) {
-                    if (category === '구속사적 성경주석' && b) {
+                if (category === '청교도 신학' || category === '전도, 선교' || (category === '성경주석' && b)) {
+                    if (category === '성경주석' && b) {
                         posts = posts.filter(p => p.series === b);
                         if (s) {
                             // Perfect match check for bible chapters
@@ -1522,7 +1522,7 @@
 
                 grid.innerHTML = '';
                 // Change container class to list for items
-                const isBlog = currentCategory === '구속사적 성경주석' && s;
+                const isBlog = currentCategory === '성경주석' && s;
                 grid.className = 'resource-list-grid' + (isBlog ? ' blog-style' : '');
 
 
@@ -1552,7 +1552,7 @@
 
         function renderResourceItem(post) {
             const itemEl = document.createElement('div');
-            const isBible = currentCategory === '구속사적 성경주석';
+            const isBible = currentCategory === '성경주석';
 
             // Auto-expand Bible chapters if specifically selected
             const urlParams = new URLSearchParams(window.location.search);

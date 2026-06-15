@@ -21,6 +21,15 @@
             text-align: center;
             color: white;
             border-bottom: 5px solid var(--secondary-color);
+            transition: height 0.4s ease;
+        }
+
+        .resources-hero.compact-hero {
+            height: 110px;
+        }
+
+        .resources-hero.compact-hero p {
+            display: none;
         }
 
         .resources-hero h1 {
@@ -29,6 +38,12 @@
             margin-bottom: 1rem;
             text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
             font-family: 'Playfair Display', serif;
+            transition: font-size 0.3s ease;
+        }
+
+        .resources-hero.compact-hero h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0;
         }
 
         .resources-container {
@@ -305,6 +320,50 @@
             color: white;
             border-color: var(--secondary-color);
             box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2);
+        }
+
+        /* Bible chapter prev/next navigation */
+        .bible-chapter-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+            gap: 10px;
+        }
+
+        .bible-nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .bible-nav-btn:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+
+        .bible-nav-btn.disabled {
+            background: #ddd;
+            color: #999;
+            cursor: default;
+            pointer-events: none;
+            transform: none;
+        }
+
+        .bible-nav-current {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary-color);
         }
 
         @media screen and (max-width: 992px) {
@@ -1028,6 +1087,16 @@
             }
             currentCategory = catParam;
 
+            // Compact hero when navigating into a book or chapter
+            const heroSection = document.querySelector('.resources-hero');
+            if (heroSection) {
+                if (catParam === '성경주석' && bParam) {
+                    heroSection.classList.add('compact-hero');
+                } else {
+                    heroSection.classList.remove('compact-hero');
+                }
+            }
+
             if (subTopicParam) {
                 grid.style.display = 'grid';
                 bibleWrapper.style.display = 'none';
@@ -1155,9 +1224,17 @@
             pageItems.forEach(post => renderResourceItem(post));
             renderPagination();
 
-            // Scroll to top of container
-            const container = document.querySelector('.resources-container');
-            if (container) container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // For Bible commentary with a specific chapter, scroll to content
+            const urlParams = new URLSearchParams(window.location.search);
+            const isBibleChapter = currentCategory === '성경주석' && urlParams.get('s');
+            if (isBibleChapter) {
+                setTimeout(() => {
+                    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            } else {
+                const container = document.querySelector('.resources-container');
+                if (container) container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
 
         function renderPagination() {
@@ -1670,27 +1747,58 @@
             }
         }
 
+        function navigateToChapter(bookName, chapterNum) {
+            const url = new URL(window.location);
+            url.searchParams.set('cat', '성경주석');
+            url.searchParams.set('b', bookName);
+            url.searchParams.set('s', `${chapterNum}장`);
+            window.history.pushState({}, '', url);
+            init().then(() => {
+                const grid = document.getElementById('resources-grid');
+                if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        }
+
         function renderBibleChaptersGrid(bookName, chapterCount) {
             const urlParams = new URLSearchParams(window.location.search);
             const currentTag = urlParams.get('cat');
             const currentSub = urlParams.get('s') || "";
+            const currentChapterNum = currentSub ? parseInt(currentSub) : 0;
+
+            const prevNum = currentChapterNum > 1 ? currentChapterNum - 1 : null;
+            const nextNum = currentChapterNum > 0 && currentChapterNum < chapterCount ? currentChapterNum + 1 : null;
 
             chapterWrapper.innerHTML = `
                 <div class="chapter-grid-header">${bookName} 장 선택</div>
                 <div class="chapter-grid"></div>
+                <div class="bible-chapter-nav">
+                    <button class="bible-nav-btn ${!prevNum ? 'disabled' : ''}" id="btn-prev-chapter">
+                        <i class="fas fa-chevron-left"></i> 이전 장
+                    </button>
+                    <span class="bible-nav-current">${currentChapterNum > 0 ? `${bookName} ${currentChapterNum}장` : bookName}</span>
+                    <button class="bible-nav-btn ${!nextNum ? 'disabled' : ''}" id="btn-next-chapter">
+                        다음 장 <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
             `;
             const chapterGrid = chapterWrapper.querySelector('.chapter-grid');
 
-            // 'All' button removed per user request
-
             for (let i = 1; i <= chapterCount; i++) {
                 const sLabel = `${i}장`;
-                const btn = document.createElement('a');
+                const btn = document.createElement('button');
                 btn.className = `chapter-btn ${currentSub === sLabel ? 'active' : ''}`;
-                btn.href = `resources.html?cat=${encodeURIComponent(currentTag)}&b=${encodeURIComponent(bookName)}&s=${encodeURIComponent(sLabel)}`;
                 btn.textContent = `${i}`;
+                btn.onclick = () => navigateToChapter(bookName, i);
                 chapterGrid.appendChild(btn);
             }
+
+            if (prevNum) {
+                chapterWrapper.querySelector('#btn-prev-chapter').onclick = () => navigateToChapter(bookName, prevNum);
+            }
+            if (nextNum) {
+                chapterWrapper.querySelector('#btn-next-chapter').onclick = () => navigateToChapter(bookName, nextNum);
+            }
+
             chapterWrapper.style.display = 'block';
         }
 

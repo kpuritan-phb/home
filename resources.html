@@ -1132,7 +1132,10 @@
                 chapterWrapper.style.display = 'none';
                 loadBibleBooks();
             } else if (currentCategory === '성경주석' && bParam) {
-                grid.style.display = 'grid';
+                const sParam = urlParams.get('s');
+                // Chapter not selected yet: only show the chapter-number picker,
+                // skip the card grid entirely (no need for thumbnails/tags per chapter)
+                grid.style.display = sParam ? 'grid' : 'none';
                 bibleWrapper.style.display = 'none';
                 chapterWrapper.style.display = 'block';
                 await loadCategoryItems('성경주석');

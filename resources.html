@@ -636,8 +636,8 @@
         }
 
         .resource-list-grid.blog-style .resource-card-desc {
-            font-size: 1.15rem;
-            line-height: 2;
+            font-size: 1.35rem;
+            line-height: 2.1;
             color: #2c3e50;
             -webkit-line-clamp: unset;
             line-clamp: unset;
@@ -646,9 +646,33 @@
             text-align: justify;
         }
 
+        @media screen and (max-width: 768px) {
+            .resource-list-grid.blog-style .resource-card-desc {
+                font-size: 1.15rem;
+                line-height: 1.9;
+            }
+        }
+
+        .resource-list-grid.blog-style .resource-card-desc p {
+            margin: 0 0 28px 0;
+        }
+
+        .resource-list-grid.blog-style .resource-card-desc p:last-child {
+            margin-bottom: 0;
+        }
+
+        .resource-list-grid.blog-style .resource-card-desc .verse-num {
+            display: inline-block;
+            min-width: 1.6em;
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-family: 'Noto Serif KR', serif;
+            margin-right: 4px;
+        }
+
+        /* Hide the unnecessary category tag (e.g. "성경주석") in chapter reading view */
         .resource-list-grid.blog-style .resource-card-category {
-            text-align: center;
-            margin-bottom: 10px;
+            display: none;
         }
 
         /* Theology Tabs Scaling for Hero */
@@ -1660,6 +1684,7 @@
             const urlsInContent = content.match(urlRegex) || [];
             let primaryLink = post.fileUrl || (urlsInContent.length > 0 ? urlsInContent[0] : null);
 
+            let displayContent;
             if (isBible) {
                 // One-pass regex to handle ":1", "1:26", or ",1:26". Keeps only the verse number.
                 // It captures either (Chapter:Verse) or (:Verse) or (,Chapter:Verse)
@@ -1668,10 +1693,22 @@
                     return '\n\n' + v + ' ';
                 });
                 content = content.trim();
-            }
 
-            // Autolink content for display
-            const displayContent = content.replace(urlRegex, '<a href="$1" target="_blank" onclick="event.stopPropagation()">$1</a>');
+                // Wrap each verse block in its own <p> with the verse number styled,
+                // so paragraphs are visually separated instead of relying on raw newlines.
+                const blocks = content.split(/\n\n+/).filter(b => b.trim());
+                displayContent = blocks.map(block => {
+                    const m = block.match(/^(\d+)\s+([\s\S]*)$/);
+                    if (m) {
+                        return `<p><span class="verse-num">${m[1]}</span>${m[2].trim()}</p>`;
+                    }
+                    return `<p>${block.trim()}</p>`;
+                }).join('');
+                displayContent = displayContent.replace(urlRegex, '<a href="$1" target="_blank" onclick="event.stopPropagation()">$1</a>');
+            } else {
+                // Autolink content for display
+                displayContent = content.replace(urlRegex, '<a href="$1" target="_blank" onclick="event.stopPropagation()">$1</a>');
+            }
 
             itemEl.innerHTML = `
                 ${showThumb ? `

@@ -824,7 +824,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = prompt("새롭게 만드실 시리즈(폴더) 이름을 입력하세요.\n예: 사도행전 강해 시리즈");
         if (name && name.trim()) {
             const url = new URL('admin_add.html', window.location.href);
-            const otherCats = ['기타', '도서 목록', '전도 소책자', '강해설교'];
+            const otherCats = ['기타', '도서 목록', '전도 소책자', '강해설교', '전도만화'];
             if (otherCats.includes(category)) url.searchParams.set('category', category);
             url.searchParams.set('series', name.trim());
             window.open(url.href, '_blank', 'width=1000,height=800');
@@ -912,7 +912,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = new URL('admin_add.html', window.location.href);
         if (topics.includes(categoryName)) url.searchParams.set('topic', categoryName);
         if (authors.includes(categoryName)) url.searchParams.set('author', categoryName);
-        if (['전도 소책자', '도서 목록', '강해설교', '세미나, 강의', '기타'].includes(categoryName)) url.searchParams.set('category', categoryName);
+        if (['전도 소책자', '도서 목록', '강해설교', '세미나, 강의', '기타', '전도만화'].includes(categoryName)) url.searchParams.set('category', categoryName);
 
         window.open(url.href, '_blank', 'width=1000,height=800');
     };
@@ -1435,7 +1435,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (modalTopic) modalTopic.value = topics.includes(queryTag) ? queryTag : "";
                 if (modalAuthor) modalAuthor.value = authors.includes(queryTag) ? queryTag : "";
                 if (modalOther) {
-                    const otherCats = ['기타', '도서 목록', '전도 소책자', '강해설교'];
+                    const otherCats = ['기타', '도서 목록', '전도 소책자', '강해설교', '전도만화'];
                     modalOther.value = otherCats.includes(queryTag) ? queryTag : "";
                 }
                 if (modalSeries) modalSeries.value = targetSeries || "";
@@ -1449,7 +1449,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Set presets based on current modal view
                         if (topics.includes(queryTag)) url.searchParams.set('topic', queryTag);
                         if (authors.includes(queryTag)) url.searchParams.set('author', queryTag);
-                        const otherCats = ['기타', '도서 목록', '전도 소책자', '강해설교'];
+                        const otherCats = ['기타', '도서 목록', '전도 소책자', '강해설교', '전도만화'];
                         if (otherCats.includes(queryTag)) url.searchParams.set('category', queryTag);
                         if (targetSeries) url.searchParams.set('series', targetSeries);
 
@@ -2813,7 +2813,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let items = [];
             if (type === 'topic') items = topics;
             else if (type === 'author') items = authors;
-            else if (type === 'category') items = ['기타', '도서 목록', '전도 소책자', '강해설교'];
+            else if (type === 'category') items = ['기타', '도서 목록', '전도 소책자', '강해설교', '전도만화'];
             else if (type === 'series') {
                 // Fetch unique series names from Firestore
                 const snapshot = await db.collection("posts").get();

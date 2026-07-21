@@ -270,34 +270,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!desktopDropdown && !mobileDropdown) return;
 
             try {
-                const snapshot = await db.collection("posts")
-                    .where("tags", "array-contains", "강해설교")
-                    .get();
-
-                const seriesSet = new Set();
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    if (data.series && data.series.trim()) seriesSet.add(data.series.trim());
-                });
-
-                const sortedSeries = Array.from(seriesSet).sort((a, b) => a.localeCompare(b, 'ko'));
-
                 if (desktopDropdown) {
-                    desktopDropdown.innerHTML = `<li><a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90">강해설교 전체</a></li>`;
-                    sortedSeries.forEach(s => {
-                        const li = document.createElement('li');
-                        li.innerHTML = `<a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90&s=${encodeURIComponent(s)}">${s}</a>`;
-                        desktopDropdown.appendChild(li);
-                    });
+                    desktopDropdown.innerHTML = `
+                        <li><a href="resources.html?cat=%EC%84%A4%EA%B5%90%EB%A1%A0">설교론</a></li>
+                        <li><a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90">강해설교</a></li>
+                        <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%EC%84%A4%EA%B5%90">전도설교</a></li>
+                    `;
                 }
 
                 if (mobileDropdown) {
-                    mobileDropdown.innerHTML = `<li><a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90" class="menu-sub-link">강해설교 전체</a></li>`;
-                    sortedSeries.forEach(s => {
-                        const li = document.createElement('li');
-                        li.innerHTML = `<a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90&s=${encodeURIComponent(s)}" class="menu-sub-link">${s}</a>`;
-                        mobileDropdown.appendChild(li);
-                    });
+                    mobileDropdown.innerHTML = `
+                        <li><a href="resources.html?cat=%EC%84%A4%EA%B5%90%EB%A1%A0" class="menu-sub-link">설교론</a></li>
+                        <li><a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90" class="menu-sub-link">강해설교</a></li>
+                        <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%EC%84%A4%EA%B5%90" class="menu-sub-link">전도설교</a></li>
+                    `;
                 }
             } catch (e) { console.error("populateSermonChoices error:", e); }
         };

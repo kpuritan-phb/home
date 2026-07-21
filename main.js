@@ -654,8 +654,8 @@ document.addEventListener('DOMContentLoaded', () => {
         "청교도 신학": ["신론", "인간론", "기독론", "구원론(성령론)", "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론", "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학"]
     };
 
-    const preachingDetailGroup = document.getElementById('post-preaching-detail-group');
-    const preachingDetailSelect = document.getElementById('post-preaching-detail');
+    const detailTopicGroup = document.getElementById('post-detail-topic-group');
+    const detailTopicSelect = document.getElementById('post-detail-topic');
 
     function updatePostSubTopicVisibility() {
         if (!postTopicSelect || !postOtherSelect || !postSubTopicGroup || !postSubSelect) return;
@@ -684,29 +684,41 @@ document.addEventListener('DOMContentLoaded', () => {
             postSubTopicGroup.style.display = 'none';
         }
 
-        updatePreachingDetailVisibility();
+        updateDetailTopicVisibility();
     }
 
-    function updatePreachingDetailVisibility() {
-        if (!preachingDetailGroup) return;
+    function updateDetailTopicVisibility() {
+        if (!detailTopicGroup || !detailTopicSelect) return;
         const topic = postTopicSelect.value;
         const subTopic = postSubSelect.value;
         const other = postOtherSelect.value;
 
-        // 대주제가 '설교론'이거나, 청교도 신학/소책자 전용 신학 하위분류가 '설교론'인 경우
-        const isPreaching = (topic === '설교론') || (topic === '청교도 신학' && subTopic === '설교론') || (other === '전도 소책자' && subTopic === '설교론');
-        if (isPreaching) {
-            preachingDetailGroup.style.display = 'block';
+        let activeKey = "";
+        if (topic === '청교도 신학' || (other === '전도 소책자' && subTopic)) {
+            activeKey = subTopic;
+        } else if (topic && topic !== '청교도 신학') {
+            activeKey = topic;
+        }
+
+        if (activeKey && majorToSubtopicsMap[activeKey] && majorToSubtopicsMap[activeKey].length > 0) {
+            detailTopicGroup.style.display = 'block';
+            detailTopicSelect.innerHTML = '<option value="">-- 선택 안함 --</option>';
+            majorToSubtopicsMap[activeKey].forEach(opt => {
+                const op = document.createElement('option');
+                op.value = opt;
+                op.innerText = opt;
+                detailTopicSelect.appendChild(op);
+            });
         } else {
-            preachingDetailGroup.style.display = 'none';
-            if (preachingDetailSelect) preachingDetailSelect.value = '';
+            detailTopicGroup.style.display = 'none';
+            detailTopicSelect.innerHTML = '<option value="">-- 선택 안함 --</option>';
         }
     }
 
     if (postTopicSelect && postOtherSelect && postSubSelect) {
         postTopicSelect.addEventListener('change', updatePostSubTopicVisibility);
         postOtherSelect.addEventListener('change', updatePostSubTopicVisibility);
-        postSubSelect.addEventListener('change', updatePreachingDetailVisibility);
+        postSubSelect.addEventListener('change', updateDetailTopicVisibility);
     }
 
     // Real Database Upload Logic
@@ -993,14 +1005,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // 설교론 상세 분류 강제 포함
-            const preachingDetail = document.getElementById('post-preaching-detail')?.value || "";
-            if (preachingDetail) {
-                if (!finalMatchedSubtopics.includes(preachingDetail)) {
-                    finalMatchedSubtopics.push(preachingDetail);
+            // 상세 분류 강제 포함
+            const detailTopic = document.getElementById('post-detail-topic')?.value || "";
+            if (detailTopic) {
+                if (!finalMatchedSubtopics.includes(detailTopic)) {
+                    finalMatchedSubtopics.push(detailTopic);
                 }
-                if (!tags.includes(preachingDetail)) {
-                    tags.push(preachingDetail);
+                if (!tags.includes(detailTopic)) {
+                    tags.push(detailTopic);
                 }
             }
 

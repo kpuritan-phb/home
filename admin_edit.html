@@ -160,13 +160,10 @@
                                 <option value="잘못된 신학">13. 잘못된 신학</option>
                             </select>
                         </div>
-                        <div class="input-group" id="edit-preaching-detail-group" style="display: none; margin-bottom: 15px;">
-                            <label>설교론 상세 분류</label>
-                            <select id="edit-preaching-detail" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                        <div class="input-group" id="edit-detail-topic-group" style="display: none; margin-bottom: 15px;">
+                            <label>상세 분류 선택</label>
+                            <select id="edit-detail-topic" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
                                 <option value="">-- 선택 안함 --</option>
-                                <option value="설교자">설교자</option>
-                                <option value="강해설교">강해설교</option>
-                                <option value="전도설교">전도설교</option>
                             </select>
                         </div>
                         <div class="input-group" id="edit-lang-group" style="display: none;">
@@ -320,8 +317,8 @@
             "청교도 신학": ["신론", "인간론", "기독론", "구원론(성령론)", "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론", "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학"]
         };
 
-        const preachingDetailGroup = document.getElementById('edit-preaching-detail-group');
-        const preachingDetailSelect = document.getElementById('edit-preaching-detail');
+        const detailTopicGroup = document.getElementById('edit-detail-topic-group');
+        const detailTopicSelect = document.getElementById('edit-detail-topic');
 
         function updateSubTopicVisibility() {
             const topic = topicSelect.value;
@@ -355,27 +352,40 @@
                 langGroup.style.display = 'none';
             }
 
-            updatePreachingDetailVisibility();
+            updateDetailTopicVisibility();
         }
 
-        function updatePreachingDetailVisibility() {
-            if (!preachingDetailGroup) return;
+        function updateDetailTopicVisibility() {
+            if (!detailTopicGroup || !detailTopicSelect) return;
             const topic = topicSelect.value;
             const subTopic = subSelect.value;
             const other = otherSelect.value;
 
-            const isPreaching = (topic === '설교론') || (topic === '청교도 신학' && subTopic === '설교론') || (other === '전도 소책자' && subTopic === '설교론');
-            if (isPreaching) {
-                preachingDetailGroup.style.display = 'block';
+            let activeKey = "";
+            if (topic === '청교도 신학' || (other === '전도 소책자' && subTopic)) {
+                activeKey = subTopic;
+            } else if (topic && topic !== '청교도 신학') {
+                activeKey = topic;
+            }
+
+            if (activeKey && majorToSubtopicsMap[activeKey] && majorToSubtopicsMap[activeKey].length > 0) {
+                detailTopicGroup.style.display = 'block';
+                detailTopicSelect.innerHTML = '<option value="">-- 선택 안함 --</option>';
+                majorToSubtopicsMap[activeKey].forEach(opt => {
+                    const op = document.createElement('option');
+                    op.value = opt;
+                    op.innerText = opt;
+                    detailTopicSelect.appendChild(op);
+                });
             } else {
-                preachingDetailGroup.style.display = 'none';
-                if (preachingDetailSelect) preachingDetailSelect.value = '';
+                detailTopicGroup.style.display = 'none';
+                detailTopicSelect.innerHTML = '<option value="">-- 선택 안함 --</option>';
             }
         }
 
         otherSelect.addEventListener('change', updateSubTopicVisibility);
         topicSelect.addEventListener('change', updateSubTopicVisibility);
-        subSelect.addEventListener('change', updatePreachingDetailVisibility);
+        subSelect.addEventListener('change', updateDetailTopicVisibility);
 
         // Load Data
         const urlParams = new URLSearchParams(window.location.search);
@@ -490,12 +500,14 @@
 
                 document.getElementById('edit-sub-topic').value = data.subBookletTopic || data.series || "";
 
-                // 설교론 상세 분류 초기값 세팅
-                updatePreachingDetailVisibility();
-                const preachingDetails = ['설교자', '강해설교', '전도설교'];
-                const foundDetail = (data.subTopics || []).find(t => preachingDetails.includes(t)) || (data.tags || []).find(t => preachingDetails.includes(t));
-                if (foundDetail) {
-                    document.getElementById('edit-preaching-detail').value = foundDetail;
+                // 상세 분류 초기값 세팅
+                updateDetailTopicVisibility();
+                const activeKey = data.topic === '청교도 신학' ? (data.subBookletTopic || data.series) : data.topic;
+                if (activeKey && majorToSubtopicsMap[activeKey] && majorToSubtopicsMap[activeKey].length > 0) {
+                    const foundDetail = (data.subTopics || []).find(t => majorToSubtopicsMap[activeKey].includes(t)) || (data.tags || []).find(t => majorToSubtopicsMap[activeKey].includes(t));
+                    if (foundDetail) {
+                        document.getElementById('edit-detail-topic').value = foundDetail;
+                    }
                 }
 
                 document.getElementById('edit-title').value = data.title || "";
@@ -753,14 +765,14 @@
                     }
                 }
 
-                // 설교론 상세 분류 강제 포함
-                const preachingDetail = document.getElementById('edit-preaching-detail')?.value || "";
-                if (preachingDetail) {
-                    if (!finalMatchedSubtopics.includes(preachingDetail)) {
-                        finalMatchedSubtopics.push(preachingDetail);
+                // 상세 분류 강제 포함
+                const detailTopic = document.getElementById('edit-detail-topic')?.value || "";
+                if (detailTopic) {
+                    if (!finalMatchedSubtopics.includes(detailTopic)) {
+                        finalMatchedSubtopics.push(detailTopic);
                     }
-                    if (!tags.includes(preachingDetail)) {
-                        tags.push(preachingDetail);
+                    if (!tags.includes(detailTopic)) {
+                        tags.push(detailTopic);
                     }
                 }
 

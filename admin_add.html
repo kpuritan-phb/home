@@ -157,13 +157,10 @@
                                 <option value="잘못된 신학">13. 잘못된 신학</option>
                             </select>
                         </div>
-                        <div class="input-group" id="add-preaching-detail-group" style="display: none; margin-bottom: 15px;">
-                            <label>설교론 상세 분류</label>
-                            <select id="add-preaching-detail" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                        <div class="input-group" id="add-detail-topic-group" style="display: none; margin-bottom: 15px;">
+                            <label>상세 분류 선택</label>
+                            <select id="add-detail-topic" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
                                 <option value="">-- 선택 안함 --</option>
-                                <option value="설교자">설교자</option>
-                                <option value="강해설교">강해설교</option>
-                                <option value="전도설교">전도설교</option>
                             </select>
                         </div>
                         <div class="input-group" id="add-lang-group" style="display: none;">
@@ -315,8 +312,8 @@
             "청교도 신학": ["신론", "인간론", "기독론", "구원론(성령론)", "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론", "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학"]
         };
 
-        const preachingDetailGroup = document.getElementById('add-preaching-detail-group');
-        const preachingDetailSelect = document.getElementById('add-preaching-detail');
+        const detailTopicGroup = document.getElementById('add-detail-topic-group');
+        const detailTopicSelect = document.getElementById('add-detail-topic');
 
         function updateSubTopicVisibility() {
             const topic = topicSelect.value;
@@ -350,27 +347,40 @@
                 langGroup.style.display = 'none';
             }
 
-            updatePreachingDetailVisibility();
+            updateDetailTopicVisibility();
         }
 
-        function updatePreachingDetailVisibility() {
-            if (!preachingDetailGroup) return;
+        function updateDetailTopicVisibility() {
+            if (!detailTopicGroup || !detailTopicSelect) return;
             const topic = topicSelect.value;
             const subTopic = subSelect.value;
             const other = otherSelect.value;
 
-            const isPreaching = (topic === '설교론') || (topic === '청교도 신학' && subTopic === '설교론') || (other === '전도 소책자' && subTopic === '설교론');
-            if (isPreaching) {
-                preachingDetailGroup.style.display = 'block';
+            let activeKey = "";
+            if (topic === '청교도 신학' || (other === '전도 소책자' && subTopic)) {
+                activeKey = subTopic;
+            } else if (topic && topic !== '청교도 신학') {
+                activeKey = topic;
+            }
+
+            if (activeKey && majorToSubtopicsMap[activeKey] && majorToSubtopicsMap[activeKey].length > 0) {
+                detailTopicGroup.style.display = 'block';
+                detailTopicSelect.innerHTML = '<option value="">-- 선택 안함 --</option>';
+                majorToSubtopicsMap[activeKey].forEach(opt => {
+                    const op = document.createElement('option');
+                    op.value = opt;
+                    op.innerText = opt;
+                    detailTopicSelect.appendChild(op);
+                });
             } else {
-                preachingDetailGroup.style.display = 'none';
-                if (preachingDetailSelect) preachingDetailSelect.value = '';
+                detailTopicGroup.style.display = 'none';
+                detailTopicSelect.innerHTML = '<option value="">-- 선택 안함 --</option>';
             }
         }
 
         otherSelect.addEventListener('change', updateSubTopicVisibility);
         topicSelect.addEventListener('change', updateSubTopicVisibility);
-        subSelect.addEventListener('change', updatePreachingDetailVisibility);
+        subSelect.addEventListener('change', updateDetailTopicVisibility);
 
         // --- 상세 주제 자동 분석 및 수동 추가를 위한 State ---
         const excludedSubtopics = new Set();
@@ -657,14 +667,14 @@
                     }
                 }
 
-                // 설교론 상세 분류 강제 포함
-                const preachingDetail = document.getElementById('add-preaching-detail')?.value || "";
-                if (preachingDetail) {
-                    if (!finalMatchedSubtopics.includes(preachingDetail)) {
-                        finalMatchedSubtopics.push(preachingDetail);
+                // 상세 분류 강제 포함
+                const detailTopic = document.getElementById('add-detail-topic')?.value || "";
+                if (detailTopic) {
+                    if (!finalMatchedSubtopics.includes(detailTopic)) {
+                        finalMatchedSubtopics.push(detailTopic);
                     }
-                    if (!tags.includes(preachingDetail)) {
-                        tags.push(preachingDetail);
+                    if (!tags.includes(detailTopic)) {
+                        tags.push(detailTopic);
                     }
                 }
 

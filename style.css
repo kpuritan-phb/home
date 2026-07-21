@@ -4349,3 +4349,49 @@ footer {
         filter: grayscale(1) contrast(1.2);
     }
 }
+
+/* Puritan Theology Dropdown Sub-menu for Preaching Theory */
+.puritan-sub-dropdown {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.puritan-sub-dropdown > a {
+    font-weight: 700;
+}
+
+.sub-dropdown-menu {
+    list-style: none;
+    padding: 0.5rem 0 0 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    align-items: center;
+    border-top: 1px dashed rgba(0, 0, 0, 0.1);
+    margin-top: 0.3rem;
+    width: 100%;
+}
+
+.sub-dropdown-menu li {
+    margin-bottom: 0 !important;
+}
+
+.sub-dropdown-menu li a {
+    font-size: 0.85rem !important;
+    opacity: 0.75;
+    font-weight: normal !important;
+    color: var(--primary-color) !important;
+    padding: 2px 8px;
+    display: block;
+    transition: all 0.2s;
+}
+
+.sub-dropdown-menu li a:hover {
+    opacity: 1 !important;
+    color: var(--secondary-color) !important;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 4px;
+}

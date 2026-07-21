@@ -135,6 +135,29 @@
             transform: translateX(5px);
         }
 
+        .menu-sub-sub-list {
+            list-style: none;
+            padding-left: 1.5rem;
+            margin-top: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            border-left: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-sub-sub-link {
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            display: block;
+            transition: color 0.3s;
+        }
+
+        .menu-sub-sub-link:hover {
+            color: var(--menu-accent);
+        }
+
         .menu-footer {
             padding: 3rem 2rem;
             text-align: center;
@@ -175,8 +198,9 @@
                 <a href="index.html#about" class="menu-link">연구소 소개 <i class="fas fa-arrow-right"></i></a>
             </li>
             <li class="menu-item" style="animation-delay: 0.1s;">
-                <span class="menu-link">설교 <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></span>
+                <span class="menu-link">강해설교 <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></span>
                 <ul class="menu-sub-list" id="mobile-sermon-series">
+                    <li><a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90" class="menu-sub-link">강해설교 전체</a></li>
                     <!-- JS injected -->
                 </ul>
             </li>
@@ -203,7 +227,14 @@
                     <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B7%B8%EB%A6%AC%EC%8A%A4%EB%8F%84%EC%9D%B8%EC%9D%98%20%EC%83%9D%ED%99%9C%EB%A1%A0" class="menu-sub-link">6. 그리스도인의 생활론</a></li>
                     <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B7%B8%EB%A6%AC%EC%8A%A4%EB%8F%84%EC%9D%B8%EC%9D%98%20%EA%B0%80%EC%A0%95" class="menu-sub-link">7. 그리스도인의 가정</a></li>
                     <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%90%ED%9A%8C%EB%A1%A0" class="menu-sub-link">8. 교회론</a></li>
-                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%84%A4%EA%B5%90%EB%A1%A0" class="menu-sub-link">9. 설교론</a></li>
+                    <li>
+                        <a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%84%A4%EA%B5%90%EB%A1%A0" class="menu-sub-link">9. 설교론 <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px; opacity: 0.5;"></i></a>
+                        <ul class="menu-sub-sub-list">
+                            <li><a href="resources.html?cat=%EC%84%A4%EA%B5%90%EB%A1%A0" class="menu-sub-sub-link">설교론</a></li>
+                            <li><a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90" class="menu-sub-sub-link">강해설교</a></li>
+                            <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%EC%84%A4%EA%B5%90" class="menu-sub-sub-link">전도설교</a></li>
+                        </ul>
+                    </li>
                     <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%98%81%EC%A0%81%EC%A0%84%EC%9F%81" class="menu-sub-link">10. 영적전쟁</a></li>
                     <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%A2%85%EB%A7%90%EB%A1%A0" class="menu-sub-link">11. 종말론</a></li>
                     <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%97%AD%EC%82%AC%20%EC%8B%A0%ED%95%99" class="menu-sub-link">12. 역사 신학</a></li>

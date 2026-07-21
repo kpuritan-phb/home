@@ -654,6 +654,9 @@ document.addEventListener('DOMContentLoaded', () => {
         "청교도 신학": ["신론", "인간론", "기독론", "구원론(성령론)", "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론", "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학"]
     };
 
+    const preachingDetailGroup = document.getElementById('post-preaching-detail-group');
+    const preachingDetailSelect = document.getElementById('post-preaching-detail');
+
     function updatePostSubTopicVisibility() {
         if (!postTopicSelect || !postOtherSelect || !postSubTopicGroup || !postSubSelect) return;
         const topic = postTopicSelect.value;
@@ -680,11 +683,30 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             postSubTopicGroup.style.display = 'none';
         }
+
+        updatePreachingDetailVisibility();
     }
 
-    if (postTopicSelect && postOtherSelect) {
+    function updatePreachingDetailVisibility() {
+        if (!preachingDetailGroup) return;
+        const topic = postTopicSelect.value;
+        const subTopic = postSubSelect.value;
+        const other = postOtherSelect.value;
+
+        // 대주제가 '설교론'이거나, 청교도 신학/소책자 전용 신학 하위분류가 '설교론'인 경우
+        const isPreaching = (topic === '설교론') || (topic === '청교도 신학' && subTopic === '설교론') || (other === '전도 소책자' && subTopic === '설교론');
+        if (isPreaching) {
+            preachingDetailGroup.style.display = 'block';
+        } else {
+            preachingDetailGroup.style.display = 'none';
+            if (preachingDetailSelect) preachingDetailSelect.value = '';
+        }
+    }
+
+    if (postTopicSelect && postOtherSelect && postSubSelect) {
         postTopicSelect.addEventListener('change', updatePostSubTopicVisibility);
         postOtherSelect.addEventListener('change', updatePostSubTopicVisibility);
+        postSubSelect.addEventListener('change', updatePreachingDetailVisibility);
     }
 
     // Real Database Upload Logic
@@ -968,6 +990,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (subTopic && (topic || other === "전도 소책자")) {
                 if (!finalMatchedSubtopics.includes(subTopic)) {
                     finalMatchedSubtopics.push(subTopic);
+                }
+            }
+
+            // 설교론 상세 분류 강제 포함
+            const preachingDetail = document.getElementById('post-preaching-detail')?.value || "";
+            if (preachingDetail) {
+                if (!finalMatchedSubtopics.includes(preachingDetail)) {
+                    finalMatchedSubtopics.push(preachingDetail);
+                }
+                if (!tags.includes(preachingDetail)) {
+                    tags.push(preachingDetail);
                 }
             }
 

@@ -970,6 +970,16 @@
 
                 </nav>
             </div>
+            <!-- 설교론 하위 소메뉴 서브 탭 -->
+            <div id="preaching-sub-tabs" class="theology-tabs-container" style="display: none; margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 10px;">
+                <nav class="theology-sub-nav">
+                    <ul style="justify-content: center; gap: 8px;">
+                        <li><a href="resources.html?cat=%EC%84%A4%EA%B5%90%EC%9E%90" class="theology-tab-btn preaching-tab-btn" data-sub="설교자">설교자</a></li>
+                        <li><a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90" class="theology-tab-btn preaching-tab-btn" data-sub="강해설교">강해설교</a></li>
+                        <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%EC%84%A4%EA%B5%90" class="theology-tab-btn preaching-tab-btn" data-sub="전도설교">전도설교</a></li>
+                    </ul>
+                </nav>
+            </div>
         </section>
 
         <div class="resources-container">
@@ -1222,17 +1232,42 @@
 
                 // Toggle Theological Tabs
                 const isTheology = currentCategory === '청교도 신학';
-                const isSermon = currentCategory === '강해설교';
+                const isPreachingCategory = ['설교자', '강해설교', '전도설교'].includes(currentCategory);
 
-                if (isTheology || isSermon) {
+                if (isTheology || isPreachingCategory) {
                     theologyTabsWrapper.style.display = 'block';
                     const activeBtns = theologyTabsWrapper.querySelectorAll('.theology-tab-btn');
                     activeBtns.forEach(btn => {
-                        if (btn.getAttribute('data-s') === s) btn.classList.add('active');
-                        else btn.classList.remove('active');
+                        // 만약 현재 카테고리가 설교자/강해설교/전도설교라면, 대분류 탭 중 '설교론'을 active로 표시
+                        if (isPreachingCategory) {
+                            if (btn.getAttribute('data-s') === '설교론') btn.classList.add('active');
+                            else btn.classList.remove('active');
+                        } else {
+                            if (btn.getAttribute('data-s') === s) btn.classList.add('active');
+                            else btn.classList.remove('active');
+                        }
                     });
                 } else {
                     theologyTabsWrapper.style.display = 'none';
+                }
+
+                // 설교론 소메뉴 서브 탭 제어
+                const preachingSubTabs = document.getElementById('preaching-sub-tabs');
+                if (preachingSubTabs) {
+                    const isPreaching = (currentCategory === '청교도 신학' && s === '설교론') || isPreachingCategory;
+                    if (isPreaching) {
+                        preachingSubTabs.style.display = 'block';
+                        const subBtns = preachingSubTabs.querySelectorAll('.preaching-tab-btn');
+                        subBtns.forEach(btn => {
+                            if (btn.getAttribute('data-sub') === currentCategory) {
+                                btn.classList.add('active');
+                            } else {
+                                btn.classList.remove('active');
+                            }
+                        });
+                    } else {
+                        preachingSubTabs.style.display = 'none';
+                    }
                 }
             } else {
                 // 전체보기 뷰이므로 불필요한 필터와 저자별 탭을 가려줌

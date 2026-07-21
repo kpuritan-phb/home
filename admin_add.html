@@ -157,6 +157,15 @@
                                 <option value="잘못된 신학">13. 잘못된 신학</option>
                             </select>
                         </div>
+                        <div class="input-group" id="add-preaching-detail-group" style="display: none; margin-bottom: 15px;">
+                            <label>설교론 상세 분류</label>
+                            <select id="add-preaching-detail" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                                <option value="">-- 선택 안함 --</option>
+                                <option value="설교자">설교자</option>
+                                <option value="강해설교">강해설교</option>
+                                <option value="전도설교">전도설교</option>
+                            </select>
+                        </div>
                         <div class="input-group" id="add-lang-group" style="display: none;">
                             <label>언어 (소책자 전용)</label>
                             <select id="add-lang" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
@@ -306,6 +315,9 @@
             "청교도 신학": ["신론", "인간론", "기독론", "구원론(성령론)", "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론", "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학"]
         };
 
+        const preachingDetailGroup = document.getElementById('add-preaching-detail-group');
+        const preachingDetailSelect = document.getElementById('add-preaching-detail');
+
         function updateSubTopicVisibility() {
             const topic = topicSelect.value;
             const other = otherSelect.value;
@@ -337,10 +349,28 @@
             } else {
                 langGroup.style.display = 'none';
             }
+
+            updatePreachingDetailVisibility();
+        }
+
+        function updatePreachingDetailVisibility() {
+            if (!preachingDetailGroup) return;
+            const topic = topicSelect.value;
+            const subTopic = subSelect.value;
+            const other = otherSelect.value;
+
+            const isPreaching = (topic === '설교론') || (topic === '청교도 신학' && subTopic === '설교론') || (other === '전도 소책자' && subTopic === '설교론');
+            if (isPreaching) {
+                preachingDetailGroup.style.display = 'block';
+            } else {
+                preachingDetailGroup.style.display = 'none';
+                if (preachingDetailSelect) preachingDetailSelect.value = '';
+            }
         }
 
         otherSelect.addEventListener('change', updateSubTopicVisibility);
         topicSelect.addEventListener('change', updateSubTopicVisibility);
+        subSelect.addEventListener('change', updatePreachingDetailVisibility);
 
         // --- 상세 주제 자동 분석 및 수동 추가를 위한 State ---
         const excludedSubtopics = new Set();
@@ -624,6 +654,17 @@
                 if (subTopic && (topic || other === "전도 소책자")) {
                     if (!finalMatchedSubtopics.includes(subTopic)) {
                         finalMatchedSubtopics.push(subTopic);
+                    }
+                }
+
+                // 설교론 상세 분류 강제 포함
+                const preachingDetail = document.getElementById('add-preaching-detail')?.value || "";
+                if (preachingDetail) {
+                    if (!finalMatchedSubtopics.includes(preachingDetail)) {
+                        finalMatchedSubtopics.push(preachingDetail);
+                    }
+                    if (!tags.includes(preachingDetail)) {
+                        tags.push(preachingDetail);
                     }
                 }
 

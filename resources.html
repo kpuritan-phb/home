@@ -851,6 +851,86 @@
         .page-btn:hover:not(.active) {
             background: #f0f0f0;
         }
+
+        /* 성경 강의 폴더 스타일 */
+        .sermon-folder-box {
+            background: #fff;
+            border: 1px solid #eae6df;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px auto;
+            max-width: 1200px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        .sermon-folder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eae6df;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .sermon-folder-header h3 {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.02em;
+        }
+
+        .sermon-folder-tip {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .sermon-folder-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .folder-tab-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #fcfbf9;
+            color: var(--text-color);
+            border: 1px solid #e1dbcf;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .folder-tab-btn:hover {
+            background-color: #f3efe6;
+            border-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        .folder-tab-btn.active {
+            background-color: #c29a53; /* 황토색 */
+            color: #fff;
+            border-color: #b28a43;
+        }
+
+        @media (max-width: 768px) {
+            .sermon-folder-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .sermon-folder-tip {
+                margin-top: 5px;
+            }
+            .folder-tab-btn {
+                padding: 10px 18px;
+                font-size: 0.85rem;
+            }
+        }
     </style>
 </head>
 
@@ -936,6 +1016,9 @@
                 <h1 id="page-title">모든 자료</h1>
                 <p>청교도 신학과 개혁주의 신앙의 정수를 만나보세요.</p>
             </div>
+
+            <!-- 강해설교 전용 폴더 탭 (성경 강의 폴더) -->
+            <div id="sermon-folder-tabs" style="display: none;"></div>
 
             <!-- 신학 소분류 탭 (청교도 신학일 때만 JS로 제어) -->
             <div id="theological-tabs" class="theology-tabs-container" style="display: none;">
@@ -1055,6 +1138,7 @@
         const chapterWrapper = document.getElementById('chapter-grid-wrapper');
         const pageTitle = document.getElementById('page-title');
         const theologyTabsWrapper = document.getElementById('theological-tabs');
+        const sermonFolderTabs = document.getElementById('sermon-folder-tabs');
         const theologyTabBtns = document.querySelectorAll('.theology-tab-btn');
         const paginationEl = document.getElementById('pagination');
 
@@ -1234,8 +1318,12 @@
                 const isTheology = currentCategory === '청교도 신학';
                 const isPreachingCategory = ['설교자', '강해설교', '전도설교'].includes(currentCategory);
 
-                if (isTheology || isPreachingCategory) {
+                if (currentCategory === '강해설교') {
+                    theologyTabsWrapper.style.display = 'none';
+                    if (sermonFolderTabs) sermonFolderTabs.style.display = 'block';
+                } else if (isTheology || isPreachingCategory) {
                     theologyTabsWrapper.style.display = 'block';
+                    if (sermonFolderTabs) sermonFolderTabs.style.display = 'none';
                     const activeBtns = theologyTabsWrapper.querySelectorAll('.theology-tab-btn');
                     activeBtns.forEach(btn => {
                         // 만약 현재 카테고리가 설교자/강해설교/전도설교라면, 대분류 탭 중 '설교론'을 active로 표시
@@ -1249,6 +1337,7 @@
                     });
                 } else {
                     theologyTabsWrapper.style.display = 'none';
+                    if (sermonFolderTabs) sermonFolderTabs.style.display = 'none';
                 }
 
                 // 설교론 소메뉴 서브 탭 제어
@@ -1273,6 +1362,7 @@
                 // 전체보기 뷰이므로 불필요한 필터와 저자별 탭을 가려줌
                 if (filterWrapper) filterWrapper.style.display = 'none';
                 theologyTabsWrapper.style.display = 'none';
+                if (sermonFolderTabs) sermonFolderTabs.style.display = 'none';
                 bibleWrapper.style.display = 'none';
                 if (chapterWrapper) chapterWrapper.style.display = 'none';
                 
@@ -1446,19 +1536,58 @@
         }
 
         function renderSeriesTabs(category, uniqueSeries) {
-            const ul = theologyTabsWrapper.querySelector('ul');
             const urlParams = new URLSearchParams(window.location.search);
             const currentSub = urlParams.get('s') || "";
 
-            let html = `<li><a href="resources.html?cat=${encodeURIComponent(category)}" class="theology-tab-btn ${!currentSub ? 'active' : ''}" data-s="">전체</a></li>`;
+            if (category === '강해설교') {
+                // 성경 강의 폴더 전용 디자인
+                let foldersHtml = `
+                    <div class="sermon-folder-box">
+                        <div class="sermon-folder-header">
+                            <h3>성경 강의 폴더</h3>
+                            <span class="sermon-folder-tip">※ 아래의 세부 폴더를 선택하여 자료를 열람하십시오.</span>
+                        </div>
+                        <div class="sermon-folder-buttons">
+                            <a href="resources.html?cat=${encodeURIComponent(category)}" class="folder-tab-btn ${!currentSub ? 'active' : ''}">전체</a>
+                `;
 
-            uniqueSeries.forEach(s => {
-                const isActive = s === currentSub ? 'active' : '';
-                html += `<li><a href="resources.html?cat=${encodeURIComponent(category)}&s=${encodeURIComponent(s)}" class="theology-tab-btn ${isActive}" data-s="${s}">${s}</a></li>`;
-            });
+                uniqueSeries.forEach(s => {
+                    const isActive = s === currentSub ? 'active' : '';
+                    let displayName = s;
+                    // '강해' 꼬리표 및 '서'로 끝나는 에베소서/유다서 등을 가공
+                    if (displayName.endsWith(" 강해")) {
+                        displayName = displayName.replace(" 강해", "");
+                    }
+                    if (displayName === '에베소서') displayName = '에베소';
+                    if (displayName === '유다서') displayName = '유다';
 
-            ul.innerHTML = html;
-            theologyTabsWrapper.style.display = 'block';
+                    foldersHtml += `<a href="resources.html?cat=${encodeURIComponent(category)}&s=${encodeURIComponent(s)}" class="folder-tab-btn ${isActive}">${displayName}</a>`;
+                });
+
+                foldersHtml += `
+                        </div>
+                    </div>
+                `;
+
+                if (sermonFolderTabs) {
+                    sermonFolderTabs.innerHTML = foldersHtml;
+                    sermonFolderTabs.style.display = 'block';
+                }
+                theologyTabsWrapper.style.display = 'none';
+            } else {
+                if (sermonFolderTabs) sermonFolderTabs.style.display = 'none';
+                theologyTabsWrapper.style.display = 'block';
+
+                const ul = theologyTabsWrapper.querySelector('ul');
+                let html = `<li><a href="resources.html?cat=${encodeURIComponent(category)}" class="theology-tab-btn ${!currentSub ? 'active' : ''}" data-s="">전체</a></li>`;
+
+                uniqueSeries.forEach(s => {
+                    const isActive = s === currentSub ? 'active' : '';
+                    html += `<li><a href="resources.html?cat=${encodeURIComponent(category)}&s=${encodeURIComponent(s)}" class="theology-tab-btn ${isActive}" data-s="${s}">${s}</a></li>`;
+                });
+
+                ul.innerHTML = html;
+            }
         }
 
         function resetTheologyTabs() {
@@ -1498,6 +1627,7 @@
                     grid.innerHTML = '<div class="no-results">해당 주제로 등록된 자료(슬라이드/동영상)가 아직 없습니다.</div>';
                     if (paginationEl) paginationEl.innerHTML = '';
                     theologyTabsWrapper.style.display = 'none';
+                    if (sermonFolderTabs) sermonFolderTabs.style.display = 'none';
                     return;
                 }
 

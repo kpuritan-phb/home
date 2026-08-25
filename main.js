@@ -2021,8 +2021,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
 
-        const bookTags = ['도서 목록'];
-        const isBookstore = post.tags && post.tags.some(tag => bookTags.includes(tag));
         let priceHtml = '';
         let buyButtonHtml = '';
 

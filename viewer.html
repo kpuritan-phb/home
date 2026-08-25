@@ -4,13 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PDF 뷰어 | 한국 청교도 연구소</title>
+    <title>뷰어 | 한국 청교도 연구소</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* 변수 및 테마 정의 */
         :root {
+            --primary-color: #0b1a30;      /* 짙은 네이비 */
+            --secondary-color: #5c4033;    /* 다크 브라운 */
+            --accent-color: #7d5a44;       /* 포인트 브라운 */
+            --bg-warm: #fdfbf7;            /* 따뜻한 미색 배경 */
+            --text-color: #2b2b2b;         /* 본문 짙은 회색 */
+            --text-light: #6f6f6f;         /* 본문 밝은 회색 */
+            --white: #ffffff;
+            --border-color: #eae6df;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* PDF Toolbar Legacy */
             --primary-bg: #323639;
             --secondary-bg: #525659;
-            --accent-color: #1a342a;
+            --accent-color-pdf: #1a342a;
             --toolbar-height: 55px;
         }
 
@@ -19,19 +32,26 @@
             margin: 0;
             padding: 0;
             height: 100%;
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            background-color: var(--bg-warm);
+            color: var(--text-color);
             overflow: hidden;
-            background: var(--secondary-bg);
-            font-family: 'Noto Sans KR', sans-serif;
         }
 
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* 1. PDF Legacy Viewer Style */
         .viewer-container {
             width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
+            background: var(--secondary-bg);
         }
 
-        /* 툴바 */
         .toolbar {
             height: var(--toolbar-height);
             background: var(--primary-bg);
@@ -70,7 +90,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            text-decoration: none;
             transition: all 0.2s;
         }
 
@@ -79,14 +98,13 @@
         }
 
         .btn-primary {
-            background: var(--accent-color);
+            background: var(--accent-color-pdf);
         }
 
         .btn-primary:hover {
             background: #0d8c76;
         }
 
-        /* 프레임 영역 */
         .content-area {
             flex: 1;
             position: relative;
@@ -100,7 +118,6 @@
             display: block;
         }
 
-        /* 로딩 화면 */
         .loading-overlay {
             position: absolute;
             top: 0;
@@ -114,6 +131,7 @@
             justify-content: center;
             color: white;
             z-index: 50;
+            transition: opacity 0.5s ease;
         }
 
         .spinner {
@@ -127,9 +145,7 @@
         }
 
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
 
         .loading-text {
@@ -145,20 +161,567 @@
             max-width: 320px;
         }
 
-        /* 모바일 대응 */
-        @media (max-width: 600px) {
+        /* 2. Premium 3-Panel Text Reader Style */
+        .reader-layout {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--bg-warm);
+        }
+
+        /* 모바일 탑바 */
+        .mobile-top-bar {
+            display: none;
+            height: 60px;
+            background-color: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .mobile-top-bar .logo-text {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.03em;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .icon-btn:hover {
+            background-color: rgba(11, 26, 48, 0.05);
+        }
+
+        /* 그리드 영역 */
+        .reader-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* 좌측 사이드바 */
+        .sidebar {
+            background-color: var(--white);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow-y: auto;
+            transition: var(--transition);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-header .logo-kor {
+            font-weight: 900;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            letter-spacing: -0.03em;
+        }
+
+        .close-sidebar-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .sidebar-menu-wrapper {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .nav-back-link a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .nav-back-link a:hover {
+            transform: translateX(-3px);
+        }
+
+        .menu-title {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 아코디언 메뉴 스타일 */
+        .accordion-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .accordion-item {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #f0ede6;
+        }
+
+        .accordion-header {
+            width: 100%;
+            background-color: #faf8f5;
+            border: none;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .accordion-header:hover {
+            background-color: #f3efe6;
+        }
+
+        .accordion-header i.fa-folder {
+            margin-right: 8px;
+            color: var(--accent-color);
+        }
+
+        .accordion-header i.fa-chevron-down {
+            font-size: 0.75rem;
+            transition: var(--transition);
+        }
+
+        .accordion-item.open .accordion-header i.fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            display: none;
+            background-color: var(--white);
+            padding: 5px 0;
+            border-top: 1px solid #f0ede6;
+        }
+
+        .accordion-item.open .accordion-content {
+            display: block;
+        }
+
+        .sermon-link {
+            display: block;
+            padding: 8px 20px 8px 38px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            line-height: 1.4;
+            transition: var(--transition);
+            border-left: 2px solid transparent;
+        }
+
+        .sermon-link:hover {
+            background-color: #fcfaf7;
+            color: var(--primary-color);
+        }
+
+        .sermon-link.active {
+            background-color: #f7f3eb;
+            color: var(--primary-color);
+            font-weight: 700;
+            border-left-color: var(--accent-color);
+        }
+
+        /* 중앙 본문 영역 */
+        .main-content {
+            height: 100%;
+            overflow-y: auto;
+            background-color: var(--bg-warm);
+            display: flex;
+            justify-content: center;
+            padding: 50px 40px;
+        }
+
+        .article-wrapper {
+            max-width: 720px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+        }
+
+        .article-category {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 10px;
+        }
+
+        .article-title {
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            line-height: 1.35;
+            margin: 0 0 15px 0;
+            font-family: 'Nanum Myeongjo', serif;
+            letter-spacing: -0.02em;
+        }
+
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .article-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* 말씀 강조 상자 */
+        .verse-box {
+            background-color: #f6f3eb;
+            border-left: 4px solid var(--accent-color);
+            padding: 18px 22px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 30px;
+            font-size: 1.05rem;
+            color: var(--secondary-color);
+            line-height: 1.5;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .verse-box i {
+            margin-right: 6px;
+            color: var(--accent-color);
+        }
+
+        /* 본문 내용 스타일링 */
+        .article-body {
+            font-size: 1.15rem;
+            color: var(--text-color);
+            line-height: 1.95;
+            letter-spacing: -0.01em;
+            text-align: justify;
+        }
+
+        .body-paragraph {
+            margin-bottom: 25px;
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+        }
+
+        .body-sub-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 40px 0 20px 0;
+            font-family: 'Nanum Myeongjo', serif;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        /* 우측 위젯 영역 */
+        .widget-area {
+            background-color: var(--white);
+            border-left: 1px solid var(--border-color);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            height: 100%;
+            overflow-y: auto;
+            transition: var(--transition);
+        }
+
+        .widget-header-mobile {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 10px;
+        }
+
+        .widget-header-mobile h3 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .close-widget-btn {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .widget {
+            background: #faf8f5;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #f0ede6;
+            box-shadow: var(--shadow);
+        }
+
+        .widget-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin: 0 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        /* 최신 글 리스트 */
+        .widget-post-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .widget-post-item {
+            border-bottom: 1px solid #f0ede6;
+            padding-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .widget-post-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .widget-post-link {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .widget-post-title {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-color);
+            line-height: 1.4;
+            transition: var(--transition);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .widget-post-item:hover .widget-post-title {
+            color: var(--accent-color);
+        }
+
+        .widget-post-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* BGM Widget */
+        .bgm-widget {
+            margin-top: auto; /* Push to bottom in flex sidebar */
+        }
+
+        .bgm-control-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: var(--white);
+            border: 1px solid #eae6df;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .bgm-icon {
+            font-size: 1.3rem;
+            color: var(--accent-color);
+            animation: pulse 2s infinite;
+        }
+
+        .bgm-info {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .music-text {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bgm-play-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .bgm-play-btn:hover {
+            transform: scale(1.05);
+            background-color: var(--accent-color);
+        }
+
+        .bgm-player.playing .bgm-play-btn {
+            background-color: var(--accent-color);
+        }
+
+        .bgm-player.playing .bgm-play-btn i::before {
+            content: "\f04c"; /* Pause icon */
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        /* 모바일용 오버레이 백드롭 */
+        .overlay-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 85;
+            backdrop-filter: blur(2px);
+        }
+
+        /* 로딩/메시지 표시 */
+        .loading-small {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* 3. Responsive Web Design (Media Queries) */
+        @media (max-width: 1024px) {
+            .reader-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mobile-top-bar {
+                display: flex;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -280px;
+                width: 280px;
+                z-index: 95;
+                box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .close-sidebar-btn {
+                display: block;
+            }
+
+            .widget-area {
+                position: fixed;
+                top: 0;
+                right: -320px;
+                width: 320px;
+                z-index: 95;
+                box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            }
+
+            .widget-area.open {
+                right: 0;
+            }
+
+            .widget-header-mobile {
+                display: flex;
+            }
+
+            .main-content {
+                padding: 30px 20px;
+            }
+
+            .article-title {
+                font-size: 1.7rem;
+            }
+
+            /* PDF Toolbar adjustments for mobile */
             .toolbar-title {
                 display: none;
             }
-
             .btn span {
                 display: none;
             }
-
             .btn.show-mobile span {
                 display: inline;
             }
-
             .toolbar {
                 padding: 0 10px;
             }
@@ -167,7 +730,8 @@
 </head>
 
 <body>
-    <div class="viewer-container">
+    <!-- [1] PDF Viewer Container -->
+    <div id="pdf-viewer-container" class="viewer-container" style="display: none;">
         <header class="toolbar">
             <div class="toolbar-title" id="viewer-title">PDF 뷰어</div>
             <div class="toolbar-actions">
@@ -175,7 +739,7 @@
                     <i class="fas fa-sync-alt"></i> <span>새로고침</span>
                 </button>
                 <a href="#" id="direct-link" class="btn btn-primary show-mobile" target="_blank">
-                    <i class="fas fa-download"></i> <span>파일 다운로드</span>
+                    <i class="fas fa-download"></i> <span>다운로드</span>
                 </a>
                 <button onclick="window.close(); if(!window.closed) history.back();" class="btn">
                     <i class="fas fa-times"></i> <span>닫기</span>
@@ -196,22 +760,162 @@
         </main>
     </div>
 
+    <!-- [2] Premium Blog-Style Text Reader Container -->
+    <div id="text-reader-container" class="reader-layout" style="display: none;">
+        <header class="mobile-top-bar">
+            <button class="icon-btn" id="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+            <a href="index.html" class="logo-text">한국 청교도 연구소</a>
+            <button class="icon-btn" id="mobile-widget-btn"><i class="fas fa-list"></i></button>
+        </header>
+
+        <div class="reader-grid">
+            <!-- Left Sidebar: Sermon Series Accordion -->
+            <aside class="sidebar" id="reader-sidebar">
+                <div class="sidebar-header">
+                    <a href="index.html" class="logo"><span class="logo-kor">한국 청교도 연구소</span></a>
+                    <button class="close-sidebar-btn" id="close-sidebar-btn"><i class="fas fa-times"></i></button>
+                </div>
+                
+                <div class="sidebar-menu-wrapper">
+                    <div class="nav-back-link">
+                        <a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90"><i class="fas fa-arrow-left"></i> 강해설교 전체목록</a>
+                    </div>
+                    
+                    <h3 class="menu-title"><i class="fas fa-book-open"></i> 강해설교 시리즈</h3>
+                    <div id="series-accordion" class="accordion-list">
+                        <div class="loading-small">시리즈 목록 로드 중...</div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Main Article Body -->
+            <main class="main-content">
+                <article class="article-wrapper">
+                    <div class="article-header">
+                        <div id="article-category" class="article-category">강해설교</div>
+                        <h1 id="article-title" class="article-title">로딩 중...</h1>
+                        <div class="article-meta">
+                            <span id="meta-author"><i class="far fa-user"></i> 저자: -</span>
+                            <span id="meta-date"><i class="far fa-calendar"></i> 날짜: -</span>
+                            <span id="meta-views"><i class="far fa-eye"></i> 조회수: -</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Bible Verse Highlight Block -->
+                    <div id="bible-verse-box" class="verse-box" style="display: none;"></div>
+
+                    <!-- Main Article Content Body -->
+                    <div id="article-body" class="article-body"></div>
+                </article>
+            </main>
+
+            <!-- Right Sidebar: Widgets (Latest Posts & BGM) -->
+            <aside class="widget-area" id="reader-widgets">
+                <div class="widget-header-mobile">
+                    <h3>최신 자료 및 BGM</h3>
+                    <button class="close-widget-btn" id="close-widget-btn"><i class="fas fa-times"></i></button>
+                </div>
+                
+                <!-- Latest Articles Widget -->
+                <div class="widget latest-articles-widget">
+                    <h3 class="widget-title">Latest Articles <i class="fas fa-chevron-down" style="font-size:0.8rem; margin-left:auto;"></i></h3>
+                    <ul id="latest-posts-list" class="widget-post-list">
+                        <li class="loading-small">최신 글 로드 중...</li>
+                    </ul>
+                </div>
+                
+                <!-- BGM Player Widget -->
+                <div class="widget bgm-widget" id="bgm-player">
+                    <h3 class="widget-title">BGM 플레이어</h3>
+                    <div class="bgm-control-card">
+                        <i class="fas fa-music bgm-icon"></i>
+                        <div class="bgm-info">
+                            <span class="music-text">Amazing Grace (Instrumental)</span>
+                        </div>
+                        <button class="bgm-play-btn" id="bgm-toggle-btn"><i class="fas fa-play"></i></button>
+                    </div>
+                    <div id="yt-player-container" style="position: absolute; width:0; height:0; opacity:0; pointer-events:none;"></div>
+                </div>
+            </aside>
+        </div>
+        
+        <!-- Mobile Overlay Layer -->
+        <div class="overlay-backdrop" id="overlay-backdrop"></div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="data.js"></script>
+
+    <!-- BGM Logic -->
+    <script src="bgm.js"></script>
+
     <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJbOaiElCypwgtPgbwdnudn3VC737fMrs",
+            authDomain: "kpuritan-home.firebaseapp.com",
+            projectId: "kpuritan-home",
+            storageBucket: "kpuritan-home.firebasestorage.app",
+            messagingSenderId: "1071220455502",
+            appId: "1:1071220455502:web:7f6f59b48c48a73437f8f0"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Parameter Parsing
         const urlParams = new URLSearchParams(window.location.search);
         const fileUrl = urlParams.get('file');
-        const title = urlParams.get('title');
+        const titleParam = urlParams.get('title');
+        const postId = urlParams.get('id');
 
-        if (title) {
-            document.title = title + " | PDF 뷰어";
-            document.getElementById('viewer-title').textContent = title;
+        const pdfContainer = document.getElementById('pdf-viewer-container');
+        const textContainer = document.getElementById('text-reader-container');
+
+        // Dynamic State for Mobile Sidebars
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileWidgetBtn = document.getElementById('mobile-widget-btn');
+        const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+        const closeWidgetBtn = document.getElementById('close-widget-btn');
+        const sidebar = document.getElementById('reader-sidebar');
+        const widgets = document.getElementById('reader-widgets');
+        const backdrop = document.getElementById('overlay-backdrop');
+
+        function toggleSidebar(open) {
+            if (open) {
+                sidebar.classList.add('open');
+                backdrop.style.display = 'block';
+            } else {
+                sidebar.classList.remove('open');
+                if (!widgets.classList.contains('open')) backdrop.style.display = 'none';
+            }
         }
 
+        function toggleWidgets(open) {
+            if (open) {
+                widgets.classList.add('open');
+                backdrop.style.display = 'block';
+            } else {
+                widgets.classList.remove('open');
+                if (!sidebar.classList.contains('open')) backdrop.style.display = 'none';
+            }
+        }
+
+        if (mobileMenuBtn) mobileMenuBtn.onclick = () => toggleSidebar(true);
+        if (mobileWidgetBtn) mobileWidgetBtn.onclick = () => toggleWidgets(true);
+        if (closeSidebarBtn) closeSidebarBtn.onclick = () => toggleSidebar(false);
+        if (closeWidgetBtn) closeWidgetBtn.onclick = () => toggleWidgets(false);
+        if (backdrop) backdrop.onclick = () => { toggleSidebar(false); toggleWidgets(false); };
+
+        // Legacy PDF code logic
         const frame = document.getElementById('pdf-frame');
         const loading = document.getElementById('loading');
         const directLink = document.getElementById('direct-link');
 
         function getViewerUrl(url) {
-            // Google Docs Viewer URL (가장 안정적인 포맷)
             return `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(url)}`;
         }
 
@@ -219,33 +923,253 @@
             if (!fileUrl) return;
             loading.style.display = 'flex';
             loading.style.opacity = '1';
-            // 캐시 방지를 위해 랜덤 쿼리 추가 (일부 서버 대응)
             const cacheBuster = fileUrl.includes('?') ? '&cb=' + Date.now() : '?cb=' + Date.now();
             frame.src = getViewerUrl(fileUrl + cacheBuster);
         }
 
-        if (fileUrl) {
-            directLink.href = fileUrl;
-
-            // 초기 로드
-            frame.src = getViewerUrl(fileUrl);
-
-            frame.onload = () => {
-                setTimeout(() => {
-                    loading.style.opacity = '0';
-                    setTimeout(() => { loading.style.display = 'none'; }, 500);
-                }, 1000);
-            };
-
-            // 10초 후에도 로딩이 안 가려지면 (구글 서버 응답 없음 등) 자동으로 로딩창 제거
-            setTimeout(() => {
-                if (loading.style.display !== 'none') {
-                    loading.style.display = 'none';
+        // Main Router
+        async function run() {
+            // [A] Traditional PDF mode using query param ?file=URL
+            if (fileUrl) {
+                pdfContainer.style.display = 'flex';
+                textContainer.style.display = 'none';
+                if (titleParam) {
+                    document.title = titleParam + " | PDF 뷰어";
+                    document.getElementById('viewer-title').textContent = titleParam;
                 }
-            }, 10000);
-        } else {
-            document.body.innerHTML = "<div style='color:white; text-align:center; padding-top:100px;'><h3>파일 경로가 유효하지 않습니다.</h3><button onclick='history.back()' class='btn' style='margin:auto;'>돌아가기</button></div>";
+                directLink.href = fileUrl;
+                frame.src = getViewerUrl(fileUrl);
+                frame.onload = () => {
+                    setTimeout(() => {
+                        loading.style.opacity = '0';
+                        setTimeout(() => { loading.style.display = 'none'; }, 500);
+                    }, 1000);
+                };
+                setTimeout(() => { if (loading.style.display !== 'none') loading.style.display = 'none'; }, 10000);
+                return;
+            }
+
+            // [B] Premium Text Reader mode using query param ?id=ID
+            if (postId) {
+                try {
+                    await auth.signInAnonymously();
+                    const doc = await db.collection("posts").doc(postId).get();
+                    if (!doc.exists) {
+                        showError("해당 자료를 찾을 수 없습니다.");
+                        return;
+                    }
+                    const post = doc.data();
+
+                    // If it is a pure PDF post and has no text content
+                    const hasText = post.content && post.content.trim().length > 5;
+                    if (!hasText && post.fileUrl && post.fileUrl.toLowerCase().includes('.pdf')) {
+                        // Redirect/fallback to PDF mode
+                        window.location.search = `?file=${encodeURIComponent(post.fileUrl)}&title=${encodeURIComponent(post.title)}`;
+                        return;
+                    }
+
+                    // Render Reader view
+                    pdfContainer.style.display = 'none';
+                    textContainer.style.display = 'flex';
+                    document.title = post.title + " | 한국 청교도 연구소";
+
+                    // Update views asynchronously
+                    const currentViews = post.views || 0;
+                    document.getElementById('meta-views').innerHTML = `<i class="far fa-eye"></i> 조회수: ${currentViews + 1}`;
+                    db.collection("posts").doc(postId).update({
+                        views: firebase.firestore.FieldValue.increment(1)
+                    }).catch(e => console.warn("Increment views error:", e));
+
+                    // Title and metas
+                    document.getElementById('article-title').textContent = post.title;
+                    document.getElementById('article-category').textContent = post.otherCategory || (post.tags && post.tags[0]) || '자료';
+                    document.getElementById('meta-author').innerHTML = `<i class="far fa-user"></i> 저자: ${post.author || '미상'}`;
+                    
+                    const dateStr = post.createdAt ? (typeof post.createdAt.toDate === 'function' ? post.createdAt.toDate().toLocaleDateString() : '최근') : '최근';
+                    document.getElementById('meta-date').innerHTML = `<i class="far fa-calendar"></i> 날짜: ${dateStr}`;
+
+                    // Parse Bible Verse box
+                    const lines = (post.content || '').split('\n');
+                    let verseLine = '';
+                    for (let line of lines) {
+                        const trimmed = line.trim();
+                        if (trimmed.startsWith("말씀:") || trimmed.startsWith("본문:") || trimmed.startsWith("성경본문:")) {
+                            verseLine = trimmed;
+                            break;
+                        }
+                    }
+                    
+                    const verseBox = document.getElementById('bible-verse-box');
+                    if (verseLine) {
+                        verseBox.style.display = 'block';
+                        verseBox.innerHTML = `<strong><i class="fas fa-bookmark"></i> ${verseLine}</strong>`;
+                    } else {
+                        verseBox.style.display = 'none';
+                    }
+
+                    // Body contents text processing
+                    const contentText = post.content || '';
+                    const urlRegex = /(https?:\/\/[^\s]+)/g;
+                    const paragraphs = contentText.split('\n\n').filter(p => p.trim());
+                    let bodyHtml = paragraphs.map(p => {
+                        const pt = p.trim();
+                        // Styling subtopics
+                        if (pt.startsWith('[') || pt.startsWith('첫째') || pt.startsWith('둘째') || pt.startsWith('셋째')) {
+                            return `<h3 class="body-sub-title">${pt.replace(urlRegex, '<a href="$1" target="_blank" style="color:var(--accent-color); text-decoration:underline;">$1</a>').replace(/\n/g, '<br>')}</h3>`;
+                        }
+                        return `<p class="body-paragraph">${pt.replace(urlRegex, '<a href="$1" target="_blank" style="color:var(--accent-color); text-decoration:underline;">$1</a>').replace(/\n/g, '<br>')}</p>`;
+                    }).join('');
+                    
+                    document.getElementById('article-body').innerHTML = bodyHtml || '<p style="color:#888;">내용이 비어 있습니다.</p>';
+
+                    // Populate dynamic lists
+                    loadSidebarSeries(post.series);
+                    loadLatestArticlesWidget();
+
+                } catch (e) {
+                    console.error(e);
+                    showError("자료를 불러오는 중에 오류가 발생했습니다.<br>" + e.message);
+                }
+                return;
+            }
+
+            showError("잘못된 요청 경로입니다.");
         }
+
+        function showError(msg) {
+            document.body.innerHTML = `<div style='color:var(--primary-color); text-align:center; padding-top:150px; background-color:var(--bg-warm); height:100vh;'>
+                <i class="fas fa-exclamation-triangle" style="font-size:3rem; margin-bottom:20px; color:var(--accent-color);"></i>
+                <h3>${msg}</h3>
+                <button onclick="if(history.length > 1) history.back(); else window.location.href='index.html';" class="btn" style="margin:20px auto; color:var(--primary-color); border:1px solid var(--primary-color);">돌아가기</button>
+            </div>`;
+        }
+
+        // Side Accordion Setup
+        async function loadSidebarSeries(activeSeriesName) {
+            const accordion = document.getElementById('series-accordion');
+            try {
+                // Fetch all Expository Sermons
+                const snapshot = await db.collection("posts").where("tags", "array-contains", "강해설교").get();
+                if (snapshot.empty) {
+                    accordion.innerHTML = '<div class="loading-small">등록된 강해설교 시리즈가 없습니다.</div>';
+                    return;
+                }
+
+                const groups = {};
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const s = (data.series && data.series.trim() !== '') ? data.series.trim() : '기타 단편 설교';
+                    if (!groups[s]) groups[s] = [];
+                    groups[s].push({ id: doc.id, ...data });
+                });
+
+                accordion.innerHTML = '';
+                
+                // Group order mapping
+                const sortedSeriesNames = Object.keys(groups).sort((a, b) => {
+                    const orderA = groups[a][0].order || 0;
+                    const orderB = groups[b][0].order || 0;
+                    if (orderA !== orderB) return orderA - orderB;
+                    return a.localeCompare(b, 'ko');
+                });
+
+                sortedSeriesNames.forEach(sName => {
+                    const posts = groups[sName];
+                    // Sort items in series by order field or title
+                    posts.sort((a, b) => {
+                        if (a.order !== b.order) return (a.order || 0) - (b.order || 0);
+                        return a.title.localeCompare(b.title, 'ko', { numeric: true });
+                    });
+
+                    const isOpen = (activeSeriesName && sName === activeSeriesName.trim()) || 
+                                   (!activeSeriesName && sName === '기타 단편 설교');
+
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'accordion-item' + (isOpen ? ' open' : '');
+                    
+                    const headerBtn = document.createElement('button');
+                    headerBtn.className = 'accordion-header';
+                    headerBtn.innerHTML = `<span><i class="fas fa-folder"></i> ${sName}</span><i class="fas fa-chevron-down"></i>`;
+                    
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'accordion-content';
+                    
+                    posts.forEach(p => {
+                        const link = document.createElement('a');
+                        link.href = `viewer.html?id=${p.id}`;
+                        link.className = 'sermon-link' + (p.id === postId ? ' active' : '');
+                        
+                        // Clean title for display inside the folder (remove series name prefix if exist)
+                        let displayTitle = p.title;
+                        const prefix = sName.replace(" 강해", "");
+                        if (displayTitle.startsWith(prefix)) {
+                            displayTitle = displayTitle.substring(prefix.length).trim();
+                        }
+                        link.textContent = displayTitle;
+                        
+                        contentDiv.appendChild(link);
+                    });
+
+                    headerBtn.onclick = () => {
+                        itemDiv.classList.toggle('open');
+                    };
+
+                    itemDiv.appendChild(headerBtn);
+                    itemDiv.appendChild(contentDiv);
+                    accordion.appendChild(itemDiv);
+                });
+
+            } catch (e) {
+                console.error(e);
+                accordion.innerHTML = '<div class="loading-small" style="color:red;">목록 로드 중 에러</div>';
+            }
+        }
+
+        // Right Widget Setup
+        async function loadLatestArticlesWidget() {
+            const list = document.getElementById('latest-posts-list');
+            try {
+                const snapshot = await db.collection("posts")
+                    .orderBy("createdAt", "desc")
+                    .limit(7)
+                    .get();
+
+                if (snapshot.empty) {
+                    list.innerHTML = '<li class="loading-small">최신 글이 없습니다.</li>';
+                    return;
+                }
+
+                list.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const post = doc.data();
+                    const dateStr = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : '최근';
+                    
+                    const li = document.createElement('li');
+                    li.className = 'widget-post-item';
+                    
+                    const a = document.createElement('a');
+                    a.href = `viewer.html?id=${doc.id}`;
+                    a.className = 'widget-post-link';
+                    
+                    a.innerHTML = `
+                        <span class="widget-post-title">${post.title}</span>
+                        <div class="widget-post-meta">
+                            <span>${post.author || '미상'}</span>
+                            <span>${dateStr}</span>
+                        </div>
+                    `;
+                    
+                    li.appendChild(a);
+                    list.appendChild(li);
+                });
+
+            } catch (e) {
+                console.error(e);
+                list.innerHTML = '<li class="loading-small" style="color:red;">목록 로드 에러</li>';
+            }
+        }
+
+        window.onload = run;
     </script>
 </body>
 

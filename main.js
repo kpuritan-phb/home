@@ -1963,7 +1963,19 @@ document.addEventListener('DOMContentLoaded', () => {
         let contentText = post.content || '';
         const urlRegex = /(https?:\/\/[^\s]+)/g;
         const urlsInContent = contentText.match(urlRegex) || [];
-        let primaryLink = post.fileUrl || (urlsInContent.length > 0 ? urlsInContent[0] : '#');
+        const hasText = contentText.trim().length > 5;
+        const bookTags = ['도서 목록'];
+        const isBookstore = post.tags && post.tags.some(tag => bookTags.includes(tag));
+        
+        let primaryLink = '#';
+        let isInternalViewer = false;
+        
+        if (hasText && !isBookstore) {
+            primaryLink = `viewer.html?id=${post.id}`;
+            isInternalViewer = true;
+        } else {
+            primaryLink = post.fileUrl || (urlsInContent.length > 0 ? urlsInContent[0] : '#');
+        }
         let isPdf = primaryLink.toLowerCase().includes('.pdf');
 
         if (contentText.toLowerCase().includes('youtube.com') || contentText.toLowerCase().includes('youtu.be')) {
@@ -2054,10 +2066,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Note: Global window.requestPay is now used
 
         const titleHtml = primaryLink !== '#'
-            ? `<a href="${primaryLink}" target="_blank" class="title-clickable">
+            ? `<a href="${primaryLink}" ${isInternalViewer ? 'class="title-clickable"' : 'target="_blank" class="title-clickable"'}>
                 ${isPdf ? '<i class="fas fa-file-pdf" style="color:#e74c3c; margin-right:5px;"></i>' : ''}
                 ${post.title}
-                <i class="fas ${isPdf ? 'fa-eye' : 'fa-external-link-alt'}" style="font-size:0.7em; margin-left:8px; opacity:0.3;"></i>
+                <i class="fas ${isInternalViewer ? 'fa-book-open' : (isPdf ? 'fa-eye' : 'fa-external-link-alt')}" style="font-size:0.7em; margin-left:8px; opacity:0.3;"></i>
                </a>`
             : `${post.title}`;
 

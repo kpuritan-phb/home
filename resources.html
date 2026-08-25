@@ -1807,17 +1807,16 @@
                     });
                 }
 
-                // If it's a PDF, open directly in a new tab (Reverted to original style as requested)
-                if (primaryLink && /(?:\.|%2E)pdf($|\?|#)/i.test(primaryLink)) {
+                // If it has text content, open premium viewer
+                const hasText = post.content && post.content.trim().length > 5;
+                if (hasText) {
+                    window.open(`viewer.html?id=${post.id}`, '_self');
+                } else if (primaryLink && /(?:\.|%2E)pdf($|\?|#)/i.test(primaryLink)) {
                     window.open(primaryLink, '_blank');
-                } else if (primaryLink) {
+                } else if (primaryLink && primaryLink !== '#') {
                     window.open(primaryLink, '_self');
                 } else {
-                    // Toggle expansion for text-only resources (Like Bible Commentary)
-                    itemEl.classList.toggle('expanded');
-                    if (itemEl.classList.contains('expanded')) {
-                        itemEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }
+                    window.open(`viewer.html?id=${post.id}`, '_self');
                 }
             };
 

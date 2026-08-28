@@ -315,6 +315,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         mobileDropdown.appendChild(li);
                     });
                 }
+
+                if (typeof window.activateHeaderDropdown === 'function') {
+                    window.activateHeaderDropdown();
+                }
             } catch (e) { console.error("populateSermonChoices error:", e); }
         };
 
@@ -352,6 +356,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         li.innerHTML = `<a href="resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98&s=${encodeURIComponent(s)}" class="menu-sub-link">${s}</a>`;
                         mobileDropdown.appendChild(li);
                     });
+                }
+
+                if (typeof window.activateHeaderDropdown === 'function') {
+                    window.activateHeaderDropdown();
                 }
             } catch (e) { console.error("populateSeminarChoices error:", e); }
         };

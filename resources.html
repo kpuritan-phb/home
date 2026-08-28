@@ -675,66 +675,6 @@
             display: none;
         }
 
-        /* Category Persistent Subnav Bar across the top under header */
-        .category-persistent-subnav {
-            background: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
-            position: sticky;
-            top: 70px;
-            z-index: 950;
-            width: 100%;
-        }
-
-        .category-persistent-subnav .subnav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 15px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .category-persistent-subnav .subnav-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .category-persistent-subnav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 2px;
-            min-width: max-content;
-        }
-
-        .category-persistent-subnav li a {
-            display: inline-block;
-            padding: 13px 14px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: #4a5568;
-            text-decoration: none;
-            white-space: nowrap;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s ease;
-        }
-
-        .category-persistent-subnav li a:hover {
-            color: #1a342a;
-            border-bottom-color: #8c6d46;
-            background: #fcfbf9;
-        }
-
-        .category-persistent-subnav li a.active {
-            color: #1a342a;
-            font-weight: 800;
-            border-bottom-color: #1a342a;
-            background: #f7fafc;
-        }
-
         /* Admin Drag & Drop Card Styling */
         .admin-draggable-card {
             cursor: grab !important;
@@ -1099,13 +1039,6 @@
         </div>
     </header>
 
-    <!-- 상단 고정 카테고리 서브 메뉴 바 (카테고리 내에서 마우스를 떼어도 항상 유지됨) -->
-    <nav id="persistent-category-subnav" class="category-persistent-subnav" style="display: none;">
-        <div class="subnav-container">
-            <ul id="subnav-list"></ul>
-        </div>
-    </nav>
-
     <main>
         <section class="resources-hero">
             <div class="hero-content">
@@ -1383,109 +1316,50 @@
                 }
             }
 
-            updateSubnavBar();
+            activateHeaderDropdown();
         }
 
-        function updateSubnavBar() {
-            const subnavEl = document.getElementById('persistent-category-subnav');
-            const subnavList = document.getElementById('subnav-list');
-            if (!subnavEl || !subnavList) return;
-
+        function activateHeaderDropdown() {
             const urlParams = new URLSearchParams(window.location.search);
+            const cat = urlParams.get('cat') || "";
             const s = urlParams.get('s') || "";
-            const subTopic = urlParams.get('subTopic') || "";
 
-            if (currentCategory === '청교도 신학') {
-                const topics = [
-                    { name: "청교도 신학 전체보기", s: "" },
-                    { name: "1. 신론", s: "신론" },
-                    { name: "2. 인간론", s: "인간론" },
-                    { name: "3. 기독론", s: "기독론" },
-                    { name: "4. 구원론/성령론", s: "구원론(성령론)" },
-                    { name: "5. 율법과 복음", s: "율법과 복음" },
-                    { name: "6. 그리스도인의 생활론", s: "그리스도인의 생활론" },
-                    { name: "7. 그리스도인의 가정", s: "그리스도인의 가정" },
-                    { name: "8. 교회론", s: "교회론" },
-                    { name: "9. 설교론", s: "설교론" },
-                    { name: "10. 영적전쟁", s: "영적전쟁" },
-                    { name: "11. 종말론", s: "종말론" },
-                    { name: "12. 역사 신학", s: "역사 신학" },
-                    { name: "13. 잘못된 신학", s: "잘못된 신학" }
-                ];
+            // Reset keep-open from all dropdowns
+            document.querySelectorAll('header nav li.dropdown').forEach(li => {
+                li.classList.remove('keep-open');
+                li.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+            });
 
-                let html = '';
-                topics.forEach(t => {
-                    const isActive = (!t.s && !s) || (t.s && s === t.s && !subTopic);
-                    const href = t.s ? `resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=${encodeURIComponent(t.s)}` : `resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99`;
-                    html += `<li><a href="${href}" class="${isActive ? 'active' : ''}">${t.name}</a></li>`;
+            let targetDropdownLi = null;
+
+            if (cat === '강해설교') {
+                const sermonDrop = document.getElementById('sermon-dropdown');
+                if (sermonDrop) targetDropdownLi = sermonDrop.closest('li.dropdown');
+            } else if (cat === '청교도 신학') {
+                const puritanDrop = document.getElementById('puritan-dropdown');
+                if (puritanDrop) targetDropdownLi = puritanDrop.closest('li.dropdown');
+            } else if (cat === '세미나, 강의' || cat === '세미나' || cat === '강의') {
+                const seminarDrop = document.getElementById('seminar-dropdown');
+                if (seminarDrop) targetDropdownLi = seminarDrop.closest('li.dropdown');
+            } else if (cat === '전도, 부흥, 선교' || cat === '전도, 선교') {
+                const evLink = document.querySelector('header nav a[href*="전도%2C%20부흥%2C%20선교"], header nav a[href*="전도, 부흥, 선교"]');
+                if (evLink) targetDropdownLi = evLink.closest('li.dropdown');
+            }
+
+            if (targetDropdownLi) {
+                targetDropdownLi.classList.add('keep-open');
+                const links = targetDropdownLi.querySelectorAll('.dropdown-list a');
+                links.forEach(a => {
+                    const href = a.getAttribute('href') || '';
+                    if (!s && !href.includes('&s=')) {
+                        a.classList.add('active');
+                    } else if (s && (href.includes(`&s=${encodeURIComponent(s)}`) || a.textContent.trim() === s.trim())) {
+                        a.classList.add('active');
+                    }
                 });
-
-                if (s === '설교론') {
-                    html += `<li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%84%A4%EA%B5%90%EB%A1%A0&subTopic=%EC%84%A4%EA%B5%90%EC%9E%90" class="${subTopic === '설교자' ? 'active' : ''}" style="color: #8c6d46; font-weight: 700;">└ 설교자</a></li>`;
-                    html += `<li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%84%A4%EA%B5%90%EB%A1%A0&subTopic=%EC%A0%84%EB%8F%84%EC%84%A4%EA%B5%90" class="${subTopic === '전도설교' ? 'active' : ''}" style="color: #8c6d46; font-weight: 700;">└ 전도설교</a></li>`;
-                }
-
-                subnavList.innerHTML = html;
-                subnavEl.style.display = 'block';
-            } else if (currentCategory === '강해설교') {
-                const seriesList = [
-                    { name: "강해설교 전체", s: "" },
-                    { name: "신명기 강해", s: "신명기 강해" },
-                    { name: "사사기 강해", s: "사사기 강해" },
-                    { name: "룻기 강해", s: "룻기 강해" },
-                    { name: "누가복음 강해", s: "누가복음 강해" },
-                    { name: "사도행전 강해", s: "사도행전 강해" },
-                    { name: "유다서 강해", s: "유다서 강해" },
-                    { name: "천로역정 강해", s: "천로역정 강해" }
-                ];
-
-                let html = '';
-                seriesList.forEach(item => {
-                    const isActive = (!item.s && !s) || (item.s && s === item.s);
-                    const href = item.s ? `resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90&s=${encodeURIComponent(item.s)}` : `resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90`;
-                    html += `<li><a href="${href}" class="${isActive ? 'active' : ''}">${item.name}</a></li>`;
-                });
-
-                subnavList.innerHTML = html;
-                subnavEl.style.display = 'block';
-            } else if (currentCategory === '전도, 부흥, 선교' || currentCategory === '전도, 선교') {
-                const items = [
-                    { name: "전도, 부흥, 선교 전체", s: "" },
-                    { name: "1. 전도", s: "전도" },
-                    { name: "2. 부흥", s: "부흥" },
-                    { name: "3. 선교", s: "선교" }
-                ];
-
-                let html = '';
-                items.forEach(item => {
-                    const isActive = (!item.s && !s) || (item.s && s === item.s);
-                    const href = item.s ? `resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=${encodeURIComponent(item.s)}` : `resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90`;
-                    html += `<li><a href="${href}" class="${isActive ? 'active' : ''}">${item.name}</a></li>`;
-                });
-
-                subnavList.innerHTML = html;
-                subnavEl.style.display = 'block';
-            } else if (currentCategory === '세미나, 강의' || currentCategory === '세미나' || currentCategory === '강의') {
-                const items = [
-                    { name: "세미나, 강의 전체", s: "" },
-                    { name: "웨스트민스터 대교리문답", s: "웨스트민스터 대교리문답" },
-                    { name: "17세기 화란 2차 종교개혁과 한국교회(2024년 정기세미나)", s: "17세기 화란 2차 종교개혁과 한국교회(2024년 정기세미나)" },
-                    { name: "현대인을 위한 구원론 강해(2025년 정기세미나)", s: "현대인을 위한 구원론 강해(2025년 정기세미나)" }
-                ];
-
-                let html = '';
-                items.forEach(item => {
-                    const isActive = (!item.s && !s) || (item.s && s === item.s);
-                    const href = item.s ? `resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98&s=${encodeURIComponent(item.s)}` : `resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98`;
-                    html += `<li><a href="${href}" class="${isActive ? 'active' : ''}">${item.name}</a></li>`;
-                });
-
-                subnavList.innerHTML = html;
-                subnavEl.style.display = 'block';
-            } else {
-                subnavEl.style.display = 'none';
             }
         }
+        window.activateHeaderDropdown = activateHeaderDropdown;
 
         function renderPage(page) {
             currentPage = page;

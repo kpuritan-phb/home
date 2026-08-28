@@ -345,6 +345,27 @@ nav ul li:hover a i {
 .dropdown:hover .dropdown-content {
     display: block;
     animation: fadeInDown 0.3s ease-out;
+    z-index: 1005;
+}
+
+.dropdown.keep-open > .dropdown-content {
+    display: block !important;
+    z-index: 1000;
+}
+
+#sermon-dropdown .dropdown-list,
+#seminar-dropdown .dropdown-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+    white-space: nowrap;
+}
+
+#sermon-dropdown,
+#seminar-dropdown {
+    min-width: max-content;
+    max-width: 95vw;
 }
 
 .dropdown-list {
@@ -370,6 +391,12 @@ nav ul li:hover a i {
     transition: var(--transition);
     font-size: 0.95rem;
     font-weight: 500;
+}
+
+.dropdown-list li a.active {
+    color: var(--secondary-color) !important;
+    font-weight: 800 !important;
+    background-color: rgba(140, 109, 70, 0.08);
 }
 
 .dropdown-list li a:hover {

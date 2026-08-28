@@ -7,6 +7,7 @@
 let allOrganizerPosts = [];
 let currentOrganizerCategory = '전도, 부흥, 선교'; // 현재 선택된 대분류 모드
 let currentOrganizerFolder = 'all';               // 현재 선택된 하위 폴더 필터
+let currentOrganizerSubFolder = 'all';            // 설교론 등 세부 하위 폴더 필터 ('all', '설교자', '전도설교', '일반')
 let draggedPostId = null;
 let selectedPostIds = new Set();                  // 일괄 이동용 다중 선택 ID 목록
 
@@ -137,6 +138,23 @@ async function loadFolderOrganizerPosts() {
             }
         });
 
+        // 청교도 신학 모드일 때 설교자/전도설교/설교론 태그 글도 누락없이 통합 로드
+        if (currentOrganizerCategory === '청교도 신학') {
+            try {
+                const snapExtra = await db.collection("posts")
+                    .where("tags", "array-contains-any", ["설교론", "설교자", "전도설교"])
+                    .get();
+                snapExtra.forEach(doc => {
+                    if (!seenIds.has(doc.id)) {
+                        posts.push({ id: doc.id, ...doc.data() });
+                        seenIds.add(doc.id);
+                    }
+                });
+            } catch (e) {
+                console.warn("Extra tags fetch fallback:", e);
+            }
+        }
+
         // 최신순 정렬
         posts.sort((a, b) => {
             const timeA = a.createdAt?.seconds || 0;
@@ -180,9 +198,9 @@ async function loadFolderOrganizerPosts() {
 
 // 각 글이 현재 대분류 모드에서 어느 하위 폴더에 속해있는지 판별
 function getPostFolderInCurrentCategory(post) {
-    const topic = post.topic || '';
-    const series = post.series || '';
-    const subTopic = post.subTopic || '';
+    const topic = (post.topic || '').trim();
+    const series = (post.series || '').trim();
+    const subTopic = (post.subTopic || '').trim();
     const tags = Array.isArray(post.tags) ? post.tags : [];
 
     if (currentOrganizerCategory === '전도, 부흥, 선교') {
@@ -193,6 +211,9 @@ function getPostFolderInCurrentCategory(post) {
     }
 
     if (currentOrganizerCategory === '청교도 신학') {
+        if (topic === '설교론' || series === '설교론' || tags.includes('설교론') || tags.includes('설교자') || tags.includes('전도설교') || subTopic === '설교자' || subTopic === '전도설교') {
+            return '설교론';
+        }
         if (topic && topic !== '청교도 신학') return topic;
         if (series) return series;
         if (subTopic) return subTopic;
@@ -217,6 +238,15 @@ function getPostFolderInCurrentCategory(post) {
     }
 
     return series || topic || '기타';
+}
+
+// 설교론 등 세부 하위 폴더 판별 ('설교자', '전도설교', '일반')
+function getPostSubFolder(post) {
+    const subTopic = (post.subTopic || '').trim();
+    const tags = Array.isArray(post.tags) ? post.tags : [];
+    if (subTopic === '설교자' || tags.includes('설교자') || (post.title && post.title.includes('설교자'))) return '설교자';
+    if (subTopic === '전도설교' || tags.includes('전도설교') || (post.title && post.title.includes('전도설교'))) return '전도설교';
+    return '일반';
 }
 
 // 상단 폴더 드롭존 렌더링
@@ -290,6 +320,52 @@ function renderOrganizerFolderDropzones() {
         `;
     });
 
+    // 3. 설교론 세부 하위 폴더 드롭존 (청교도 신학에서 설교론 선택 시)
+    if (currentOrganizerCategory === '청교도 신학' && currentOrganizerFolder === '설교론') {
+        const subCounts = { 'all': 0, '설교자': 0, '전도설교': 0, '일반': 0 };
+        allOrganizerPosts.forEach(p => {
+            if (getPostFolderInCurrentCategory(p) === '설교론') {
+                subCounts['all']++;
+                const sf = getPostSubFolder(p);
+                subCounts[sf] = (subCounts[sf] || 0) + 1;
+            }
+        });
+
+        html += `
+            <div id="organizer-subfolder-box" style="grid-column: 1 / -1; margin-top: 15px; background: #fffaf0; border: 2px solid #dd6b20; border-radius: 12px; padding: 16px 20px; box-shadow: 0 4px 12px rgba(221,107,32,0.1);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                    <div style="font-weight: 800; color: #7b341e; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-folder-open" style="color: #dd6b20;"></i>
+                        9. 설교론 세부 하위 폴더 드래그 분류기
+                    </div>
+                    <span style="font-size: 0.82rem; color: #9c4221; font-weight: 600;">
+                        💡 아래 자료 카드를 마우스로 끌어 세부 폴더에 놓으시면 '설교자' 또는 '전도설교'로 즉시 이동/분류됩니다!
+                    </span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+                    <div class="folder-dropzone ${currentOrganizerSubFolder === 'all' ? 'active-view' : ''}" data-folder="설교론:일반" onclick="filterOrganizerBySubFolder('all')"
+                        style="border: 2px dashed #a0aec0; background: ${currentOrganizerSubFolder === 'all' ? '#edf2f7' : '#ffffff'}; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                        <div style="font-size: 1.5rem; color: #4a5568; margin-bottom: 4px;"><i class="fas fa-th-large"></i></div>
+                        <h5 style="margin: 0 0 3px 0; font-size: 0.92rem; color: #2d3748;">전체 (일반 설교론)</h5>
+                        <span class="folder-badge" style="background: #4a5568; color: white; padding: 1px 7px; border-radius: 12px; font-size: 0.72rem; font-weight: 700;">${subCounts['일반'] || 0}건</span>
+                    </div>
+                    <div class="folder-dropzone ${currentOrganizerSubFolder === '설교자' ? 'active-view' : ''}" data-folder="설교론:설교자" onclick="filterOrganizerBySubFolder('설교자')"
+                        style="border: 2px dashed #3182ce; background: ${currentOrganizerSubFolder === '설교자' ? '#ebf8ff' : '#ffffff'}; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                        <div style="font-size: 1.5rem; color: #3182ce; margin-bottom: 4px;"><i class="fas fa-user-tie"></i></div>
+                        <h5 style="margin: 0 0 3px 0; font-size: 0.92rem; color: #2b6cb0;">1. 설교자</h5>
+                        <span class="folder-badge" style="background: #3182ce; color: white; padding: 1px 7px; border-radius: 12px; font-size: 0.72rem; font-weight: 700;">${subCounts['설교자'] || 0}건</span>
+                    </div>
+                    <div class="folder-dropzone ${currentOrganizerSubFolder === '전도설교' ? 'active-view' : ''}" data-folder="설교론:전도설교" onclick="filterOrganizerBySubFolder('전도설교')"
+                        style="border: 2px dashed #dd6b20; background: ${currentOrganizerSubFolder === '전도설교' ? '#fffaf0' : '#ffffff'}; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                        <div style="font-size: 1.5rem; color: #dd6b20; margin-bottom: 4px;"><i class="fas fa-bullhorn"></i></div>
+                        <h5 style="margin: 0 0 3px 0; font-size: 0.92rem; color: #c05621;">2. 전도설교</h5>
+                        <span class="folder-badge" style="background: #dd6b20; color: white; padding: 1px 7px; border-radius: 12px; font-size: 0.72rem; font-weight: 700;">${subCounts['전도설교'] || 0}건</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     container.innerHTML = html;
 
     // 드롭존 드래그 이벤트 바인딩
@@ -307,6 +383,10 @@ function renderOrganizerPostsList() {
         const folder = getPostFolderInCurrentCategory(p);
         if (currentOrganizerFolder !== 'all' && folder !== currentOrganizerFolder) {
             return false;
+        }
+        if (currentOrganizerCategory === '청교도 신학' && currentOrganizerFolder === '설교론' && currentOrganizerSubFolder !== 'all') {
+            const sf = getPostSubFolder(p);
+            if (sf !== currentOrganizerSubFolder) return false;
         }
         if (searchKeyword) {
             const title = (p.title || '').toLowerCase();
@@ -333,6 +413,29 @@ function renderOrganizerPostsList() {
         const folderId = getPostFolderInCurrentCategory(post);
         const isChecked = selectedPostIds.has(post.id);
 
+        let subBadgeHtml = '';
+        if (folderId === '설교론') {
+            const sf = getPostSubFolder(post);
+            if (sf === '설교자') {
+                subBadgeHtml = `<span style="font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8;"><i class="fas fa-user-tie"></i> 설교자</span>`;
+            } else if (sf === '전도설교') {
+                subBadgeHtml = `<span style="font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #fffaf0; color: #c05621; border: 1px solid #feebc8;"><i class="fas fa-bullhorn"></i> 전도설교</span>`;
+            } else {
+                subBadgeHtml = `<span style="font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #f7fafc; color: #718096; border: 1px solid #e2e8f0;">일반</span>`;
+            }
+        }
+
+        let selectOptionsHtml = `<option value="">-- 폴더 선택 --</option>`;
+        availableFolders.forEach(f => {
+            if (f.id === '설교론') {
+                selectOptionsHtml += `<option value="설교론:일반">9. 설교론 > 일반</option>`;
+                selectOptionsHtml += `<option value="설교론:설교자">9. 설교론 > 1. 설교자</option>`;
+                selectOptionsHtml += `<option value="설교론:전도설교">9. 설교론 > 2. 전도설교</option>`;
+            } else {
+                selectOptionsHtml += `<option value="${f.id}">${f.name}</option>`;
+            }
+        });
+
         html += `
             <div class="organizer-post-card ${isChecked ? 'selected-card' : ''}" id="organizer-card-${post.id}" draggable="true"
                 ondragstart="handleOrganizerDragStart(event, '${post.id}')"
@@ -355,6 +458,7 @@ function renderOrganizerPostsList() {
                             <span style="font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #edf2f7; color: #2d3748; border: 1px solid #cbd5e0;">
                                 <i class="fas fa-folder"></i> ${folderId}
                             </span>
+                            ${subBadgeHtml}
                             <span style="font-size: 0.8rem; color: #718096;"><i class="far fa-user"></i> ${post.author || '저자 미상'}</span>
                             ${post.series ? `<span style="font-size: 0.75rem; color: #a0aec0;">[시리즈: ${post.series}]</span>` : ''}
                         </div>
@@ -369,8 +473,7 @@ function renderOrganizerPostsList() {
                     <span style="font-size: 0.75rem; color: #a0aec0;">이동:</span>
                     <select onchange="if(this.value) { movePostToFolder('${post.id}', this.value); this.value=''; }"
                         style="padding: 5px 8px; font-size: 0.8rem; border: 1px solid #cbd5e0; border-radius: 6px; background: #f7fafc; color: #4a5568; cursor: pointer; font-weight: 600;">
-                        <option value="">-- 폴더 선택 --</option>
-                        ${availableFolders.map(f => `<option value="${f.id}">${f.name}</option>`).join('')}
+                        ${selectOptionsHtml}
                     </select>
                 </div>
             </div>
@@ -460,8 +563,38 @@ async function movePostToFolder(postId, targetFolder) {
         let updateData = {
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
+        let targetDisplay = targetFolder;
 
-        if (currentOrganizerCategory === '전도, 부흥, 선교') {
+        if (targetFolder === '설교론:설교자' || targetFolder === '설교자') {
+            tags = tags.filter(t => t !== '전도설교');
+            if (!tags.includes('청교도 신학')) tags.push('청교도 신학');
+            if (!tags.includes('설교론')) tags.push('설교론');
+            if (!tags.includes('설교자')) tags.push('설교자');
+            updateData.topic = '설교론';
+            updateData.series = '설교론';
+            updateData.subTopic = '설교자';
+            updateData.tags = tags;
+            targetDisplay = '9. 설교론 > 1. 설교자';
+        } else if (targetFolder === '설교론:전도설교' || targetFolder === '전도설교') {
+            tags = tags.filter(t => t !== '설교자');
+            if (!tags.includes('청교도 신학')) tags.push('청교도 신학');
+            if (!tags.includes('설교론')) tags.push('설교론');
+            if (!tags.includes('전도설교')) tags.push('전도설교');
+            updateData.topic = '설교론';
+            updateData.series = '설교론';
+            updateData.subTopic = '전도설교';
+            updateData.tags = tags;
+            targetDisplay = '9. 설교론 > 2. 전도설교';
+        } else if (targetFolder === '설교론:일반') {
+            tags = tags.filter(t => t !== '설교자' && t !== '전도설교');
+            if (!tags.includes('청교도 신학')) tags.push('청교도 신학');
+            if (!tags.includes('설교론')) tags.push('설교론');
+            updateData.topic = '설교론';
+            updateData.series = '설교론';
+            updateData.subTopic = '';
+            updateData.tags = tags;
+            targetDisplay = '9. 설교론 (일반)';
+        } else if (currentOrganizerCategory === '전도, 부흥, 선교') {
             tags = tags.filter(t => t !== '전도, 선교' && t !== '전도' && t !== '부흥' && t !== '선교');
             if (!tags.includes('전도, 부흥, 선교')) tags.push('전도, 부흥, 선교');
             if (!tags.includes(targetFolder)) tags.push(targetFolder);
@@ -472,9 +605,8 @@ async function movePostToFolder(postId, targetFolder) {
             updateData.tags = tags;
         } else if (currentOrganizerCategory === '청교도 신학') {
             if (!tags.includes('청교도 신학')) tags.push('청교도 신학');
-            // 기존 13대 신학 태그 정리
             const puritanTopics = ORGANIZER_CATEGORY_CONFIG['청교도 신학'].folders.map(f => f.id);
-            tags = tags.filter(t => !puritanTopics.includes(t));
+            tags = tags.filter(t => !puritanTopics.includes(t) && t !== '설교자' && t !== '전도설교');
             if (!tags.includes(targetFolder)) tags.push(targetFolder);
 
             updateData.topic = targetFolder;
@@ -508,7 +640,7 @@ async function movePostToFolder(postId, targetFolder) {
         // Firestore DB 업데이트
         await db.collection('posts').doc(postId).update(updateData);
 
-        showOrganizerToast(`'${post.title || '자료'}'이(가) [${targetFolder}] 폴더로 이동되었습니다!`);
+        showOrganizerToast(`'${post.title || '자료'}'이(가) [${targetDisplay}] 폴더로 이동되었습니다!`);
         if (window.loadAdminPosts) window.loadAdminPosts();
 
     } catch (e) {
@@ -603,7 +735,33 @@ async function executeBulkMove() {
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             };
 
-            if (currentOrganizerCategory === '전도, 부흥, 선교') {
+            if (targetFolder === '설교론:설교자' || targetFolder === '설교자') {
+                tags = tags.filter(t => t !== '전도설교');
+                if (!tags.includes('청교도 신학')) tags.push('청교도 신학');
+                if (!tags.includes('설교론')) tags.push('설교론');
+                if (!tags.includes('설교자')) tags.push('설교자');
+                updateData.topic = '설교론';
+                updateData.series = '설교론';
+                updateData.subTopic = '설교자';
+                updateData.tags = tags;
+            } else if (targetFolder === '설교론:전도설교' || targetFolder === '전도설교') {
+                tags = tags.filter(t => t !== '설교자');
+                if (!tags.includes('청교도 신학')) tags.push('청교도 신학');
+                if (!tags.includes('설교론')) tags.push('설교론');
+                if (!tags.includes('전도설교')) tags.push('전도설교');
+                updateData.topic = '설교론';
+                updateData.series = '설교론';
+                updateData.subTopic = '전도설교';
+                updateData.tags = tags;
+            } else if (targetFolder === '설교론:일반') {
+                tags = tags.filter(t => t !== '설교자' && t !== '전도설교');
+                if (!tags.includes('청교도 신학')) tags.push('청교도 신학');
+                if (!tags.includes('설교론')) tags.push('설교론');
+                updateData.topic = '설교론';
+                updateData.series = '설교론';
+                updateData.subTopic = '';
+                updateData.tags = tags;
+            } else if (currentOrganizerCategory === '전도, 부흥, 선교') {
                 tags = tags.filter(t => t !== '전도, 선교' && t !== '전도' && t !== '부흥' && t !== '선교');
                 if (!tags.includes('전도, 부흥, 선교')) tags.push('전도, 부흥, 선교');
                 if (!tags.includes(targetFolder)) tags.push(targetFolder);
@@ -614,7 +772,7 @@ async function executeBulkMove() {
             } else if (currentOrganizerCategory === '청교도 신학') {
                 if (!tags.includes('청교도 신학')) tags.push('청교도 신학');
                 const puritanTopics = ORGANIZER_CATEGORY_CONFIG['청교도 신학'].folders.map(f => f.id);
-                tags = tags.filter(t => !puritanTopics.includes(t));
+                tags = tags.filter(t => !puritanTopics.includes(t) && t !== '설교자' && t !== '전도설교');
                 if (!tags.includes(targetFolder)) tags.push(targetFolder);
                 updateData.topic = targetFolder;
                 updateData.series = targetFolder;
@@ -654,19 +812,43 @@ function updateBulkMoveSelectOptions() {
     const config = ORGANIZER_CATEGORY_CONFIG[currentOrganizerCategory];
     const folders = config ? config.folders : [];
 
-    select.innerHTML = '<option value="">-- 이동할 목적지 폴더 선택 --</option>' +
-        folders.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
+    let html = '<option value="">-- 이동할 목적지 폴더 선택 --</option>';
+    folders.forEach(f => {
+        if (f.id === '설교론') {
+            html += `<option value="설교론:일반">9. 설교론 > 일반</option>`;
+            html += `<option value="설교론:설교자">9. 설교론 > 1. 설교자</option>`;
+            html += `<option value="설교론:전도설교">9. 설교론 > 2. 전도설교</option>`;
+        } else {
+            html += `<option value="${f.id}">${f.name}</option>`;
+        }
+    });
+
+    select.innerHTML = html;
 }
 
 // 상단 폴더 클릭 시 필터링
 function filterOrganizerByFolder(folderId) {
     currentOrganizerFolder = folderId;
+    currentOrganizerSubFolder = 'all';
     renderOrganizerFolderDropzones();
     renderOrganizerPostsList();
 
     const label = document.getElementById('organizer-current-filter-label');
     if (label) {
         label.innerHTML = `현재 표시: <span style="color: #2b6cb0; font-weight:700;">${folderId === 'all' ? '전체 자료' : folderId + ' 폴더'}</span>`;
+    }
+}
+
+// 설교론 등 세부 하위 폴더 클릭 시 필터링
+function filterOrganizerBySubFolder(subFolderId) {
+    currentOrganizerSubFolder = subFolderId;
+    renderOrganizerFolderDropzones();
+    renderOrganizerPostsList();
+
+    const label = document.getElementById('organizer-current-filter-label');
+    if (label) {
+        const subName = subFolderId === 'all' ? '전체' : subFolderId;
+        label.innerHTML = `현재 표시: <span style="color: #dd6b20; font-weight:700;">9. 설교론 > ${subName}</span>`;
     }
 }
 

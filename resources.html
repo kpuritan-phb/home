@@ -1015,7 +1015,7 @@
                     </li>
                     <li class="dropdown">
                         <a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 <i class="fas fa-chevron-down"></i></a>
-                        <div class="dropdown-content">
+                        <div class="dropdown-content" id="evangelism-dropdown">
                             <ul class="dropdown-list">
                                 <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 전체</a></li>
                                 <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%A0%84%EB%8F%84">1. 전도</a></li>
@@ -1341,9 +1341,14 @@
             } else if (cat === '세미나, 강의' || cat === '세미나' || cat === '강의') {
                 const seminarDrop = document.getElementById('seminar-dropdown');
                 if (seminarDrop) targetDropdownLi = seminarDrop.closest('li.dropdown');
-            } else if (cat === '전도, 부흥, 선교' || cat === '전도, 선교') {
-                const evLink = document.querySelector('header nav a[href*="전도%2C%20부흥%2C%20선교"], header nav a[href*="전도, 부흥, 선교"]');
-                if (evLink) targetDropdownLi = evLink.closest('li.dropdown');
+            } else if (cat === '전도, 부흥, 선교' || cat === '전도, 선교' || cat.includes('전도') || cat.includes('부흥') || cat.includes('선교')) {
+                const evDrop = document.getElementById('evangelism-dropdown');
+                if (evDrop) {
+                    targetDropdownLi = evDrop.closest('li.dropdown');
+                } else {
+                    const evLink = document.querySelector('header nav a[href*="전도"]');
+                    if (evLink) targetDropdownLi = evLink.closest('li.dropdown');
+                }
             }
 
             if (targetDropdownLi) {
@@ -1351,9 +1356,10 @@
                 const links = targetDropdownLi.querySelectorAll('.dropdown-list a');
                 links.forEach(a => {
                     const href = a.getAttribute('href') || '';
+                    const text = a.textContent.trim();
                     if (!s && !href.includes('&s=')) {
                         a.classList.add('active');
-                    } else if (s && (href.includes(`&s=${encodeURIComponent(s)}`) || a.textContent.trim() === s.trim())) {
+                    } else if (s && (href.includes(`&s=${encodeURIComponent(s)}`) || text === s.trim() || text.endsWith(s.trim()))) {
                         a.classList.add('active');
                     }
                 });

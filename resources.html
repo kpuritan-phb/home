@@ -2001,10 +2001,47 @@
             grid.appendChild(wrapper);
         }
 
+        const BIBLE_BOOK_ENG_MAP = {
+            // 구약 39권
+            '창세기': 'Genesis', '출애굽기': 'Exodus', '레위기': 'Leviticus', '민수기': 'Numbers', '신명기': 'Deuteronomy',
+            '여호수아': 'Joshua', '사사기': 'Judges', '룻기': 'Ruth', '사무엘상': '1 Samuel', '사무엘하': '2 Samuel',
+            '열왕기상': '1 Kings', '열왕기하': '2 Kings', '역대상': '1 Chronicles', '역대하': '2 Chronicles',
+            '에스라': 'Ezra', '느헤미야': 'Nehemiah', '에스더': 'Esther', '욥기': 'Job', '시편': 'Psalms',
+            '잠언': 'Proverbs', '전도서': 'Ecclesiastes', '아가': 'Song of Songs', '이사야': 'Isaiah',
+            '예레미야': 'Jeremiah', '예레미야애가': 'Lamentations', '에스겔': 'Ezekiel', '다니엘': 'Daniel',
+            '호세아': 'Hosea', '요엘': 'Joel', '아모스': 'Amos', '오바댜': 'Obadiah', '요나': 'Jonah',
+            '미가': 'Micah', '나훔': 'Nahum', '하박국': 'Habakkuk', '스바냐': 'Zephaniah', '학개': 'Haggai',
+            '스가랴': 'Zechariah', '말라기': 'Malachi',
+            // 신약 27권
+            '마태복음': 'Matthew', '마가복음': 'Mark', '누가복음': 'Luke', '요한복음': 'John', '사도행전': 'Acts',
+            '로마서': 'Romans', '고린도전서': '1 Corinthians', '고린도후서': '2 Corinthians', '갈라디아서': 'Galatians',
+            '에베소서': 'Ephesians', '빌립보서': 'Philippians', '골로새서': 'Colossians', '데살로니가전서': '1 Thessalonians',
+            '데살로니가후서': '2 Thessalonians', '디모데전서': '1 Timothy', '디모데후서': '2 Timothy', '디도서': 'Titus',
+            '빌레몬서': 'Philemon', '히브리서': 'Hebrews', '야고보서': 'James', '베드로전서': '1 Peter', '베드로후서': '2 Peter',
+            '요한일서': '1 John', '요한이서': '2 John', '요한삼서': '3 John', '유다서': 'Jude', '요한계시록': 'Revelation',
+            // 특별 강해
+            '천로역정': "Pilgrim's Progress", '설교론': 'Expository Preaching', '웨스트민스터': 'Westminster', '하이델베르크': 'Heidelberg', '도르트': 'Dordt'
+        };
+
         function generateStandardSeriesCover(koreanName, englishName) {
-            const cleanKor = (koreanName || '').replace(' 강해', '').trim();
-            const cleanEng = (englishName || cleanKor).trim();
-            
+            let cleanKor = (koreanName || '').replace(' 강해', '').replace('강해', '').trim();
+            if (!cleanKor) cleanKor = '강해설교';
+
+            // Auto-detect English title
+            let cleanEng = (englishName || '').replace(' 강해', '').replace('강해', '').trim();
+            if (!cleanEng || cleanEng === cleanKor) {
+                cleanEng = BIBLE_BOOK_ENG_MAP[cleanKor];
+                if (!cleanEng) {
+                    for (const [k, eng] of Object.entries(BIBLE_BOOK_ENG_MAP)) {
+                        if (cleanKor.includes(k) || k.includes(cleanKor)) {
+                            cleanEng = eng;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!cleanEng) cleanEng = cleanKor;
+
             const colorMap = {
                 '신명기': { g1: '#ffecd2', g2: '#fcb69f', bg: '#fdfbfb' },
                 '사사기': { g1: '#a8edea', g2: '#fed6e3', bg: '#f4fbfb' },
@@ -2014,7 +2051,10 @@
                 '유다서': { g1: '#fbc2eb', g2: '#a6c1ee', bg: '#fcf8fc' },
                 '로마서': { g1: '#ffecd2', g2: '#fcb69f', bg: '#fdfbfb' },
                 '요한복음': { g1: '#a1c4fd', g2: '#c2e9fb', bg: '#f0f9ff' },
-                '마태복음': { g1: '#fed6e3', g2: '#a8edea', bg: '#fbfcfd' }
+                '마태복음': { g1: '#fed6e3', g2: '#a8edea', bg: '#fbfcfd' },
+                '마가복음': { g1: '#d4fc79', g2: '#96e6a1', bg: '#f7fcf7' },
+                '요한계시록': { g1: '#e0c3fc', g2: '#8ec5fc', bg: '#faf8ff' },
+                '천로역정': { g1: '#ffecd2', g2: '#fcb69f', bg: '#fdfbfb' }
             };
 
             let theme = colorMap[cleanKor];
@@ -2033,19 +2073,19 @@
 
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="600" height="360">
                 <defs>
-                    <radialGradient id="rg_${encodeURIComponent(cleanKor)}" cx="50%" cy="45%" r="45%">
-                        <stop offset="0%" stop-color="${theme.g1}" stop-opacity="0.85"/>
+                    <radialGradient id="rg_${encodeURIComponent(cleanKor)}" cx="50%" cy="45%" r="48%">
+                        <stop offset="0%" stop-color="${theme.g1}" stop-opacity="0.88"/>
                         <stop offset="65%" stop-color="${theme.g2}" stop-opacity="0.45"/>
                         <stop offset="100%" stop-color="${theme.bg}" stop-opacity="0"/>
                     </radialGradient>
                     <filter id="blur_${encodeURIComponent(cleanKor)}" x="-20%" y="-20%" width="140%" height="140%">
-                        <feGaussianBlur stdDeviation="28"/>
+                        <feGaussianBlur stdDeviation="30"/>
                     </filter>
                 </defs>
                 <rect width="600" height="360" fill="${theme.bg}"/>
-                <circle cx="300" cy="160" r="140" fill="url(#rg_${encodeURIComponent(cleanKor)})" filter="url(#blur_${encodeURIComponent(cleanKor)})"/>
-                <text x="300" y="145" text-anchor="middle" font-family="'Pretendard', -apple-system, sans-serif" font-size="44" font-weight="900" fill="#111827" letter-spacing="-1">${cleanKor}</text>
-                <text x="300" y="195" text-anchor="middle" font-family="'Pretendard', -apple-system, sans-serif" font-size="28" font-weight="600" fill="#2d3748" letter-spacing="0.5">${cleanEng}</text>
+                <circle cx="300" cy="155" r="145" fill="url(#rg_${encodeURIComponent(cleanKor)})" filter="url(#blur_${encodeURIComponent(cleanKor)})"/>
+                <text x="300" y="148" text-anchor="middle" font-family="'Pretendard', -apple-system, sans-serif" font-size="46" font-weight="900" fill="#111827" letter-spacing="-1">${cleanKor}</text>
+                <text x="300" y="198" text-anchor="middle" font-family="'Pretendard', -apple-system, sans-serif" font-size="28" font-weight="600" fill="#374151" letter-spacing="0.5">${cleanEng}</text>
             </svg>`;
 
             return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.trim());
@@ -2060,7 +2100,9 @@
                 document.body.appendChild(modal);
             }
 
-            const currentCover = window.customSeriesCovers[seriesName] || generateStandardSeriesCover(seriesName, engName);
+            const cleanKor = (seriesName || '').replace(' 강해', '').replace('강해', '').trim();
+            const resolvedEng = (engName && engName !== seriesName) ? engName : (BIBLE_BOOK_ENG_MAP[cleanKor] || cleanKor);
+            const currentCover = window.customSeriesCovers[seriesName] || generateStandardSeriesCover(seriesName, resolvedEng);
 
             modal.innerHTML = `
                 <div style="background: #ffffff; border-radius: 16px; width: 100%; max-width: 520px; padding: 26px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); position: relative; animation: fadeIn 0.2s ease;">
@@ -2091,9 +2133,9 @@
 
                     <!-- 방법 2: 통일된 자동 생성 버튼 -->
                     <div style="margin-bottom: 16px;">
-                        <button type="button" onclick="applyGeneratedStandardCover('${seriesName}', '${engName}')"
+                        <button type="button" onclick="applyGeneratedStandardCover('${seriesName}', '${resolvedEng}')"
                             style="width: 100%; background: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 0.86rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;">
-                            <i class="fas fa-magic"></i> 통일된 표준 디자인으로 자동 생성 적용
+                            <i class="fas fa-magic"></i> '${cleanKor} (${resolvedEng})' 표준 디자인으로 자동 생성 적용
                         </button>
                     </div>
 
@@ -2101,7 +2143,7 @@
                     <div style="margin-bottom: 20px;">
                         <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #4a5568; margin-bottom: 5px;">또는 웹 이미지 URL 링크 입력:</label>
                         <input type="text" id="series-cover-url-input" value="${currentCover.startsWith('data:') ? '' : currentCover}" placeholder="https://... 또는 이미지 URL"
-                            oninput="document.getElementById('series-cover-preview-img').src = this.value || generateStandardSeriesCover('${seriesName}', '${engName}')"
+                            oninput="document.getElementById('series-cover-preview-img').src = this.value || generateStandardSeriesCover('${seriesName}', '${resolvedEng}')"
                             style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e0; border-radius: 8px; font-size: 0.88rem; outline: none; box-sizing: border-box;" />
                     </div>
 
@@ -2185,9 +2227,15 @@
         };
 
         window.applyGeneratedStandardCover = function(seriesName, engName) {
-            const svgUrl = generateStandardSeriesCover(seriesName, engName);
-            document.getElementById('series-cover-preview-img').src = svgUrl;
-            document.getElementById('series-cover-url-input').value = svgUrl;
+            const cleanKor = (seriesName || '').replace(' 강해', '').replace('강해', '').trim();
+            const resolvedEng = (engName && engName !== seriesName) ? engName : (BIBLE_BOOK_ENG_MAP[cleanKor] || cleanKor);
+            const svgUrl = generateStandardSeriesCover(seriesName, resolvedEng);
+            const previewImg = document.getElementById('series-cover-preview-img');
+            const urlInput = document.getElementById('series-cover-url-input');
+            const uploadStatus = document.getElementById('series-upload-status');
+            if (previewImg) previewImg.src = svgUrl;
+            if (urlInput) urlInput.value = svgUrl;
+            if (uploadStatus) uploadStatus.innerHTML = `<span style="color: #2b6cb0; font-weight:700;"><i class="fas fa-check-circle"></i> '${cleanKor} (${resolvedEng})' 표준 디자인이 생성되었습니다. [썸네일 저장]을 누르면 반영됩니다.</span>`;
         };
 
         window.saveSeriesCover = async function(seriesName) {

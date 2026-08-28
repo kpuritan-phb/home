@@ -1168,6 +1168,7 @@
         let currentPage = 1;
         let currentViewMode = localStorage.getItem('resourcesViewMode') || 'list'; // 'list' (기본값: 제목만 보기) 또는 'grid' (카드형)
         let itemsPerPage = parseInt(localStorage.getItem('resourcesItemsPerPage')) || (currentViewMode === 'list' ? 15 : 12);
+        let currentSortOption = localStorage.getItem('resourcesSortOption') || 'custom'; // 'custom', 'title_asc', 'title_desc', 'date_desc', 'date_asc'
 
         const BIBLE_BOOKS = [
             { name: "창세기", chapters: 50, test: 'old' }, { name: "출애굽기", chapters: 40, test: 'old' }, { name: "레위기", chapters: 27, test: 'old' }, { name: "민수기", chapters: 36, test: 'old' }, { name: "신명기", chapters: 34, test: 'old' },
@@ -1438,6 +1439,62 @@
             renderPage(1);
         };
 
+        function applySorting(postsArray, sortOption = currentSortOption) {
+            if (sortOption === 'title_asc') {
+                postsArray.sort((a, b) => {
+                    const titA = (a.title || '').trim();
+                    const titB = (b.title || '').trim();
+                    return titA.localeCompare(titB, 'ko', { numeric: true, sensitivity: 'base' });
+                });
+            } else if (sortOption === 'title_desc') {
+                postsArray.sort((a, b) => {
+                    const titA = (a.title || '').trim();
+                    const titB = (b.title || '').trim();
+                    return titB.localeCompare(titA, 'ko', { numeric: true, sensitivity: 'base' });
+                });
+            } else if (sortOption === 'date_desc') {
+                postsArray.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+            } else if (sortOption === 'date_asc') {
+                postsArray.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+            } else { // 'custom' (직접 지정 순)
+                postsArray.sort((a, b) => {
+                    const orderA = (a.customOrder !== undefined && a.customOrder !== null) ? a.customOrder : null;
+                    const orderB = (b.customOrder !== undefined && b.customOrder !== null) ? b.customOrder : null;
+                    if (orderA !== null && orderB !== null) return orderA - orderB;
+                    if (orderA !== null) return -1;
+                    if (orderB !== null) return 1;
+                    return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+                });
+            }
+        }
+
+        window.changeSortOption = async function(sortVal) {
+            currentSortOption = sortVal;
+            localStorage.setItem('resourcesSortOption', sortVal);
+            applySorting(allCurrentPosts, sortVal);
+
+            if (window.isAdmin && sortVal !== 'custom') {
+                allCurrentPosts.forEach((p, idx) => {
+                    p.customOrder = idx;
+                });
+                await saveAllCustomOrders();
+                showOrderToast(`'${getSortOptionName(sortVal)}'으로 순서가 저장되었습니다.`);
+            }
+
+            currentPage = 1;
+            renderPage(1);
+        };
+
+        function getSortOptionName(val) {
+            switch(val) {
+                case 'title_asc': return '이름순 (1강→4강)';
+                case 'title_desc': return '이름 역순 (4강→1강)';
+                case 'date_desc': return '최신 등록순';
+                case 'date_asc': return '오래된 등록순';
+                default: return '직접 드래그 순';
+            }
+        }
+
         function openPostDetail(post) {
             if (window.Stats) {
                 window.Stats.track('click', {
@@ -1566,6 +1623,20 @@
                                 다음 <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>` : ''}
+
+                        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                            <span style="font-size: 0.85rem; color: #718096; font-weight: 600;">
+                                <i class="fas fa-sort-amount-down" style="color: #8c6d46;"></i> 정렬:
+                            </span>
+                            <select onchange="changeSortOption(this.value)"
+                                style="padding: 6px 10px; font-size: 0.85rem; border: 1px solid #cbd5e0; border-radius: 6px; background: #fcfbf9; color: #2d3748; font-weight: 700; cursor: pointer; outline: none;">
+                                <option value="custom" ${currentSortOption === 'custom' ? 'selected' : ''}>📌 직접 드래그 순</option>
+                                <option value="title_asc" ${currentSortOption === 'title_asc' ? 'selected' : ''}>🔤 이름순 (1강→4강)</option>
+                                <option value="title_desc" ${currentSortOption === 'title_desc' ? 'selected' : ''}>🔤 이름 역순 (4강→1강)</option>
+                                <option value="date_desc" ${currentSortOption === 'date_desc' ? 'selected' : ''}>🕒 최신 등록순</option>
+                                <option value="date_asc" ${currentSortOption === 'date_asc' ? 'selected' : ''}>🕒 오래된 등록순</option>
+                            </select>
+                        </div>
 
                         <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                             <span style="font-size: 0.85rem; color: #718096; font-weight: 600;">페이지당 표시:</span>
@@ -1950,7 +2021,7 @@
                 const isBlog = false;
                 grid.className = 'resource-list-grid';
 
-                sortPostsByCustomOrder(posts);
+                applySorting(posts, currentSortOption);
 
                 originalSubtopicPosts = posts;
                 allCurrentPosts = posts;
@@ -2202,9 +2273,9 @@
 
 
 
-                // Sort by customOrder if present, else by date (latest first)
+                // Sort by currentSortOption (custom, title, or date)
                 allCurrentPosts = posts;
-                sortPostsByCustomOrder(allCurrentPosts);
+                applySorting(allCurrentPosts, currentSortOption);
 
                 // [요청] 특정 게시물 고정 (2주간: ~2026-05-05)
                 const PINNED_TITLE = "히브리서의 경고와 심판: 영적 몰락의 해부학";

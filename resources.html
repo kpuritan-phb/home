@@ -2102,7 +2102,8 @@
 
             const cleanKor = (seriesName || '').replace(' 강해', '').replace('강해', '').trim();
             const resolvedEng = (engName && engName !== seriesName) ? engName : (BIBLE_BOOK_ENG_MAP[cleanKor] || cleanKor);
-            const currentCover = window.customSeriesCovers[seriesName] || generateStandardSeriesCover(seriesName, resolvedEng);
+            // 처음에는 저장된 커스텀 커버가 없으면 완전히 비어있는 빈 화면으로 시작
+            const savedCover = window.customSeriesCovers[seriesName] || '';
 
             modal.innerHTML = `
                 <div style="background: #ffffff; border-radius: 16px; width: 100%; max-width: 520px; padding: 26px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); position: relative; animation: fadeIn 0.2s ease;">
@@ -2116,8 +2117,12 @@
                     <!-- 썸네일 미리보기 -->
                     <div style="margin-bottom: 18px;">
                         <label style="display: block; font-size: 0.85rem; font-weight: 700; color: #4a5568; margin-bottom: 6px;">현재 썸네일 미리보기:</label>
-                        <div style="width: 100%; height: 180px; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; background: #f8fafc; display: flex; align-items: center; justify-content: center;">
-                            <img id="series-cover-preview-img" src="${currentCover}" style="width: 100%; height: 100%; object-fit: cover;" />
+                        <div id="series-cover-preview-container" style="width: 100%; height: 180px; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                            <img id="series-cover-preview-img" src="${savedCover}" style="width: 100%; height: 100%; object-fit: cover; display: ${savedCover ? 'block' : 'none'};" />
+                            <div id="series-cover-empty-placeholder" style="display: ${savedCover ? 'none' : 'flex'}; flex-direction: column; align-items: center; justify-content: center; color: #a0aec0; gap: 6px;">
+                                <i class="fas fa-image" style="font-size: 2.2rem; color: #cbd5e0;"></i>
+                                <span style="font-size: 0.84rem; font-weight: 600;">썸네일을 선택하거나 표준 디자인을 생성하세요</span>
+                            </div>
                         </div>
                     </div>
 
@@ -2142,8 +2147,19 @@
                     <!-- 방법 3: 직접 이미지 URL 입력 -->
                     <div style="margin-bottom: 20px;">
                         <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #4a5568; margin-bottom: 5px;">또는 웹 이미지 URL 링크 입력:</label>
-                        <input type="text" id="series-cover-url-input" value="${currentCover.startsWith('data:') ? '' : currentCover}" placeholder="https://... 또는 이미지 URL"
-                            oninput="document.getElementById('series-cover-preview-img').src = this.value || generateStandardSeriesCover('${seriesName}', '${resolvedEng}')"
+                        <input type="text" id="series-cover-url-input" value="${savedCover.startsWith('data:') ? '' : savedCover}" placeholder="https://... 또는 이미지 URL"
+                            oninput="
+                                const img = document.getElementById('series-cover-preview-img');
+                                const ph = document.getElementById('series-cover-empty-placeholder');
+                                if (this.value) {
+                                    img.src = this.value;
+                                    img.style.display = 'block';
+                                    if (ph) ph.style.display = 'none';
+                                } else {
+                                    img.style.display = 'none';
+                                    if (ph) ph.style.display = 'flex';
+                                }
+                            "
                             style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e0; border-radius: 8px; font-size: 0.88rem; outline: none; box-sizing: border-box;" />
                     </div>
 
@@ -2196,6 +2212,7 @@
             if (!file) return;
 
             const previewImg = document.getElementById('series-cover-preview-img');
+            const placeholder = document.getElementById('series-cover-empty-placeholder');
             const urlInput = document.getElementById('series-cover-url-input');
             const uploadStatus = document.getElementById('series-upload-status');
 
@@ -2203,7 +2220,13 @@
 
             const compressedDataUrl = await compressImageFile(file, 800, 480, 0.85);
             if (compressedDataUrl) {
-                if (previewImg) previewImg.src = compressedDataUrl;
+                if (previewImg) {
+                    previewImg.src = compressedDataUrl;
+                    previewImg.style.display = 'block';
+                }
+                if (placeholder) {
+                    placeholder.style.display = 'none';
+                }
                 if (urlInput) urlInput.value = compressedDataUrl;
             }
 
@@ -2216,7 +2239,11 @@
                     const uploadTask = await storageRef.put(file);
                     const downloadUrl = await uploadTask.ref.getDownloadURL();
                     if (urlInput) urlInput.value = downloadUrl;
-                    if (previewImg) previewImg.src = downloadUrl;
+                    if (previewImg) {
+                        previewImg.src = downloadUrl;
+                        previewImg.style.display = 'block';
+                    }
+                    if (placeholder) placeholder.style.display = 'none';
                     if (uploadStatus) uploadStatus.innerHTML = '<span style="color: #38a169; font-weight:700;"><i class="fas fa-check-circle"></i> 업로드 완료!</span>';
                     return;
                 }
@@ -2231,9 +2258,17 @@
             const resolvedEng = (engName && engName !== seriesName) ? engName : (BIBLE_BOOK_ENG_MAP[cleanKor] || cleanKor);
             const svgUrl = generateStandardSeriesCover(seriesName, resolvedEng);
             const previewImg = document.getElementById('series-cover-preview-img');
+            const placeholder = document.getElementById('series-cover-empty-placeholder');
             const urlInput = document.getElementById('series-cover-url-input');
             const uploadStatus = document.getElementById('series-upload-status');
-            if (previewImg) previewImg.src = svgUrl;
+
+            if (previewImg) {
+                previewImg.src = svgUrl;
+                previewImg.style.display = 'block';
+            }
+            if (placeholder) {
+                placeholder.style.display = 'none';
+            }
             if (urlInput) urlInput.value = svgUrl;
             if (uploadStatus) uploadStatus.innerHTML = `<span style="color: #2b6cb0; font-weight:700;"><i class="fas fa-check-circle"></i> '${cleanKor} (${resolvedEng})' 표준 디자인이 생성되었습니다. [썸네일 저장]을 누르면 반영됩니다.</span>`;
         };

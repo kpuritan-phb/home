@@ -425,16 +425,7 @@ function renderOrganizerPostsList() {
             }
         }
 
-        let selectOptionsHtml = `<option value="">-- 폴더 선택 --</option>`;
-        availableFolders.forEach(f => {
-            if (f.id === '설교론') {
-                selectOptionsHtml += `<option value="설교론:일반">9. 설교론 > 일반</option>`;
-                selectOptionsHtml += `<option value="설교론:설교자">9. 설교론 > 1. 설교자</option>`;
-                selectOptionsHtml += `<option value="설교론:전도설교">9. 설교론 > 2. 전도설교</option>`;
-            } else {
-                selectOptionsHtml += `<option value="${f.id}">${f.name}</option>`;
-            }
-        });
+        let selectOptionsHtml = buildOrganizerFolderOptionsHtml();
 
         html += `
             <div class="organizer-post-card ${isChecked ? 'selected-card' : ''}" id="organizer-card-${post.id}" draggable="true"
@@ -804,26 +795,73 @@ async function executeBulkMove() {
     }
 }
 
+// 이동 드롭다운 옵션 HTML 생성 (개별 카드 및 일괄 이동 공용)
+function buildOrganizerFolderOptionsHtml() {
+    let html = '<option value="">-- 이동할 폴더 선택 --</option>';
+
+    if (currentOrganizerCategory === '청교도 신학') {
+        const folders = ORGANIZER_CATEGORY_CONFIG['청교도 신학'].folders;
+        folders.forEach(f => {
+            if (f.id === '설교론') {
+                html += `<optgroup label="── 9. 설교론 세부 분류 ──">`;
+                html += `<option value="설교론:일반">📁 9. 설교론 (일반/전체)</option>`;
+                html += `<option value="설교론:설교자">👤 9. 설교론 > 1. 설교자</option>`;
+                html += `<option value="설교론:전도설교">📢 9. 설교론 > 2. 전도설교</option>`;
+                html += `</optgroup>`;
+            } else {
+                html += `<option value="${f.id}">${f.name}</option>`;
+            }
+        });
+    } else if (currentOrganizerCategory === '전도, 부흥, 선교') {
+        html += `<option value="전도">1. 전도</option>`;
+        html += `<option value="부흥">2. 부흥</option>`;
+        html += `<option value="선교">3. 선교</option>`;
+    } else if (currentOrganizerCategory === '강해설교') {
+        const folders = ORGANIZER_CATEGORY_CONFIG['강해설교'].folders;
+        folders.forEach(f => {
+            html += `<option value="${f.id}">📖 ${f.name}</option>`;
+        });
+    } else if (currentOrganizerCategory === '세미나, 강의') {
+        const folders = ORGANIZER_CATEGORY_CONFIG['세미나, 강의'].folders;
+        folders.forEach(f => {
+            html += `<option value="${f.id}">🎓 ${f.name}</option>`;
+        });
+    } else if (currentOrganizerCategory === '카테고리_대이동') {
+        html += `<optgroup label="[청교도 신학]">`;
+        const puritanFolders = ORGANIZER_CATEGORY_CONFIG['청교도 신학'].folders;
+        puritanFolders.forEach(f => {
+            if (f.id === '설교론') {
+                html += `<option value="설교론:일반">9. 설교론 (일반)</option>`;
+                html += `<option value="설교론:설교자">9. 설교론 > 1. 설교자</option>`;
+                html += `<option value="설교론:전도설교">9. 설교론 > 2. 전도설교</option>`;
+            } else {
+                html += `<option value="${f.id}">${f.name}</option>`;
+            }
+        });
+        html += `</optgroup>`;
+
+        html += `<optgroup label="[전도, 부흥, 선교]">`;
+        html += `<option value="전도">1. 전도</option>`;
+        html += `<option value="부흥">2. 부흥</option>`;
+        html += `<option value="선교">3. 선교</option>`;
+        html += `</optgroup>`;
+
+        html += `<optgroup label="[기타 대분류]">`;
+        html += `<option value="강해설교">강해설교</option>`;
+        html += `<option value="세미나, 강의">세미나, 강의</option>`;
+        html += `<option value="전도만화">전도만화</option>`;
+        html += `<option value="신학강론">신학강론</option>`;
+        html += `</optgroup>`;
+    }
+
+    return html;
+}
+
 // 일괄 이동 셀렉트박스 옵션 갱신
 function updateBulkMoveSelectOptions() {
     const select = document.getElementById('organizer-bulk-target-select');
     if (!select) return;
-
-    const config = ORGANIZER_CATEGORY_CONFIG[currentOrganizerCategory];
-    const folders = config ? config.folders : [];
-
-    let html = '<option value="">-- 이동할 목적지 폴더 선택 --</option>';
-    folders.forEach(f => {
-        if (f.id === '설교론') {
-            html += `<option value="설교론:일반">9. 설교론 > 일반</option>`;
-            html += `<option value="설교론:설교자">9. 설교론 > 1. 설교자</option>`;
-            html += `<option value="설교론:전도설교">9. 설교론 > 2. 전도설교</option>`;
-        } else {
-            html += `<option value="${f.id}">${f.name}</option>`;
-        }
-    });
-
-    select.innerHTML = html;
+    select.innerHTML = buildOrganizerFolderOptionsHtml();
 }
 
 // 상단 폴더 클릭 시 필터링

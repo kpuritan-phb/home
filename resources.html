@@ -1241,29 +1241,32 @@
                 grid.style.display = 'grid';
                 bibleWrapper.style.display = 'none';
                 chapterWrapper.style.display = 'none';
+                if (filterWrapper) filterWrapper.style.display = 'none';
                 await loadSubtopicItems(subTopicParam);
             } else if (currentCategory === '성경주석' && !bParam) {
                 grid.style.display = 'none';
                 bibleWrapper.style.display = 'block';
                 chapterWrapper.style.display = 'none';
+                if (filterWrapper) filterWrapper.style.display = 'none';
                 loadBibleBooks();
             } else if (currentCategory === '성경주석' && bParam) {
                 const sParam = urlParams.get('s');
-                // Chapter not selected yet: only show the chapter-number picker,
-                // skip the card grid entirely (no need for thumbnails/tags per chapter)
                 grid.style.display = sParam ? 'grid' : 'none';
                 bibleWrapper.style.display = 'none';
                 chapterWrapper.style.display = 'block';
+                if (filterWrapper) filterWrapper.style.display = 'none';
                 await loadCategoryItems('성경주석');
             } else if (currentCategory) {
                 grid.style.display = 'grid';
                 bibleWrapper.style.display = 'none';
                 chapterWrapper.style.display = 'none';
+                if (filterWrapper) filterWrapper.style.display = 'none';
                 await loadCategoryItems(currentCategory);
             } else {
                 grid.style.display = 'grid';
                 bibleWrapper.style.display = 'none';
                 chapterWrapper.style.display = 'none';
+                if (filterWrapper) filterWrapper.style.display = 'none';
                 // 기존의 대주제 탭폴더 구조 대신, 전체 리스트가 바로 나오도록 변경
                 await loadAllResources(typeParam || 'latest');
             }
@@ -1417,6 +1420,23 @@
                 items.forEach(item => {
                     const isActive = (!item.s && !s) || (item.s && s === item.s);
                     const href = item.s ? `resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=${encodeURIComponent(item.s)}` : `resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90`;
+                    html += `<li><a href="${href}" class="${isActive ? 'active' : ''}">${item.name}</a></li>`;
+                });
+
+                subnavList.innerHTML = html;
+                subnavEl.style.display = 'block';
+            } else if (currentCategory === '세미나, 강의' || currentCategory === '세미나' || currentCategory === '강의') {
+                const items = [
+                    { name: "세미나, 강의 전체", s: "" },
+                    { name: "웨스트민스터 대교리문답", s: "웨스트민스터 대교리문답" },
+                    { name: "17세기 화란 2차 종교개혁과 한국교회(2024년 정기세미나)", s: "17세기 화란 2차 종교개혁과 한국교회(2024년 정기세미나)" },
+                    { name: "현대인을 위한 구원론 강해(2025년 정기세미나)", s: "현대인을 위한 구원론 강해(2025년 정기세미나)" }
+                ];
+
+                let html = '';
+                items.forEach(item => {
+                    const isActive = (!item.s && !s) || (item.s && s === item.s);
+                    const href = item.s ? `resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98&s=${encodeURIComponent(item.s)}` : `resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98`;
                     html += `<li><a href="${href}" class="${isActive ? 'active' : ''}">${item.name}</a></li>`;
                 });
 
@@ -1847,6 +1867,18 @@
                             return true;
                         });
                     }
+                } else if (category === '세미나, 강의' || category === '세미나' || category === '강의') {
+                    const snap1 = await db.collection("posts").where("tags", "array-contains-any", ["세미나, 강의", "세미나", "강의"]).get();
+                    const seenIds = new Set();
+                    snap1.forEach(doc => {
+                        if (!seenIds.has(doc.id)) {
+                            posts.push({ id: doc.id, ...doc.data() });
+                            seenIds.add(doc.id);
+                        }
+                    });
+                    if (s) {
+                        posts = posts.filter(p => p.series === s || (p.tags && p.tags.includes(s)));
+                    }
                 } else if (category === '성경주석') {
                     if (b) {
                         const bookData = BIBLE_BOOKS.find(bk => bk.name === b);
@@ -1860,7 +1892,7 @@
                         posts = posts.filter(p => p.series === b);
                         if (s) {
                             const target = s.endsWith('장') ? s : s + '장';
-                            posts = posts.filter(p => p.title.includes(' ' + target));
+                            posts = posts.filter(p => p.title && p.title.includes(' ' + target));
                         }
                     }
                 } else {

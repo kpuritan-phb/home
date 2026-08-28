@@ -21,16 +21,17 @@ async function loadFolderOrganizerPosts() {
             return;
         }
 
-        // 청교도 신학 13대 주제 목록 (도르트, 신조 등 청교도 신학 자료 보호)
-        const puritanTheologyTopics = [
-            "신론", "인간론", "기독론", "구원론(성령론)", "구원론", "성령론",
+        // 청교도 신학 13대 주제 및 기타 카테고리 목록 (절대 침범 불가)
+        const excludeKeywords = [
+            "신론", "인간론", "기독론", "구원론", "성령론", "구원론(성령론)",
             "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론",
-            "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학"
+            "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학", "청교도 신학",
+            "강해설교", "도서 목록", "전도만화", "신학강론", "성경주석", "5분 신학강론"
         ];
 
-        // 전도, 부흥, 선교 관련 자료 쿼리
+        // 순수 전도, 부흥, 선교 태그만 정밀 쿼리 (전도 소책자 전체 쿼리 절대 배제)
         const snapshot = await db.collection("posts")
-            .where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도, 선교", "전도", "부흥", "선교", "전도 소책자", "전도 소책자 PDF"])
+            .where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도, 선교", "전도", "부흥", "선교", "부흥신학"])
             .get();
 
         const posts = [];
@@ -40,23 +41,16 @@ async function loadFolderOrganizerPosts() {
             if (!seenIds.has(doc.id)) {
                 const data = doc.data();
                 const topic = data.topic || '';
+                const other = data.otherCategory || '';
                 const tags = Array.isArray(data.tags) ? data.tags : [];
                 const series = data.series || '';
 
-                // 청교도 신학 13개 주제나 강해설교/도서목록/전도만화 등 다른 명확한 카테고리는 제외
-                const isOtherMajorCategory = puritanTheologyTopics.includes(topic) ||
-                    tags.some(t => puritanTheologyTopics.includes(t)) ||
-                    tags.includes("강해설교") || tags.includes("도서 목록") || tags.includes("전도만화") || tags.includes("신학강론");
+                // 청교도 신학 또는 기타 카테고리에 속한 글은 100% 철저히 배제
+                const isOtherCategory = excludeKeywords.includes(topic) ||
+                    excludeKeywords.includes(other) ||
+                    tags.some(t => excludeKeywords.includes(t));
 
-                // 순수 전도/부흥/선교 자료인지 판별
-                const isPureEvangelism = (
-                    topic === "전도, 부흥, 선교" || topic === "전도, 선교" || topic === "전도" || topic === "부흥" || topic === "선교" ||
-                    series === "전도" || series === "부흥" || series === "선교" ||
-                    tags.includes("전도, 부흥, 선교") || tags.includes("전도, 선교") ||
-                    (!isOtherMajorCategory && (tags.includes("전도 소책자") || tags.includes("전도 소책자 PDF")))
-                );
-
-                if (isPureEvangelism && !isOtherMajorCategory) {
+                if (!isOtherCategory) {
                     posts.push({ id: doc.id, ...data });
                     seenIds.add(doc.id);
                 }

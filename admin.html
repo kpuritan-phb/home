@@ -415,10 +415,14 @@
                                     컴퓨터에서 파일을 마우스로 끌어다 넣듯이, 아래 목록의 자료를 잡아서 상단 <strong>전도 / 부흥 / 선교</strong> 폴더에 쏙 넣으시면 즉시 분류됩니다!
                                 </p>
                             </div>
-                            <div style="display: flex; gap: 10px; align-items: center;">
+                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                                 <button type="button" onclick="migrateEvangelismToRevivalAndMissions()" class="cta-btn"
                                     style="padding: 9px 16px; font-size: 0.85rem; margin:0; background: #2b6cb0; color:white; border:none; border-radius:6px; cursor:pointer; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                                    <i class="fas fa-magic"></i> 기존 '전도, 선교' 자료 일괄 이전
+                                    <i class="fas fa-magic"></i> 전도/선교 자료 일괄 이전
+                                </button>
+                                <button type="button" onclick="cleanPuritanPostsFromEvangelism()" class="cta-btn"
+                                    style="padding: 9px 16px; font-size: 0.85rem; margin:0; background: #4a5568; color:white; border:none; border-radius:6px; cursor:pointer; font-weight: 600; display: flex; align-items: center; gap: 6px;" title="청교도 신학(도르트 등) 자료에 잘못 섞인 전도 태그를 정리합니다">
+                                    <i class="fas fa-shield-alt"></i> 신학 자료 원소속 정돈
                                 </button>
                                 <button type="button" onclick="loadFolderOrganizerPosts()" class="cta-btn"
                                     style="padding: 9px 16px; font-size: 0.85rem; margin:0; background: #27ae60; color:white; border:none; border-radius:6px; cursor:pointer; font-weight: 600; display: flex; align-items: center; gap: 6px;">

@@ -187,3 +187,56 @@ async function migrateEvangelismToRevivalAndMissions(silent = false) {
         if (!silent) alert("이전 작업 중 오류 발생: " + e.message);
     }
 }
+
+/**
+ * 청교도 신학(도르트, 신조, 구원론 등) 자료에 잘못 유입된 전도/선교 태그를 완벽하게 정돈/복구하는 함수
+ */
+async function cleanPuritanPostsFromEvangelism() {
+    if (!confirm("청교도 신학(도르트, 신조, 교리문답 등) 자료들을 원래 소속으로 완벽히 정돈하시겠습니까?")) return;
+
+    try {
+        const excludeKeywords = [
+            "신론", "인간론", "기독론", "구원론", "성령론", "구원론(성령론)",
+            "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론",
+            "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학", "청교도 신학",
+            "강해설교", "도서 목록", "전도만화", "신학강론", "성경주석"
+        ];
+
+        const snapshot = await db.collection("posts").get();
+        const batch = db.batch();
+        let cleanedCount = 0;
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const topic = data.topic || "";
+            const tags = Array.isArray(data.tags) ? data.tags : [];
+
+            // 청교도 신학 주제를 가지고 있으면서 '전도, 선교'나 '전도, 부흥, 선교' 태그가 잘못 붙어있는 경우
+            const isPuritan = excludeKeywords.includes(topic) || tags.some(t => excludeKeywords.includes(t));
+            const hasEvangelismTag = tags.includes("전도, 선교") || tags.includes("전도, 부흥, 선교");
+
+            if (isPuritan && hasEvangelismTag) {
+                const newTags = tags.filter(t => t !== "전도, 선교" && t !== "전도, 부흥, 선교");
+                batch.update(doc.ref, {
+                    tags: newTags,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                cleanedCount++;
+            }
+        });
+
+        if (cleanedCount > 0) {
+            await batch.commit();
+            alert(`정리 완료: 청교도 신학 ${cleanedCount}개 자료의 소속이 원래 제자리로 정돈되었습니다.`);
+        } else {
+            alert("정리할 오류 데이터가 없습니다. 모든 신학 자료가 안전합니다.");
+        }
+
+        if (typeof window.loadFolderOrganizerPosts === 'function') window.loadFolderOrganizerPosts();
+        if (window.loadAdminPosts) window.loadAdminPosts();
+
+    } catch (e) {
+        console.error("Clean error:", e);
+        alert("정리 중 오류: " + e.message);
+    }
+}

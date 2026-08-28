@@ -1446,6 +1446,15 @@ nav ul li:hover a i {
     .about-team .team-name {
         font-size: 1rem;
     }
+
+    .about-director-card {
+        padding: 12px 15px !important;
+        gap: 12px !important;
+    }
+    .about-director-card img {
+        width: 80px !important;
+        height: 90px !important;
+    }
 }
 
 .close-btn {

@@ -1674,9 +1674,6 @@
                             <div class="drag-grip-handle" style="color: #a0aec0; cursor: grab; padding: 0 4px; font-size: 1.1rem;" title="마우스로 끌어서 순서 변경">
                                 <i class="fas fa-grip-vertical"></i>
                             </div>` : ''}
-                            <span style="min-width: 36px; font-size: 0.85rem; color: #8c6d46; font-weight: 800; text-align: center; flex-shrink: 0; background: #fdfaf6; padding: 3px 6px; border-radius: 6px; border: 1px solid #ebd9c8;">
-                                ${postNum}
-                            </span>
                             <span style="font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: #edf2f7; color: #2d3748; border: 1px solid #cbd5e0; flex-shrink: 0; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 ${topicBadge}
                             </span>
@@ -1712,9 +1709,7 @@
                 grid.appendChild(tableWrapper);
             } else {
                 grid.className = 'resource-list-grid';
-                pageItems.forEach((post, index) => {
-                    renderResourceItem(post, start + index + 1);
-                });
+                pageItems.forEach(post => renderResourceItem(post));
             }
             renderPagination();
         }
@@ -2676,7 +2671,7 @@
             }, 3000);
         }
 
-        function renderResourceItem(post, postNum) {
+        function renderResourceItem(post) {
             const itemEl = document.createElement('div');
             const isBible = currentCategory === '성경주석';
 
@@ -2745,18 +2740,11 @@
             itemEl.innerHTML = `
                 ${window.isAdmin ? `<div class="drag-grip-handle"><i class="fas fa-grip-lines"></i> 드래그 이동</div>` : ''}
                 ${showThumb ? `
-                <div id="${containerId}" class="resource-card-thumb" style="position: relative;">
-                    ${postNum ? `
-                    <div style="position: absolute; top: 8px; left: 8px; background: rgba(26, 52, 42, 0.88); backdrop-filter: blur(4px); color: #ffffff; padding: 2px 8px; border-radius: 6px; font-size: 0.76rem; font-weight: 800; z-index: 5; box-shadow: 0 2px 6px rgba(0,0,0,0.25);">
-                        No. ${postNum}
-                    </div>` : ''}
+                <div id="${containerId}" class="resource-card-thumb">
                     <img id="${imgId}" src="${finalSrc}" alt="${post.title}">
                 </div>` : ''}
                 <div class="resource-card-info">
-                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                        <div class="resource-card-category">${category}</div>
-                        ${(!showThumb && postNum) ? `<span style="font-size: 0.76rem; font-weight: 800; color: #8c6d46; background: #fdfaf6; padding: 2px 7px; border-radius: 4px; border: 1px solid #ebd9c8;">No. ${postNum}</span>` : ''}
-                    </div>
+                    <div class="resource-card-category">${category}</div>
                     <div class="resource-card-title">${post.title}</div>
                     <div class="resource-card-desc">${displayContent}</div>
                     ${window.isAdmin ? `

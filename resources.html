@@ -1235,6 +1235,7 @@
                     heroSection.classList.remove('compact-hero');
                 }
             }
+            updateUI();
 
             if (subTopicParam) {
                 grid.style.display = 'grid';
@@ -1616,22 +1617,6 @@
 
             grid.appendChild(wrapper);
         }
-
-        function renderSeriesTabs(category, uniqueSeries) {
-            const urlParams = new URLSearchParams(window.location.search);
-            const currentSub = urlParams.get('s') || "";
-
-            if (category === '강해설교') {
-                // 성경 강의 폴더 전용 디자인
-                let foldersHtml = `
-                    <div class="sermon-folder-box">
-                        <div class="sermon-folder-header">
-                            <h3>성경 강의 폴더</h3>
-                            <span class="sermon-folder-tip">※ 아래의 세부 폴더를 선택하여 자료를 열람하십시오.</span>
-                        </div>
-                        <div class="sermon-folder-buttons">
-                            <a href="resources.html?cat=${encodeURIComponent(category)}" class="folder-tab-btn ${!currentSub ? 'active' : ''}">전체</a>
-                `;
 
         function renderSeriesTabs(category, uniqueSeries) {
             updateSubnavBar();

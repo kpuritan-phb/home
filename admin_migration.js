@@ -116,6 +116,12 @@ async function migrateEvangelismToRevivalAndMissions(silent = false) {
         const batch = db.batch();
         let count = 0;
 
+        const puritanTheologyTopics = [
+            "신론", "인간론", "기독론", "구원론(성령론)", "구원론", "성령론",
+            "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론",
+            "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학"
+        ];
+
         snapshot.forEach((doc) => {
             const data = doc.data();
             const tags = data.tags || [];
@@ -125,7 +131,12 @@ async function migrateEvangelismToRevivalAndMissions(silent = false) {
             const content = data.content || "";
             const combined = (title + " " + content).toLowerCase();
 
-            const isOldEvangelism = tags.includes("전도, 선교") || topic === "전도, 선교" || series === "전도, 선교" || tags.includes("전도 소책자");
+            // 청교도 신학(도르트 등)이나 강해설교 등 다른 카테고리는 건드리지 않음
+            const isOtherMajorCategory = puritanTheologyTopics.includes(topic) ||
+                tags.some(t => puritanTheologyTopics.includes(t)) ||
+                tags.includes("강해설교") || tags.includes("도서 목록") || tags.includes("전도만화") || tags.includes("신학강론");
+
+            const isOldEvangelism = !isOtherMajorCategory && (tags.includes("전도, 선교") || topic === "전도, 선교" || series === "전도, 선교");
 
             if (isOldEvangelism) {
                 // 1. 구 '전도, 선교' 태그 제거 및 '전도, 부흥, 선교' 추가

@@ -912,8 +912,18 @@
             border-color: var(--secondary-color);
         }
 
-        .page-btn:hover:not(.active) {
+        .page-btn.page-nav-btn {
+            width: auto;
+            min-width: 40px;
+            padding: 0 14px;
+            border-radius: 20px;
+            font-size: 0.86rem;
+            gap: 6px;
+        }
+
+        .page-btn:hover:not(.active):not(:disabled) {
             background: #f0f0f0;
+            border-color: #cbd5e0;
         }
 
         /* 성경 강의 폴더 스타일 */
@@ -1515,6 +1525,7 @@
 
             const isBible = currentCategory === '성경주석';
             const sParam = urlParams.get('s');
+            const totalPages = Math.ceil(allCurrentPosts.length / itemsPerPage);
 
             if (!isBible || !sParam) {
                 const controlBar = document.createElement('div');
@@ -1542,16 +1553,31 @@
                         </span>` : ''}
                     </div>
 
-                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                        <span style="font-size: 0.85rem; color: #718096; font-weight: 600;">페이지당 표시:</span>
-                        <select onchange="changeItemsPerPage(this.value)"
-                            style="padding: 6px 12px; font-size: 0.85rem; border: 1px solid #cbd5e0; border-radius: 6px; background: #fcfbf9; color: #2d3748; font-weight: 700; cursor: pointer; outline: none;">
-                            <option value="5" ${itemsPerPage === 5 ? 'selected' : ''}>5개씩 보기</option>
-                            <option value="10" ${itemsPerPage === 10 ? 'selected' : ''}>10개씩 보기</option>
-                            <option value="15" ${itemsPerPage === 15 ? 'selected' : ''}>15개씩 보기</option>
-                            <option value="20" ${itemsPerPage === 20 ? 'selected' : ''}>20개씩 보기</option>
-                        </select>
-                        <span style="font-size: 0.82rem; color: #a0aec0; font-weight: 600; margin-left: 2px;">(총 ${allCurrentPosts.length}건)</span>
+                    <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                        ${totalPages > 1 ? `
+                        <div style="display: inline-flex; align-items: center; gap: 4px; background: #edf2f7; padding: 3px 6px; border-radius: 8px; border: 1px solid #cbd5e0;">
+                            <button type="button" onclick="renderPage(${Math.max(1, currentPage - 1)})" ${currentPage === 1 ? 'disabled style="opacity:0.4; cursor:not-allowed; border:none; background:transparent; padding:4px 8px; font-size:0.8rem; font-weight:700; color:#718096;"' : 'style="border:none; background:#ffffff; color:#2d3748; padding:4px 10px; border-radius:6px; cursor:pointer; font-weight:700; font-size:0.82rem; box-shadow:0 1px 3px rgba(0,0,0,0.1); display:inline-flex; align-items:center; gap:4px;"'}>
+                                <i class="fas fa-chevron-left"></i> 이전
+                            </button>
+                            <span style="font-size: 0.84rem; font-weight: 800; color: #1a342a; padding: 0 8px; white-space: nowrap;">
+                                ${currentPage} / ${totalPages} P
+                            </span>
+                            <button type="button" onclick="renderPage(${Math.min(totalPages, currentPage + 1)})" ${currentPage === totalPages ? 'disabled style="opacity:0.4; cursor:not-allowed; border:none; background:transparent; padding:4px 8px; font-size:0.8rem; font-weight:700; color:#718096;"' : 'style="border:none; background:#ffffff; color:#2d3748; padding:4px 10px; border-radius:6px; cursor:pointer; font-weight:700; font-size:0.82rem; box-shadow:0 1px 3px rgba(0,0,0,0.1); display:inline-flex; align-items:center; gap:4px;"'}>
+                                다음 <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>` : ''}
+
+                        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                            <span style="font-size: 0.85rem; color: #718096; font-weight: 600;">페이지당 표시:</span>
+                            <select onchange="changeItemsPerPage(this.value)"
+                                style="padding: 6px 10px; font-size: 0.85rem; border: 1px solid #cbd5e0; border-radius: 6px; background: #fcfbf9; color: #2d3748; font-weight: 700; cursor: pointer; outline: none;">
+                                <option value="5" ${itemsPerPage === 5 ? 'selected' : ''}>5개씩 보기</option>
+                                <option value="10" ${itemsPerPage === 10 ? 'selected' : ''}>10개씩 보기</option>
+                                <option value="15" ${itemsPerPage === 15 ? 'selected' : ''}>15개씩 보기</option>
+                                <option value="20" ${itemsPerPage === 20 ? 'selected' : ''}>20개씩 보기</option>
+                            </select>
+                            <span style="font-size: 0.82rem; color: #a0aec0; font-weight: 600; margin-left: 2px;">(총 ${allCurrentPosts.length}건)</span>
+                        </div>
                     </div>
                 `;
                 grid.appendChild(controlBar);
@@ -1649,38 +1675,96 @@
             const totalPages = Math.ceil(allCurrentPosts.length / itemsPerPage);
             if (totalPages <= 1) return;
 
-            for (let i = 1; i <= totalPages; i++) {
+            const createBtn = (html, pageNum, isActive = false, isDisabled = false, isNav = false, tooltip = '') => {
                 const btn = document.createElement('button');
-                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-                btn.innerText = i;
-                btn.onclick = () => renderPage(i);
+                btn.className = `page-btn ${isActive ? 'active' : ''} ${isNav ? 'page-nav-btn' : ''}`;
+                btn.innerHTML = html;
+                if (tooltip) btn.title = tooltip;
+                if (isDisabled) {
+                    btn.style.opacity = '0.35';
+                    btn.style.cursor = 'not-allowed';
+                    btn.disabled = true;
+                } else {
+                    btn.onclick = () => {
+                        window.scrollTo({ top: 400, behavior: 'smooth' });
+                        renderPage(pageNum);
+                    };
 
-                // 관리자 모드일 때 페이지 버튼 드롭존 활성화
-                if (window.isAdmin) {
-                    btn.ondragover = (e) => {
-                        e.preventDefault();
-                        btn.style.background = '#8c6d46';
-                        btn.style.color = '#ffffff';
-                        btn.style.transform = 'scale(1.25)';
-                        btn.style.boxShadow = '0 4px 15px rgba(140,109,70,0.4)';
-                    };
-                    btn.ondragleave = () => {
-                        btn.style.transform = 'none';
-                        btn.style.boxShadow = 'none';
-                        if (i !== currentPage) {
-                            btn.style.background = '';
-                            btn.style.color = '';
-                        }
-                    };
-                    btn.ondrop = async (e) => {
-                        e.preventDefault();
-                        btn.style.transform = 'none';
-                        btn.style.boxShadow = 'none';
-                        await handleDropOnPageBtn(e, i);
-                    };
+                    if (window.isAdmin) {
+                        btn.ondragover = (e) => {
+                            e.preventDefault();
+                            btn.style.background = '#8c6d46';
+                            btn.style.color = '#ffffff';
+                            btn.style.transform = 'scale(1.15)';
+                            btn.style.boxShadow = '0 4px 15px rgba(140,109,70,0.4)';
+                        };
+                        btn.ondragleave = () => {
+                            btn.style.transform = 'none';
+                            btn.style.boxShadow = 'none';
+                            if (!isActive) {
+                                btn.style.background = '';
+                                btn.style.color = '';
+                            }
+                        };
+                        btn.ondrop = async (e) => {
+                            e.preventDefault();
+                            btn.style.transform = 'none';
+                            btn.style.boxShadow = 'none';
+                            await handleDropOnPageBtn(e, pageNum);
+                        };
+                    }
                 }
+                return btn;
+            };
 
-                paginationEl.appendChild(btn);
+            // 1. 처음 페이지 [⏮]
+            if (currentPage > 1) {
+                paginationEl.appendChild(createBtn('<i class="fas fa-angle-double-left"></i> 처음', 1, false, false, true, '처음 페이지 (1P)'));
+            }
+
+            // 2. 이전 페이지 [◀ 이전]
+            paginationEl.appendChild(createBtn('<i class="fas fa-chevron-left"></i> 이전', Math.max(1, currentPage - 1), false, currentPage === 1, true, '이전 페이지'));
+
+            // 3. 페이지 번호 그룹 (현재 페이지 기준 최대 10개 표시)
+            const maxVisible = 10;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+            let endPage = startPage + maxVisible - 1;
+
+            if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            if (startPage > 1) {
+                paginationEl.appendChild(createBtn('1', 1, 1 === currentPage));
+                if (startPage > 2) {
+                    const dots = document.createElement('span');
+                    dots.innerText = '...';
+                    dots.style.cssText = 'align-self: center; color: #a0aec0; padding: 0 4px; font-weight: bold; font-size: 0.9rem;';
+                    paginationEl.appendChild(dots);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                paginationEl.appendChild(createBtn(i, i, i === currentPage));
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const dots = document.createElement('span');
+                    dots.innerText = '...';
+                    dots.style.cssText = 'align-self: center; color: #a0aec0; padding: 0 4px; font-weight: bold; font-size: 0.9rem;';
+                    paginationEl.appendChild(dots);
+                }
+                paginationEl.appendChild(createBtn(totalPages, totalPages, totalPages === currentPage));
+            }
+
+            // 4. 다음 페이지 [다음 ▶]
+            paginationEl.appendChild(createBtn('다음 <i class="fas fa-chevron-right"></i>', Math.min(totalPages, currentPage + 1), false, currentPage === totalPages, true, '다음 페이지'));
+
+            // 5. 끝 페이지 [⏭]
+            if (currentPage < totalPages) {
+                paginationEl.appendChild(createBtn('끝 <i class="fas fa-angle-double-right"></i>', totalPages, false, false, true, `마지막 페이지 (${totalPages}P)`));
             }
         }
 

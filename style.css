@@ -4469,6 +4469,27 @@ footer {
     cursor: grabbing !important;
 }
 
+.folder-dropzone.active-view {
+    border-style: solid !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+    background: #edf2f7 !important;
+}
+
+.organizer-cat-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.organizer-post-card.selected-card {
+    background: #f0fff4 !important;
+    border-color: #38a169 !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 900px) {
     .organizer-folders-grid {
         grid-template-columns: repeat(2, 1fr) !important;

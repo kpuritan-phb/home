@@ -1625,19 +1625,6 @@
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
-                        ${totalPages > 1 ? `
-                        <div style="display: inline-flex; align-items: center; gap: 4px; background: #edf2f7; padding: 3px 6px; border-radius: 8px; border: 1px solid #cbd5e0;">
-                            <button type="button" onclick="renderPage(${Math.max(1, currentPage - 1)})" ${currentPage === 1 ? 'disabled style="opacity:0.4; cursor:not-allowed; border:none; background:transparent; padding:4px 8px; font-size:0.8rem; font-weight:700; color:#718096;"' : 'style="border:none; background:#ffffff; color:#2d3748; padding:4px 10px; border-radius:6px; cursor:pointer; font-weight:700; font-size:0.82rem; box-shadow:0 1px 3px rgba(0,0,0,0.1); display:inline-flex; align-items:center; gap:4px;"'}>
-                                <i class="fas fa-chevron-left"></i> 이전
-                            </button>
-                            <span style="font-size: 0.84rem; font-weight: 800; color: #1a342a; padding: 0 8px; white-space: nowrap;">
-                                ${currentPage} / ${totalPages} P
-                            </span>
-                            <button type="button" onclick="renderPage(${Math.min(totalPages, currentPage + 1)})" ${currentPage === totalPages ? 'disabled style="opacity:0.4; cursor:not-allowed; border:none; background:transparent; padding:4px 8px; font-size:0.8rem; font-weight:700; color:#718096;"' : 'style="border:none; background:#ffffff; color:#2d3748; padding:4px 10px; border-radius:6px; cursor:pointer; font-weight:700; font-size:0.82rem; box-shadow:0 1px 3px rgba(0,0,0,0.1); display:inline-flex; align-items:center; gap:4px;"'}>
-                                다음 <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>` : ''}
-
                         <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                             <span style="font-size: 0.85rem; color: #718096; font-weight: 600;">
                                 <i class="fas fa-sort-amount-down" style="color: #8c6d46;"></i> 정렬:

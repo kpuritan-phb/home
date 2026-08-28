@@ -209,9 +209,12 @@
                 <div class="form-section">
                     <h3>내용</h3>
                     <div class="input-group">
-                        <label>상세 내용 / 유튜브 링크</label>
-                        <textarea id="edit-content" rows="8"
-                            style="width: 100%; padding: 10px; border: 1px solid #ddd;"></textarea>
+                        <label style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>상세 내용 / 유튜브 링크</span>
+                            <span style="font-size: 0.8rem; font-weight: normal; color: #888;">* 긴 글을 편하게 작성하실 수 있도록 넓은 화면을 지원하며, 텍스트에 따라 자동으로 늘어납니다.</span>
+                        </label>
+                        <textarea id="edit-content" rows="16"
+                            style="width: 100%; min-height: 420px; padding: 16px; border: 1px solid #ddd; border-radius: 6px; font-family: 'Noto Sans KR', 'Inter', sans-serif; font-size: 1.05rem; line-height: 1.85; box-sizing: border-box; resize: vertical;"></textarea>
                     </div>
                     
                     <!-- 추천 태그 UI 삽입 -->

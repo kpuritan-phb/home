@@ -244,8 +244,11 @@
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>내용 (또는 유튜브 링크)</label>
-                            <textarea id="post-content" rows="6" placeholder="내용을 입력하거나 유튜브 주소를 넣어주세요"></textarea>
+                            <label style="display: flex; justify-content: space-between; align-items: center;">
+                                <span>내용 (또는 유튜브 링크)</span>
+                                <span style="font-size: 0.8rem; font-weight: normal; color: #888;">* 텍스트를 길게 쓰시면 창이 자동으로 알맞게 늘어납니다.</span>
+                            </label>
+                            <textarea id="post-content" rows="16" placeholder="내용을 입력하거나 유튜브 주소를 넣어주세요. 직접 긴 글을 작성하실 수 있도록 넓은 화면을 지원합니다." style="min-height: 420px; font-family: 'Noto Sans KR', 'Inter', sans-serif; font-size: 1.05rem; line-height: 1.85; padding: 16px;"></textarea>
                         </div>
                         <div class="input-row"
                             style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 15px;">
@@ -594,7 +597,7 @@
                         <input type="number" id="modal-post-order" value="0" style="flex: 1;" placeholder="순서">
                         <input type="text" id="modal-post-price" placeholder="가격 (도서 전용)" style="flex: 1; display: none;">
                     </div>
-                    <textarea id="modal-post-content" rows="3" placeholder="내용 또는 유튜브 링크" style="width:100%; margin-bottom:10px;"></textarea>
+                    <textarea id="modal-post-content" rows="10" placeholder="내용 또는 유튜브 링크" style="width:100%; min-height: 250px; font-family: 'Noto Sans KR', 'Inter', sans-serif; font-size: 1rem; line-height: 1.75; padding: 12px; margin-bottom:10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;"></textarea>
                     <div id="modal-post-category-fields"
                         style="display: none; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
                         <div class="input-group">

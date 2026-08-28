@@ -80,6 +80,22 @@ document.addEventListener('DOMContentLoaded', () => {
         document.head.appendChild(style);
     }
 
+    // --- 텍스트에어리어 자동 높이 확장 및 폰트 통일 처리 ---
+    const initAutoResizeTextareas = () => {
+        const textareas = document.querySelectorAll('textarea');
+        textareas.forEach(ta => {
+            const autoResize = () => {
+                if (ta.scrollHeight > ta.clientHeight) {
+                    ta.style.height = 'auto';
+                    ta.style.height = (ta.scrollHeight + 15) + 'px';
+                }
+            };
+            ta.addEventListener('input', autoResize);
+            ta.addEventListener('paste', () => setTimeout(autoResize, 50));
+        });
+    };
+    initAutoResizeTextareas();
+
     // --- 메인 통합 검색창 연동 ---
     const mainSearchInput = document.getElementById('main-search-input');
     const mainSearchBtn = document.getElementById('main-search-btn');

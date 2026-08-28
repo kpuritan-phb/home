@@ -735,6 +735,46 @@
             background: #f7fafc;
         }
 
+        /* Admin Drag & Drop Card Styling */
+        .admin-draggable-card {
+            cursor: grab !important;
+            position: relative;
+            user-select: none;
+            transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .admin-draggable-card:active {
+            cursor: grabbing !important;
+        }
+        .admin-draggable-card.is-dragging {
+            opacity: 0.35;
+            border: 2px dashed #8c6d46 !important;
+            transform: scale(0.97);
+        }
+        .admin-draggable-card.drag-over-target {
+            border: 2px solid #8c6d46 !important;
+            box-shadow: 0 0 20px rgba(140, 109, 70, 0.4) !important;
+            transform: translateY(-6px) scale(1.02);
+        }
+        .drag-grip-handle {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 15;
+            background: rgba(26, 52, 42, 0.88);
+            backdrop-filter: blur(6px);
+            color: #ffffff;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            pointer-events: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            letter-spacing: 0.02em;
+        }
+
         /* Hero Banner */
         .resources-hero {
             position: relative;
@@ -1460,10 +1500,14 @@
                 const topBar = document.createElement('div');
                 topBar.style.cssText = 'grid-column: 1 / -1; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 16px 22px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 10px;';
                 topBar.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                         <i class="fas fa-book-open" style="color: #8c6d46; font-size: 1.25rem;"></i>
                         <span style="font-weight: 800; font-size: 1.2rem; color: #1a342a;">${sVal}</span>
                         <span style="font-size: 0.85rem; color: #718096; background: #edf2f7; padding: 3px 12px; border-radius: 20px; font-weight: 600;">총 ${allCurrentPosts.length}편</span>
+                        ${window.isAdmin ? `
+                        <span style="font-size: 0.82rem; color: #2e7d32; background: #e8f5e9; padding: 4px 10px; border-radius: 6px; font-weight: 700; border: 1px solid #c8e6c9; display: inline-flex; align-items: center; gap: 5px;">
+                            <i class="fas fa-arrows-alt"></i> 카드를 마우스로 드래그하여 순서 변경 (자동 저장)
+                        </span>` : ''}
                     </div>
                     <button type="button" onclick="const u = new URL(window.location); u.searchParams.delete('s'); window.history.pushState({}, '', u); loadCategoryItems('강해설교'); updateUI();"
                         style="border: none; background: #f7fafc; color: #8c6d46; padding: 9px 18px; border-radius: 8px; font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px; border: 1px solid #e2e8f0; transition: all 0.2s;">
@@ -1675,7 +1719,7 @@
                 const isBlog = false;
                 grid.className = 'resource-list-grid';
 
-                posts.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                sortPostsByCustomOrder(posts);
 
                 originalSubtopicPosts = posts;
                 allCurrentPosts = posts;
@@ -1923,9 +1967,9 @@
 
 
 
-                // Sort by date (latest first) to match booklets.html behavior
+                // Sort by customOrder if present, else by date (latest first)
                 allCurrentPosts = posts;
-                allCurrentPosts.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                sortPostsByCustomOrder(allCurrentPosts);
 
                 // [요청] 특정 게시물 고정 (2주간: ~2026-05-05)
                 const PINNED_TITLE = "히브리서의 경고와 심판: 영적 몰락의 해부학";
@@ -1946,6 +1990,99 @@
             }
         }
 
+        function sortPostsByCustomOrder(postsArray) {
+            postsArray.sort((a, b) => {
+                const orderA = (a.customOrder !== undefined && a.customOrder !== null) ? a.customOrder : null;
+                const orderB = (b.customOrder !== undefined && b.customOrder !== null) ? b.customOrder : null;
+                if (orderA !== null && orderB !== null) return orderA - orderB;
+                if (orderA !== null) return -1;
+                if (orderB !== null) return 1;
+                return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+            });
+        }
+
+        let draggedPostId = null;
+
+        function handleCardDragStart(e, post, element) {
+            draggedPostId = post.id;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', post.id);
+            element.classList.add('is-dragging');
+        }
+
+        function handleCardDragOver(e, element) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if (!element.classList.contains('is-dragging')) {
+                element.classList.add('drag-over-target');
+            }
+        }
+
+        function handleCardDragLeave(e, element) {
+            element.classList.remove('drag-over-target');
+        }
+
+        function handleCardDragEnd(e, element) {
+            element.classList.remove('is-dragging');
+            document.querySelectorAll('.admin-draggable-card').forEach(c => c.classList.remove('drag-over-target'));
+        }
+
+        async function handleCardDrop(e, targetPost, element) {
+            e.preventDefault();
+            element.classList.remove('drag-over-target');
+            const sourceId = e.dataTransfer.getData('text/plain') || draggedPostId;
+            const targetId = targetPost.id;
+
+            if (!sourceId || !targetId || sourceId === targetId) return;
+
+            const fromIndex = allCurrentPosts.findIndex(p => p.id === sourceId);
+            const toIndex = allCurrentPosts.findIndex(p => p.id === targetId);
+
+            if (fromIndex > -1 && toIndex > -1) {
+                const [movedItem] = allCurrentPosts.splice(fromIndex, 1);
+                allCurrentPosts.splice(toIndex, 0, movedItem);
+
+                // Update customOrder index locally
+                allCurrentPosts.forEach((p, idx) => {
+                    p.customOrder = idx;
+                });
+
+                renderPage(currentPage);
+
+                // Batch update to Firestore
+                try {
+                    const batch = db.batch();
+                    allCurrentPosts.forEach((p, idx) => {
+                        const ref = db.collection('posts').doc(p.id);
+                        batch.update(ref, { customOrder: idx });
+                    });
+                    await batch.commit();
+                    showOrderToast('순서가 성공적으로 저장되었습니다.');
+                } catch (err) {
+                    console.error("Firestore batch update failed:", err);
+                    showOrderToast('순서 저장 실패: ' + err.message);
+                }
+            }
+        }
+
+        function showOrderToast(msg) {
+            let toast = document.getElementById('admin-order-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'admin-order-toast';
+                toast.style.cssText = 'position: fixed; bottom: 30px; right: 30px; z-index: 9999; background: #1a342a; color: #ffffff; padding: 14px 24px; border-radius: 10px; font-weight: 700; font-size: 0.92rem; box-shadow: 0 8px 24px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 10px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; transform: translateY(20px); pointer-events: none; border-left: 4px solid #8c6d46;';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fas fa-check-circle" style="color: #48bb78; font-size: 1.1rem;"></i> ${msg}`;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+            }, 3000);
+        }
+
         function renderResourceItem(post) {
             const itemEl = document.createElement('div');
             const isBible = currentCategory === '성경주석';
@@ -1955,6 +2092,16 @@
             const s = urlParams.get('s');
 
             itemEl.className = 'resource-card' + (isBible && s ? ' expanded' : '');
+
+            if (window.isAdmin) {
+                itemEl.setAttribute('draggable', 'true');
+                itemEl.classList.add('admin-draggable-card');
+                itemEl.addEventListener('dragstart', (e) => handleCardDragStart(e, post, itemEl));
+                itemEl.addEventListener('dragover', (e) => handleCardDragOver(e, itemEl));
+                itemEl.addEventListener('dragleave', (e) => handleCardDragLeave(e, itemEl));
+                itemEl.addEventListener('dragend', (e) => handleCardDragEnd(e, itemEl));
+                itemEl.addEventListener('drop', (e) => handleCardDrop(e, post, itemEl));
+            }
 
             let thumbUrl = post.coverUrl;
             let isPdf = false;
@@ -2003,6 +2150,7 @@
             }
 
             itemEl.innerHTML = `
+                ${window.isAdmin ? `<div class="drag-grip-handle"><i class="fas fa-grip-lines"></i> 드래그 이동</div>` : ''}
                 ${showThumb ? `
                 <div id="${containerId}" class="resource-card-thumb">
                     <img id="${imgId}" src="${finalSrc}" alt="${post.title}">

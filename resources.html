@@ -1019,9 +1019,6 @@
                 <p>청교도 신학과 개혁주의 신앙의 정수를 만나보세요.</p>
             </div>
 
-            <!-- 강해설교 전용 폴더 탭 (성경 강의 폴더) -->
-            <div id="sermon-folder-tabs" style="display: none;"></div>
-
             <!-- 신학 소분류 탭 (청교도 신학일 때만 JS로 제어) -->
             <div id="theological-tabs" class="theology-tabs-container" style="display: none;">
                 <nav class="theology-sub-nav">
@@ -1321,15 +1318,13 @@
 
                 // Toggle Theological Tabs
                 const isTheology = currentCategory === '청교도 신학';
+                const preachingSubTabs = document.getElementById('preaching-sub-tabs');
 
                 if (currentCategory === '강해설교') {
                     theologyTabsWrapper.style.display = 'none';
-                    if (sermonFolderTabs) sermonFolderTabs.style.display = 'block';
-                    const preachingSubTabs = document.getElementById('preaching-sub-tabs');
                     if (preachingSubTabs) preachingSubTabs.style.display = 'none';
                 } else if (isTheology) {
                     theologyTabsWrapper.style.display = 'block';
-                    if (sermonFolderTabs) sermonFolderTabs.style.display = 'none';
                     const activeBtns = theologyTabsWrapper.querySelectorAll('.theology-tab-btn');
                     activeBtns.forEach(btn => {
                         if (btn.getAttribute('data-s') === s) btn.classList.add('active');
@@ -1337,7 +1332,6 @@
                     });
 
                     // 설교론 소메뉴 서브 탭 제어 (설교론 전체, 설교자, 전도설교)
-                    const preachingSubTabs = document.getElementById('preaching-sub-tabs');
                     if (preachingSubTabs) {
                         if (s === '설교론') {
                             preachingSubTabs.style.display = 'block';
@@ -1356,18 +1350,17 @@
                     }
                 } else {
                     theologyTabsWrapper.style.display = 'none';
-                    if (sermonFolderTabs) sermonFolderTabs.style.display = 'none';
-                    const preachingSubTabs = document.getElementById('preaching-sub-tabs');
                     if (preachingSubTabs) preachingSubTabs.style.display = 'none';
                 }
             } else {
                 // 전체보기 뷰이므로 불필요한 필터와 저자별 탭을 가려줌
                 if (filterWrapper) filterWrapper.style.display = 'none';
                 theologyTabsWrapper.style.display = 'none';
-                if (sermonFolderTabs) sermonFolderTabs.style.display = 'none';
+                const preachingSubTabs = document.getElementById('preaching-sub-tabs');
+                if (preachingSubTabs) preachingSubTabs.style.display = 'none';
                 bibleWrapper.style.display = 'none';
                 if (chapterWrapper) chapterWrapper.style.display = 'none';
-                
+
                 const type = urlParams.get('type');
                 if (pageTitle) {
                     if (type === 'latest') pageTitle.textContent = '최신 업데이트 전체 자료';
@@ -1383,20 +1376,21 @@
             const start = (page - 1) * itemsPerPage;
             const end = start + itemsPerPage;
             const pageItems = allCurrentPosts.slice(start, end);
+            const urlParams = new URLSearchParams(window.location.search);
 
             if (currentCategory === '강해설교' && urlParams.get('s')) {
                 const sVal = urlParams.get('s');
                 const topBar = document.createElement('div');
-                topBar.style.cssText = 'grid-column: 1 / -1; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 14px 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.03);';
+                topBar.style.cssText = 'grid-column: 1 / -1; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 16px 22px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 10px;';
                 topBar.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fas fa-folder-open" style="color: #8c6d46; font-size: 1.2rem;"></i>
-                        <span style="font-weight: 800; font-size: 1.15rem; color: #1a342a;">${sVal}</span>
-                        <span style="font-size: 0.85rem; color: #718096; background: #edf2f7; padding: 3px 10px; border-radius: 20px; font-weight: 600;">총 ${allCurrentPosts.length}편</span>
+                        <i class="fas fa-book-open" style="color: #8c6d46; font-size: 1.25rem;"></i>
+                        <span style="font-weight: 800; font-size: 1.2rem; color: #1a342a;">${sVal}</span>
+                        <span style="font-size: 0.85rem; color: #718096; background: #edf2f7; padding: 3px 12px; border-radius: 20px; font-weight: 600;">총 ${allCurrentPosts.length}편</span>
                     </div>
                     <button type="button" onclick="const u = new URL(window.location); u.searchParams.delete('s'); window.history.pushState({}, '', u); loadCategoryItems('강해설교'); updateUI();"
-                        style="border: none; background: #f7fafc; color: #8c6d46; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px; border: 1px solid #e2e8f0;">
-                        <i class="fas fa-arrow-left"></i> 전체 강해 폴더 목록
+                        style="border: none; background: #f7fafc; color: #8c6d46; padding: 9px 18px; border-radius: 8px; font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px; border: 1px solid #e2e8f0; transition: all 0.2s;">
+                        <i class="fas fa-arrow-left"></i> 전체 강해 목록 (구약/신약)
                     </button>
                 `;
                 grid.appendChild(topBar);
@@ -1404,16 +1398,6 @@
 
             pageItems.forEach(post => renderResourceItem(post));
             renderPagination();
-
-            // For Bible commentary with a specific chapter, only scroll if explicitly requested
-            const urlParams = new URLSearchParams(window.location.search);
-            const isBibleChapter = currentCategory === '성경주석' && urlParams.get('s');
-            if (isBibleChapter && window._shouldScrollToChapter) {
-                setTimeout(() => {
-                    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
-                window._shouldScrollToChapter = false;
-            }
         }
 
         function renderPagination() {
@@ -1432,125 +1416,149 @@
             }
         }
 
-
-
-        function goBackToCategories() {
-            currentCategory = null;
-            const url = new URL(window.location);
-            url.searchParams.delete('cat');
-            url.searchParams.delete('s');
-            url.searchParams.delete('b');
-            window.history.pushState({}, '', url);
-
-            // Revert container class to grid for categories
-            grid.className = 'resource-list-grid';
-
-            loadAllResources(url.searchParams.get('type') || 'latest');
-            updateUI();
-            if (paginationEl) paginationEl.innerHTML = '';
-        }
-
-        async function loadAllResources(type) {
-            grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 자료를 불러오는 중...</div>';
-            if (paginationEl) paginationEl.innerHTML = '';
-
-            try {
-                // 전체 포스트 가져오기 (가장 많은 수 2000개 정도 한도 설정)
-                const snapshot = await db.collection("posts").orderBy("createdAt", "desc").limit(1000).get();
-                let posts = [];
-                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
-
-                if (posts.length === 0) {
-                    grid.innerHTML = '<div class="no-results">등록된 자료가 없습니다.</div>';
-                    return;
-                }
-
-                grid.innerHTML = '';
-                grid.className = 'resource-list-grid';
-
-                if (type === 'latest') {
-                    // 최신 업데이트 전체 목록: 
-                    // '성경주석', '세미나, 강의', '세미나', '강의', '신학강론', '5분 신학강론', '오분 신학 강론'을 제외
-                    allCurrentPosts = posts.filter(post => {
-                        const tags = post.tags || [];
-                        const excluded = ['성경주석', '세미나, 강의', '세미나', '강의', '신학강론', '5분 신학강론', '오분 신학 강론'];
-                        return !tags.some(tag => excluded.includes(tag));
-                    });
-                    if (pageTitle) pageTitle.textContent = '최신 업데이트 전체 자료';
-                } else if (type === 'recommended') {
-                    // 추천 자료 전체 목록: PDF 자료들을 필터링
-                    allCurrentPosts = posts.filter(post => {
-                        const url = post.fileUrl || "";
-                        return /(?:\.|%2E)pdf($|\?|#)/i.test(url);
-                    });
-                    if (pageTitle) pageTitle.textContent = '추천 자료 전체 목록';
-                } else {
-                    // 기본 백업
-                    allCurrentPosts = posts;
-                    if (pageTitle) pageTitle.textContent = '전체 자료 목록';
-                }
-
-                if (allCurrentPosts.length === 0) {
-                    grid.innerHTML = '<div class="no-results">해당 조건의 자료가 없습니다.</div>';
-                    return;
-                }
-
-                // 1페이지 렌더링
-                renderPage(1);
-
-            } catch (err) {
-                console.error(err);
-                grid.innerHTML = '<div class="no-results">자료를 불러오는 중에 오류가 발생했습니다.</div>';
-            }
-        }
-
-        function loadCategories() {
-            grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 로딩 중...</div>';
-
-            let list = currentType === 'author' ? authors : topics;
-
-            if (list.length === 0) {
-                grid.innerHTML = '<div class="no-results">검색 결과가 없습니다.</div>';
-                return;
-            }
-
+        function renderExpositionsIndex(posts) {
             grid.innerHTML = '';
+            grid.className = 'resource-list-grid';
+            if (paginationEl) paginationEl.innerHTML = '';
 
-            // Render category cards
-            list.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'group-card';
+            const OT_BOOKS = [
+                { series: "신명기 강해", eng: "Deuteronomy", desc: "모세의 고별 설교와 언약의 갱신" },
+                { series: "사사기 강해", eng: "Judges", desc: "사사 시대의 영적 암흑과 하나님의 구원" },
+                { series: "룻기 강해", eng: "Ruth", desc: "룻과 보아스를 통한 구속사의 은혜와 예표" }
+            ];
 
-                card.innerHTML = `
-                    <div class="group-thumb">
-                        <div class="group-icon-wrapper">
-                            <i class="fas ${currentType === 'author' ? 'fa-user' : 'fa-bookmark'}"></i>
+            const NT_BOOKS = [
+                { series: "누가복음 강해", eng: "Luke", desc: "잃어버린 자를 찾아 구원하시는 예수 그리스도" },
+                { series: "사도행전 강해", eng: "Acts", desc: "성령의 역사와 복음의 확장을 증거하는 사도행전" },
+                { series: "유다서 강해", eng: "Jude", desc: "신자들의 정체성과 거짓 교훈에 대항하는 믿음의 변증" }
+            ];
+
+            const SPECIAL_BOOKS = [
+                { series: "천로역정 강해", eng: "Pilgrim's Progress", desc: "존 번연의 영적 순례의 길과 구원의 실재" }
+            ];
+
+            const dbSeriesList = [...new Set(posts.map(p => (p.series || '').trim()).filter(Boolean))];
+
+            const sections = [
+                {
+                    title: "구약 성경 강해",
+                    badge: "구약",
+                    badgeBg: "#1a342a",
+                    engSubtitle: "Old Testament Expositions",
+                    books: OT_BOOKS
+                },
+                {
+                    title: "신약 성경 강해",
+                    badge: "신약",
+                    badgeBg: "#8c6d46",
+                    engSubtitle: "New Testament Expositions",
+                    books: NT_BOOKS
+                },
+                {
+                    title: "특별 강해 시리즈",
+                    badge: "특별",
+                    badgeBg: "#4a5568",
+                    engSubtitle: "Special Exposition Series",
+                    books: SPECIAL_BOOKS
+                }
+            ];
+
+            const knownSeries = new Set([...OT_BOOKS, ...NT_BOOKS, ...SPECIAL_BOOKS].map(b => b.series));
+            const extraSeries = dbSeriesList.filter(s => !knownSeries.has(s));
+            if (extraSeries.length > 0) {
+                extraSeries.forEach(s => {
+                    sections[2].books.push({
+                        series: s,
+                        eng: s.replace(' 강해', ''),
+                        desc: `${s} 성경 강해`
+                    });
+                });
+            }
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'expositions-index-container';
+            wrapper.style.cssText = 'grid-column: 1 / -1; display: flex; flex-direction: column; gap: 40px; margin: 10px 0 30px 0; width: 100%;';
+
+            sections.forEach(sec => {
+                const activeBooks = sec.books.filter(b => dbSeriesList.includes(b.series) || posts.some(p => p.series === b.series || p.title?.includes(b.series)));
+                if (activeBooks.length === 0) return;
+
+                const secEl = document.createElement('div');
+                secEl.className = 'expos-section-block';
+
+                secEl.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid ${sec.badgeBg}; padding-bottom: 12px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="background: ${sec.badgeBg}; color: #ffffff; font-size: 0.82rem; padding: 4px 12px; border-radius: 6px; font-weight: 700; letter-spacing: 0.03em;">${sec.badge}</span>
+                            <h2 style="margin: 0; font-size: 1.35rem; font-weight: 800; color: #1a342a; letter-spacing: -0.02em;">${sec.title}</h2>
                         </div>
+                        <span style="font-size: 0.88rem; color: #718096; font-weight: 600;">${sec.engSubtitle}</span>
                     </div>
-                    <div class="group-info">
-                        <h3 class="group-title">${item}</h3>
-                        <div class="group-action">자료 보기 <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i></div>
-                    </div>
+                    <div class="expos-section-cards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px;"></div>
                 `;
 
-                card.onclick = () => {
-                    if (window.Stats) {
-                        window.Stats.track('view', {
-                            id: 'res_cat_' + item.substring(0, 16),
-                            type: 'topic_category',
-                            title: item
-                        });
-                    }
-                    const url = new URL(window.location);
-                    url.searchParams.set('cat', item);
-                    window.history.pushState({}, '', url);
-                    currentCategory = item;
-                    loadCategoryItems(item);
-                    updateUI();
-                };
+                const cardsContainer = secEl.querySelector('.expos-section-cards');
 
-                grid.appendChild(card);
+                activeBooks.forEach(b => {
+                    const seriesPosts = posts.filter(p => p.series === b.series || (!p.series && p.title?.includes(b.series)));
+                    const firstWithCover = seriesPosts.find(p => p.coverUrl) || seriesPosts[0];
+                    const coverUrl = firstWithCover?.coverUrl || 'images/puritan-study.png';
+                    const count = seriesPosts.length;
+
+                    const card = document.createElement('div');
+                    card.className = 'sermon-book-card';
+                    card.style.cssText = 'background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04); cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; position: relative;';
+
+                    card.innerHTML = `
+                        <div class="book-card-thumb" style="height: 190px; background-image: url('${coverUrl}'); background-size: cover; background-position: center; position: relative;">
+                            <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.45) 100%);"></div>
+                            <div style="position: absolute; top: 12px; right: 12px; background: rgba(26,52,42,0.85); backdrop-filter: blur(4px); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 5px;">
+                                <i class="fas fa-folder-open"></i> ${count}편
+                            </div>
+                            <div style="position: absolute; bottom: 12px; left: 14px;">
+                                <span style="font-size: 0.75rem; background: rgba(0,0,0,0.6); color: #ffffff; padding: 3px 9px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">${b.eng}</span>
+                            </div>
+                        </div>
+                        <div class="book-card-body" style="padding: 18px 20px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <h3 style="margin: 0 0 6px 0; font-size: 1.18rem; font-weight: 800; color: #1a342a; letter-spacing: -0.02em;">${b.series}</h3>
+                                <p style="margin: 0; font-size: 0.84rem; color: #718096; line-height: 1.45;">${b.desc}</p>
+                            </div>
+                            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #f0f4f8; display: flex; align-items: center; justify-content: space-between; color: #8c6d46; font-size: 0.86rem; font-weight: 700;">
+                                <span>${count > 1 ? `강해 글 목록 열기 (${count}편)` : '강해 바로보기'}</span>
+                                <i class="fas fa-arrow-right" style="font-size: 0.75rem;"></i>
+                            </div>
+                        </div>
+                    `;
+
+                    card.onmouseenter = () => {
+                        card.style.transform = 'translateY(-5px)';
+                        card.style.boxShadow = '0 14px 28px rgba(0,0,0,0.1)';
+                        card.style.borderColor = '#8c6d46';
+                    };
+                    card.onmouseleave = () => {
+                        card.style.transform = 'translateY(0)';
+                        card.style.boxShadow = '0 4px 15px rgba(0,0,0,0.04)';
+                        card.style.borderColor = '#e2e8f0';
+                    };
+
+                    card.onclick = () => {
+                        const url = new URL(window.location);
+                        url.searchParams.set('cat', '강해설교');
+                        url.searchParams.set('s', b.series);
+                        window.history.pushState({}, '', url);
+                        currentCategory = '강해설교';
+                        loadCategoryItems('강해설교');
+                        updateUI();
+                    };
+
+                    cardsContainer.appendChild(card);
+                });
+
+                wrapper.appendChild(secEl);
             });
+
+            grid.appendChild(wrapper);
         }
 
         function renderSeriesTabs(category, uniqueSeries) {
@@ -1813,50 +1821,8 @@
                     renderSeriesTabs(category, uniqueSeries);
 
                     if (!s) {
-                        // 강해설교 루트 화면: 시리즈별 하위 폴더 카드로 렌더링
-                        grid.innerHTML = '';
-                        grid.className = 'resource-list-grid';
-                        if (paginationEl) paginationEl.innerHTML = '';
-
-                        uniqueSeries.forEach(seriesName => {
-                            const seriesPosts = posts.filter(p => p.series === seriesName);
-                            const firstWithCover = seriesPosts.find(p => p.coverUrl) || seriesPosts[0];
-                            const coverUrl = firstWithCover?.coverUrl || 'images/puritan-study.png';
-                            const count = seriesPosts.length;
-
-                            const card = document.createElement('div');
-                            card.className = 'group-card sermon-folder-card';
-                            card.style.cssText = 'border-radius: 14px; overflow: hidden; cursor: pointer; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); border: 1px solid #e2e8f0; background: #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative;';
-                            card.innerHTML = `
-                                <div class="group-thumb" style="height: 190px; background-image: url('${coverUrl}'); background-size: cover; background-position: center; position: relative;">
-                                    <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.4) 100%);"></div>
-                                    <div style="position: absolute; top: 12px; right: 12px; background: rgba(26,52,42,0.85); backdrop-filter: blur(4px); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 5px;">
-                                        <i class="fas fa-folder-open"></i> ${count}편
-                                    </div>
-                                </div>
-                                <div class="group-info" style="padding: 18px;">
-                                    <h3 class="group-title" style="font-size: 1.15rem; font-weight: 800; color: #1a342a; margin: 0 0 6px 0;">${seriesName}</h3>
-                                    <p style="font-size: 0.85rem; color: #718096; margin: 0 0 12px 0;">성경 강해 폴더</p>
-                                    <div class="group-action" style="font-size: 0.85rem; font-weight: 700; color: #8c6d46; display: flex; align-items: center; gap: 6px;">
-                                        강해 열람하기 <i class="fas fa-arrow-right" style="font-size: 0.75rem;"></i>
-                                    </div>
-                                </div>
-                            `;
-                            card.onmouseenter = () => { card.style.transform = 'translateY(-6px)'; card.style.boxShadow = '0 15px 30px rgba(0,0,0,0.1)'; card.style.borderColor = '#8c6d46'; };
-                            card.onmouseleave = () => { card.style.transform = 'translateY(0)'; card.style.boxShadow = '0 4px 15px rgba(0,0,0,0.04)'; card.style.borderColor = '#e2e8f0'; };
-
-                            card.onclick = () => {
-                                const url = new URL(window.location);
-                                url.searchParams.set('cat', '강해설교');
-                                url.searchParams.set('s', seriesName);
-                                window.history.pushState({}, '', url);
-                                currentCategory = '강해설교';
-                                loadCategoryItems('강해설교');
-                                updateUI();
-                            };
-
-                            grid.appendChild(card);
-                        });
+                        // 구약 / 신약 / 특별 성경 강해 인덱스 렌더링
+                        renderExpositionsIndex(posts);
                         return;
                     }
                 } else if (category === '청교도 신학') {
@@ -2112,10 +2078,7 @@
             url.searchParams.set('b', bookName);
             url.searchParams.set('s', `${chapterNum}장`);
             window.history.pushState({}, '', url);
-            init().then(() => {
-                const grid = document.getElementById('resources-grid');
-                if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
+            init();
         }
 
         function renderBibleChaptersGrid(bookName, chapterCount) {

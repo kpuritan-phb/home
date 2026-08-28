@@ -1324,11 +1324,8 @@
             const cat = urlParams.get('cat') || "";
             const s = urlParams.get('s') || "";
 
-            // Reset keep-open from all dropdowns
-            document.querySelectorAll('header nav li.dropdown').forEach(li => {
-                li.classList.remove('keep-open');
-                li.querySelectorAll('a').forEach(a => a.classList.remove('active'));
-            });
+            // Reset active from all dropdown links
+            document.querySelectorAll('header nav li.dropdown a').forEach(a => a.classList.remove('active'));
 
             let targetDropdownLi = null;
 
@@ -1352,7 +1349,6 @@
             }
 
             if (targetDropdownLi) {
-                targetDropdownLi.classList.add('keep-open');
                 const links = targetDropdownLi.querySelectorAll('.dropdown-list a');
                 links.forEach(a => {
                     const href = a.getAttribute('href') || '';

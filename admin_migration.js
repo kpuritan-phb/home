@@ -99,3 +99,80 @@ async function migrateLawCategory() {
         alert("마이그레이션 실패: " + e.message);
     }
 }
+
+/**
+ * 전도, 선교 자료 -> '전도, 부흥, 선교'로 일괄 이전 및 세부 폴더(전도/부흥/선교) 자동 분류 마이그레이션
+ */
+async function migrateEvangelismToRevivalAndMissions(silent = false) {
+    if (!silent && !confirm("기존 '전도, 선교'의 모든 자료를 '전도, 부흥, 선교'로 이전하고 세부 폴더(전도/부흥/선교)로 분류하시겠습니까?")) return;
+
+    try {
+        if (!db) {
+            console.warn("DB not initialized yet.");
+            return;
+        }
+
+        const snapshot = await db.collection("posts").get();
+        const batch = db.batch();
+        let count = 0;
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const tags = data.tags || [];
+            const topic = data.topic || "";
+            const series = data.series || "";
+            const title = data.title || "";
+            const content = data.content || "";
+            const combined = (title + " " + content).toLowerCase();
+
+            const isOldEvangelism = tags.includes("전도, 선교") || topic === "전도, 선교" || series === "전도, 선교" || tags.includes("전도 소책자");
+
+            if (isOldEvangelism) {
+                // 1. 구 '전도, 선교' 태그 제거 및 '전도, 부흥, 선교' 추가
+                let newTags = tags.filter(t => t !== "전도, 선교");
+                if (!newTags.includes("전도, 부흥, 선교")) newTags.push("전도, 부흥, 선교");
+
+                // 2. 세부 분류 결정 (부흥 / 선교 / 전도)
+                let targetSub = "전도"; // 기본값
+                if (combined.includes("부흥") || combined.includes("대각성") || combined.includes("각성") || series === "부흥") {
+                    targetSub = "부흥";
+                    if (!newTags.includes("부흥")) newTags.push("부흥");
+                } else if (combined.includes("선교") || combined.includes("선교사") || series === "선교") {
+                    targetSub = "선교";
+                    if (!newTags.includes("선교")) newTags.push("선교");
+                } else {
+                    targetSub = "전도";
+                    if (!newTags.includes("전도")) newTags.push("전도");
+                }
+
+                let newSeries = series;
+                if (!newSeries || newSeries === "전도, 선교") {
+                    newSeries = targetSub;
+                }
+
+                batch.update(doc.ref, {
+                    tags: newTags,
+                    topic: "전도, 부흥, 선교",
+                    series: newSeries,
+                    subTopic: targetSub,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                count++;
+            }
+        });
+
+        if (count > 0) {
+            await batch.commit();
+            if (!silent) alert(`성공: 총 ${count}개의 자료가 '전도, 부흥, 선교'로 안전하게 이전되었습니다.`);
+            console.log(`Successfully migrated ${count} posts to '전도, 부흥, 선교'.`);
+        } else {
+            if (!silent) alert("이전할 기존 '전도, 선교' 자료가 없거나 이미 모두 완료되었습니다.");
+        }
+
+        if (window.loadAdminPosts) window.loadAdminPosts();
+        if (typeof window.loadFolderOrganizerPosts === 'function') window.loadFolderOrganizerPosts();
+    } catch (e) {
+        console.error("Evangelism migration error:", e);
+        if (!silent) alert("이전 작업 중 오류 발생: " + e.message);
+    }
+}

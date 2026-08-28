@@ -4410,3 +4410,70 @@ footer {
     background: rgba(0, 0, 0, 0.02);
     border-radius: 4px;
 }
+
+/* ==========================================================================
+   Folder Drag & Drop Organizer Styles
+   ========================================================================== */
+.folder-dropzone {
+    user-select: none;
+    transition: transform 0.2s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.2s ease, background 0.2s ease !important;
+}
+
+.folder-dropzone:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.folder-dropzone.drop-target-active {
+    animation: folderPulse 1.5s infinite alternate;
+}
+
+.folder-dropzone.drag-over {
+    transform: scale(1.05) translateY(-5px) !important;
+    border-style: solid !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.folder-dropzone[data-folder="전도"].drag-over {
+    background: #bee3f8 !important;
+    border-color: #2b6cb0 !important;
+}
+
+.folder-dropzone[data-folder="부흥"].drag-over {
+    background: #feebc8 !important;
+    border-color: #c05621 !important;
+}
+
+.folder-dropzone[data-folder="선교"].drag-over {
+    background: #c6f6d5 !important;
+    border-color: #276749 !important;
+}
+
+@keyframes folderPulse {
+    0% {
+        opacity: 0.85;
+    }
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 15px rgba(49, 130, 206, 0.3);
+    }
+}
+
+.organizer-post-card:hover {
+    border-color: #cbd5e0 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    transform: translateY(-1px);
+}
+
+.organizer-post-card:active {
+    cursor: grabbing !important;
+}
+
+@media (max-width: 900px) {
+    .organizer-folders-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .admin-portal-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}

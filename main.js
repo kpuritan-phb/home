@@ -757,7 +757,9 @@ document.addEventListener('DOMContentLoaded', () => {
             let themeColor = 'var(--primary-color)';
             if (tabName === 'bible-study') themeColor = 'var(--secondary-color)';
             if (tabName === 'booklet') themeColor = '#e67e22';
+            if (tabName === 'organizer') themeColor = '#27ae60';
             if (tabName === 'stats') themeColor = '#9b59b6';
+            if (tabName === 'order') themeColor = '#1a342a';
 
             activeCard.style.border = `2px solid ${themeColor}`;
             activeCard.style.boxShadow = '0 10px 20px rgba(0,0,0,0.05)';
@@ -776,6 +778,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // 탭 별 데이터 로드 로직
         if (tabName === 'bible-study') {
             loadAdminSeries('강해설교');
+        }
+        if (tabName === 'organizer' && typeof window.loadFolderOrganizerPosts === 'function') {
+            window.loadFolderOrganizerPosts();
         }
         if (tabName === 'stats' && window.AdminStats) {
             AdminStats.load('all');

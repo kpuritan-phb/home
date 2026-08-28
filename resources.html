@@ -2074,19 +2074,19 @@
 
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="600" height="360">
                 <defs>
-                    <radialGradient id="rg_${encodeURIComponent(cleanKor)}" cx="50%" cy="45%" r="48%">
-                        <stop offset="0%" stop-color="${theme.g1}" stop-opacity="0.88"/>
-                        <stop offset="65%" stop-color="${theme.g2}" stop-opacity="0.45"/>
+                    <radialGradient id="rg_${encodeURIComponent(cleanKor)}" cx="50%" cy="46%" r="50%">
+                        <stop offset="0%" stop-color="${theme.g1}" stop-opacity="0.95"/>
+                        <stop offset="60%" stop-color="${theme.g2}" stop-opacity="0.55"/>
                         <stop offset="100%" stop-color="${theme.bg}" stop-opacity="0"/>
                     </radialGradient>
-                    <filter id="blur_${encodeURIComponent(cleanKor)}" x="-20%" y="-20%" width="140%" height="140%">
-                        <feGaussianBlur stdDeviation="30"/>
+                    <filter id="blur_${encodeURIComponent(cleanKor)}" x="-25%" y="-25%" width="150%" height="150%">
+                        <feGaussianBlur stdDeviation="35"/>
                     </filter>
                 </defs>
                 <rect width="600" height="360" fill="${theme.bg}"/>
-                <circle cx="300" cy="155" r="145" fill="url(#rg_${encodeURIComponent(cleanKor)})" filter="url(#blur_${encodeURIComponent(cleanKor)})"/>
-                <text x="300" y="148" text-anchor="middle" font-family="'Pretendard', -apple-system, sans-serif" font-size="46" font-weight="900" fill="#111827" letter-spacing="-1">${cleanKor}</text>
-                <text x="300" y="198" text-anchor="middle" font-family="'Pretendard', -apple-system, sans-serif" font-size="28" font-weight="600" fill="#374151" letter-spacing="0.5">${cleanEng}</text>
+                <circle cx="300" cy="155" r="175" fill="url(#rg_${encodeURIComponent(cleanKor)})" filter="url(#blur_${encodeURIComponent(cleanKor)})"/>
+                <text x="300" y="144" text-anchor="middle" font-family="'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif" font-size="64" font-weight="900" fill="#111827" letter-spacing="-1.5">${cleanKor}</text>
+                <text x="300" y="206" text-anchor="middle" font-family="'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif" font-size="40" font-weight="700" fill="#1f2937" letter-spacing="0.2">${cleanEng}</text>
             </svg>`;
 
             return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.trim());

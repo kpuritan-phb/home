@@ -1762,152 +1762,135 @@
                             posts.push({ id: doc.id, ...data });
                         }
                     });
-                } else {
-                    // --- 1. Main Category Fetch (기타 카테고리) ---
-                    if (category === '설교자') {
-                        const snap1 = await db.collection("posts").where("tags", "array-contains", "설교자").get();
-                        const snap2 = await db.collection("posts").where("tags", "array-contains", "설교론").get();
-                        
-                        const seenIds = new Set();
-                        snap1.forEach(doc => {
-                            if (!seenIds.has(doc.id)) {
-                                posts.push({ id: doc.id, ...doc.data() });
-                                seenIds.add(doc.id);
-                            }
-                        });
+                } else if (category === '설교자') {
+                    const snap1 = await db.collection("posts").where("tags", "array-contains", "설교자").get();
+                    const snap2 = await db.collection("posts").where("tags", "array-contains", "설교론").get();
+                    const seenIds = new Set();
+                    snap1.forEach(doc => {
+                        if (!seenIds.has(doc.id)) {
+                            posts.push({ id: doc.id, ...doc.data() });
+                            seenIds.add(doc.id);
+                        }
+                    });
+                    snap2.forEach(doc => {
+                        if (!seenIds.has(doc.id)) {
+                            posts.push({ id: doc.id, ...doc.data() });
+                            seenIds.add(doc.id);
+                        }
+                    });
+                } else if (category === '청교도 신학') {
+                    const snap1 = await db.collection("posts").where("tags", "array-contains", "청교도 신학").get();
+                    const seenIds = new Set();
+                    snap1.forEach(doc => {
+                        posts.push({ id: doc.id, ...doc.data() });
+                        seenIds.add(doc.id);
+                    });
+
+                    try {
+                        const snap2 = await db.collection("posts").where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"]).get();
                         snap2.forEach(doc => {
                             if (!seenIds.has(doc.id)) {
                                 posts.push({ id: doc.id, ...doc.data() });
                                 seenIds.add(doc.id);
                             }
                         });
-                    } else if (category === '전도, 부흥, 선교' || category === '전도, 선교') {
-                        const excludeKeywords = [
-                            "신론", "인간론", "기독론", "구원론", "성령론", "구원론(성령론)",
-                            "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론",
-                            "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학", "청교도 신학",
-                            "강해설교", "도서 목록", "전도만화", "신학강론", "성경주석", "5분 신학강론"
-                        ];
+                    } catch (e) {
+                        console.warn("Booklet fetch fallback:", e);
+                    }
 
-                        const snap1 = await db.collection("posts").where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도, 선교", "전도", "부흥", "선교", "부흥신학"]).get();
-                        const seenIds = new Set();
-                        snap1.forEach(doc => {
-                            if (!seenIds.has(doc.id)) {
-                                const data = doc.data();
-                                const topic = data.topic || '';
-                                const other = data.otherCategory || '';
-                                const tags = Array.isArray(data.tags) ? data.tags : [];
-
-                                const isOtherCategory = excludeKeywords.includes(topic) ||
-                                    excludeKeywords.includes(other) ||
-                                    tags.some(t => excludeKeywords.includes(t));
-
-                                if (!isOtherCategory) {
-                                    posts.push({ id: doc.id, ...data });
-                                    seenIds.add(doc.id);
-                                }
-                            }
+                    if (s) {
+                        posts = posts.filter(p => {
+                            const dbTopic = p.topic || p.subBookletTopic || p.series;
+                            const tags = Array.isArray(p.tags) ? p.tags : [];
+                            const dTopic = typeof determineCategory === 'function' ? determineCategory(p.title || '', p.content || '') : null;
+                            return (dbTopic === s) || (tags.includes(s)) || (dTopic === s);
                         });
-                    } else {
-                        let query = db.collection("posts").where("tags", "array-contains", category);
-                        if (s && category !== '청교도 신학' && category !== '성경주석' && category !== '전도, 부흥, 선교' && category !== '전도, 선교') {
-                            query = query.where("series", "==", s);
-                        }
-                        const snapshot = await query.get();
-                        snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
                     }
-                }
-
-                // --- NEW: Handle Dynamic/Fixed Tabs ---
-                if (category === '강해설교') {
-                    const uniqueSeries = [...new Set(posts.map(p => p.series).filter(v => v && v.trim()))].sort((a, b) => a.localeCompare(b, 'ko'));
-                    renderSeriesTabs(category, uniqueSeries);
-
-                    if (!s) {
-                        // 구약 / 신약 / 특별 성경 강해 인덱스 렌더링
-                        renderExpositionsIndex(posts);
-                        return;
+                    if (subTopic) {
+                        posts = posts.filter(p => {
+                            const tags = Array.isArray(p.tags) ? p.tags : [];
+                            return (p.subTopic === subTopic) || (p.series === subTopic) || tags.includes(subTopic);
+                        });
                     }
-                } else if (category === '청교도 신학') {
-                    resetTheologyTabs();
                 } else if (category === '전도, 부흥, 선교' || category === '전도, 선교') {
-                    resetEvangelismTabs();
+                    const excludeKeywords = [
+                        "신론", "인간론", "기독론", "구원론", "성령론", "구원론(성령론)",
+                        "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론",
+                        "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학", "청교도 신학",
+                        "강해설교", "도서 목록", "전도만화", "신학강론", "성경주석", "5분 신학강론"
+                    ];
+
+                    const snap1 = await db.collection("posts").where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도, 선교", "전도", "부흥", "선교", "부흥신학"]).get();
+                    const seenIds = new Set();
+                    snap1.forEach(doc => {
+                        if (!seenIds.has(doc.id)) {
+                            const data = doc.data();
+                            const topic = data.topic || '';
+                            const other = data.otherCategory || '';
+                            const tags = Array.isArray(data.tags) ? data.tags : [];
+
+                            const isOtherCategory = excludeKeywords.includes(topic) ||
+                                excludeKeywords.includes(other) ||
+                                tags.some(t => excludeKeywords.includes(t));
+
+                            if (!isOtherCategory) {
+                                posts.push({ id: doc.id, ...data });
+                                seenIds.add(doc.id);
+                            }
+                        }
+                    });
+
+                    if (s) {
+                        posts = posts.filter(p => {
+                            const series = (p.series || '').trim();
+                            const subTopic = (p.subTopic || '').trim();
+                            const tags = Array.isArray(p.tags) ? p.tags : [];
+                            const title = (p.title || '').toLowerCase();
+                            const content = (p.content || '').toLowerCase();
+
+                            if (s === '전도') {
+                                if (series === '전도' || subTopic === '전도' || tags.includes('전도')) return true;
+                                if (!series && !subTopic && !tags.includes('부흥') && !tags.includes('선교')) return true;
+                                return false;
+                            } else if (s === '부흥') {
+                                return series === '부흥' || subTopic === '부흥' || tags.includes('부흥') || tags.includes('부흥신학') ||
+                                    title.includes('부흥') || title.includes('대각성') || content.includes('부흥');
+                            } else if (s === '선교') {
+                                return series === '선교' || subTopic === '선교' || tags.includes('선교') ||
+                                    title.includes('선교') || content.includes('선교');
+                            }
+                            return true;
+                        });
+                    }
                 } else if (category === '성경주석') {
-                    const b = urlParams.get('b');
                     if (b) {
                         const bookData = BIBLE_BOOKS.find(bk => bk.name === b);
                         if (bookData) {
                             renderBibleChaptersGrid(b, bookData.chapters);
                         }
-                    }
-                }
+                        let query = db.collection("posts").where("tags", "array-contains", "성경주석");
+                        const snapshot = await query.get();
+                        snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
 
-                // --- 2. Hybrid Loading for Puritan Theology or Evangelism/Missions ---
-                if (category === '청교도 신학' || category === '전도, 선교' || category === '전도, 부흥, 선교' || (category === '성경주석' && b)) {
-                    if (category === '성경주석' && b) {
                         posts = posts.filter(p => p.series === b);
                         if (s) {
-                            // Perfect match check for bible chapters
                             const target = s.endsWith('장') ? s : s + '장';
                             posts = posts.filter(p => p.title.includes(' ' + target));
                         }
-                    } else if (category === '청교도 신학') {
-                        const bookletSnapshot = await db.collection("posts")
-                            .where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"])
-                            .get();
+                    }
+                } else {
+                    let query = db.collection("posts").where("tags", "array-contains", category);
+                    if (s) {
+                        query = query.where("series", "==", s);
+                    }
+                    const snapshot = await query.get();
+                    snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                }
 
-                        bookletSnapshot.forEach(doc => {
-                            const data = doc.data();
-                            const dbTopic = data.topic || data.subBookletTopic || data.series;
-                            const dTopic = determineCategory(data.title, data.content);
-                            const finalTopic = dbTopic || dTopic;
-
-                            if (!posts.some(p => p.id === doc.id)) {
-                                if (!s || finalTopic === s) {
-                                    posts.push({ id: doc.id, ...data });
-                                }
-                            }
-                        });
-
-                        if (s) {
-                            posts = posts.filter(p => {
-                                const dbTopic = p.topic || p.subBookletTopic || p.series;
-                                const dTopic = determineCategory(p.title, p.content);
-                                const finalTopic = dbTopic || dTopic;
-                                return finalTopic === s;
-                            });
-                        }
-                        if (subTopic) {
-                            posts = posts.filter(p => {
-                                const tags = Array.isArray(p.tags) ? p.tags : [];
-                                return (p.subTopic === subTopic) || (p.series === subTopic) || tags.includes(subTopic);
-                            });
-                        }
-                    } else if (category === '전도, 선교' || category === '전도, 부흥, 선교') {
-                        // 관리자 모드에서 분류한 폴더(series / subTopic / tags) 기준 정확한 일반 모드 필터링
-                        if (s) {
-                            posts = posts.filter(p => {
-                                const series = (p.series || '').trim();
-                                const subTopic = (p.subTopic || '').trim();
-                                const tags = Array.isArray(p.tags) ? p.tags : [];
-                                const title = (p.title || '').toLowerCase();
-                                const content = (p.content || '').toLowerCase();
-
-                                if (s === '전도') {
-                                    if (series === '전도' || subTopic === '전도' || tags.includes('전도')) return true;
-                                    // 다른 폴더(부흥/선교)로 지정되지 않은 기본 전도 글
-                                    if (!series && !subTopic && !tags.includes('부흥') && !tags.includes('선교')) return true;
-                                    return false;
-                                } else if (s === '부흥') {
-                                    return series === '부흥' || subTopic === '부흥' || tags.includes('부흥') || tags.includes('부흥신학') ||
-                                        title.includes('부흥') || title.includes('대각성') || content.includes('부흥');
-                                } else if (s === '선교') {
-                                    return series === '선교' || subTopic === '선교' || tags.includes('선교') ||
-                                        title.includes('선교') || content.includes('선교');
-                                }
-                                return true;
-                            });
-                        }
+                if (category === '강해설교') {
+                    if (!s) {
+                        renderExpositionsIndex(posts);
+                        return;
                     }
                 }
 

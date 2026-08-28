@@ -1454,23 +1454,9 @@
         };
 
         function applySorting(postsArray, sortOption = currentSortOption) {
-            if (sortOption === 'title_asc') {
-                postsArray.sort((a, b) => {
-                    const titA = (a.title || '').trim();
-                    const titB = (b.title || '').trim();
-                    return titA.localeCompare(titB, 'ko', { numeric: true, sensitivity: 'base' });
-                });
-            } else if (sortOption === 'title_desc') {
-                postsArray.sort((a, b) => {
-                    const titA = (a.title || '').trim();
-                    const titB = (b.title || '').trim();
-                    return titB.localeCompare(titA, 'ko', { numeric: true, sensitivity: 'base' });
-                });
-            } else if (sortOption === 'date_desc') {
-                postsArray.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-            } else if (sortOption === 'date_asc') {
+            if (sortOption === 'date_asc') {
                 postsArray.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
-            } else { // 'custom' (직접 지정 순)
+            } else { // 'date_desc' (기본값)
                 postsArray.sort((a, b) => {
                     const orderA = (a.customOrder !== undefined && a.customOrder !== null) ? a.customOrder : null;
                     const orderB = (b.customOrder !== undefined && b.customOrder !== null) ? b.customOrder : null;
@@ -1487,12 +1473,12 @@
             localStorage.setItem('resourcesSortOption', sortVal);
             applySorting(allCurrentPosts, sortVal);
 
-            if (window.isAdmin && sortVal !== 'custom') {
+            if (window.isAdmin && sortVal === 'date_asc') {
                 allCurrentPosts.forEach((p, idx) => {
                     p.customOrder = idx;
                 });
                 await saveAllCustomOrders();
-                showOrderToast(`'${getSortOptionName(sortVal)}'으로 순서가 저장되었습니다.`);
+                showOrderToast(`'오래된 등록순'으로 순서가 저장되었습니다.`);
             }
 
             currentPage = 1;
@@ -1500,13 +1486,7 @@
         };
 
         function getSortOptionName(val) {
-            switch(val) {
-                case 'title_asc': return '이름순 (1강→4강)';
-                case 'title_desc': return '이름 역순 (4강→1강)';
-                case 'date_desc': return '최신 등록순';
-                case 'date_asc': return '오래된 등록순';
-                default: return '직접 드래그 순';
-            }
+            return val === 'date_asc' ? '오래된 등록순' : '최신 등록순';
         }
 
         function openPostDetail(post) {
@@ -1631,10 +1611,7 @@
                             </span>
                             <select onchange="changeSortOption(this.value)"
                                 style="padding: 6px 10px; font-size: 0.85rem; border: 1px solid #cbd5e0; border-radius: 6px; background: #fcfbf9; color: #2d3748; font-weight: 700; cursor: pointer; outline: none;">
-                                <option value="custom" ${currentSortOption === 'custom' ? 'selected' : ''}>📌 직접 드래그 순</option>
-                                <option value="title_asc" ${currentSortOption === 'title_asc' ? 'selected' : ''}>🔤 이름순 (1강→4강)</option>
-                                <option value="title_desc" ${currentSortOption === 'title_desc' ? 'selected' : ''}>🔤 이름 역순 (4강→1강)</option>
-                                <option value="date_desc" ${currentSortOption === 'date_desc' ? 'selected' : ''}>🕒 최신 등록순</option>
+                                <option value="date_desc" ${currentSortOption !== 'date_asc' ? 'selected' : ''}>🕒 최신 등록순</option>
                                 <option value="date_asc" ${currentSortOption === 'date_asc' ? 'selected' : ''}>🕒 오래된 등록순</option>
                             </select>
                         </div>
@@ -1697,7 +1674,7 @@
                             <div class="drag-grip-handle" style="color: #a0aec0; cursor: grab; padding: 0 4px; font-size: 1.1rem;" title="마우스로 끌어서 순서 변경">
                                 <i class="fas fa-grip-vertical"></i>
                             </div>` : ''}
-                            <span style="width: 32px; font-size: 0.85rem; color: #a0aec0; font-weight: 700; text-align: center; flex-shrink: 0;">
+                            <span style="min-width: 36px; font-size: 0.85rem; color: #8c6d46; font-weight: 800; text-align: center; flex-shrink: 0; background: #fdfaf6; padding: 3px 6px; border-radius: 6px; border: 1px solid #ebd9c8;">
                                 ${postNum}
                             </span>
                             <span style="font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: #edf2f7; color: #2d3748; border: 1px solid #cbd5e0; flex-shrink: 0; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
@@ -1735,7 +1712,9 @@
                 grid.appendChild(tableWrapper);
             } else {
                 grid.className = 'resource-list-grid';
-                pageItems.forEach(post => renderResourceItem(post));
+                pageItems.forEach((post, index) => {
+                    renderResourceItem(post, start + index + 1);
+                });
             }
             renderPagination();
         }
@@ -2697,7 +2676,7 @@
             }, 3000);
         }
 
-        function renderResourceItem(post) {
+        function renderResourceItem(post, postNum) {
             const itemEl = document.createElement('div');
             const isBible = currentCategory === '성경주석';
 
@@ -2766,11 +2745,18 @@
             itemEl.innerHTML = `
                 ${window.isAdmin ? `<div class="drag-grip-handle"><i class="fas fa-grip-lines"></i> 드래그 이동</div>` : ''}
                 ${showThumb ? `
-                <div id="${containerId}" class="resource-card-thumb">
+                <div id="${containerId}" class="resource-card-thumb" style="position: relative;">
+                    ${postNum ? `
+                    <div style="position: absolute; top: 8px; left: 8px; background: rgba(26, 52, 42, 0.88); backdrop-filter: blur(4px); color: #ffffff; padding: 2px 8px; border-radius: 6px; font-size: 0.76rem; font-weight: 800; z-index: 5; box-shadow: 0 2px 6px rgba(0,0,0,0.25);">
+                        No. ${postNum}
+                    </div>` : ''}
                     <img id="${imgId}" src="${finalSrc}" alt="${post.title}">
                 </div>` : ''}
                 <div class="resource-card-info">
-                    <div class="resource-card-category">${category}</div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                        <div class="resource-card-category">${category}</div>
+                        ${(!showThumb && postNum) ? `<span style="font-size: 0.76rem; font-weight: 800; color: #8c6d46; background: #fdfaf6; padding: 2px 7px; border-radius: 4px; border: 1px solid #ebd9c8;">No. ${postNum}</span>` : ''}
+                    </div>
                     <div class="resource-card-title">${post.title}</div>
                     <div class="resource-card-desc">${displayContent}</div>
                     ${window.isAdmin ? `

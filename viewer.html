@@ -1015,6 +1015,7 @@
                     // Body contents text processing
                     const contentText = post.content || '';
                     const urlRegex = /(https?:\/\/[^\s]+)/g;
+                    const urlsInContent = contentText.match(urlRegex) || [];
                     const paragraphs = contentText.split('\n\n').filter(p => p.trim());
                     let bodyHtml = paragraphs.map(p => {
                         const pt = p.trim();
@@ -1024,8 +1025,69 @@
                         }
                         return `<p class="body-paragraph">${pt.replace(urlRegex, '<a href="$1" target="_blank" style="color:var(--accent-color); text-decoration:underline;">$1</a>').replace(/\n/g, '<br>')}</p>`;
                     }).join('');
+
+                    // Check for attached file (PDF, PPT, DOC, Image, etc.)
+                    const rawFileUrl = post.fileUrl || post.attachmentUrl || post.pdfUrl || (urlsInContent.length > 0 && urlsInContent[0].match(/\.(pdf|pptx?|docx?|hwp|zip|jpe?g|png|webp)($|\?|#)/i) ? urlsInContent[0] : null);
+
+                    let attachmentHtml = '';
+                    if (rawFileUrl) {
+                        const isPdf = /\.(pdf)($|\?|#)/i.test(rawFileUrl) || rawFileUrl.toLowerCase().includes('.pdf');
+                        const isImage = /\.(jpe?g|png|webp|gif)($|\?|#)/i.test(rawFileUrl);
+
+                        if (isPdf) {
+                            attachmentHtml = `
+                                <div class="article-attachment-card" style="margin-top: 30px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 18px rgba(0,0,0,0.05);">
+                                    <div style="padding: 16px 22px; background: #ffffff; border-bottom: 1px solid #edf2f7; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <div style="width: 42px; height: 42px; border-radius: 10px; background: #fff5f5; color: #e53e3e; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                                <i class="fas fa-file-pdf"></i>
+                                            </div>
+                                            <div>
+                                                <h4 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: #1a342a;">PDF 원본 문서 자료</h4>
+                                                <span style="font-size: 0.82rem; color: #718096;">원문 문서를 아래 뷰어에서 바로 보거나 다운로드할 수 있습니다.</span>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                            <a href="${rawFileUrl}" target="_blank" download style="background: #1a342a; color: #ffffff; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.84rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                                                <i class="fas fa-download"></i> 다운로드
+                                            </a>
+                                            <a href="${rawFileUrl}" target="_blank" style="background: #8c6d46; color: #ffffff; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.84rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                                                <i class="fas fa-external-link-alt"></i> 새 창에서 전체보기
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div style="width: 100%; height: 850px; background: #525659; position: relative;">
+                                        <iframe src="https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(rawFileUrl)}" style="width: 100%; height: 100%; border: none;" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            `;
+                        } else if (isImage) {
+                            attachmentHtml = `
+                                <div class="article-attachment-card" style="margin-top: 30px; text-align: center;">
+                                    <img src="${rawFileUrl}" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" />
+                                </div>
+                            `;
+                        } else {
+                            attachmentHtml = `
+                                <div class="article-attachment-card" style="margin-top: 30px; padding: 18px 22px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div style="width: 42px; height: 42px; border-radius: 10px; background: #ebf8ff; color: #3182ce; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                            <i class="fas fa-file-download"></i>
+                                        </div>
+                                        <div>
+                                            <h4 style="margin: 0; font-size: 0.98rem; font-weight: 800; color: #1a342a;">첨부 파일 자료</h4>
+                                            <span style="font-size: 0.82rem; color: #718096;">자료 파일을 다운로드하여 확인하세요.</span>
+                                        </div>
+                                    </div>
+                                    <a href="${rawFileUrl}" target="_blank" download style="background: #1a342a; color: #ffffff; padding: 9px 18px; border-radius: 8px; font-weight: 700; font-size: 0.86rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                                        <i class="fas fa-download"></i> 파일 다운로드
+                                    </a>
+                                </div>
+                            `;
+                        }
+                    }
                     
-                    document.getElementById('article-body').innerHTML = bodyHtml || '<p style="color:#888;">내용이 비어 있습니다.</p>';
+                    document.getElementById('article-body').innerHTML = (bodyHtml || '<p style="color:#888;">내용이 비어 있습니다.</p>') + attachmentHtml;
 
                     // Populate dynamic lists
                     loadSidebarSeries(post.series);

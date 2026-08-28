@@ -258,12 +258,26 @@ function renderOrganizerFolderDropzones() {
     `;
 
     // 2. 각 하위 폴더 드롭존들
+    const isDynamicCategory = currentOrganizerCategory === '강해설교' || currentOrganizerCategory === '세미나, 강의';
+
     folders.forEach(folder => {
         const isActive = currentOrganizerFolder === folder.id;
         const count = counts[folder.id] || 0;
         html += `
             <div class="folder-dropzone ${isActive ? 'active-view' : ''}" data-folder="${folder.id}" onclick="filterOrganizerByFolder('${folder.id}')"
                 style="border: 2px dashed ${folder.color}; background: ${isActive ? '#f7fafc' : '#ffffff'}; border-radius: 12px; padding: 14px 10px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; box-shadow: ${isActive ? '0 4px 15px rgba(0,0,0,0.08)' : 'none'};">
+                ${isDynamicCategory ? `
+                <div style="position: absolute; top: 6px; right: 6px; display: flex; gap: 4px; z-index: 10;">
+                    <button type="button" title="폴더 이름 수정" onclick="event.stopPropagation(); renameOrganizerFolder('${folder.id}')"
+                        style="border: none; background: rgba(0,0,0,0.06); color: #4a5568; width: 22px; height: 22px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                    <button type="button" title="폴더 삭제" onclick="event.stopPropagation(); deleteOrganizerFolder('${folder.id}')"
+                        style="border: none; background: rgba(229,62,62,0.1); color: #e53e3e; width: 22px; height: 22px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+                ` : ''}
                 <div style="font-size: 1.8rem; color: ${folder.color}; margin-bottom: 6px;">
                     <i class="fas ${folder.icon}"></i>
                 </div>
@@ -681,6 +695,58 @@ function promptCreateNewFolder() {
             updateBulkMoveSelectOptions();
             showOrganizerToast(`'${trimmed}' 폴더가 생성되었습니다. 이제 자료를 드래그해서 넣어보세요!`);
         }
+    }
+}
+
+// 폴더 이름 수정 함수 (Firestore 내 해당 시리즈 일괄 수정)
+async function renameOrganizerFolder(oldName) {
+    const newName = prompt(`'${oldName}' 폴더의 새 이름을 입력하세요:`, oldName);
+    if (!newName || !newName.trim() || newName.trim() === oldName) return;
+
+    const trimmed = newName.trim();
+    if (!confirm(`'${oldName}' 폴더의 이름을 '${trimmed}'(으)로 변경하시겠습니까?\n(폴더 안의 모든 자료가 '${trimmed}' 시리즈로 일괄 변경됩니다.)`)) {
+        return;
+    }
+
+    try {
+        const postsToUpdate = allOrganizerPosts.filter(p => p.series === oldName);
+        for (let post of postsToUpdate) {
+            await db.collection("posts").doc(post.id).update({
+                series: trimmed,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            post.series = trimmed;
+        }
+
+        showOrganizerToast(`'${oldName}' 폴더가 '${trimmed}'(으)로 변경되었습니다 (${postsToUpdate.length}건)`);
+        await loadFolderOrganizerPosts();
+    } catch (e) {
+        console.error(e);
+        alert(`폴더 이름 변경 중 오류가 발생했습니다: ${e.message}`);
+    }
+}
+
+// 폴더 삭제 함수
+async function deleteOrganizerFolder(folderId) {
+    const postsInFolder = allOrganizerPosts.filter(p => p.series === folderId);
+    if (!confirm(`'${folderId}' 폴더를 정말 삭제하시겠습니까?\n(폴더 안의 자료 ${postsInFolder.length}건의 시리즈 지정이 해제되어 '미분류'로 이동됩니다.)`)) {
+        return;
+    }
+
+    try {
+        for (let post of postsInFolder) {
+            await db.collection("posts").doc(post.id).update({
+                series: '',
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            post.series = '';
+        }
+
+        showOrganizerToast(`'${folderId}' 폴더가 삭제되었습니다.`);
+        await loadFolderOrganizerPosts();
+    } catch (e) {
+        console.error(e);
+        alert(`폴더 삭제 중 오류가 발생했습니다: ${e.message}`);
     }
 }
 

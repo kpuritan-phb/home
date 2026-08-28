@@ -464,7 +464,12 @@
                                 <label style="font-weight: 700; font-size: 0.92rem; color: #2d3748; margin: 0;">
                                     <i class="fas fa-inbox"></i> 2. 목적지 폴더 (마우스로 글을 끌어 아래 폴더 박스 위에 놓으세요)
                                 </label>
-                                <span style="font-size: 0.8rem; color: #718096;">* 폴더를 클릭하면 해당 폴더 자료만 모아봅니다.</span>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <button type="button" onclick="promptCreateNewFolder()" style="background: #1a342a; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.2s;">
+                                        <i class="fas fa-folder-plus"></i> 새 폴더(시리즈) 추가
+                                    </button>
+                                    <span style="font-size: 0.8rem; color: #718096;">* 폴더를 클릭하면 해당 폴더 자료만 모아봅니다.</span>
+                                </div>
                             </div>
                             <div class="organizer-folders-grid" id="organizer-folders-grid"
                                 style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px;">

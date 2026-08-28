@@ -1393,6 +1393,38 @@
                 grid.appendChild(topBar);
             }
 
+            if (currentCategory === '청교도 신학' && urlParams.get('s') === '설교론') {
+                const subTopic = urlParams.get('subTopic') || "";
+                const subBar = document.createElement('div');
+                subBar.style.cssText = 'grid-column: 1 / -1; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 16px 22px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 12px;';
+                
+                const makeSubBtn = (label, val, icon) => {
+                    const isActive = subTopic === val;
+                    return `
+                        <button type="button" onclick="const u = new URL(window.location); ${val ? `u.searchParams.set('subTopic', '${val}');` : `u.searchParams.delete('subTopic');`} window.history.pushState({}, '', u); loadCategoryItems('청교도 신학'); updateUI();"
+                            style="border: 1px solid ${isActive ? '#8c6d46' : '#e2e8f0'}; background: ${isActive ? '#8c6d46' : '#fcfbf9'}; color: ${isActive ? '#ffffff' : '#2d3748'}; padding: 9px 18px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s; box-shadow: ${isActive ? '0 3px 10px rgba(140,109,70,0.25)' : 'none'};">
+                            <i class="${icon}"></i> ${label}
+                        </button>
+                    `;
+                };
+
+                subBar.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <span style="font-weight: 800; font-size: 1.05rem; color: #1a342a; display: flex; align-items: center; gap: 6px; margin-right: 6px;">
+                            <i class="fas fa-folder-open" style="color: #8c6d46;"></i> 9. 설교론 하위 분류:
+                        </span>
+                        ${makeSubBtn('전체 설교론', '', 'fas fa-th-large')}
+                        ${makeSubBtn('설교자', '설교자', 'fas fa-user-tie')}
+                        ${makeSubBtn('전도설교', '전도설교', 'fas fa-bullhorn')}
+                    </div>
+                    <button type="button" onclick="const u = new URL(window.location); u.searchParams.delete('s'); u.searchParams.delete('subTopic'); window.history.pushState({}, '', u); loadCategoryItems('청교도 신학'); updateUI();"
+                        style="border: none; background: #f7fafc; color: #8c6d46; padding: 9px 18px; border-radius: 8px; font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px; border: 1px solid #e2e8f0; transition: all 0.2s;">
+                        <i class="fas fa-arrow-left"></i> 청교도 신학 전체
+                    </button>
+                `;
+                grid.appendChild(subBar);
+            }
+
             pageItems.forEach(post => renderResourceItem(post));
             renderPagination();
         }
@@ -1712,7 +1744,7 @@
                     });
 
                     try {
-                        const snap2 = await db.collection("posts").where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"]).get();
+                        const snap2 = await db.collection("posts").where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF", "설교론", "설교자", "전도설교"]).get();
                         snap2.forEach(doc => {
                             if (!seenIds.has(doc.id)) {
                                 posts.push({ id: doc.id, ...doc.data() });
@@ -1720,7 +1752,7 @@
                             }
                         });
                     } catch (e) {
-                        console.warn("Booklet fetch fallback:", e);
+                        console.warn("Booklet/Sermon fetch fallback:", e);
                     }
 
                     if (s) {
@@ -1728,13 +1760,17 @@
                             const dbTopic = p.topic || p.subBookletTopic || p.series;
                             const tags = Array.isArray(p.tags) ? p.tags : [];
                             const dTopic = typeof determineCategory === 'function' ? determineCategory(p.title || '', p.content || '') : null;
-                            return (dbTopic === s) || (tags.includes(s)) || (dTopic === s);
+                            const isMatch = (dbTopic === s) || (tags.includes(s)) || (dTopic === s);
+                            if (s === '설교론') {
+                                return isMatch || tags.includes('설교자') || tags.includes('전도설교') || p.subTopic === '설교자' || p.subTopic === '전도설교';
+                            }
+                            return isMatch;
                         });
                     }
                     if (subTopic) {
                         posts = posts.filter(p => {
                             const tags = Array.isArray(p.tags) ? p.tags : [];
-                            return (p.subTopic === subTopic) || (p.series === subTopic) || tags.includes(subTopic);
+                            return (p.subTopic === subTopic) || (p.series === subTopic) || tags.includes(subTopic) || (p.topic === subTopic) || (p.title && p.title.includes(subTopic));
                         });
                     }
                 } else if (category === '전도, 부흥, 선교' || category === '전도, 선교') {

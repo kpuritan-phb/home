@@ -987,10 +987,13 @@
                         </div>
                     </li>
                     <li class="dropdown">
-                        <a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EC%84%A0%EA%B5%90">전도, 선교 <i class="fas fa-chevron-down"></i></a>
+                        <a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 <i class="fas fa-chevron-down"></i></a>
                         <div class="dropdown-content">
                             <ul class="dropdown-list">
-                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EC%84%A0%EA%B5%90">전도, 선교 전체</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 전체</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%A0%84%EB%8F%84">1. 전도</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EB%B6%80%ED%9D%A5">2. 부흥</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%84%A0%EA%B5%90">3. 선교</a></li>
                                 <li><a href="booklets.html?cat=Foreign&lang=Japanese" style="color: #ff4d4d !important; font-weight: bold;">Japanese</a></li>
                             </ul>
                         </div>
@@ -1186,7 +1189,8 @@
             '영적전쟁': ['영적전쟁', '시험', '유혹', '마귀', '사탄', '전투', '계략', '사탄의 최초의 전략', '영혼의 도성', '거룩한 전쟁', '영적 전장', '사탄의 계략', '사탄의 전략'],
             '종말론': ['심판', '재림', '종말', '부활', '마지막', '천국', '지옥', '사후', '영생', '최후의 심판'],
             '역사 신학': ['역사', '교회사', '청교도', '개혁주의', '인물', '변증', '전통', '유산', '뿌리', '맥락', '사상사', '교리의 역사', '칼빈주의 역사'],
-            '전도, 선교': ['전도', '선교', '복음', '구령', '영혼 구원', '전도자', '선교사', '대위임령', '잃어버린 양', '전도 소책자']
+            '전도, 부흥, 선교': ['전도', '부흥', '선교', '복음', '구령', '영혼 구원', '전도자', '선교사', '대위임령', '대각성', '부흥운동', '잃어버린 양', '전도 소책자'],
+            '전도, 선교': ['전도', '부흥', '선교', '복음', '구령', '영혼 구원', '전도자', '선교사', '대위임령', '대각성', '부흥운동', '잃어버린 양', '전도 소책자']
         };
 
         function determineCategory(title, content) {
@@ -1211,6 +1215,9 @@
 
             if (catParam === '5분 신학강론') {
                 catParam = '신학강론';
+            }
+            if (catParam === '전도, 선교') {
+                catParam = '전도, 부흥, 선교';
             }
             currentCategory = catParam;
 
@@ -1612,6 +1619,18 @@
             updateUI();
         }
 
+        function resetEvangelismTabs() {
+            const ul = theologyTabsWrapper.querySelector('ul');
+            ul.innerHTML = `
+                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90" class="theology-tab-btn" data-s="">전체</a></li>
+                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%A0%84%EB%8F%84" class="theology-tab-btn" data-s="전도">1. 전도</a></li>
+                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EB%B6%80%ED%9D%A5" class="theology-tab-btn" data-s="부흥">2. 부흥</a></li>
+                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%84%A0%EA%B5%90" class="theology-tab-btn" data-s="선교">3. 선교</a></li>
+            `;
+            theologyTabsWrapper.style.display = 'block';
+            updateUI();
+        }
+
         let originalSubtopicPosts = [];
 
         async function loadSubtopicItems(subTopic) {
@@ -1740,9 +1759,18 @@
                                 seenIds.add(doc.id);
                             }
                         });
+                    } else if (category === '전도, 부흥, 선교' || category === '전도, 선교') {
+                        const snap1 = await db.collection("posts").where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도, 선교", "전도", "부흥", "선교", "전도 소책자", "전도 소책자 PDF"]).get();
+                        const seenIds = new Set();
+                        snap1.forEach(doc => {
+                            if (!seenIds.has(doc.id)) {
+                                posts.push({ id: doc.id, ...doc.data() });
+                                seenIds.add(doc.id);
+                            }
+                        });
                     } else {
                         let query = db.collection("posts").where("tags", "array-contains", category);
-                        if (s && category !== '청교도 신학' && category !== '성경주석') {
+                        if (s && category !== '청교도 신학' && category !== '성경주석' && category !== '전도, 부흥, 선교' && category !== '전도, 선교') {
                             query = query.where("series", "==", s);
                         }
                         const snapshot = await query.get();
@@ -1756,6 +1784,8 @@
                     renderSeriesTabs(category, uniqueSeries);
                 } else if (category === '청교도 신학') {
                     resetTheologyTabs();
+                } else if (category === '전도, 부흥, 선교' || category === '전도, 선교') {
+                    resetEvangelismTabs();
                 } else if (category === '성경주석') {
                     const b = urlParams.get('b');
                     if (b) {
@@ -1767,7 +1797,7 @@
                 }
 
                 // --- 2. Hybrid Loading for Puritan Theology or Evangelism/Missions ---
-                if (category === '청교도 신학' || category === '전도, 선교' || (category === '성경주석' && b)) {
+                if (category === '청교도 신학' || category === '전도, 선교' || category === '전도, 부흥, 선교' || (category === '성경주석' && b)) {
                     if (category === '성경주석' && b) {
                         posts = posts.filter(p => p.series === b);
                         if (s) {
@@ -1777,7 +1807,7 @@
                         }
                     } else {
                         const bookletSnapshot = await db.collection("posts")
-                            .where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"])
+                            .where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF", "전도", "부흥", "선교"])
                             .get();
 
                         bookletSnapshot.forEach(doc => {
@@ -1792,9 +1822,9 @@
                                         posts.push({ id: doc.id, ...data });
                                     }
                                 }
-                            } else if (category === '전도, 선교') {
+                            } else if (category === '전도, 선교' || category === '전도, 부흥, 선교') {
                                 if (!posts.some(p => p.id === doc.id)) {
-                                    if (finalTopic === '전도, 선교') {
+                                    if (finalTopic === '전도, 선교' || finalTopic === '전도, 부흥, 선교' || finalTopic === '전도' || finalTopic === '부흥' || finalTopic === '선교' || (data.tags && data.tags.some(t => ['전도, 선교', '전도, 부흥, 선교', '전도', '부흥', '선교', '전도 소책자', '전도 소책자 PDF'].includes(t)))) {
                                         posts.push({ id: doc.id, ...data });
                                     }
                                 }
@@ -1805,11 +1835,25 @@
                             posts = posts.filter(p => {
                                 const dbTopic = p.topic || p.subBookletTopic || p.series;
                                 const dTopic = determineCategory(p.title, p.content);
-
-                                // Prefer DB topic if available, otherwise fallback to keyword guess
                                 const finalTopic = dbTopic || dTopic;
-
                                 return finalTopic === s;
+                            });
+                        } else if ((category === '전도, 선교' || category === '전도, 부흥, 선교') && s) {
+                            posts = posts.filter(p => {
+                                const dbTopic = p.topic || p.subBookletTopic || p.series || '';
+                                const dTopic = determineCategory(p.title, p.content) || '';
+                                const tags = Array.isArray(p.tags) ? p.tags : [];
+                                const title = p.title || '';
+                                const content = p.content || '';
+
+                                if (s === '전도') {
+                                    return dbTopic === '전도' || tags.includes('전도') || tags.includes('전도 소책자') || tags.includes('전도 소책자 PDF') || title.includes('전도') || dTopic === '전도';
+                                } else if (s === '부흥') {
+                                    return dbTopic === '부흥' || tags.includes('부흥') || title.includes('부흥') || title.includes('대각성') || title.includes('각성') || content.includes('부흥') || dTopic === '부흥';
+                                } else if (s === '선교') {
+                                    return dbTopic === '선교' || tags.includes('선교') || title.includes('선교') || dTopic === '선교';
+                                }
+                                return true;
                             });
                         }
                     }

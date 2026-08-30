@@ -239,13 +239,15 @@ nav ul li a:hover {
 
 nav {
     flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
 }
 
 nav ul {
     display: flex;
     list-style: none;
-    gap: clamp(0.4rem, 1vw, 1.2rem);
-    justify-content: center;
+    gap: clamp(0.5rem, 1vw, 1.3rem);
+    justify-content: flex-end;
     align-items: center;
 }
 
@@ -543,7 +545,7 @@ nav ul li:hover a i {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-left: auto;
+    margin-left: 1.5rem;
     flex-shrink: 0;
 }
 

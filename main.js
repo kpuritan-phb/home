@@ -2426,18 +2426,17 @@ document.addEventListener('DOMContentLoaded', () => {
         item.className = 'home-list-row-item';
 
         const tag = (post.tags && post.tags[0]) || post.category || post.otherCategory || '자료';
-        const author = post.author || '청교도 연구소';
+        const author = post.author || '청교도';
         const dateStr = post.createdAt ? (typeof post.createdAt.toDate === 'function' ? post.createdAt.toDate().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }) : (typeof post.createdAt === 'string' ? post.createdAt.slice(0, 10) : '')) : '';
 
         item.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;">
-                <span style="font-size: 0.74rem; font-weight: 800; color: #1a342a; background: #edf2f7; padding: 3px 8px; border-radius: 6px; white-space: nowrap; flex-shrink: 0;">${tag}</span>
-                <span style="font-size: 0.92rem; font-weight: 700; color: #2d3748; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${post.title}">${post.title}</span>
+            <div class="home-list-item-top">
+                <span class="home-list-badge">${tag}</span>
+                <span class="home-list-meta">${dateStr || author}</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0; color: #a0aec0; font-size: 0.78rem;">
-                <span style="color: #718096; font-weight: 600;">${author}</span>
-                ${dateStr ? `<span style="color: #a0aec0;">${dateStr}</span>` : ''}
-                <i class="fas fa-chevron-right" style="font-size: 0.7rem; color: #cbd5e0; margin-left: 2px;"></i>
+            <div class="home-list-item-title-row">
+                <span class="home-list-item-title" title="${post.title}">${post.title}</span>
+                <i class="fas fa-chevron-right home-list-arrow"></i>
             </div>
         `;
 
@@ -2552,12 +2551,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (list) {
                 list.innerHTML = '';
-                data.slice(0, 8).forEach(item => {
+                data.slice(0, 24).forEach(item => {
                     list.appendChild(window.createHomeListItem({
                         title: item.title,
                         tags: [item.cat],
                         createdAt: new Date(),
-                        author: '청교도 연구소'
+                        author: '청교도'
                     }, item.id));
                 });
             }
@@ -2589,7 +2588,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const allPosts = [];
             snapshot.forEach(doc => allPosts.push({ id: doc.id, data: doc.data() }));
 
-            // 1. New Arrivals
+            // 1. New Arrivals (4열 x 6줄 = 24개)
             const newTrack = document.getElementById('carousel-new');
             const newList = document.getElementById('list-new');
             const latestIds = new Set();
@@ -2604,7 +2603,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return !tags.some(tag => excluded.includes(tag));
                 });
 
-                filteredLatest.slice(0, 8).forEach(item => {
+                filteredLatest.slice(0, 24).forEach(item => {
                     latestIds.add(item.id);
                     if (newList) newList.appendChild(window.createHomeListItem(item.data, item.id));
                 });
@@ -2635,7 +2634,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // 3. Recommended Materials (랜덤 추천 자료)
+            // 3. Recommended Materials (랜덤 추천 자료 - 4열 x 6줄 = 24개)
             const sermonTrack = document.getElementById('carousel-sermon');
             const sermonList = document.getElementById('list-sermon');
             if (sermonTrack || sermonList) {
@@ -2663,7 +2662,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const shuffledRecs = [...recommendedItems].sort(() => 0.5 - Math.random());
 
-                shuffledRecs.slice(0, 8).forEach(item => {
+                shuffledRecs.slice(0, 24).forEach(item => {
                     if (sermonList) sermonList.appendChild(window.createHomeListItem(item.data, item.id));
                 });
 

@@ -4572,12 +4572,24 @@ footer {
 
 .home-list-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
+    .home-list-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 860px) {
+    .home-list-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 540px) {
     .home-list-grid {
         grid-template-columns: 1fr;
     }
@@ -4585,21 +4597,79 @@ footer {
 
 .home-list-row-item {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px 14px;
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 10px;
+    border-radius: 9px;
     cursor: pointer;
     transition: all 0.2s ease;
-    gap: 12px;
+    gap: 5px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    min-height: 64px;
 }
 
 .home-list-row-item:hover {
     border-color: #8c6d46;
-    background: #faf8f5;
-    transform: translateX(4px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
+    background: #fdfbf7;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(140, 109, 70, 0.12);
+}
+
+.home-list-item-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.home-list-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #1a342a;
+    background: #edf2f7;
+    padding: 2px 7px;
+    border-radius: 5px;
+    white-space: nowrap;
+}
+
+.home-list-meta {
+    font-size: 0.73rem;
+    color: #8c9ba5;
+    white-space: nowrap;
+}
+
+.home-list-item-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.home-list-item-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #2d3748;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+.home-list-row-item:hover .home-list-item-title {
+    color: #1a342a;
+}
+
+.home-list-arrow {
+    font-size: 0.68rem;
+    color: #cbd5e0;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.home-list-row-item:hover .home-list-arrow {
+    color: #8c6d46;
+    transform: translateX(3px);
+}
+

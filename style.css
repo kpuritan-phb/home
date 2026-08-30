@@ -4678,38 +4678,11 @@ footer {
 
 /* Global Admin Header Buttons & Modal Styles */
 #global-admin-header-btns {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
-    z-index: 1002;
-}
-
-body.admin-logged-in .nav-container {
-    padding-right: 225px !important;
-}
-
-@media (max-width: 1200px) {
-    #global-admin-header-btns {
-        right: 12px;
-    }
-    body.admin-logged-in .nav-container {
-        padding-right: 210px !important;
-    }
-}
-
-@media (max-width: 992px) {
-    #global-admin-header-btns {
-        position: static;
-        transform: none;
-        margin-left: auto;
-    }
-    body.admin-logged-in .nav-container {
-        padding-right: 1.5rem !important;
-    }
+    margin-left: 10px;
+    flex-shrink: 0;
 }
 
 .global-admin-btn {

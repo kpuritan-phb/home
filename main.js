@@ -478,36 +478,36 @@ document.addEventListener('DOMContentLoaded', () => {
         let adminBtns = document.getElementById('global-admin-header-btns');
 
         if (isAdmin) {
-            document.body.classList.add('admin-logged-in');
-            const header = document.querySelector('header') || document.querySelector('.nav-container') || document.body;
+            const headerTarget = document.querySelector('.header-right') || document.querySelector('.nav-container') || document.body;
 
-            if (!adminBtns) {
+            if (!adminBtns && headerTarget) {
                 adminBtns = document.createElement('div');
                 adminBtns.id = 'global-admin-header-btns';
-                header.appendChild(adminBtns);
+                headerTarget.appendChild(adminBtns);
             }
 
-            if (isAdminPage) {
-                adminBtns.innerHTML = `
-                    <a href="index.html" class="global-admin-btn admin-home-btn" title="홈페이지 화면으로 이동">
-                        <i class="fas fa-home"></i> 홈페이지 모드
-                    </a>
-                    <button type="button" onclick="window.logoutAdmin()" class="global-admin-btn admin-logout-btn" title="관리자 로그아웃">
-                        <i class="fas fa-sign-out-alt"></i> 로그아웃
-                    </button>
-                `;
-            } else {
-                adminBtns.innerHTML = `
-                    <a href="admin.html" class="global-admin-btn admin-box-btn" title="관리자 박스(대시보드)로 이동">
-                        <i class="fas fa-sliders-h"></i> 관리자 박스
-                    </a>
-                    <button type="button" onclick="window.logoutAdmin()" class="global-admin-btn admin-logout-btn" title="관리자 로그아웃">
-                        <i class="fas fa-sign-out-alt"></i> 로그아웃
-                    </button>
-                `;
+            if (adminBtns) {
+                if (isAdminPage) {
+                    adminBtns.innerHTML = `
+                        <a href="index.html" class="global-admin-btn admin-home-btn" title="홈페이지 화면으로 이동">
+                            <i class="fas fa-home"></i> 홈페이지 모드
+                        </a>
+                        <button type="button" onclick="window.logoutAdmin()" class="global-admin-btn admin-logout-btn" title="관리자 로그아웃">
+                            <i class="fas fa-sign-out-alt"></i> 로그아웃
+                        </button>
+                    `;
+                } else {
+                    adminBtns.innerHTML = `
+                        <a href="admin.html" class="global-admin-btn admin-box-btn" title="관리자 박스(대시보드)로 이동">
+                            <i class="fas fa-sliders-h"></i> 관리자 박스
+                        </a>
+                        <button type="button" onclick="window.logoutAdmin()" class="global-admin-btn admin-logout-btn" title="관리자 로그아웃">
+                            <i class="fas fa-sign-out-alt"></i> 로그아웃
+                        </button>
+                    `;
+                }
             }
         } else {
-            document.body.classList.remove('admin-logged-in');
             if (adminBtns) {
                 adminBtns.remove();
             }

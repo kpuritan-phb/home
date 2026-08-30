@@ -627,6 +627,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // About Modal Logic
+    const aboutModal = document.getElementById('about-modal');
+    const aboutCloseBtn = document.getElementById('about-close-btn');
+
+    document.addEventListener('click', (e) => {
+        const aboutLink = e.target.closest('a[href*="#about"]');
+        if (aboutLink) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (aboutModal && window.openModal) {
+                window.openModal(aboutModal);
+            } else if (!location.pathname.includes('index.html')) {
+                location.href = 'index.html#about';
+            }
+        }
+    });
+
+    if (aboutCloseBtn && aboutModal) {
+        aboutCloseBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.closeAllModals();
+        });
+    }
+
+    // Generic Modal Close on outside click
+    window.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal') && e.target.classList.contains('show')) {
+            window.closeAllModals();
+        }
+    });
+
+    // Open About modal if loaded with #about hash
+    if (window.location.hash === '#about' && aboutModal && window.openModal) {
+        setTimeout(() => {
+            window.openModal(aboutModal);
+        }, 300);
+    }
+
     // Run on load
     window.updateGlobalAdminHeader();
 

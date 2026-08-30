@@ -94,6 +94,7 @@
                     <li><a href="seminary.html">SRS 신학대학원</a></li>
                 </ul>
             </nav>
+            <div class="header-right"></div>
         </div>
     </header>
 
@@ -116,13 +117,6 @@
                 <button type="submit" class="cta-btn primary"
                     style="width: 100%; padding: 1rem; border: none; border-radius: 6px; background: var(--primary-color); color: white; cursor: pointer; font-weight: 700; font-size: 1.05rem;">로그인</button>
             </form>
-        </div>
-
-        <!-- 로그아웃 버튼 (인증된 관리자에게만 노출됨) -->
-        <div id="admin-logout-bar" class="logout-btn-container" style="display: none;">
-            <button onclick="window.logoutAdmin()" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> 로그아웃
-            </button>
         </div>
 
         <!-- 2. 관리자 대시보드 영역 (인증 사용자에게만 노출됨) -->
@@ -819,19 +813,16 @@
         function checkAdminState() {
             const isAdmin = localStorage.getItem('isAdmin') === 'true';
             const loginContainer = document.getElementById('admin-login-container');
-            const logoutBar = document.getElementById('admin-logout-bar');
             const dashboardSection = document.getElementById('admin-dashboard');
             
             if (isAdmin) {
                 if (loginContainer) loginContainer.style.display = 'none';
-                if (logoutBar) logoutBar.style.display = 'flex';
                 if (dashboardSection) {
                     dashboardSection.classList.remove('section-hidden');
                     dashboardSection.style.display = 'block';
                 }
             } else {
                 if (loginContainer) loginContainer.style.display = 'block';
-                if (logoutBar) logoutBar.style.display = 'none';
                 if (dashboardSection) {
                     dashboardSection.classList.add('section-hidden');
                     dashboardSection.style.display = 'none';

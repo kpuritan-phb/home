@@ -4703,7 +4703,7 @@ footer {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-left: 10px;
+    margin-left: auto;
     flex-shrink: 0;
 }
 
@@ -4711,8 +4711,8 @@ footer {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 13px;
-    font-size: 0.82rem;
+    padding: 7px 14px;
+    font-size: 0.84rem;
     font-weight: 800;
     border-radius: 6px;
     text-decoration: none;
@@ -4749,16 +4749,16 @@ footer {
 }
 
 .global-admin-btn.admin-logout-btn {
-    background: #2d3748 !important;
+    background: #dc2626 !important;
     color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border: none !important;
+    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
 }
 
 .global-admin-btn.admin-logout-btn:hover {
-    background: #e53e3e !important;
-    border-color: #e53e3e !important;
+    background: #b91c1c !important;
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(229, 62, 62, 0.3);
+    box-shadow: 0 4px 10px rgba(185, 28, 28, 0.45);
 }
 
 /* Global Admin Login Modal */

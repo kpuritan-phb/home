@@ -475,19 +475,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check if on admin page
         const isAdminPage = location.pathname.toLowerCase().includes('admin.html') || location.pathname.toLowerCase().includes('admin_');
 
-        // Locate header container
-        let headerTarget = document.querySelector('.header-right');
-        if (!headerTarget) {
-            headerTarget = document.querySelector('.nav-container') || document.querySelector('header > .container') || document.querySelector('header');
-        }
-
         let adminBtns = document.getElementById('global-admin-header-btns');
 
-        if (isAdmin && headerTarget) {
+        if (isAdmin) {
+            document.body.classList.add('admin-logged-in');
+            const header = document.querySelector('header') || document.querySelector('.nav-container') || document.body;
+
             if (!adminBtns) {
                 adminBtns = document.createElement('div');
                 adminBtns.id = 'global-admin-header-btns';
-                headerTarget.appendChild(adminBtns);
+                header.appendChild(adminBtns);
             }
 
             if (isAdminPage) {
@@ -509,8 +506,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     </button>
                 `;
             }
-        } else if (adminBtns) {
-            adminBtns.remove();
+        } else {
+            document.body.classList.remove('admin-logged-in');
+            if (adminBtns) {
+                adminBtns.remove();
+            }
         }
     };
 

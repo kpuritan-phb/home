@@ -841,14 +841,23 @@
         
         window.addEventListener('DOMContentLoaded', checkAdminState);
         
-        // 로그인 제출 감시하여 성공 시 리로드
-        document.addEventListener('submit', (e) => {
+        // 로그인 제출 핸들러
+        document.addEventListener('submit', async (e) => {
             if (e.target && e.target.id === 'login-form') {
-                setTimeout(() => {
-                    if (localStorage.getItem('isAdmin') === 'true') {
-                        location.reload();
+                e.preventDefault();
+                const id = document.getElementById('admin-id')?.value?.trim();
+                const pw = document.getElementById('admin-pw')?.value?.trim();
+                if (id === 'admin' && pw === '1234') {
+                    localStorage.setItem('isAdmin', 'true');
+                    window.isAdmin = true;
+                    if (window.auth) {
+                        try { await window.auth.signInAnonymously(); } catch (err) {}
                     }
-                }, 800);
+                    alert('관리자로 로그인되었습니다.');
+                    location.reload();
+                } else {
+                    alert('아이디 또는 비밀번호가 올바르지 않습니다.');
+                }
             }
         });
     </script>

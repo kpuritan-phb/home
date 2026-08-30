@@ -4690,4 +4690,96 @@ footer {
     color: #8c6d46;
     transform: translateX(3px);
 }
+
+/* Global Admin Header Buttons & Modal Styles */
+#global-admin-header-btns {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 10px;
+    flex-shrink: 0;
+}
+
+.global-admin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 13px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease !important;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+
+.global-admin-btn.admin-box-btn {
+    background: #c59c5e !important;
+    color: #1a342a !important;
+    border: none !important;
+    box-shadow: 0 2px 6px rgba(197, 156, 94, 0.35);
+}
+
+.global-admin-btn.admin-box-btn:hover {
+    background: #d4af37 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.global-admin-btn.admin-home-btn {
+    background: #1a342a !important;
+    color: #ffffff !important;
+    border: 1px solid #c59c5e !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.global-admin-btn.admin-home-btn:hover {
+    background: #254b3c !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.global-admin-btn.admin-logout-btn {
+    background: #2d3748 !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.global-admin-btn.admin-logout-btn:hover {
+    background: #e53e3e !important;
+    border-color: #e53e3e !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(229, 62, 62, 0.3);
+}
+
+/* Global Admin Login Modal */
+.admin-global-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+}
+
+.admin-global-modal-box {
+    background: #ffffff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 380px;
+    padding: 28px 24px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    position: relative;
+    border-top: 5px solid #1a342a;
+}
+
 

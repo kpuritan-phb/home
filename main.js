@@ -467,152 +467,168 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(section);
     });
 
-    // Login Modal Logic
-    const loginOpenBtn = document.getElementById('admin-access-btn');
-    const loginCloseBtn = document.getElementById('login-close-btn');
-    const loginForm = document.getElementById('login-form');
+    // Global Admin Mode & Top Bar Switcher Logic
+    window.updateGlobalAdminHeader = () => {
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+        window.isAdmin = isAdmin;
+
+        // Check if on admin page
+        const isAdminPage = location.pathname.toLowerCase().includes('admin.html') || location.pathname.toLowerCase().includes('admin_');
+
+        // Locate header container
+        let headerTarget = document.querySelector('.header-right');
+        if (!headerTarget) {
+            headerTarget = document.querySelector('.nav-container') || document.querySelector('header > .container') || document.querySelector('header');
+        }
+
+        let adminBtns = document.getElementById('global-admin-header-btns');
+
+        if (isAdmin && headerTarget) {
+            if (!adminBtns) {
+                adminBtns = document.createElement('div');
+                adminBtns.id = 'global-admin-header-btns';
+                headerTarget.appendChild(adminBtns);
+            }
+
+            if (isAdminPage) {
+                adminBtns.innerHTML = `
+                    <a href="index.html" class="global-admin-btn admin-home-btn" title="홈페이지 화면으로 이동">
+                        <i class="fas fa-home"></i> 홈페이지 모드
+                    </a>
+                    <button type="button" onclick="window.logoutAdmin()" class="global-admin-btn admin-logout-btn" title="관리자 로그아웃">
+                        <i class="fas fa-sign-out-alt"></i> 로그아웃
+                    </button>
+                `;
+            } else {
+                adminBtns.innerHTML = `
+                    <a href="admin.html" class="global-admin-btn admin-box-btn" title="관리자 박스(대시보드)로 이동">
+                        <i class="fas fa-sliders-h"></i> 관리자 박스
+                    </a>
+                    <button type="button" onclick="window.logoutAdmin()" class="global-admin-btn admin-logout-btn" title="관리자 로그아웃">
+                        <i class="fas fa-sign-out-alt"></i> 로그아웃
+                    </button>
+                `;
+            }
+        } else if (adminBtns) {
+            adminBtns.remove();
+        }
+    };
+
+    // Global Login Modal
+    window.openAdminLoginModal = () => {
+        let modal = document.getElementById('admin-global-login-modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'admin-global-login-modal';
+            modal.className = 'admin-global-modal-overlay';
+            modal.onclick = (e) => {
+                if (e.target === modal) window.closeAdminLoginModal();
+            };
+            modal.innerHTML = `
+                <div class="admin-global-modal-box">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <h3 style="margin:0; font-size:1.15rem; color:#1a342a; font-weight:800; display:flex; align-items:center; gap:8px;">
+                            <i class="fas fa-user-shield" style="color:#c59c5e;"></i> 관리자 로그인
+                        </h3>
+                        <span onclick="window.closeAdminLoginModal()" style="font-size:1.6rem; cursor:pointer; color:#94a3b8; line-height:1; padding:0 4px;">&times;</span>
+                    </div>
+                    <p style="font-size:0.84rem; color:#64748b; margin-bottom:18px; margin-top:0;">연구소 관리 기능을 사용하려면 로그인해 주세요.</p>
+                    <form id="global-admin-login-form" onsubmit="window.handleGlobalAdminLogin(event)">
+                        <div style="margin-bottom:14px;">
+                            <label style="display:block; font-size:0.8rem; font-weight:700; color:#334155; margin-bottom:5px;">아이디</label>
+                            <input type="text" id="global-admin-id" placeholder="ID (admin)" required style="width:100%; padding:10px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.95rem; box-sizing:border-box;">
+                        </div>
+                        <div style="margin-bottom:20px;">
+                            <label style="display:block; font-size:0.8rem; font-weight:700; color:#334155; margin-bottom:5px;">비밀번호</label>
+                            <input type="password" id="global-admin-pw" placeholder="Password" required style="width:100%; padding:10px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.95rem; box-sizing:border-box;">
+                        </div>
+                        <button type="submit" style="width:100%; padding:12px; border:none; border-radius:6px; background:#1a342a; color:#ffffff; font-size:0.98rem; font-weight:800; cursor:pointer; box-shadow:0 3px 8px rgba(26,52,42,0.25); transition:all 0.2s;">
+                            로그인
+                        </button>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        modal.style.display = 'flex';
+        const idInput = document.getElementById('global-admin-id');
+        if (idInput) {
+            idInput.value = '';
+            setTimeout(() => idInput.focus(), 100);
+        }
+        const pwInput = document.getElementById('global-admin-pw');
+        if (pwInput) pwInput.value = '';
+    };
+
+    window.closeAdminLoginModal = () => {
+        const modal = document.getElementById('admin-global-login-modal');
+        if (modal) modal.style.display = 'none';
+    };
+
+    window.handleGlobalAdminLogin = async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('global-admin-id')?.value?.trim();
+        const pw = document.getElementById('global-admin-pw')?.value?.trim();
+
+        if (id === 'admin' && pw === '1234') {
+            localStorage.setItem('isAdmin', 'true');
+            window.isAdmin = true;
+            window.closeAdminLoginModal();
+            window.updateGlobalAdminHeader();
+
+            if (window.auth) {
+                try {
+                    await window.auth.signInAnonymously();
+                } catch (err) {
+                    console.warn("Auth note:", err);
+                }
+            }
+
+            alert('관리자로 로그인되었습니다.');
+
+            if (location.pathname.toLowerCase().includes('admin.html')) {
+                location.reload();
+            }
+        } else {
+            alert('아이디 또는 비밀번호가 올바르지 않습니다.');
+        }
+    };
 
     // Global Logout Function
     window.logoutAdmin = () => {
-        if (confirm('현재 관리자 모드입니다. 로그아웃 하시겠습니까?')) {
+        if (confirm('관리자 모드를 로그아웃 하시겠습니까?')) {
             window.isAdmin = false;
             localStorage.removeItem('isAdmin');
 
             // Update UI components
             const dashboard = document.getElementById('admin-dashboard');
-            const loginOpenBtn = document.getElementById('admin-access-btn');
-            const navLogout = document.getElementById('nav-logout-item');
-
             if (dashboard) dashboard.classList.add('section-hidden');
-            if (loginOpenBtn) loginOpenBtn.innerHTML = '<i class="fas fa-user-lock"></i> <span>관리자</span>';
-            if (navLogout) navLogout.remove();
 
+            window.updateGlobalAdminHeader();
             alert('로그아웃 되었습니다.');
-            // Go to home if on admin page
-            if (location.pathname.includes('admin.html')) {
+
+            if (location.pathname.toLowerCase().includes('admin.html') || location.pathname.toLowerCase().includes('admin_')) {
                 location.href = 'index.html';
-                return;
+            } else {
+                location.reload();
             }
-            if (location.pathname.includes('seminary.html')) {
-                // Stay or go home
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
-    // Initial check
-    if (window.isAdmin) {
-        if (loginOpenBtn) loginOpenBtn.innerHTML = '<i class="fas fa-user-check"></i> 관리자(로그인됨)';
-        const dashboard = document.getElementById('admin-dashboard');
-        if (dashboard) dashboard.classList.remove('section-hidden');
-    }
-
-    if (loginOpenBtn) {
-        loginOpenBtn.addEventListener('click', () => {
-            if (window.isAdmin) {
-                // If already admin, clicking the button triggers logout
-                window.logoutAdmin();
-            } else {
-                if (loginModal) window.openModal(loginModal);
-                else location.href = 'admin.html'; // Redirect to admin page if modal doesn't exist
+    // Intercept footer "관리자 로그인" links to open modal without page jump
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[href*="admin.html"]');
+        if (link && !location.pathname.toLowerCase().includes('admin.html')) {
+            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+            if (!isAdmin) {
+                e.preventDefault();
+                window.openAdminLoginModal();
             }
-        });
-    }
-
-    if (loginCloseBtn && loginModal) {
-        loginCloseBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            window.closeAllModals();
-        });
-    }
-
-    const editCloseBtn = document.getElementById('edit-close-btn');
-    if (editCloseBtn && editModal) {
-        editCloseBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            window.closeAllModals();
-        });
-    }
-
-    // About Modal Logic
-    const aboutCloseBtn = document.getElementById('about-close-btn');
-    const aboutLinks = document.querySelectorAll('a[href="#about"]');
-
-    aboutLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation(); // Stop smooth scroll
-            window.openModal(aboutModal);
-        });
-    });
-
-    if (aboutCloseBtn && aboutModal) {
-        aboutCloseBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            window.closeAllModals();
-        });
-    }
-
-    // Close modal when clicking outside content (Unified logic)
-    window.addEventListener('click', (e) => {
-        if (e.target.classList.contains('modal')) {
-            window.closeAllModals();
         }
     });
 
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('admin-id').value;
-            const pw = document.getElementById('admin-pw').value;
-
-            // Simple mock login check
-            if (id === 'admin' && pw === '1234') {
-                const proceedLogin = () => {
-                    isAdmin = true;
-                    window.isAdmin = true;
-                    localStorage.setItem('isAdmin', 'true');
-                    window.closeAllModals();
-                    if (loginOpenBtn) loginOpenBtn.innerHTML = '<i class="fas fa-user-check"></i> 관리자(로그인됨)';
-
-                    // Show Admin Dashboard
-                    const dashboard = document.getElementById('admin-dashboard');
-                    if (dashboard) {
-                        dashboard.classList.remove('section-hidden');
-                        dashboard.scrollIntoView({ behavior: 'smooth' });
-                    }
-                };
-
-                // Try Firebase Auth (Anonymous or other method needed for Firestore Rules)
-                if (window.auth) {
-                    try {
-                        await window.auth.signInAnonymously();
-                        console.log("✅ Firebase Anonymous Auth Success");
-                        alert('관리자로 로그인되었습니다. (Firebase 인증 성공)');
-                        proceedLogin();
-                    } catch (error) {
-                        console.error("Auth Error:", error);
-                        if (error.code === 'auth/operation-not-allowed') {
-                            alert('주의: Firebase 익명 인증이 비활성화되어 있습니다. Console에서 활성화가 필요합니다.\n일단 로컬 관리자 모드로 진입합니다.');
-                            proceedLogin(); // Proceed anyway, let Firestore decide
-                        } else {
-                            alert('Firebase 인증 실패: ' + error.message);
-                            // Proceed anyway? Maybe better to stop. But let's be permissive for now.
-                            proceedLogin();
-                        }
-                    }
-                } else {
-                    alert('관리자로 로그인되었습니다. (Auth 모듈 미로드)');
-                    proceedLogin();
-                }
-            } else {
-                alert('아이디 또는 비밀번호가 올바르지 않습니다.');
-            }
-        });
-    }
+    // Run on load
+    window.updateGlobalAdminHeader();
 
 
 

@@ -2330,14 +2330,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let thumbUrl = post.coverUrl || 'images/puritan-study.png';
 
         const card = document.createElement('div');
-        // Always add 'has-thumb' since we now have a default
         card.className = 'carousel-card has-thumb';
         card.style.backgroundImage = `url("${thumbUrl}")`;
         card.style.backgroundSize = 'cover';
         card.style.backgroundPosition = 'center';
 
-        // PDF thumbnail logic (async override)
-        // Only try to generate PDF thumb if no explicit coverUrl was provided
         if (!post.coverUrl && post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) {
             if (window.pdfjsLib) {
                 const loadingTask = window.pdfjsLib.getDocument(post.fileUrl);
@@ -2360,8 +2357,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }).catch(err => {
                     console.warn('PDF thumbnail failed, keeping default:', err);
-                    // Default image is already set, so no action needed, 
-                    // but we can ensure opacity/style if needed.
                 });
             }
         }
@@ -2385,6 +2380,76 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         return wrapper;
+    };
+
+    window.setHomeSectionView = (section, mode) => {
+        const listWrapper = document.getElementById(`list-wrapper-${section}`);
+        const carouselWrapper = document.getElementById(`carousel-wrapper-${section}`);
+        const btnList = document.getElementById(`btn-view-${section}-list`);
+        const btnCard = document.getElementById(`btn-view-${section}-card`);
+
+        if (mode === 'card') {
+            if (listWrapper) listWrapper.style.display = 'none';
+            if (carouselWrapper) carouselWrapper.style.display = 'block';
+            if (btnList) {
+                btnList.style.background = 'transparent';
+                btnList.style.color = '#64748b';
+                btnList.style.boxShadow = 'none';
+                btnList.classList.remove('active');
+            }
+            if (btnCard) {
+                btnCard.style.background = '#1a342a';
+                btnCard.style.color = '#ffffff';
+                btnCard.style.boxShadow = '0 1px 3px rgba(0,0,0,0.12)';
+                btnCard.classList.add('active');
+            }
+        } else {
+            if (listWrapper) listWrapper.style.display = 'block';
+            if (carouselWrapper) carouselWrapper.style.display = 'none';
+            if (btnList) {
+                btnList.style.background = '#1a342a';
+                btnList.style.color = '#ffffff';
+                btnList.style.boxShadow = '0 1px 3px rgba(0,0,0,0.12)';
+                btnList.classList.add('active');
+            }
+            if (btnCard) {
+                btnCard.style.background = 'transparent';
+                btnCard.style.color = '#64748b';
+                btnCard.style.boxShadow = 'none';
+                btnCard.classList.remove('active');
+            }
+        }
+    };
+
+    window.createHomeListItem = (post, docId) => {
+        const item = document.createElement('div');
+        item.className = 'home-list-row-item';
+
+        const tag = (post.tags && post.tags[0]) || post.category || post.otherCategory || '자료';
+        const author = post.author || '청교도 연구소';
+        const dateStr = post.createdAt ? (typeof post.createdAt.toDate === 'function' ? post.createdAt.toDate().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }) : (typeof post.createdAt === 'string' ? post.createdAt.slice(0, 10) : '')) : '';
+
+        item.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;">
+                <span style="font-size: 0.74rem; font-weight: 800; color: #1a342a; background: #edf2f7; padding: 3px 8px; border-radius: 6px; white-space: nowrap; flex-shrink: 0;">${tag}</span>
+                <span style="font-size: 0.92rem; font-weight: 700; color: #2d3748; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${post.title}">${post.title}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0; color: #a0aec0; font-size: 0.78rem;">
+                <span style="color: #718096; font-weight: 600;">${author}</span>
+                ${dateStr ? `<span style="color: #a0aec0;">${dateStr}</span>` : ''}
+                <i class="fas fa-chevron-right" style="font-size: 0.7rem; color: #cbd5e0; margin-left: 2px;"></i>
+            </div>
+        `;
+
+        item.onclick = () => {
+            if (window.openResourceModal) {
+                window.openResourceModal(tag, post.series || '', docId);
+            } else {
+                window.open(`viewer.html?id=${docId}`, '_self');
+            }
+        };
+
+        return item;
     };
 
     // PDF 썸네일을 카드 배경으로 렌더링하는 함수
@@ -2442,7 +2507,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { title: "가정 예배의 회복과 실제적인 지침", cat: "신자의 삶", date: "2026.01.05", series: "" },
             { title: "은혜의 수단으로서의 기도", cat: "청교도 신학", date: "2026.01.03", series: "" },
             { title: "참된 회심의 성경적 표지", cat: "회심", date: "2026.01.01", series: "" },
-            { title: "그ريس도의 위격과 사역", cat: "기독론", date: "2025.12.28", series: "" },
+            { title: "그리스도의 위격과 사역", cat: "기독론", date: "2025.12.28", series: "" },
             { title: "영적 전쟁과 사탄의 계략", cat: "영적전쟁", date: "2025.12.25", series: "" },
             { title: "부부의 사랑과 기독교적 혼인", cat: "그리스도인의 가정", date: "2025.12.20", series: "" },
             { title: "세계 선교와 복음 전파의 사명", cat: "전도, 부흥, 선교", date: "2025.12.15", series: "" },
@@ -2470,26 +2535,38 @@ document.addEventListener('DOMContentLoaded', () => {
             ...mockSermons.map(s => ({ ...s, id: s.id + '_dup4' }))
         ].slice(0, 24).sort(() => 0.5 - Math.random());
 
-        const populateTrack = (trackId, data) => {
+        const populateTrack = (trackId, listId, data) => {
             const track = document.getElementById(trackId);
-            if (!track) return;
-            track.innerHTML = '';
-            data.forEach(item => {
-                track.appendChild(createCarouselCard({
-                    title: item.title,
-                    tags: [item.cat],
-                    createdAt: { toDate: () => new Date() }, // Mock date object
-                    series: item.series,
-                    content: 'Mock content'
-                }, item.id));
-            });
+            const list = document.getElementById(listId);
+            if (track) {
+                track.innerHTML = '';
+                data.forEach(item => {
+                    track.appendChild(createCarouselCard({
+                        title: item.title,
+                        tags: [item.cat],
+                        createdAt: { toDate: () => new Date() },
+                        series: item.series,
+                        content: 'Mock content'
+                    }, item.id));
+                });
+            }
+            if (list) {
+                list.innerHTML = '';
+                data.slice(0, 8).forEach(item => {
+                    list.appendChild(window.createHomeListItem({
+                        title: item.title,
+                        tags: [item.cat],
+                        createdAt: new Date(),
+                        author: '청교도 연구소'
+                    }, item.id));
+                });
+            }
         };
 
-        populateTrack('carousel-new', mockData);
-        // "주제별 추천 자료"는 랜덤으로 섞어서 노출
+        populateTrack('carousel-new', 'list-new', mockData);
         const shuffledMock = [...mockData].sort(() => 0.5 - Math.random());
-        populateTrack('carousel-topic', shuffledMock);
-        populateTrack('carousel-sermon', extendedSermons);
+        populateTrack('carousel-topic', null, shuffledMock);
+        populateTrack('carousel-sermon', 'list-sermon', extendedSermons);
         initCarouselDrag();
     };
 
@@ -2512,11 +2589,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const allPosts = [];
             snapshot.forEach(doc => allPosts.push({ id: doc.id, data: doc.data() }));
 
-            // 1. New Arrivals (무조건 최근 12개, 단 요청에 의해 특정 카테고리 제외)
+            // 1. New Arrivals
             const newTrack = document.getElementById('carousel-new');
+            const newList = document.getElementById('list-new');
             const latestIds = new Set();
-            if (newTrack) {
-                newTrack.innerHTML = '';
+            if (newTrack || newList) {
+                if (newTrack) newTrack.innerHTML = '';
+                if (newList) newList.innerHTML = '';
 
                 // [요청] 성경주석, 세미나, 강의 제외
                 const filteredLatest = allPosts.filter(item => {
@@ -2525,10 +2604,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     return !tags.some(tag => excluded.includes(tag));
                 });
 
+                filteredLatest.slice(0, 8).forEach(item => {
+                    latestIds.add(item.id);
+                    if (newList) newList.appendChild(window.createHomeListItem(item.data, item.id));
+                });
 
                 filteredLatest.slice(0, 24).forEach(item => {
-                    latestIds.add(item.id);
-                    newTrack.appendChild(createCarouselCard(item.data, item.id));
+                    if (newTrack) newTrack.appendChild(createCarouselCard(item.data, item.id));
                 });
             }
 
@@ -2538,17 +2620,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 topicTrack.innerHTML = '';
                 const topicItems = allPosts.filter(item => {
                     const tags = item.data.tags || [];
-                    // 강해가 아닌 일반 주제들 필터링 + 최신 자료와 중복 제거
                     return !tags.includes('강해') && !tags.includes('강해설교') && !tags.includes('설교') && !latestIds.has(item.id);
                 });
 
-                // 만약 일반 주제가 부족하면 전체에서 가져옴 (중복 제외)
                 let displayTopics = topicItems.length >= 6 ? topicItems : allPosts.filter(item => {
                     const tags = item.data.tags || [];
                     return !tags.includes('강해') && !tags.includes('강해설교') && !latestIds.has(item.id);
                 });
 
-                // [추가] 추천 자료 줄은 랜덤으로 섞어서 노출
                 displayTopics = [...displayTopics].sort(() => 0.5 - Math.random());
 
                 displayTopics.slice(0, 24).forEach(item => {
@@ -2558,16 +2637,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 3. Recommended Materials (랜덤 추천 자료)
             const sermonTrack = document.getElementById('carousel-sermon');
-            if (sermonTrack) {
-                sermonTrack.innerHTML = '';
-                // 무작위 추천을 위해 상위 30개는 무조건 배제하고, PDF 자료들을 필터링
+            const sermonList = document.getElementById('list-sermon');
+            if (sermonTrack || sermonList) {
+                if (sermonTrack) sermonTrack.innerHTML = '';
+                if (sermonList) sermonList.innerHTML = '';
+
                 let recommendedItems = allPosts.slice(30).filter(item => {
                     const url = item.data.fileUrl || "";
                     return /(?:\.|%2E)pdf($|\?|#)/i.test(url);
                 });
 
                 if (recommendedItems.length < 10) {
-                    // 상위 30개를 제외하니 너무 적으면, 상위 12개만 제외하고 다시 시도
                     recommendedItems = allPosts.slice(12).filter(item => {
                         const url = item.data.fileUrl || "";
                         return /(?:\.|%2E)pdf($|\?|#)/i.test(url);
@@ -2575,18 +2655,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (recommendedItems.length < 5) {
-                    // PDF 자료가 너무 적으면 중복(최근 자료)를 허용해서라도 PDF만 가져옴
                     recommendedItems = allPosts.filter(item => {
                         const url = item.data.fileUrl || "";
                         return /(?:\.|%2E)pdf($|\?|#)/i.test(url);
                     });
                 }
 
-                // 무작위 섞기
                 const shuffledRecs = [...recommendedItems].sort(() => 0.5 - Math.random());
 
+                shuffledRecs.slice(0, 8).forEach(item => {
+                    if (sermonList) sermonList.appendChild(window.createHomeListItem(item.data, item.id));
+                });
+
                 shuffledRecs.slice(0, 24).forEach(item => {
-                    sermonTrack.appendChild(createCarouselCard(item.data, item.id));
+                    if (sermonTrack) sermonTrack.appendChild(createCarouselCard(item.data, item.id));
                 });
             }
             initCarouselDrag();

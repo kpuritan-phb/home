@@ -177,16 +177,36 @@
                 <div class="explore-main-content">
                     <!-- Default View: Carousels -->
                     <div id="default-carousel-view">
-                        <!-- 1. New Arrivals Carousel -->
-                        <div class="carousel-section">
-                            <div class="carousel-header">
-                                <h3 class="carousel-title">최신 업데이트 <span
-                                        style="font-size:0.5em; color:#999; font-weight:500; margin-left:10px;">New Arrivals</span>
-                                </h3>
+                        <!-- 1. New Arrivals Section -->
+                        <div class="carousel-section" id="home-section-new">
+                            <div class="carousel-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                    <h3 class="carousel-title" style="margin: 0;">최신 업데이트 <span
+                                            style="font-size:0.5em; color:#8c6d46; font-weight:600; margin-left:6px;">New Arrivals</span>
+                                    </h3>
+                                    <!-- 보기 방식 토글 버튼 (기본값: 제목만 보기) -->
+                                    <div class="home-view-toggle-bar">
+                                        <button type="button" class="home-view-toggle-btn active" id="btn-view-new-list" onclick="setHomeSectionView('new', 'list')">
+                                            <i class="fas fa-list"></i> 제목만 보기
+                                        </button>
+                                        <button type="button" class="home-view-toggle-btn" id="btn-view-new-card" onclick="setHomeSectionView('new', 'card')">
+                                            <i class="fas fa-th-large"></i> 썸네일과 보기
+                                        </button>
+                                    </div>
+                                </div>
                                 <a href="resources.html?type=latest" class="carousel-view-all">전체보기 <i
                                         class="fas fa-chevron-right"></i></a>
                             </div>
-                            <div class="carousel-container-wrapper">
+
+                            <!-- [목록형] 제목만 보기 (기본 표시) -->
+                            <div class="home-list-container" id="list-wrapper-new" style="display: block;">
+                                <div class="home-list-grid" id="list-new">
+                                    <div class="loading-msg" style="padding:1.5rem; grid-column: 1 / -1; text-align: center; color: #718096;">최신 자료를 불러오는 중...</div>
+                                </div>
+                            </div>
+
+                            <!-- [카드형] 썸네일과 보기 (기본 숨김) -->
+                            <div class="carousel-container-wrapper" id="carousel-wrapper-new" style="display: none;">
                                 <button class="carousel-nav-btn prev" onclick="scrollCarousel('carousel-new', -300)"><i
                                         class="fas fa-chevron-left"></i></button>
                                 <div class="carousel-track" id="carousel-new">
@@ -197,16 +217,36 @@
                             </div>
                         </div>
 
-                        <!-- 3. Recommended Materials Carousel -->
-                        <div class="carousel-section">
-                            <div class="carousel-header">
-                                <h3 class="carousel-title">추천 자료 <span
-                                        style="font-size:0.5em; color:#999; font-weight:500; margin-left:10px;">Recommended</span>
-                                </h3>
+                        <!-- 2. Recommended Materials Section -->
+                        <div class="carousel-section" id="home-section-sermon" style="margin-top: 32px;">
+                            <div class="carousel-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                    <h3 class="carousel-title" style="margin: 0;">추천 자료 <span
+                                            style="font-size:0.5em; color:#8c6d46; font-weight:600; margin-left:6px;">Recommended</span>
+                                    </h3>
+                                    <!-- 보기 방식 토글 버튼 (기본값: 제목만 보기) -->
+                                    <div class="home-view-toggle-bar">
+                                        <button type="button" class="home-view-toggle-btn active" id="btn-view-sermon-list" onclick="setHomeSectionView('sermon', 'list')">
+                                            <i class="fas fa-list"></i> 제목만 보기
+                                        </button>
+                                        <button type="button" class="home-view-toggle-btn" id="btn-view-sermon-card" onclick="setHomeSectionView('sermon', 'card')">
+                                            <i class="fas fa-th-large"></i> 썸네일과 보기
+                                        </button>
+                                    </div>
+                                </div>
                                 <a href="resources.html?type=recommended" class="carousel-view-all">전체보기
                                     <i class="fas fa-chevron-right"></i></a>
                             </div>
-                            <div class="carousel-container-wrapper">
+
+                            <!-- [목록형] 제목만 보기 (기본 표시) -->
+                            <div class="home-list-container" id="list-wrapper-sermon" style="display: block;">
+                                <div class="home-list-grid" id="list-sermon">
+                                    <div class="loading-msg" style="padding:1.5rem; grid-column: 1 / -1; text-align: center; color: #718096;">추천 자료를 불러오는 중...</div>
+                                </div>
+                            </div>
+
+                            <!-- [카드형] 썸네일과 보기 (기본 숨김) -->
+                            <div class="carousel-container-wrapper" id="carousel-wrapper-sermon" style="display: none;">
                                 <button class="carousel-nav-btn prev" onclick="scrollCarousel('carousel-sermon', -300)"><i
                                         class="fas fa-chevron-left"></i></button>
                                 <div class="carousel-track" id="carousel-sermon">

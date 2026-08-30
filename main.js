@@ -628,7 +628,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // About Modal Logic
-    const aboutModal = document.getElementById('about-modal');
     const aboutCloseBtn = document.getElementById('about-close-btn');
 
     document.addEventListener('click', (e) => {

@@ -31,10 +31,51 @@ $headers = @{
     "Authorization" = "Bearer $idToken"
 }
 
+# Check existing posts to avoid duplicates
+Write-Host "Checking existing posts in Firestore..." -ForegroundColor Cyan
+$queryUrl = "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents:runQuery"
+$queryObj = @{
+    structuredQuery = @{
+        from = @( @{ collectionId = "posts" } )
+        where = @{
+            fieldFilter = @{
+                field = @{ fieldPath = "series" }
+                op = "EQUAL"
+                value = @{ stringValue = $seriesName }
+            }
+        }
+    }
+}
+$queryJson = $queryObj | ConvertTo-Json -Depth 10
+$queryRes = Invoke-RestMethod -Uri $queryUrl -Method Post -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($queryJson)) -ContentType "application/json; charset=utf-8"
+
+$existingOrders = [System.Collections.Generic.HashSet[int]]::new()
+foreach ($item in $queryRes) {
+    if ($item.document -and $item.document.fields.order.integerValue) {
+        $ord = [int]$item.document.fields.order.integerValue
+        [void]$existingOrders.Add($ord)
+    }
+}
+Write-Host "Found $($existingOrders.Count) already registered sermons for $seriesName." -ForegroundColor Cyan
+
 $counter = 0
+$uploadedCount = 0
+$skippedCount = 0
 foreach ($fp in $filePaths) {
     $counter++
     $fileName = [System.IO.Path]::GetFileNameWithoutExtension($fp)
+
+    $orderNum = $counter
+    if ($fileName -match '^(\d+)') {
+        $orderNum = [int]$matches[1]
+    }
+
+    if ($existingOrders.Contains($orderNum)) {
+        Write-Host "[$counter/$($filePaths.Length)] Skipping Order $orderNum ($fileName) - Already exists." -ForegroundColor DarkGray
+        $skippedCount++
+        continue
+    }
+
     $rawContent = [System.IO.File]::ReadAllText($fp, [System.Text.Encoding]::UTF8)
 
     # Extract H1 title
@@ -54,11 +95,6 @@ foreach ($fp in $filePaths) {
         "$prefix`: $subTitle"
     } else {
         $prefix
-    }
-
-    $orderNum = $counter
-    if ($fileName -match '^(\d+)') {
-        $orderNum = [int]$matches[1]
     }
 
     Write-Host "[$counter/$($filePaths.Length)] Uploading: $finalTitle (Order: $orderNum)" -ForegroundColor Yellow
@@ -101,9 +137,10 @@ foreach ($fp in $filePaths) {
 
     $uploadRes = Invoke-RestMethod -Uri $firestoreUrl -Method Post -Headers $headers -Body $byteBody -ContentType "application/json; charset=utf-8"
     $docId = $uploadRes.name.Split('/')[-1]
+    $uploadedCount++
     Write-Host "  -> Success! Doc ID: $docId" -ForegroundColor Green
 
     Start-Sleep -Milliseconds 250
 }
 
-Write-Host "All $($filePaths.Length) sermons successfully registered to Firestore!" -ForegroundColor Green
+Write-Host "Done! Newly uploaded: $uploadedCount, Skipped: $skippedCount, Total: $($filePaths.Length)" -ForegroundColor Green

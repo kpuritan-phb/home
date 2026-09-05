@@ -1482,6 +1482,14 @@
         };
 
         function applySorting(postsArray, sortOption = currentSortOption) {
+            if (currentCategory === '강해설교' && postsArray.some(p => p.order !== undefined && p.order !== null)) {
+                postsArray.sort((a, b) => {
+                    const orderA = (a.order !== undefined && a.order !== null) ? a.order : ((a.customOrder !== undefined && a.customOrder !== null) ? a.customOrder : 9999);
+                    const orderB = (b.order !== undefined && b.order !== null) ? b.order : ((b.customOrder !== undefined && b.customOrder !== null) ? b.customOrder : 9999);
+                    return orderA - orderB;
+                });
+                return;
+            }
             if (sortOption === 'date_asc') {
                 postsArray.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
             } else { // 'date_desc' (기본값)
@@ -1495,6 +1503,18 @@
                 });
             }
         }
+
+        window.setSermonChapterFilter = function(ch) {
+            const u = new URL(window.location);
+            if (ch) {
+                u.searchParams.set('ch', ch);
+            } else {
+                u.searchParams.delete('ch');
+            }
+            window.history.pushState({}, '', u);
+            loadCategoryItems('강해설교');
+            updateUI();
+        };
 
         window.changeSortOption = async function(sortVal) {
             currentSortOption = sortVal;
@@ -1554,24 +1574,58 @@
 
             if (currentCategory === '강해설교' && urlParams.get('s')) {
                 const sVal = urlParams.get('s');
+                const selectedCh = urlParams.get('ch') || "";
+                const totalSeriesCount = window.seriesTotalCount || allCurrentPosts.length;
+
                 const topBar = document.createElement('div');
-                topBar.style.cssText = 'grid-column: 1 / -1; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 14px 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 10px;';
+                topBar.style.cssText = 'grid-column: 1 / -1; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 14px 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 10px;';
                 topBar.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                         <i class="fas fa-book-open" style="color: #8c6d46; font-size: 1.25rem;"></i>
                         <span style="font-weight: 800; font-size: 1.15rem; color: #1a342a;">${sVal}</span>
-                        <span style="font-size: 0.85rem; color: #718096; background: #edf2f7; padding: 3px 12px; border-radius: 20px; font-weight: 600;">총 ${allCurrentPosts.length}편</span>
+                        <span style="font-size: 0.85rem; color: #718096; background: #edf2f7; padding: 3px 12px; border-radius: 20px; font-weight: 600;">총 ${totalSeriesCount}편</span>
+                        ${selectedCh ? `<span style="font-size: 0.82rem; color: #8c6d46; background: #faf5ee; padding: 3px 10px; border-radius: 6px; font-weight: 700; border: 1px solid #ecd5b8;">${selectedCh}장 필터링 (${allCurrentPosts.length}편)</span>` : ''}
                         ${window.isAdmin ? `
                         <span style="font-size: 0.82rem; color: #2e7d32; background: #e8f5e9; padding: 4px 10px; border-radius: 6px; font-weight: 700; border: 1px solid #c8e6c9; display: inline-flex; align-items: center; gap: 5px;">
                             <i class="fas fa-arrows-alt"></i> 순서 드래그 변경 (자동 저장)
                         </span>` : ''}
                     </div>
-                    <button type="button" onclick="const u = new URL(window.location); u.searchParams.delete('s'); window.history.pushState({}, '', u); loadCategoryItems('강해설교'); updateUI();"
+                    <button type="button" onclick="const u = new URL(window.location); u.searchParams.delete('s'); u.searchParams.delete('ch'); window.history.pushState({}, '', u); loadCategoryItems('강해설교'); updateUI();"
                         style="border: none; background: #f7fafc; color: #8c6d46; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px; border: 1px solid #e2e8f0; transition: all 0.2s;">
                         <i class="fas fa-arrow-left"></i> 전체 강해 목록 (구약/신약)
                     </button>
                 `;
                 grid.appendChild(topBar);
+
+                // 장(Chapter) 바로가기 탭 바 (베드로전서 등 1장부터 5장까지 순서대로 즉시 이동)
+                if (window.seriesChapterCounts && Object.keys(window.seriesChapterCounts).length > 0) {
+                    const chBar = document.createElement('div');
+                    chBar.className = 'chapter-filter-bar';
+                    chBar.style.cssText = 'grid-column: 1 / -1; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: #ffffff; padding: 12px 18px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02);';
+                    
+                    let btnsHtml = `
+                        <span style="font-weight: 800; font-size: 0.92rem; color: #1a342a; margin-right: 4px; display: inline-flex; align-items: center; gap: 6px;">
+                            <i class="fas fa-layer-group" style="color: #8c6d46;"></i> 장별 바로보기:
+                        </span>
+                        <button type="button" onclick="setSermonChapterFilter('')"
+                            style="border: 1px solid ${!selectedCh ? '#8c6d46' : '#cbd5e0'}; background: ${!selectedCh ? '#8c6d46' : '#fcfbf9'}; color: ${!selectedCh ? '#ffffff' : '#2d3748'}; padding: 6px 14px; border-radius: 8px; font-weight: 700; font-size: 0.86rem; cursor: pointer; transition: all 0.2s; box-shadow: ${!selectedCh ? '0 2px 6px rgba(140,109,70,0.25)' : 'none'};">
+                            전체 (${totalSeriesCount}편)
+                        </button>
+                    `;
+                    const chKeys = Object.keys(window.seriesChapterCounts).map(Number).sort((a, b) => a - b);
+                    chKeys.forEach(ch => {
+                        const isAct = selectedCh === String(ch);
+                        const cnt = window.seriesChapterCounts[ch];
+                        btnsHtml += `
+                            <button type="button" onclick="setSermonChapterFilter('${ch}')"
+                                style="border: 1px solid ${isAct ? '#8c6d46' : '#cbd5e0'}; background: ${isAct ? '#8c6d46' : '#fcfbf9'}; color: ${isAct ? '#ffffff' : '#2d3748'}; padding: 6px 14px; border-radius: 8px; font-weight: 700; font-size: 0.86rem; cursor: pointer; transition: all 0.2s; box-shadow: ${isAct ? '0 2px 6px rgba(140,109,70,0.25)' : 'none'};">
+                                ${ch}장 (${cnt}편)
+                            </button>
+                        `;
+                    });
+                    chBar.innerHTML = btnsHtml;
+                    grid.appendChild(chBar);
+                }
             }
 
             if (currentCategory === '청교도 신학' && urlParams.get('s') === '설교론') {
@@ -2607,6 +2661,23 @@
                     if (!s) {
                         renderExpositionsIndex(posts);
                         return;
+                    }
+                    window.seriesTotalCount = posts.length;
+                    window.seriesChapterCounts = {};
+                    posts.forEach(p => {
+                        const m = (p.title || '').match(/(\d+)장/);
+                        if (m) {
+                            const chNum = m[1];
+                            window.seriesChapterCounts[chNum] = (window.seriesChapterCounts[chNum] || 0) + 1;
+                        }
+                    });
+
+                    // 강해설교는 항상 1장 1절부터 순서대로(order 오름차순) 정렬
+                    posts.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+                    const chParam = urlParams.get('ch');
+                    if (chParam) {
+                        posts = posts.filter(p => (p.title || '').includes(chParam + '장'));
                     }
                 }
 

@@ -370,20 +370,20 @@
             height: 100%;
             overflow-y: auto;
             background-color: var(--bg-warm);
-            padding: 50px 40px;
+            padding: 35px 30px;
         }
 
         .article-wrapper {
-            max-width: 720px;
+            max-width: 760px;
             width: 100%;
             margin: 0 auto;
-            padding-bottom: 120px;
+            padding-bottom: 60px;
         }
 
         .article-header {
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 25px;
-            margin-bottom: 30px;
+            padding-bottom: 18px;
+            margin-bottom: 22px;
         }
 
         .article-category {
@@ -392,15 +392,15 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .article-title {
-            font-size: 2.1rem;
+            font-size: 1.95rem;
             font-weight: 800;
             color: var(--primary-color);
             line-height: 1.35;
-            margin: 0 0 15px 0;
+            margin: 0 0 12px 0;
             font-family: 'Nanum Myeongjo', serif;
             letter-spacing: -0.02em;
         }
@@ -424,10 +424,10 @@
         .verse-box {
             background-color: #f6f3eb;
             border-left: 4px solid var(--accent-color);
-            padding: 18px 22px;
+            padding: 14px 18px;
             border-radius: 0 8px 8px 0;
-            margin-bottom: 30px;
-            font-size: 1.05rem;
+            margin-bottom: 20px;
+            font-size: 1rem;
             color: var(--secondary-color);
             line-height: 1.5;
             font-weight: 600;
@@ -442,30 +442,134 @@
         /* 본문 내용 스타일링 */
         .article-body {
             font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 1.12rem;
+            font-size: 1.06rem;
             color: #2b2b2b;
-            line-height: 1.95;
+            line-height: 1.74;
             letter-spacing: -0.015em;
             word-break: keep-all;
             overflow-wrap: break-word;
         }
 
         .body-paragraph {
-            margin-bottom: 24px;
+            margin-bottom: 12px;
             font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 1.12rem;
-            line-height: 1.95;
+            font-size: 1.06rem;
+            line-height: 1.74;
             color: #2b2b2b;
         }
 
         .body-sub-title {
-            font-size: 1.35rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: var(--primary-color);
-            margin: 40px 0 20px 0;
+            margin: 24px 0 12px 0;
             font-family: 'Noto Sans KR', 'Nanum Myeongjo', serif;
             border-bottom: 1px dashed var(--border-color);
-            padding-bottom: 10px;
+            padding-bottom: 6px;
+        }
+
+        /* 강해설교 서식 최적화 (단락 간격 및 헤더 여백 정돈) */
+        .sermon-container {
+            max-width: 100% !important;
+            padding: 0 0 15px 0 !important;
+            line-height: 1.72 !important;
+            color: #2d3748 !important;
+        }
+
+        .sermon-container header {
+            border-bottom: 2px solid #3182ce !important;
+            padding-bottom: 16px !important;
+            margin-bottom: 20px !important;
+            text-align: center !important;
+        }
+
+        .sermon-container header p:first-child {
+            font-size: 0.88rem !important;
+            margin-bottom: 6px !important;
+            letter-spacing: 0.5px !important;
+        }
+
+        .sermon-container header h1 {
+            font-size: 1.75rem !important;
+            font-weight: 800 !important;
+            line-height: 1.35 !important;
+            margin: 0 0 8px 0 !important;
+        }
+
+        .sermon-container header p:last-child {
+            font-size: 0.95rem !important;
+            margin: 0 !important;
+        }
+
+        .sermon-container section {
+            margin-bottom: 22px !important;
+        }
+
+        .sermon-container section:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        .sermon-container h2 {
+            font-size: 1.28rem !important;
+            font-weight: 700 !important;
+            padding-bottom: 6px !important;
+            margin: 0 0 10px 0 !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+        }
+
+        .sermon-container h3 {
+            font-size: 1.12rem !important;
+            font-weight: 700 !important;
+            margin: 12px 0 6px 0 !important;
+        }
+
+        .sermon-container p {
+            font-size: 1.04rem !important;
+            line-height: 1.72 !important;
+            margin: 0 0 10px 0 !important;
+            color: #2d3748 !important;
+            text-align: justify !important;
+            word-break: keep-all !important;
+        }
+
+        .sermon-container div[style*="background-color: #ebf8ff"] {
+            padding: 16px 18px !important;
+            margin-bottom: 18px !important;
+            border-radius: 0 8px 8px 0 !important;
+        }
+
+        .sermon-container div[style*="background-color: #f7fafc"] {
+            padding: 12px 16px !important;
+            margin: 12px 0 !important;
+            border-left: 4px solid #4a5568 !important;
+            line-height: 1.68 !important;
+            font-size: 0.98rem !important;
+        }
+
+        .sermon-container div[style*="background-color: #fffaf0"] {
+            padding: 12px 16px !important;
+            margin-bottom: 10px !important;
+            border-radius: 0 6px 6px 0 !important;
+        }
+
+        .sermon-container div[style*="background-color: #fffaf0"] h4 {
+            margin: 0 0 4px 0 !important;
+            font-size: 1.02rem !important;
+        }
+
+        .sermon-container footer {
+            padding: 18px 20px !important;
+            border-radius: 8px !important;
+            margin-top: 20px !important;
+        }
+
+        .sermon-container footer h3 {
+            margin: 0 0 8px 0 !important;
+        }
+
+        .sermon-container footer div[style*="background-color: #ffffff"] {
+            padding: 14px 16px !important;
+            line-height: 1.7 !important;
         }
 
         /* 우측 위젯 영역 */
@@ -1016,15 +1120,27 @@
                     const contentText = post.content || '';
                     const urlRegex = /(https?:\/\/[^\s]+)/g;
                     const urlsInContent = contentText.match(urlRegex) || [];
-                    const paragraphs = contentText.split('\n\n').filter(p => p.trim());
-                    let bodyHtml = paragraphs.map(p => {
-                        const pt = p.trim();
-                        // Styling subtopics
-                        if (pt.startsWith('[') || pt.startsWith('첫째') || pt.startsWith('둘째') || pt.startsWith('셋째')) {
-                            return `<h3 class="body-sub-title">${pt.replace(urlRegex, '<a href="$1" target="_blank" style="color:var(--accent-color); text-decoration:underline;">$1</a>').replace(/\n/g, '<br>')}</h3>`;
+
+                    let bodyHtml = '';
+                    const isStructuredHtml = /<[a-z][\s\S]*>/i.test(contentText);
+                    if (isStructuredHtml) {
+                        // HTML 구조화 본문(강해설교 등)은 불필요한 <p> 감싸기 및 임의의 <br> 삽입 없이 원본 HTML 렌더링
+                        bodyHtml = contentText;
+                        if (contentText.includes('sermon-container')) {
+                            const outerHeader = document.querySelector('.article-header');
+                            if (outerHeader) outerHeader.style.display = 'none';
                         }
-                        return `<p class="body-paragraph">${pt.replace(urlRegex, '<a href="$1" target="_blank" style="color:var(--accent-color); text-decoration:underline;">$1</a>').replace(/\n/g, '<br>')}</p>`;
-                    }).join('');
+                    } else {
+                        const paragraphs = contentText.split('\n\n').filter(p => p.trim());
+                        bodyHtml = paragraphs.map(p => {
+                            const pt = p.trim();
+                            // Styling subtopics
+                            if (pt.startsWith('[') || pt.startsWith('첫째') || pt.startsWith('둘째') || pt.startsWith('셋째')) {
+                                return `<h3 class="body-sub-title">${pt.replace(urlRegex, '<a href="$1" target="_blank" style="color:var(--accent-color); text-decoration:underline;">$1</a>').replace(/\n/g, '<br>')}</h3>`;
+                            }
+                            return `<p class="body-paragraph">${pt.replace(urlRegex, '<a href="$1" target="_blank" style="color:var(--accent-color); text-decoration:underline;">$1</a>').replace(/\n/g, '<br>')}</p>`;
+                        }).join('');
+                    }
 
                     // Check for attached file (PDF, PPT, DOC, Image, etc.)
                     const rawFileUrl = post.fileUrl || post.attachmentUrl || post.pdfUrl || (urlsInContent.length > 0 && urlsInContent[0].match(/\.(pdf|pptx?|docx?|hwp|zip|jpe?g|png|webp)($|\?|#)/i) ? urlsInContent[0] : null);
@@ -1161,21 +1277,68 @@
                     const contentDiv = document.createElement('div');
                     contentDiv.className = 'accordion-content';
                     
+                    // Check if series has multiple chapters
+                    const chapterMap = {};
+                    let hasMultipleChapters = false;
                     posts.forEach(p => {
-                        const link = document.createElement('a');
-                        link.href = `viewer.html?id=${p.id}`;
-                        link.className = 'sermon-link' + (p.id === postId ? ' active' : '');
-                        
-                        // Clean title for display inside the folder (remove series name prefix if exist)
-                        let displayTitle = p.title;
-                        const prefix = sName.replace(" 강해", "");
-                        if (displayTitle.startsWith(prefix)) {
-                            displayTitle = displayTitle.substring(prefix.length).trim();
+                        const m = (p.title || '').match(/(\d+)장/);
+                        if (m) {
+                            const ch = parseInt(m[1]);
+                            if (!chapterMap[ch]) chapterMap[ch] = [];
+                            chapterMap[ch].push(p);
                         }
-                        link.textContent = displayTitle;
-                        
-                        contentDiv.appendChild(link);
                     });
+                    if (Object.keys(chapterMap).length > 1) {
+                        hasMultipleChapters = true;
+                    }
+
+                    if (hasMultipleChapters) {
+                        const chNums = Object.keys(chapterMap).map(Number).sort((a, b) => a - b);
+                        chNums.forEach(ch => {
+                            const chGroup = document.createElement('div');
+                            chGroup.className = 'sidebar-ch-group';
+                            chGroup.style.cssText = 'border-bottom: 1px dashed #ede8df; padding: 3px 0;';
+
+                            const chHeader = document.createElement('div');
+                            chHeader.className = 'sidebar-ch-header';
+                            chHeader.style.cssText = 'padding: 6px 14px 4px 18px; font-weight: 800; font-size: 0.8rem; color: #8c6d46; background: #faf7f2; display: flex; align-items: center; justify-content: space-between;';
+                            chHeader.innerHTML = `<span><i class="fas fa-bookmark" style="font-size:0.75rem; margin-right:5px;"></i> 제 ${ch}장</span><span style="font-size:0.72rem; color:#a0aec0;">${chapterMap[ch].length}편</span>`;
+                            chGroup.appendChild(chHeader);
+
+                            chapterMap[ch].forEach(p => {
+                                const link = document.createElement('a');
+                                link.href = `viewer.html?id=${p.id}`;
+                                link.className = 'sermon-link' + (p.id === postId ? ' active' : '');
+                                link.style.paddingLeft = '28px';
+
+                                let displayTitle = p.title;
+                                const prefix = sName.replace(" 강해", "");
+                                if (displayTitle.startsWith(prefix)) {
+                                    displayTitle = displayTitle.substring(prefix.length).trim();
+                                }
+                                link.textContent = displayTitle;
+                                chGroup.appendChild(link);
+                            });
+
+                            contentDiv.appendChild(chGroup);
+                        });
+                    } else {
+                        posts.forEach(p => {
+                            const link = document.createElement('a');
+                            link.href = `viewer.html?id=${p.id}`;
+                            link.className = 'sermon-link' + (p.id === postId ? ' active' : '');
+                            
+                            // Clean title for display inside the folder (remove series name prefix if exist)
+                            let displayTitle = p.title;
+                            const prefix = sName.replace(" 강해", "");
+                            if (displayTitle.startsWith(prefix)) {
+                                displayTitle = displayTitle.substring(prefix.length).trim();
+                            }
+                            link.textContent = displayTitle;
+                            
+                            contentDiv.appendChild(link);
+                        });
+                    }
 
                     headerBtn.onclick = () => {
                         itemDiv.classList.toggle('open');

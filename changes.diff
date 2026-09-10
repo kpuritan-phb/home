@@ -1,0 +1,230 @@
+diff --git a/index.html b/index.html
+index 8abcae3..7c6ff75 100644
+--- a/index.html
++++ b/index.html
+@@ -36,7 +36,7 @@
+ <body>
+ 
+     <!-- Navigation -->
+-    <header>
++    <header class="top-bar">
+         <a href="/" class="home-trigger" aria-label="홈으로 이동"></a>
+         <nav class="brand-nav">
+             <div class="nav-item-container">
+diff --git a/style.css b/style.css
+index 3b62b81..0d0cfce 100644
+--- a/style.css
++++ b/style.css
+@@ -65,23 +65,19 @@ ul {
+ }
+ 
+ /* Header */
+-header {
++header.top-bar {
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+-    height: 120px;
+-    /* Increased height for descriptions */
++    height: 80px;
+     display: flex;
+     justify-content: center;
+-    /* Center the new nav */
+     align-items: center;
+     padding: 0 5vw;
+-    z-index: 100;
+-    mix-blend-mode: difference;
+-    transition: height 0.3s ease;
+-    position: fixed;
+-    /* Ensure fixed */
++    z-index: 9999;
++    background-color: var(--bg-color);
++    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+ }
+ 
+ /* Home Link Background */
+@@ -114,6 +110,9 @@ header {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
++    justify-content: flex-start;
++    height: 35px;
++    /* Prevent jitter on hover */
+     cursor: pointer;
+     pointer-events: auto;
+     /* Re-enable for items */
+@@ -154,10 +153,6 @@ header {
+ }
+ 
+ .nav-desc {
+-    position: absolute;
+-    top: 100%;
+-    left: 50%;
+-    transform: translateX(-50%) translateY(10px);
+     width: 250px;
+     text-align: center;
+     font-size: 0.8rem;
+@@ -167,8 +162,10 @@ header {
+     opacity: 0;
+     pointer-events: none;
+     transition: all 0.5s var(--easing);
+-    margin-top: 15px;
+     letter-spacing: -0.01em;
++    height: 0;
++    overflow: hidden;
++    margin-top: 0;
+ }
+ 
+ /* Hover / Active States */
+@@ -182,7 +179,8 @@ header {
+ .nav-item-container:hover .nav-desc,
+ .nav-item-container.active .nav-desc {
+     opacity: 1;
+-    transform: translateX(-50%) translateY(0);
++    height: 20px;
++    margin-top: 5px;
+ }
+ 
+ .nav-item-container:hover .nav-item {
+@@ -200,12 +198,11 @@ header {
+ 
+ /* Mobile specific */
+ @media (max-width: 768px) {
+-    header {
++    header.top-bar {
+         height: auto;
+         padding: 1rem 0;
+         backdrop-filter: blur(10px);
+-        /* Better visibility on mobile */
+-        background: rgba(0, 0, 0, 0.2);
++        background: rgba(0, 0, 0, 0.9);
+     }
+ 
+     .brand-nav {
+@@ -216,6 +213,7 @@ header {
+ 
+     .nav-item-container {
+         padding: 0 0.5rem;
++        height: auto;
+     }
+ 
+     .nav-item {
+@@ -228,23 +226,28 @@ header {
+     }
+ 
+     .nav-desc {
+-        width: 100vw;
+-        position: fixed;
+-        left: 0;
+-        top: 60px;
+-        /* Below fixed header */
+-        transform: none;
+-        background: rgba(0, 0, 0, 0.8);
+-        padding: 10px 0;
++        width: 100%;
++        position: static;
++        background: transparent;
++        padding: 0;
+         margin: 0;
+-        transform: translateY(-10px);
++        transform: none;
+     }
+ 
+-    .nav-item-container.active .nav-desc {
+-        transform: translateY(0);
++    .nav-item-container.active .nav-desc,
++    .nav-item-container:hover .nav-desc {
++        transform: none;
++        height: 20px;
++        margin-top: 5px;
+     }
+ }
+ 
++/* Common Main padding for top-bar */
++main {
++    padding-top: 80px;
++    /* var(--nav-height) is 80px */
++}
++
+ /* Section Common */
+ section {
+     padding: 10vh 5vw;
+@@ -252,11 +255,10 @@ section {
+ 
+ /* Hero Section */
+ .hero {
+-    height: 100vh;
++    height: calc(100vh - 80px);
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+-    padding-top: var(--nav-height);
+     position: relative;
+ }
+ 
+diff --git a/who.html b/who.html
+index 2eda2c3..f250954 100644
+--- a/who.html
++++ b/who.html
+@@ -20,7 +20,7 @@
+ <body class="dark-subpage">
+ 
+     <!-- Navigation -->
+-    <header>
++    <header class="top-bar">
+         <a href="/" class="home-trigger" aria-label="홈으로 이동"></a>
+         <nav class="brand-nav">
+             <div class="nav-item-container">
+diff --git a/with-us.html b/with-us.html
+index c27134c..ecbd0bc 100644
+--- a/with-us.html
++++ b/with-us.html
+@@ -20,7 +20,7 @@
+ <body class="dark-subpage">
+ 
+     <!-- Navigation -->
+-    <header>
++    <header class="top-bar">
+         <a href="/" class="home-trigger" aria-label="홈으로 이동"></a>
+         <nav class="brand-nav">
+             <div class="nav-item-container">
+diff --git a/withness.html b/withness.html
+index e1e00de..1389898 100644
+--- a/withness.html
++++ b/withness.html
+@@ -20,7 +20,7 @@
+ <body class="dark-subpage">
+ 
+     <!-- Navigation -->
+-    <header>
++    <header class="top-bar">
+         <a href="/" class="home-trigger" aria-label="홈으로 이동"></a>
+         <nav class="brand-nav">
+             <div class="nav-item-container">
+diff --git a/workflow.html b/workflow.html
+index 788d25b..90a3ada 100644
+--- a/workflow.html
++++ b/workflow.html
+@@ -20,7 +20,7 @@
+ <body class="dark-subpage">
+ 
+     <!-- Navigation -->
+-    <header>
++    <header class="top-bar">
+         <a href="/" class="home-trigger" aria-label="홈으로 이동"></a>
+         <nav class="brand-nav">
+             <div class="nav-item-container">
+diff --git a/works.html b/works.html
+index 7cf110a..57568e0 100644
+--- a/works.html
++++ b/works.html
+@@ -20,7 +20,7 @@
+ <body class="dark-subpage">
+ 
+     <!-- Navigation -->
+-    <header>
++    <header class="top-bar">
+         <a href="/" class="home-trigger" aria-label="홈으로 이동"></a>
+         <nav class="brand-nav">
+             <div class="nav-item-container">

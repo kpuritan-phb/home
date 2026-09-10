@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도서 목록 | 한국 청교도 연구소 PHB</title>
+    <meta name="description" content="퓨리탄 헤리티지 북스(PHB)의 다양한 도서 목록을 확인하세요.">
+
+    <link rel="stylesheet" href="style.css?v=105">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        .books-hero {
+            height: 50vh;
+            position: relative;
+            background: linear-gradient(rgba(42, 45, 50, 0.4), rgba(42, 45, 50, 0.4)), url('westminster_assembly_illustration_1768571596977.png');
+            background-size: cover;
+            background-position: center 30%;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            border-bottom: 5px solid var(--secondary-color);
+        }
+
+        .books-hero h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .books-hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 5rem;
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            background: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .filter-tab.active {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+            box-shadow: 0 5px 15px rgba(10, 124, 104, 0.3);
+        }
+
+        .no-books {
+            text-align: center;
+            padding: 5rem;
+            color: #888;
+            font-size: 1.2rem;
+        }
+
+        /* Detail Long Image */
+        .book-detail-divider {
+            height: 1px;
+            background: #eee;
+            margin: 4rem 0;
+            width: 100%;
+        }
+
+        .book-detail-long-image {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto 5rem;
+            text-align: center;
+        }
+
+        .book-detail-long-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        @media (max-width: 768px) {
+            .books-hero h1 {
+                font-size: 2rem;
+                padding: 0 1rem;
+            }
+
+            .books-hero p {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+
+            .books-hero {
+                height: 40vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-eng">KPI</span>
+                <span class="logo-kor">한국 청교도 연구소</span>
+                <span class="logo-since">Since 2001</span>
+            </a>
+            <button class="mobile-menu-toggle" aria-label="메뉴 열기" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="index.html#about">연구소 소개</a></li>
+                    <li class="dropdown">
+                        <a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90">강해설교 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="sermon-dropdown">
+                            <ul class="dropdown-list">
+                                <!-- JS injected content -->
+                            </ul>
+                        </div>
+                    </li>
+                    <li><a href="resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98">세미나, 강의</a></li>
+                    <li><a href="resources.html?cat=%EC%84%B1%EA%B2%BD%EC%A3%BC%EC%84%9D">성경주석</a></li>
+                    <li class="dropdown mega-dropdown">
+                        <a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99">청교도 신학 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="puritan-dropdown">
+                            <ul class="dropdown-list">
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99" style="font-weight: 800; border-bottom: 1px dashed var(--secondary-color);">청교도 신학 전체보기</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%8B%A0%EB%A1%A0">1. 신론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9D%B8%EA%B0%84%EB%A1%A0">2. 인간론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B8%B0%EB%8F%85%EB%A1%A0">3. 기독론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%AC%EC%9B%90%EB%A1%A0%28%EC%84%B1%EB%A0%B9%EB%A1%A0%29">4. 구원론/성령론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9C%A8%EB%B2%95%EA%B3%BC%20%EB%B3%B5%EC%9D%8C">5. 율법과 복음</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B7%B8%EB%A6%AC%EC%8A%A4%EB%8F%84%EC%9D%B8%EC%9D%98%20%EC%83%9D%ED%99%9C%EB%A1%A0">6. 그리스도인의 생활론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B7%B8%EB%A6%AC%EC%8A%A4%EB%8F%84%EC%9D%B8%EC%9D%98%20%EA%B0%80%EC%A0%95">7. 그리스도인의 가정</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%90%ED%9A%8C%EB%A1%A0">8. 교회론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%84%A4%EA%B5%90%EB%A1%A0">9. 설교론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%98%81%EC%A0%81%EC%A0%84%EC%9F%81">10. 영적전쟁</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%A2%85%EB%A7%90%EB%A1%A0">11. 종말론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%97%AD%EC%82%AC%20%EC%8B%A0%ED%95%99">12. 역사 신학</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9E%98%EB%AA%BB%EB%90%9C%20%EC%8B%A0%ED%95%99">13. 잘못된 신학</a></li>
+
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content">
+                            <ul class="dropdown-list">
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 전체</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%A0%84%EB%8F%84">1. 전도</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EB%B6%80%ED%9D%A5">2. 부흥</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%84%A0%EA%B5%90">3. 선교</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><a href="resources.html?cat=%EC%8B%A0%ED%95%99%EA%B0%95%EB%A1%A0">신학강론</a></li>
+                    <li><a href="https://smartstore.naver.com/kpuritan_phb" target="_blank">PHB 출판사</a></li>
+                    <li><a href="seminary.html">SRS 신학대학원</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="books-hero">
+            <div class="hero-content">
+                <h1>PURITAN HERITAGE BOOKS</h1>
+                <p>청교도 신앙의 유산을 담은 깊이 있는 도서들을 만나보세요.</p>
+            </div>
+        </section>
+
+        <div class="books-container">
+            <div class="section-title modern-flex">
+                <div class="title-text-group">
+                    <h2>BOOK COLLECTION</h2>
+                    <p>큐레이션된 도서 목록을 확인하고 구매 문의를 하실 수 있습니다.</p>
+                </div>
+            </div>
+
+            <div id="books-grid" class="books-grid">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> 도서 목록을 불러오는 중...
+                </div>
+            </div>
+        </div> <!-- Closing books-container -->
+
+        <div id="book-detail-container" class="book-detail-container">
+            <!-- Back Button -->
+            <a href="javascript:void(0)" class="back-to-list" onclick="showListPage()">
+                <i class="fas fa-arrow-left"></i> 목록으로 돌아가기
+            </a>
+
+            <div id="book-detail-content-area" class="book-detail-grid">
+                <!-- Injected via JS -->
+            </div>
+            <div id="book-detail-extra"></div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Korea Puritan Institute</h4>
+                <p>한국 청교도 연구소는 청교도 신학과 개혁주의 신념을 연구하고 성경적인 자료를 제공합니다.</p>
+                <div class="social-links">
+                    <a href="https://www.youtube.com/@kpuritan" title="YouTube" target="_blank"
+                        rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.instagram.com/k_puritan_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                        target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="Naver Blog" class="naver-link">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>Email: kpuritan.phb@gmail.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Korea Puritan Institute. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">
+                <a href="admin.html"
+                    style="color: #666; text-decoration: none;">관리자 로그인</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+
+    <script>
+        // Firebase Config (Must match index.html)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJbOaiElCypwgtPgbwdnudn3VC737fMrs",
+            authDomain: "kpuritan-home.firebaseapp.com",
+            projectId: "kpuritan-home",
+            storageBucket: "kpuritan-home.firebasestorage.app",
+            messagingSenderId: "1071220455502",
+            appId: "1:1071220455502:web:7f6f59b48c48a73437f8f0"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const booksGrid = document.getElementById('books-grid');
+        const booksContainer = document.querySelector('.books-container');
+        const bookDetailContainer = document.getElementById('book-detail-container');
+        const bookDetailContentArea = document.getElementById('book-detail-content-area');
+        const booksHero = document.querySelector('.books-hero');
+
+        async function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookId = urlParams.get('id');
+
+            if (bookId) {
+                loadBookDetail(bookId);
+            } else {
+                loadBooks();
+            }
+        }
+
+        async function loadBooks() {
+            try {
+                booksContainer.style.display = 'block';
+                bookDetailContainer.style.display = 'none';
+                booksHero.style.display = 'flex';
+
+                const snapshot = await db.collection("posts")
+                    .where("tags", "array-contains", "도서 목록")
+                    .get();
+
+                if (snapshot.empty) {
+                    renderMockBooks();
+                    return;
+                }
+
+                let books = [];
+                snapshot.forEach(doc => {
+                    books.push({ id: doc.id, ...doc.data() });
+                });
+
+                books.sort((a, b) => {
+                    const timeA = a.createdAt ? (a.createdAt.seconds || 0) : 0;
+                    const timeB = b.createdAt ? (b.createdAt.seconds || 0) : 0;
+                    return timeB - timeA;
+                });
+
+                // [요청] 특정 게시물 고정 (2주간: ~2026-05-05)
+                const PINNED_TITLE = "히브리서의 경고와 심판: 영적 몰락의 해부학";
+                const PINNED_UNTIL = new Date('2026-05-05');
+                if (new Date() < PINNED_UNTIL) {
+                    const idx = books.findIndex(p => p.title && p.title.includes(PINNED_TITLE)); // Book titles often have authors like "Author: Title"
+                    if (idx > -1) {
+                        const [pinned] = books.splice(idx, 1);
+                        books.unshift(pinned);
+                    }
+                }
+
+                booksGrid.innerHTML = '';
+                books.forEach(book => {
+                    renderBookCard(book);
+                });
+
+            } catch (error) {
+                console.error("Error loading books:", error);
+                renderMockBooks();
+            }
+        }
+
+        async function loadBookDetail(id) {
+            try {
+                booksContainer.style.display = 'none';
+                bookDetailContainer.style.display = 'block';
+                booksHero.style.display = 'none';
+                bookDetailContentArea.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 로딩 중...</div>';
+                window.scrollTo(0, 0);
+
+                const doc = await db.collection("posts").doc(id).get();
+                if (!doc.exists) {
+                    bookDetailContentArea.innerHTML = '<div class="no-books">해당 도서를 찾을 수 없습니다.</div>';
+                    return;
+                }
+
+                const book = doc.data();
+                renderBookDetail(book);
+
+            } catch (error) {
+                console.error("Error loading book detail:", error);
+                bookDetailContentArea.innerHTML = '<div class="no-books">오류가 발생했습니다.</div>';
+            }
+        }
+
+        function showListPage() {
+            window.history.pushState({}, '', 'books.html');
+            loadBooks();
+        }
+
+        function renderBookCard(book) {
+            if (!book) return;
+            const card = document.createElement('div');
+            card.className = 'book-card-premium';
+            card.style.cursor = 'pointer';
+            card.onclick = () => {
+                window.history.pushState({}, '', `?id=${book.id}`);
+                loadBookDetail(book.id);
+            };
+
+            const title = book.title || '제목 없음';
+            const contentText = book.content || '';
+            const priceStr = book.price || (contentText.match(/(\d{1,3}(,\d{3})*원)/) ? contentText.match(/(\d{1,3}(,\d{3})*원)/)[0] : '가격 문의');
+
+            let author = '';
+            if (title.includes(':')) {
+                const parts = title.split(':');
+                if (parts.length > 1) author = parts[0].trim();
+            }
+            let authorHtml = author ? `<div class="book-author">${author}</div>` : '';
+
+            let thumbUrl = 'images/puritan-study.png';
+            if (book.coverUrl) {
+                thumbUrl = book.coverUrl;
+            } else if (book.fileUrl && book.fileUrl.match(/\.(jpeg|jpg|gif|png|webp|svg)/i)) {
+                thumbUrl = book.fileUrl;
+            } else {
+                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                const urls = contentText.match(urlRegex) || [];
+                for (let url of urls) {
+                    if (url.match(/\.(jpeg|jpg|gif|png|webp|svg)/i)) {
+                        thumbUrl = url;
+                        break;
+                    }
+                }
+            }
+
+            let cleanTitle = title;
+            if (cleanTitle.includes(':')) cleanTitle = cleanTitle.split(':')[1].trim();
+
+            card.innerHTML = `
+                <div class="book-cover-wrapper">
+                    <img src="${thumbUrl}" alt="${title}" onerror="this.src='images/puritan-study.png'">
+                </div>
+                <div class="book-info">
+                    <div class="book-tag">PURITAN HERITAGE BOOKS</div>
+                    <h3 class="book-title">${cleanTitle}</h3>
+                    ${authorHtml}
+                    ${contentText.trim() ? `<div class="book-description">${contentText.replace(/(https?:\/\/[^\s]+)/g, '').trim()}</div>` : ''}
+                    <div class="book-footer">
+                        <div class="book-price">${priceStr}</div>
+                        <span class="book-buy-btn">상세보기</span>
+                    </div>
+                </div>
+            `;
+            booksGrid.appendChild(card);
+        }
+
+        function renderBookDetail(book) {
+            if (window.Stats) {
+                window.Stats.track('view', {
+                    id: book.id,
+                    type: 'book',
+                    title: book.title,
+                    category: '도서 목록'
+                });
+            }
+            const title = book.title || '제목 없음';
+            const contentText = book.content || '';
+            const priceStr = book.price || (contentText.match(/(\d{1,3}(,\d{3})*원)/) ? contentText.match(/(\d{1,3}(,\d{3})*원)/)[0] : '가격 문의');
+
+            let author = '';
+            if (title.includes(':')) {
+                const parts = title.split(':');
+                if (parts.length > 1) author = parts[0].trim();
+            }
+            let authorHtml = author ? `<div class="book-detail-author">${author} 저</div>` : '';
+
+            let thumbUrl = 'images/puritan-study.png';
+            if (book.coverUrl) {
+                thumbUrl = book.coverUrl;
+            } else if (book.fileUrl && book.fileUrl.match(/\.(jpeg|jpg|gif|png|webp|svg)/i)) {
+                thumbUrl = book.fileUrl;
+            } else {
+                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                const urls = contentText.match(urlRegex) || [];
+                for (let url of urls) {
+                    if (url.match(/\.(jpeg|jpg|gif|png|webp|svg)/i)) {
+                        thumbUrl = url;
+                        break;
+                    }
+                }
+            }
+            let cleanTitle = title;
+            if (cleanTitle.includes(':')) cleanTitle = cleanTitle.split(':')[1].trim();
+
+            bookDetailContentArea.innerHTML = `
+                <div class="book-detail-image-wrapper">
+                    <img src="${thumbUrl}" alt="${title}" onerror="this.src='images/puritan-study.png'">
+                </div>
+                <div class="book-detail-content">
+                    <div class="book-tag">PURITAN HERITAGE BOOKS</div>
+                    <h1 class="book-detail-title">${cleanTitle}</h1>
+                    ${authorHtml}
+                    <div class="book-detail-price">
+                        ${priceStr}
+                        <span style="font-size: 0.9rem; font-weight: 500; color: #888; margin-left: 0.5rem;">(배송비 별도)</span>
+                    </div>
+                    ${contentText.trim() ? `<div class="book-detail-description">${contentText.replace(/(https?:\/\/[^\s]+)/g, '').trim()}</div>` : ''}
+                    <div class="book-detail-actions" style="display: flex; flex-direction: column; gap: 12px;">
+                        <a href="${book.naver_link || 'https://smartstore.naver.com/kpuritan_phb'}" target="_blank" 
+                           onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${book.id}', type: 'naver_store_redirect', title: '${title.replace(/'/g, "\\'")}' });"
+                           class="book-buy-btn" style="padding: 1.2rem 2rem; font-size: 1.1rem; border:none; cursor:pointer; width: 100%; background: #22cc00; display: flex; align-items: center; justify-content: center; gap: 10px; color: white; text-decoration: none; font-weight: 700;">
+                            <img src="https://clova-phinf.pstatic.net/MjAxODAzMjlfMTY1/MDAxNTIyMjg3Njk0NzY0.9S9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z9Z.PNG/naverpay_logo.png" style="height: 22px; filter: brightness(0) invert(1);"> 네이버 스마트스토어 구매
+                        </a>
+                        <a href="mailto:kpuritan.phb@gmail.com?subject=구매 문의: ${title}" class="book-buy-btn" style="padding: 1rem 2rem; font-size: 1rem; background: transparent; border: 1px solid var(--secondary-color); color: var(--secondary-color); text-align: center; text-decoration: none; border-radius: 8px;">
+                            대량 구매 및 메일 문의
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            // Display uploaded long image in detail
+            const extraArea = document.getElementById('book-detail-extra');
+            if (extraArea) {
+                if (book.fileUrl && book.fileUrl.match(/\.(jpeg|jpg|gif|png|webp|svg)/i)) {
+                    extraArea.innerHTML = `
+                        <div class="book-detail-divider"></div>
+                        <div class="book-detail-long-image">
+                            <img src="${book.fileUrl}" alt="상세 설명">
+                        </div>
+                    `;
+                } else {
+                    extraArea.innerHTML = '';
+                }
+            }
+        }
+
+        // requestPay is now globally handled by main.js
+
+        function renderMockBooks() {
+            booksGrid.innerHTML = '';
+            const mockBooks = [
+                { id: 'mock1', title: "존 오웬 : 죄와 유혹", content: "청교도 신학의 정수 존 오웬의 대표작. 신자의 삶 속에서 죄와 유혹을 어떻게 다루어야 하는지 성경적으로 조명합니다.\n가격: 18,000원", createdAt: new Date() },
+                { id: 'mock2', title: "리처드 십스 : 상한 갈대", content: "상한 마음을 치유하시는 하나님의 은혜를 깊이 있는 필치로 그려낸 청교도 보석 같은 서적.\n가격: 15,000원", createdAt: new Date() },
+                { id: 'mock3', title: "토마스 왓슨 : 회개", content: "참된 회개의 의미와 표지를 성경적으로 명확하게 제시하는 고전 중의 고전.\n가격: 12,000원", createdAt: new Date() }
+            ];
+            mockBooks.forEach(book => renderBookCard(book));
+        }
+
+        window.onpopstate = () => init();
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+    <!-- Music Player Container (Left) -->
+    <div class="bgm-player" id="bgm-player"
+        style="position: fixed; bottom: 2rem; left: 2rem; z-index: 1500; pointer-events: none;">
+        <button id="bgm-toggle-btn" class="bgm-control" onclick="if(window.toggleBGM) window.toggleBGM(event)"
+            style="pointer-events: auto;">
+            <span class="music-icon"><i class="fas fa-music"></i></span>
+        </button>
+        <div id="yt-player-container" style="display: none;"></div>
+    </div>
+
+    <script src="bgm.js?v=1"></script>
+    <script src="stats.js?v=1"></script>
+    <script src="main.js?v=1"></script>
+
+
+    <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">
+        <i class="fas fa-envelope"></i>
+    </a>
+</body>
+
+</html>

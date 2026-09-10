@@ -1,741 +1,1358 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ko">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>日本改革派神学と牧会 | Japan Reformed Theology & Ministry</title>
-  <meta name="description" content="聖書に立ち返り、福音によって教会を新たにする。日本改革派神学と牧会、聖書講解、歴史的教理教育、伝道と弟子道のための学術的・実践的リソースを提供します。">
-  <link rel="stylesheet" href="style.css?v=20260906_03">
-  <!-- FontAwesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한국 청교도 연구소 | Korea Puritan Institute</title>
+    <meta name="description" content="청교도 신학과 개혁주의 신념을 연구하고 성경적인 자료를 제공하는 한국 청교도 연구소입니다.">
+
+    <!-- Open Graph / KakaoTalk / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kpuritan.com/">
+    <meta property="og:title" content="한국 청교도 연구소 | Korea Puritan Institute">
+    <meta property="og:description" content="청교도 신학과 개혁주의 신념을 연구하고 성경적인 자료를 제공하는 한국 청교도 연구소입니다.">
+    <meta property="og:image" content="og-image.png?v=4">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://kpuritan.com/">
+    <meta property="twitter:title" content="한국 청교도 연구소 | Korea Puritan Institute">
+    <meta property="twitter:description" content="청교도 신학과 개혁주의 신념을 연구하고 성경적인 자료를 제공하는 한국 청교도 연구소입니다.">
+    <meta property="twitter:image" content="og-image.png?v=4">
+
+    <link rel="stylesheet" href="style.css?v=admin_hdr_fix_5">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+    <link rel="icon" type="image/x-icon" href="favicon.ico?v=2">
+    <link rel="icon" type="image/png" href="favicon.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2">
+    <!-- Font Awesome for Search Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- PDF.js for PDF thumbnail rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>
+        // PDF.js worker 설정
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+        }
+    </script>
 </head>
+
 <body>
+    <div class="nav-overlay"></div>
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo" id="logo-home" style="display: flex; align-items: center; gap: 14px;">
-      <!-- 강단·성경·십자가 심볼 로고 (SVG) -->
-      <div class="logo-icon-svg" style="display: flex; align-items: center; justify-content: center; width: 46px; height: 46px; flex-shrink: 0;">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="46" height="46">
-          <!-- 열린 성경책 -->
-          <path d="M 28 22 C 38 16 48 22 50 24 C 52 22 62 16 72 22 L 72 32 C 62 26 52 32 50 30 C 48 32 38 26 28 32 Z" fill="#C5A059" stroke="#C5A059" stroke-width="1"/>
-          <path d="M 50 24 L 50 30" stroke="#0A1C36" stroke-width="1.5"/>
-          <!-- 강단 상판 -->
-          <path d="M 20 36 L 80 36 L 76 42 L 24 42 Z" fill="#C5A059"/>
-          <!-- 강단 몸체 (사다리꼴) -->
-          <path d="M 26 44 L 74 44 L 66 82 L 34 82 Z" fill="#0A1C36" stroke="#C5A059" stroke-width="2.5" stroke-linejoin="round"/>
-          <!-- 십자가 (몸체 중앙) -->
-          <path d="M 50 50 L 50 74 M 42 58 L 58 58" stroke="#C5A059" stroke-width="3.5" stroke-linecap="round"/>
-          <!-- 강단 받침대 -->
-          <rect x="28" y="84" width="44" height="5" fill="#C5A059" rx="1"/>
-        </svg>
-      </div>
-      <div class="logo-text" style="display: flex; flex-direction: column; justify-content: center;">
-        <span class="logo-title" style="font-family: var(--font-serif); font-size: 1.35rem; font-weight: 700; color: var(--text-white); letter-spacing: 0.5px; white-space: nowrap; line-height: 1.2;">
-          日本 改革派神学 と 牧会
-        </span>
-        <span class="logo-subtitle" style="font-size: 0.65rem; color: var(--accent-color); font-weight: 500; letter-spacing: 1px; margin-top: 4px; text-transform: uppercase;">
-          Japan Reformed Theology & Ministry
-        </span>
-      </div>
-    </div>
-    <div class="header-actions" id="header-actions" style="display: flex; align-items: center; gap: 8px;">
-      <div id="header-github-status" style="display: none; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: var(--transition-smooth);" onclick="showAdminDashboard('folders')" title="GitHub 연동 상태">
-        <i class="fa-brands fa-github"></i>
-        <span id="header-github-status-text">GitHub 연동 정상</span>
-      </div>
-      <button class="btn-admin" id="btn-toggle-view" onclick="toggleAdminModeView()" style="display: none;">
-        <i class="fa-solid fa-sliders"></i> <span id="btn-toggle-view-text">管理パネル</span>
-      </button>
-      <button class="btn-admin" id="btn-admin-nav" onclick="handleNavAdminClick()">
-        <i class="fa-solid fa-lock"></i> <span id="btn-admin-nav-text">管理者ログイン</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- HERO SECTION -->
-  <section class="hero" id="hero-sec">
-    <div class="hero-content">
-      <h1 class="hero-tagline">
-        <span>聖書に立ち返り</span>
-        <span class="sub">福音によって教会を新たにする</span>
-      </h1>
-      <div class="hero-divider"></div>
-    </div>
-  </section>
-
-  <!-- MAIN MENUS (PERMANENT STATIC 6 CARDS: Home section leftmost) -->
-  <section class="main-menu-grid" id="main-menu-sec" style="grid-template-columns: repeat(6, 1fr);">
-    <div class="menu-card" data-menu="menu_1787468975888" onclick="selectMainMenu('menu_1787468975888')">
-      <i class="fa-solid fa-house-chimney menu-icon"></i>
-      <div class="menu-title-jp">ホーム セクション</div>
-    </div>
-    <div class="menu-card" data-menu="sermon" onclick="selectMainMenu('sermon')">
-      <i class="fa-solid fa-book-open menu-icon"></i>
-      <div class="menu-title-jp">聖書講解</div>
-    </div>
-    <div class="menu-card" data-menu="catechism" onclick="selectMainMenu('catechism')">
-      <i class="fa-solid fa-scroll menu-icon"></i>
-      <div class="menu-title-jp">教理教育と復興</div>
-    </div>
-    <div class="menu-card" data-menu="theology" onclick="selectMainMenu('theology')">
-      <i class="fa-solid fa-graduation-cap menu-icon"></i>
-      <div class="menu-title-jp">改革派神学</div>
-    </div>
-    <div class="menu-card" data-menu="discipleship" onclick="selectMainMenu('discipleship')">
-      <i class="fa-solid fa-users-line menu-icon"></i>
-      <div class="menu-title-jp">伝道・弟子道</div>
-    </div>
-    <div class="menu-card" data-menu="pastor" onclick="selectMainMenu('pastor')">
-      <i class="fa-solid fa-user-tie menu-icon"></i>
-      <div class="menu-title-jp">10分動画<br>神学講義</div>
-      <div class="menu-title-sub" style="font-size: 0.75rem; color: var(--accent-color); margin-top: 4px; font-weight: 500;">動画講義</div>
-    </div>
-  </section>
-
-  <!-- SUBMENU PANEL -->
-  <div class="submenu-container" id="submenu-sec">
-    <div class="submenu-panel">
-      <div class="submenu-title" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-        <div id="submenu-category-title" style="flex: 1;">カテゴリー</div>
-        <span style="font-size: 0.8rem; color: var(--text-light); font-weight: normal; white-space: nowrap;">
-          ※ 下記の細部フォルダを選択して資料を閲覧してください。
-        </span>
-      </div>
-      <div class="submenu-grid" id="submenu-items-container">
-        <!-- Dynamically Populated -->
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ARTICLE DISPLAY WORKSPACE -->
-  <section class="workspace-container" id="workspace-sec">
-    <div class="workspace-layout">
-      <!-- Sidebar -->
-      <aside class="sidebar-nav">
-        <h3 class="sidebar-title" id="sidebar-category-header">カテゴリー</h3>
-        <ul class="sidebar-list" id="sidebar-categories-list">
-          <!-- Dynamically Populated -->
-        </ul>
-      </aside>
-      
-      <!-- Main Content -->
-      <main class="content-area">
-        <!-- 1. Article List View -->
-        <div id="view-article-list">
-          <div class="view-header">
-            <h2 class="view-title" id="list-title">記事一覧</h2>
-          </div>
-          <div class="article-list" id="articles-list-container">
-            <!-- Dynamically Populated -->
-          </div>
-        </div>
-
-        <!-- 2. Article Detail View -->
-        <div id="view-article-detail" style="display: none;">
-          <div class="detail-top-nav-bar" id="detail-top-nav-bar">
-            <!-- Dynamic back and prev/next buttons rendered by app.js -->
-          </div>
-          <div class="view-header">
-            <h2 class="view-title" id="detail-title">記事タイトル</h2>
-            <div class="detail-meta">
-              <div class="detail-meta-item">著者: <strong id="detail-author">著者名</strong></div>
-              <div class="detail-meta-item">日付: <strong id="detail-date">2026-08-17</strong></div>
-              <div class="detail-meta-item"><i class="fa-regular fa-eye"></i> 閲覧数: <strong id="detail-views">0</strong></div>
-            </div>
-          </div>
-          <div class="detail-scripture" id="detail-scripture-container">
-            <strong>御言葉:</strong> <span id="detail-scripture">聖句</span>
-          </div>
-          <div class="detail-content" id="detail-content">
-            記事の本文がここに表示されます。
-          </div>
-        </div>
-      </main>
-      
-      <!-- Right Sidebar (Latest Articles & Theological Institution) -->
-      <aside class="sidebar-right" id="right-sidebar">
-        <!-- 신학적 유산 (Theological Institution) -->
-        <div class="sidebar-box theological-heritage collapsible" id="box-theological-institutions">
-          <h3 class="sidebar-title" onclick="toggleSidebarBox('box-theological-institutions')">
-            <span><i class="fa-solid fa-building-columns"></i> Theological Institution</span>
-            <i class="fa-solid fa-chevron-down toggle-icon"></i>
-          </h3>
-          <div class="sidebar-content">
-            <ul class="heritage-list">
-              <li><a href="http://www.srs.education/?lang=ja" target="_blank" rel="noopener noreferrer">Southwestern Reformed Seminary <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem; opacity: 0.6;"></i></a></li>
-              <li><a href="https://rts.edu/" target="_blank" rel="noopener noreferrer">Reformed Theological Seminary <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem; opacity: 0.6;"></i></a></li>
-              <li><a href="https://www.wts.edu/" target="_blank" rel="noopener noreferrer">Westminster Theological Seminary <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem; opacity: 0.6;"></i></a></li>
-              <li><a href="https://wscal.edu/" target="_blank" rel="noopener noreferrer">Westminster Seminary, California <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem; opacity: 0.6;"></i></a></li>
-              <li><a href="https://www.covenantseminary.edu/" target="_blank" rel="noopener noreferrer">Covenant Theological Seminary <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem; opacity: 0.6;"></i></a></li>
-              <li><a href="https://prts.edu/" target="_blank" rel="noopener noreferrer">Puritan Reformed Theological Seminary <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem; opacity: 0.6;"></i></a></li>
-              <li><a href="https://www.calvinseminary.edu/" target="_blank" rel="noopener noreferrer">Calvin Theological Seminary <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem; opacity: 0.6;"></i></a></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- 최근 업데이트 소식 (Latest Articles) -->
-        <div class="sidebar-box recent-updates collapsible active" id="box-latest-articles">
-          <h3 class="sidebar-title" onclick="toggleSidebarBox('box-latest-articles')">
-            <span><i class="fa-solid fa-clock-rotate-left"></i> Latest Articles</span>
-            <i class="fa-solid fa-chevron-down toggle-icon"></i>
-          </h3>
-          <div class="sidebar-content">
-            <ul class="sidebar-list" id="recent-articles-list">
-              <!-- app.js에서 동적 생성 -->
-            </ul>
-          </div>
-        </div>
-      </aside>
-    </div>
-  </section>
-
-  <!-- ADMIN LOGIN MODAL -->
-  <div class="modal-overlay" id="login-modal" onclick="if(event.target===this) closeLoginModal()">
-    <div class="modal-box">
-      <span class="modal-close" onclick="closeLoginModal()">&times;</span>
-      <h3 class="modal-title">管理者システムログイン</h3>
-      <div id="login-error" style="color: #c0392b; font-size: 0.85rem; text-align: center; margin-bottom: 1rem; display: none;">
-        IDまたはパスワードが正しくありません。
-      </div>
-      <form onsubmit="handleLogin(event); return false;">
-        <div class="form-group">
-          <label class="form-label" for="login-username">管理者ID</label>
-          <input class="form-input" type="text" id="login-username" placeholder="admin" onkeydown="if(event.key==='Enter') handleLogin(event)" required autocomplete="username">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="login-password">パスワード</label>
-          <input class="form-input" type="password" id="login-password" placeholder="••••" onkeydown="if(event.key==='Enter') handleLogin(event)" required autocomplete="current-password">
-        </div>
-        <div class="form-group" style="display: flex; align-items: center; gap: 8px; margin-bottom: 1.2rem; font-size: 0.85rem; color: var(--text-dark); cursor: pointer;">
-          <input type="checkbox" id="login-remember" checked style="cursor: pointer; width: 16px; height: 16px; accent-color: var(--primary-color);">
-          <label for="login-remember" style="cursor: pointer; margin: 0; user-select: none;">この端末にログイン情報を保存 (이 컴퓨터에 비번 저장)</label>
-        </div>
-        <button class="btn-submit" type="button" onclick="handleLogin(event)">ログイン</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- ADMIN DASHBOARD CONTAINER -->
-  <section class="admin-dashboard-container" id="admin-dashboard-sec">
-    <div class="admin-header">
-      <div class="admin-title">
-        <i class="fa-solid fa-sliders-h"></i> 改革主義リソース・管理者パネル
-      </div>
-    </div>
-
-    <div class="admin-grid">
-      <!-- Admin Sidebar Menu -->
-      <aside class="admin-sidebar">
-        <ul class="admin-menu-list">
-          <li class="admin-menu-item" id="admin-menu-mainmenus" onclick="switchAdminTab('mainmenus')">
-            <i class="fa-solid fa-tags"></i> 大メニュー管理
-          </li>
-          <li class="admin-menu-item active" id="admin-menu-folders" onclick="switchAdminTab('folders')">
-            <i class="fa-solid fa-folder-open"></i> 細部フォルダ管理
-          </li>
-          <li class="admin-menu-item" id="admin-menu-write" onclick="switchAdminTab('write')">
-            <i class="fa-solid fa-pen-to-square"></i> 新規記事作成
-          </li>
-          <li class="admin-menu-item" id="admin-menu-articles" onclick="switchAdminTab('articles')">
-            <i class="fa-solid fa-list-check"></i> 記事管理一覧
-          </li>
-          <li class="admin-menu-item" id="admin-menu-stats" onclick="switchAdminTab('stats')">
-            <i class="fa-solid fa-chart-line"></i> 統計と分析 (통계 및 분석)
-          </li>
-        </ul>
-
-        <!-- GitHub Integration Status Card -->
-        <div class="admin-github-card" style="margin-top: 1.5rem; padding: 14px 12px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; box-shadow: var(--shadow-sm);">
-          <div style="font-weight: 600; font-size: 0.82rem; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; color: var(--text-dark);">
-            <span><i class="fa-brands fa-github" style="font-size: 1rem; margin-right: 4px;"></i> GitHub 연동</span>
-            <span id="github-sync-badge" style="font-size: 0.72rem; padding: 2px 7px; border-radius: 10px; background: #fee2e2; color: #dc2626; font-weight: 700;">미연결</span>
-          </div>
-          <div style="margin-bottom: 8px;">
-            <input type="password" id="admin-sidebar-github-token" placeholder="GitHub Personal Token 입력" style="width: 100%; padding: 6px 8px; font-size: 0.78rem; border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box; background: var(--bg-warm);">
-          </div>
-          <div style="display: flex; gap: 4px;">
-            <button type="button" class="btn-primary" onclick="saveGitHubTokenFromSidebar()" style="flex: 1; padding: 6px; font-size: 0.75rem; border-radius: 4px; justify-content: center; height: auto;">
-              <i class="fa-solid fa-floppy-disk"></i> 저장
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-eng">KPI</span>
+                <span class="logo-kor">한국 청교도 연구소</span>
+                <span class="logo-since">Since 2001</span>
+            </a>
+            <button class="mobile-menu-toggle" aria-label="메뉴 열기" aria-expanded="false">
+                <i class="fas fa-bars"></i>
             </button>
-            <button type="button" class="btn-secondary" onclick="testGitHubConnection()" style="padding: 6px 10px; font-size: 0.75rem; border-radius: 4px; justify-content: center; height: auto;" title="연동 테스트">
-              <i class="fa-solid fa-arrows-rotate"></i> 테스트
-            </button>
-          </div>
-          <div id="github-sync-msg" style="margin-top: 6px; font-size: 0.72rem; color: var(--text-light); line-height: 1.3;"></div>
-        </div>
-      </aside>
+            <nav>
+                <ul>
+                    <li><a href="#about" class="about-nav-link">연구소 소개</a></li>
+                    <li class="dropdown">
+                        <a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90">강해설교 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="sermon-dropdown">
+                            <ul class="dropdown-list">
+                                <!-- JS injected -->
+                            </ul>
+                        </div>
+                    </li>
+                    <li><a href="resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98">세미나, 강의</a></li>
+                    <li><a href="resources.html?cat=%EC%84%B1%EA%B2%BD%EC%A3%BC%EC%84%9D">성경주석</a></li>
+                    <li class="dropdown mega-dropdown">
+                        <a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99">청교도 신학 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="puritan-dropdown">
+                            <ul class="dropdown-list">
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99" style="font-weight: 800; border-bottom: 1px dashed var(--secondary-color);">청교도 신학 전체보기</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%8B%A0%EB%A1%A0">1. 신론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9D%B8%EA%B0%84%EB%A1%A0">2. 인간론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B8%B0%EB%8F%85%EB%A1%A0">3. 기독론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%AC%EC%9B%90%EB%A1%A0%28%EC%84%B1%EB%A0%B9%EB%A1%A0%29">4. 구원론/성령론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9C%A8%EB%B2%95%EA%B3%BC%20%EB%B3%B5%EC%9D%8C">5. 율법과 복음</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B7%B8%EB%A6%AC%EC%8A%A4%EB%8F%84%EC%9D%B8%EC%9D%98%20%EC%83%9D%ED%99%9C%EB%A1%A0">6. 그리스도인의 생활론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B7%B8%EB%A6%AC%EC%8A%A4%EB%8F%84%EC%9D%B8%EC%9D%98%20%EA%B0%80%EC%A0%95">7. 그리스도인의 가정</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%90%ED%9A%8C%EB%A1%A0">8. 교회론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%84%A4%EA%B5%90%EB%A1%A0">9. 설교론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%98%81%EC%A0%81%EC%A0%84%EC%9F%81">10. 영적전쟁</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%A2%85%EB%A7%90%EB%A1%A0">11. 종말론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%97%AD%EC%82%AC%20%EC%8B%A0%ED%95%99">12. 역사 신학</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9E%98%EB%AA%BB%EB%90%9C%20%EC%8B%A0%ED%95%99">13. 잘못된 신학</a></li>
 
-      <!-- Admin Main Content Area -->
-      <main class="admin-content">
-        <!-- TAB 1-1: MAIN MENUS (대메뉴 관리) -->
-        <div id="admin-tab-mainmenus" style="display: none;">
-          <h3 class="admin-section-title">大メニュー（メインカテゴリー）管理</h3>
-          <div class="category-manager-layout">
-            <!-- Add Main Menu Form -->
-            <div>
-              <h4 style="margin-bottom: 1rem; color: var(--primary-light);">新規大メニューの追加</h4>
-              <form onsubmit="handleAddMainMenu(event)">
-                <div class="form-group">
-                  <label class="form-label">大メニュー名 (日本語)</label>
-                  <input class="form-input" type="text" id="new-menu-name" placeholder="例: 改革派神学, 契約神学" required>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content">
+                            <ul class="dropdown-list">
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 전체</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%A0%84%EB%8F%84">1. 전도</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EB%B6%80%ED%9D%A5">2. 부흥</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%84%A0%EA%B5%90">3. 선교</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%EB%A7%8C%ED%99%94">전도만화</a></li>
+                    <li><a href="resources.html?cat=%EC%8B%A0%ED%95%99%EA%B0%95%EB%A1%A0">신학강론</a></li>
+                    <li><a href="https://smartstore.naver.com/kpuritan_phb" target="_blank">PHB 출판사</a></li>
+                    <li><a href="seminary.html">SRS 신학대학원</a></li>
+                </ul>
+            </nav>
+            <div class="header-right">
+                <div class="search-bar" onclick="openAllTopicsModal()" style="cursor: pointer; user-select: none;">
+                    <i class="fas fa-search search-icon" style="color: var(--secondary-color);"></i>
+                    <span style="padding-left: 0.5rem; font-size: 0.85rem; color: #555; font-weight: 500;">주제별 신학 검색...</span>
                 </div>
-                <div class="form-group">
-                  <label class="form-label">アイコンの選択 (画像)</label>
-                  <select class="form-input" id="new-menu-icon" required style="cursor: pointer; padding: 6px 12px; font-size: 0.95rem; border-radius: 4px; border: 1px solid var(--border-color); background-color: white;">
-                    <option value="fa-circle-chevron-right">➡️ 基本矢印 (Default)</option>
-                    <option value="fa-book">📖 閉じた本 (주석/독서)</option>
-                    <option value="fa-book-open">📖 開いた本 (교리/학습)</option>
-                    <option value="fa-scroll">📜 聖書/巻물 (성경/두루마리)</option>
-                    <option value="fa-hands-praying">🙏 祈り/敬虔 (기도/경건)</option>
-                    <option value="fa-church">⛪ 教会/礼拝 (교회/예배)</option>
-                    <option value="fa-graduation-cap">🎓 学位帽/神学 (학사모/신학)</option>
-                    <option value="fa-users">👥 人々/交わり (사람들/교제)</option>
-                    <option value="fa-user-tie">👔 牧会者/人物 (목회자/인물)</option>
-                    <option value="fa-video">📹 映像講義 (영상 강의)</option>
-                    <option value="fa-microphone">🎙️ 説教/マイク (설교/오디오)</option>
-                    <option value="fa-file-lines">📄 書類/文書 (종이/문서)</option>
-                    <option value="fa-pen-nib">✍️ 記録/ペン (글쓰기/기록)</option>
-                    <option value="fa-calendar-days">📅 カレンダー (달력/행사)</option>
-                    <option value="fa-star">⭐ 重要/星 (중요/추천)</option>
-                    <option value="fa-map">🗺️ 地図/宣教 (지도/선교)</option>
-                    <option value="fa-heart">❤️ ハート/愛 (사랑/하트)</option>
-                    <option value="fa-lightbulb">💡 電球/アイデア (아이디어/전구)</option>
-                  </select>
-                </div>
-                <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
-                  <input type="checkbox" id="new-menu-isvideo" style="cursor: pointer;">
-                  <label class="form-label" for="new-menu-isvideo" style="margin: 0; cursor: pointer;">動画講義専用レイアウト (YouTube)</label>
-                </div>
-                <button class="btn-submit" type="submit" style="margin-top: 0.5rem;">大メニューを作成</button>
-              </form>
             </div>
-            <!-- Main Menu List -->
-            <div class="category-list-box">
-              <h4 style="margin-bottom: 1rem; color: var(--primary-light);">既存大メニュー一覧</h4>
-              <div class="category-tree-container" id="admin-mainmenus-container">
-                <!-- Dynamically Populated -->
-              </div>
-            </div>
-          </div>
         </div>
+    </header>
 
-        <!-- TAB 1-2: FOLDERS / CATEGORIES -->
-        <div id="admin-tab-folders">
-          <h3 class="admin-section-title">細部フォルダ（サブカテゴリー）管理</h3>
-          <div class="category-manager-layout">
-            <!-- Add Folder Form -->
-            <div>
-              <h4 style="margin-bottom: 1rem; color: var(--primary-light);">新規フォルダの追加</h4>
-              <form onsubmit="handleAddCategory(event)">
-                <div class="form-group">
-                  <label class="form-label">親メニュー選択</label>
-                  <select class="form-input" id="new-cat-parent" required>
-                    <!-- Dynamically Populated -->
-                  </select>
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <span class="hero-subtitle">한국 청교도 연구소</span>
+                <h1>KOREA PURITAN <br>INSTITUTE</h1>
+                <p class="hero-description">청교도 신학과 개혁주의 신앙을 연구하고 성경적 자료를 제공하여 한국교회의 갱신과 회복을 섬깁니다.</p>
+                <div class="main-search-wrapper">
+                    <div class="main-search-box">
+                        <i class="fas fa-search main-search-icon"></i>
+                        <input type="text" id="main-search-input" placeholder="신학 주제, 설교, 도서 검색..." autocomplete="off">
+                        <button id="main-search-btn" aria-label="검색"><i class="fas fa-search"></i> 검색</button>
+                    </div>
                 </div>
-                <div class="form-group">
-                  <label class="form-label">フォルダ（カテゴリー）名 (日本語)</label>
-                  <input class="form-input" type="text" id="new-cat-name" placeholder="例: 組織神学, キリスト論" required>
+            </div>
+        </section>
+
+        <!-- Unified Explore Layout Section -->
+        <section id="recent-updates">
+            <div class="section-title modern-flex" style="margin-bottom: 2rem; border-bottom: none;">
+                <div class="title-text-group">
+                    <h2>EXPLORE RESOURCES</h2>
+                    <p>Discover our curated library of Reformed theology.</p>
                 </div>
-                <button class="btn-submit" type="submit" style="margin-top: 0.5rem;">フォルダを作成</button>
-              </form>
             </div>
-            <!-- Folder List -->
-            <div class="category-list-box">
-              <h4 style="margin-bottom: 1rem; color: var(--primary-light);">既存フォルダ一覧</h4>
-              <div class="form-group">
-                <label class="form-label">表示フィルター (親メニュー)</label>
-                <select class="form-input" id="filter-cat-parent" onchange="renderAdminCategoryList()">
-                  <option value="all">すべて表示</option>
-                  <option value="sermon">聖書講解</option>
-                  <option value="catechism">教理教育</option>
-                  <option value="discipleship">伝道・弟子道</option>
-                  <option value="revitalization">教会再生</option>
-                  <option value="pastor">10分動画神学講義</option>
-                </select>
-              </div>
-              <div class="category-badges" id="admin-categories-container">
-                <!-- Dynamically Populated -->
-              </div>
+
+            <div class="explore-layout-container">
+                <!-- Left Sidebar: Topic Navigation -->
+                <aside class="explore-sidebar" id="explore-sidebar">
+                    <!-- Sidebar Drawer Toggle Button (Monergism Inspired) -->
+                    <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" aria-label="주제 메뉴 토글">
+                        <i class="fas fa-chevron-left toggle-icon"></i>
+                        <span class="toggle-text">CLOSE TOPICS</span>
+                    </button>
+                    
+                    <div class="sidebar-inner-content" id="sidebar-inner-content">
+                        <!-- 모바일 전용 닫기 헤더 -->
+                        <div class="sidebar-mobile-header">
+                            <span>신학 주제 탐색</span>
+                            <button id="sidebar-mobile-close" aria-label="메뉴 닫기">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar-search-box">
+                            <i class="fas fa-search sidebar-search-icon"></i>
+                            <input type="text" id="sidebar-search-input" placeholder="원하는 주제 검색..." autocomplete="off">
+                            <i class="fas fa-times" id="sidebar-search-clear" style="display: none;"></i>
+                        </div>
+                        
+                        <div class="sidebar-topic-list">
+                            <div class="sidebar-topic-item active" data-topic="all" id="btn-show-all-resources">
+                                <i class="fas fa-th-large"></i> <span>전체 자료 보기</span>
+                            </div>
+                            <div class="sidebar-divider">신학 주제 분류</div>
+                            <div id="sidebar-major-topics">
+                                <!-- Injected by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Right Content Area -->
+                <div class="explore-main-content">
+                    <!-- Default View: Carousels -->
+                    <div id="default-carousel-view">
+                        <!-- 1. New Arrivals Section -->
+                        <div class="carousel-section" id="home-section-new">
+                            <div class="carousel-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                    <h3 class="carousel-title" style="margin: 0;">최신 업데이트 <span
+                                            style="font-size:0.5em; color:#8c6d46; font-weight:600; margin-left:6px;">New Arrivals</span>
+                                    </h3>
+                                    <!-- 보기 방식 토글 버튼 (기본값: 제목만 보기) -->
+                                    <div class="home-view-toggle-bar">
+                                        <button type="button" class="home-view-toggle-btn active" id="btn-view-new-list" onclick="setHomeSectionView('new', 'list')">
+                                            <i class="fas fa-list"></i> 제목만 보기
+                                        </button>
+                                        <button type="button" class="home-view-toggle-btn" id="btn-view-new-card" onclick="setHomeSectionView('new', 'card')">
+                                            <i class="fas fa-th-large"></i> 썸네일과 보기
+                                        </button>
+                                    </div>
+                                </div>
+                                <a href="resources.html?type=latest" class="carousel-view-all">전체보기 <i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+
+                            <!-- [목록형] 제목만 보기 (기본 표시) -->
+                            <div class="home-list-container" id="list-wrapper-new" style="display: block;">
+                                <div class="home-list-grid" id="list-new">
+                                    <div class="loading-msg" style="padding:1.5rem; grid-column: 1 / -1; text-align: center; color: #718096;">최신 자료를 불러오는 중...</div>
+                                </div>
+                            </div>
+
+                            <!-- [카드형] 썸네일과 보기 (기본 숨김) -->
+                            <div class="carousel-container-wrapper" id="carousel-wrapper-new" style="display: none;">
+                                <button class="carousel-nav-btn prev" onclick="scrollCarousel('carousel-new', -300)"><i
+                                        class="fas fa-chevron-left"></i></button>
+                                <div class="carousel-track" id="carousel-new">
+                                    <div class="loading-msg" style="padding:2rem;">최신 자료를 불러오는 중...</div>
+                                </div>
+                                <button class="carousel-nav-btn next" onclick="scrollCarousel('carousel-new', 300)"><i
+                                        class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- 2. Recommended Materials Section -->
+                        <div class="carousel-section" id="home-section-sermon" style="margin-top: 32px;">
+                            <div class="carousel-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                    <h3 class="carousel-title" style="margin: 0;">추천 자료 <span
+                                            style="font-size:0.5em; color:#8c6d46; font-weight:600; margin-left:6px;">Recommended</span>
+                                    </h3>
+                                    <!-- 보기 방식 토글 버튼 (기본값: 제목만 보기) -->
+                                    <div class="home-view-toggle-bar">
+                                        <button type="button" class="home-view-toggle-btn active" id="btn-view-sermon-list" onclick="setHomeSectionView('sermon', 'list')">
+                                            <i class="fas fa-list"></i> 제목만 보기
+                                        </button>
+                                        <button type="button" class="home-view-toggle-btn" id="btn-view-sermon-card" onclick="setHomeSectionView('sermon', 'card')">
+                                            <i class="fas fa-th-large"></i> 썸네일과 보기
+                                        </button>
+                                    </div>
+                                </div>
+                                <a href="resources.html?type=recommended" class="carousel-view-all">전체보기
+                                    <i class="fas fa-chevron-right"></i></a>
+                            </div>
+
+                            <!-- [목록형] 제목만 보기 (기본 표시) -->
+                            <div class="home-list-container" id="list-wrapper-sermon" style="display: block;">
+                                <div class="home-list-grid" id="list-sermon">
+                                    <div class="loading-msg" style="padding:1.5rem; grid-column: 1 / -1; text-align: center; color: #718096;">추천 자료를 불러오는 중...</div>
+                                </div>
+                            </div>
+
+                            <!-- [카드형] 썸네일과 보기 (기본 숨김) -->
+                            <div class="carousel-container-wrapper" id="carousel-wrapper-sermon" style="display: none;">
+                                <button class="carousel-nav-btn prev" onclick="scrollCarousel('carousel-sermon', -300)"><i
+                                        class="fas fa-chevron-left"></i></button>
+                                <div class="carousel-track" id="carousel-sermon">
+                                    <div class="loading-msg" style="padding:2rem;">추천 자료를 불러오는 중...</div>
+                                </div>
+                                <button class="carousel-nav-btn next" onclick="scrollCarousel('carousel-sermon', 300)"><i
+                                        class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtered View: Results List -->
+                    <div id="filtered-results-view" style="display: none;">
+                        <div class="filtered-results-header">
+                            <h3 id="filtered-results-title">선택된 주제 자료</h3>
+                            <button id="filtered-results-close-btn" class="explorer-close-btn"><i class="fas fa-times"></i> 필터 해제</button>
+                        </div>
+                        <div id="filtered-results-list" class="explorer-results-list">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+        </section>
+        </section>
+
+        <script>
+            // Emergency Fallback for Carousels
+            setTimeout(() => {
+                const checkAndFill = (id) => {
+                    const track = document.getElementById(id);
+                    // 내용이 없거나 loading-msg만 있으면 fallback 실행
+                    if (track && (track.children.length === 0 || track.querySelector('.loading-msg'))) {
+                        console.warn(`Fallback triggered for ${id}`);
+                        track.innerHTML = '';
+                        const mockData = [
+                            { title: "[샘플] 청교도 신학의 정수", cat: "청교도 신학", date: "2026.01.15" },
+                            { title: "[샘플] 웨스트민스터 신앙고백 해설", cat: "신앙고백", date: "2026.01.12" },
+                            { title: "[샘플] 리처드 십스의 상한 갈대", cat: "경건 서적", date: "2026.01.10" },
+                            { title: "[샘플] 가정 예배 지침서", cat: "신자의 삶", date: "2026.01.05" },
+                            { title: "[샘플] 은혜의 수단으로서의 기도", cat: "청교도 신학", date: "2026.01.03" },
+                            { title: "[샘플] 참된 회심의 성경적 표지", cat: "회심", date: "2026.01.01" },
+                            { title: "[샘플] 그리스도의 위격과 사역", cat: "기독론", date: "2025.12.28" },
+                            { title: "[샘플] 성화의 신비와 능력", cat: "성화", date: "2025.12.25" },
+                            { title: "[샘플] 영적 전쟁에서 승리하는 법", cat: "영적전쟁", date: "2025.12.20" },
+                            { title: "[샘플] 그리스도인의 가정과 결혼", cat: "그리스도인의 가정", date: "2025.12.15" },
+                            { title: "[샘플] 복음 전도와 하나님의 주권", cat: "전도, 부흥, 선교", date: "2025.12.10" },
+                            { title: "[샘플] 장로교 정치 원리와 실제", cat: "교회론", date: "2025.12.05" }
+                        ];
+
+                        mockData.forEach(item => {
+                            const div = document.createElement('div');
+                            div.className = 'carousel-card';
+                            div.innerHTML = `
+                                <div class="carousel-card-content">
+                                    <div class="carousel-card-tag">${item.cat}</div>
+                                    <div class="carousel-card-title">${item.title}</div>
+                                    <div class="carousel-card-meta">
+                                        <span>${item.date}</span>
+                                        <div class="carousel-icon-btn"><i class="fas fa-arrow-right"></i></div>
+                                    </div>
+                                </div>
+                            `;
+                            div.onclick = () => {
+                                try {
+                                    if (window.openResourceModal) {
+                                        window.openResourceModal(item.cat);
+                                    } else {
+                                        // 급한대로 제목만이라도 보여주는 fallback
+                                        console.warn("Main Script Not Loaded - Basic Alert");
+                                        // alert("상세 보기 기능 로딩 중... (Main Script Not Loaded)\n제목: " + post.title); // post.title이 아니라 item.title이 맞음
+                                        openLocalMockModal(item.cat, item.title); // Fallback to local mock modal
+                                    }
+                                } catch (e) {
+                                    console.warn("Using local modal fallback:", e);
+                                    openLocalMockModal(item.cat, item.title);
+                                }
+                            };
+                            track.appendChild(div);
+                        });
+                    }
+                };
+
+                // 자체 로컬 모달 오픈 함수 (Main.js 의존성 제거)
+                const openLocalMockModal = (cat, clickedTitle) => {
+                    const modal = document.getElementById('resource-modal');
+                    const list = document.getElementById('resource-list-container');
+                    const title = document.getElementById('resource-modal-title');
+
+                    if (modal && list) {
+                        modal.classList.add('show');
+                        if (title) title.textContent = cat + " 자료 목록 (샘플)";
+                        list.innerHTML = '';
+
+                        // 클릭한 아이템을 최상단에 보여줌
+                        const li = document.createElement('li');
+                        li.className = 'resource-item';
+                        li.style.border = '2px solid var(--secondary-color)';
+                        li.innerHTML = `
+                            <div class="resource-header" style="margin-bottom:5px;">
+                                <span style="font-size:0.8rem; color:var(--secondary-color);">샘플 자료</span>
+                                <span style="font-size:0.8rem; color:#888;">2024.01.18</span>
+                            </div>
+                            <h3 style="margin:0 0 10px 0; font-size:1.1rem;">${clickedTitle || cat + ' 관련 자료'}</h3>
+                            <p style="font-size:0.9rem; color:#555; margin-bottom: 15px;">
+                                본 자료는 샘플 데이터입니다. (데이터베이스 연결 대기 중)<br>
+                                만약 계속 이 화면이 보인다면 아래 버튼을 눌러보세요.
+                            </p>
+                            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                                <button onclick="window.loadMainCarousels ? window.loadMainCarousels() : alert('메인 스크립트가 아직 로드되지 않았습니다.');" 
+                                    style="padding:8px 15px; background:var(--primary-color); color:white; border:none; border-radius:4px; cursor:pointer;">
+                                    <i class="fas fa-sync-alt"></i> 실제 데이터 불러오기 (강제 시도)
+                                </button>
+                                <a href="#" class="premium-btn" style="display:inline-block; text-decoration:none; color:var(--secondary-color); border:1px solid var(--secondary-color); padding:8px 15px; border-radius:4px; font-size:0.9rem;">
+                                    <i class="fas fa-file-pdf"></i> [샘플] PDF 디자인 예시
+                                </a>
+                            </div>
+                        `;
+                        list.appendChild(li);
+
+                        // 추가 샘플들
+                        const extras = ['심화 연구 자료', '관련 특강 영상', '참고 문헌 리스트'];
+                        extras.forEach(ex => {
+                            const eli = document.createElement('li');
+                            eli.className = 'resource-item';
+                            eli.innerHTML = `
+                                <h4 style="margin:0 0 5px 0;">[샘플] ${cat} ${ex}</h4>
+                                <p style="font-size:0.8rem; color:#999; margin-bottom:10px;">준비 중입니다.</p>
+                                <button style="background:#eee; border:none; padding:5px 10px; border-radius:4px; color:#aaa; cursor:not-allowed;">
+                                    <i class="fas fa-lock"></i> 접근 제한
+                                </button>
+                            `;
+                            list.appendChild(eli);
+                        });
+                    } else {
+                        alert("모달 요소를 찾을 수 없습니다. 페이지를 새로고침 해주세요.");
+                    }
+                };
+
+                if (window.isDataLoaded) return; // 실제 데이터가 로드되었으면 샘플 덮어쓰기 방지
+                checkAndFill('carousel-new');
+                checkAndFill('carousel-topic');
+                checkAndFill('carousel-sermon');
+            }, 8000); // 8초 대기
+        </script>
+
+        <style>
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .load-more-trigger {
+                width: 100%;
+            }
+        </style>
+
+        <script>
+            // Emergency Fallback: Standalone Mock Data Renderer
+            // This script runs if the main logic fails to populate the grid within 1.5 seconds.
+            setTimeout(() => {
+                const grid = document.getElementById('recent-posts-grid');
+                if (grid && grid.children.length === 0) {
+                    console.warn("Emergency Fallback Triggered: Rendering Standalone Mock Data");
+
+                    const mockData = [
+                        { title: "청교도 신학의 정수: 존 오웬의 성령론", cat: "청교도 신학", date: "2026.01.15" },
+                        { title: "현대 교회를 위한 웨스트민스터 신앙고백 해설", cat: "신앙고백", date: "2026.01.12" },
+                        { title: "고난 속의 위로: 리처드 십스의 상한 갈대", cat: "경건 서적", date: "2026.01.10" },
+                        { title: "설교란 무엇인가? 마틴 로이드 존스의 설교학", cat: "설교학", date: "2026.01.08" },
+                        { title: "가정 예배의 회복과 실제적인 지침", cat: "신자의 삶", date: "2026.01.05" },
+                        { title: "요한계시록 강해 시리즈 (1): 승리하신 그리스도", cat: "강해설교", date: "2026.01.01" }
+                    ];
+
+                    mockData.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'recent-card-premium';
+                        div.innerHTML = `
+                            <div class="recent-card-inner">
+                                <div class="recent-card-top">
+                                    <span class="recent-status-pill">SAMPLE</span>
+                                    <span class="recent-category-tag">${item.cat}</span>
+                                </div>
+                                <h3 class="recent-title-premium">${item.title}</h3>
+                                <div class="recent-card-footer">
+                                    <span class="recent-date-premium"><i class="far fa-calendar-alt"></i> ${item.date}</span>
+                                    <button class="recent-link-btn">
+                                        상세보기 <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        div.querySelector('.recent-card-inner').addEventListener('click', () => {
+                            if (window.openResourceModal) {
+                                window.openResourceModal(item.cat);
+                            } else {
+                                console.warn("Main Script Not Loaded - Basic Alert");
+                                // alert('자료 로딩 중입니다. 잠시만 기다려주세요.');
+                            }
+                        });
+                        grid.appendChild(div);
+                    });
+                }
+            }, 1500);
+        </script>
+        <section class="newsletter-section">
+            <div class="newsletter-container">
+                <div class="newsletter-text">
+                    <h2>최신 업데이트 정보를 메일로 받아보세요.</h2>
+                    <p>업데이트 및 주요 공지사항을 발송해 드립니다.</p>
+                </div>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); alert('신청되었습니다! (데모)');">
+                    <input type="email" placeholder="이메일 주소를 입력하세요" required>
+                    <button type="submit">구독하기</button>
+                </form>
+            </div>
+        </section>
+
+
+        <!-- Admin Dashboard Removed -->
+
+
+
+
+
+
+
+            <!-- 5. 통합 통계 섹션 -->
+
+
+
+
+
+
+
+
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Korea Puritan Institute</h4>
+                <p>한국 청교도 연구소는 청교도 신학과 개혁주의 신념을 연구하고 성경적인 자료를 제공합니다.</p>
+                <div class="social-links">
+                    <a href="https://www.youtube.com/@kpuritan" title="YouTube" target="_blank"
+                        rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.instagram.com/k_puritan_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                        target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="Naver Blog" class="naver-link">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>Email: kpuritan.phb@gmail.com</p>
+            </div>
         </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Korea Puritan Institute. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">
+                <a href="admin.html"
+                    style="color: #666; text-decoration: none;">관리자 로그인</a>
+            </p>
+        </div>
+    </footer>
 
-        <!-- TAB 2: WRITE / EDIT ARTICLE -->
-        <div id="admin-tab-write" style="display: none;">
-          <h3 class="admin-section-title" id="write-section-title">新規資料の作成・投稿</h3>
-          <form onsubmit="handleSaveArticle(event)">
-            <input type="hidden" id="edit-article-id" value="">
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">大メニュー（親カテゴリ）</label>
-                <select class="form-input" id="art-parent-menu" onchange="updateWriteSubcategoryDropdown()" required>
-                  <option value="">-- 親メニューの選択 --</option>
-                  <!-- Dynamically Populated -->
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">細部フォルダ（サブカテゴリ）</label>
-                <select class="form-input" id="art-category-id" onchange="handleCategoryChange()" required>
-                  <option value="">-- 先に親メニューを選択してください --</option>
-                </select>
-              </div>
+
+
+    <!-- About Modal -->
+    <div id="about-modal" class="modal">
+        <div class="modal-content about-modal-content">
+            <span class="close-btn" id="about-close-btn">&times;</span>
+            <div class="about-container modal-style">
+                <div class="about-text">
+                    <div class="section-title left">
+                        <h2>연구소 소개</h2>
+                    </div>
+                    <p>한국 청교도 연구소는 성경의 절대적 권위와 하나님의 주권을 중심으로 한 개혁주의 신앙 전통 위에서, 청교도들의 신학과 경건, 그리고 목회적 유산을 연구하고 소개하기 위해
+                        설립되었습니다.</p>
+                    <p>청교도들은 단순한 과거의 신학자들이 아니라, 말씀에 의해 형성된 삶을 추구했던 신앙의 증인들이었습니다. 그들은 교리와 삶, 신학과 경건, 공적 예배와 개인의 신앙을 분리하지
+                        않았으며, 오직 하나님의 영광(Soli Deo Gloria)을 목적으로 교회와 성도의 삶을 개혁하고자 했습니다.</p>
+
+                    <p class="about-description-large">본 연구소는 청교도들의 설교, 신학 저작, 경건 문헌들을 번역·소개하고, 그 신학적 깊이와 목회적 통찰을 오늘의 한국
+                        교회와 성도들에게 바르게 전달하고자 합니다.</p>
+
+                    <p>우리는 청교도 신학이 단지 학문적 연구의 대상이 아니라, 오늘날에도 교회를 새롭게 하고 성도를 거룩으로 이끄는 살아 있는 유산임을 확신합니다.</p>
+                    <p>한국 청교도 연구소는 웨스트민스터 신앙고백과 대·소요리문답으로 대표되는 개혁주의 신앙 고백 전통을 존중하며, 성경 중심적 설교, 언약 신학, 구원의 은혜 교리, 성화와 경건의
+                        균형을 강조합니다.</p>
+                    <p>우리는 새로운 것을 만들어내기보다, 이미 하나님께서 교회를 위해 허락하신 신실한 신앙의 유산을 다시 발견하고 충실히 계승하는 일에 헌신하고자 합니다. 오직 성경으로 돌아가고,
+                        성경이 가르치는 바른 교리와 거룩한 삶을 회복하기를 소망합니다.</p>
+                </div>
+
+                <div class="about-right">
+                    <!-- Background Illustration (Grayscale, Transparent, Frameless via crop) -->
+                    <img src="images/puritan-study.png" class="about-bg-image" alt="Background Study Scene" loading="lazy">
+
+                    <!-- 소장 프로필 카드 (NEW) -->
+                    <div class="about-director-card"
+                        style="display: flex; align-items: center; gap: 18px; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(8px); padding: 16px 20px; border-radius: 14px; border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06); position: relative; z-index: 1;">
+                        <img src="images/pastor_kim.png" alt="한국 청교도 연구소 소장 김홍만 목사"
+                            style="width: 105px; height: 115px; object-fit: cover; object-position: top center; border-radius: 12px; border: 2px solid var(--secondary-color); box-shadow: 0 4px 12px rgba(0,0,0,0.12); flex-shrink: 0;">
+                        <div style="flex: 1;">
+                            <span style="display: inline-block; font-size: 0.8rem; font-weight: 700; color: var(--secondary-color); letter-spacing: 0.05em; margin-bottom: 2px;">한국 청교도 연구소 소장</span>
+                            <h3 style="margin: 0 0 6px 0; font-size: 1.25rem; font-weight: 800; color: var(--primary-color); font-family: 'Nanum Myeongjo', serif;">
+                                김홍만 목사 <span style="font-size: 0.85rem; font-weight: normal; color: #666; font-family: 'Montserrat', sans-serif;">Ph.D.</span>
+                            </h3>
+                            <p style="margin: 0; font-size: 0.88rem; color: #444; line-height: 1.5;">
+                                <span style="color: #777; font-size: 0.8rem;">간사:</span> <strong>배가현 전도사</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="about-goals-container">
+                        <h4>연구소의 지향점</h4>
+                        <ul class="about-goals">
+                            <li><i class="fas fa-check"></i> 설교자들이 성경을 더 깊이 이해하도록 돕습니다.</li>
+                            <li><i class="fas fa-check"></i> 성도들이 하나님 앞에 경건하게 살도록 격려합니다.</li>
+                            <li><i class="fas fa-check"></i> 한국 교회가 개혁주의 신앙의 뿌리를 회복하도록 섬깁니다.</li>
+                        </ul>
+                    </div>
+
+                    <div class="about-team">
+                        <span class="team-title">섬기는 이들</span>
+                        <p class="team-name">청교도 개혁교회 연합회 복음 사역자들</p>
+                        <span class="eng-team">The Alliance of Puritan and Reformed Churches</span>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Resource List Modal -->
+    <div id="resource-modal" class="modal">
+        <div class="modal-content resource-modal-content">
+            <span class="close-btn" id="resource-close-btn">&times;</span>
+            <h2 id="resource-modal-title">자료 목록</h2>
+
+            <!-- 필터링 섹션 -->
+            <div id="modal-filter-section"
+                style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; background: #f8f9fa; padding: 12px; border-radius: 10px; border: 1px solid #eee;">
+                <div style="flex: 1; min-width: 150px;">
+                    <label style="font-size: 0.75rem; color: #888; display: block; margin-bottom: 4px;">주제별 필터</label>
+                    <select id="modal-filter-topic"
+                        style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ddd; font-size: 0.9rem;">
+                        <option value="">모든 주제</option>
+                    </select>
+                </div>
+                <div style="flex: 1; min-width: 150px;">
+                    <label style="font-size: 0.75rem; color: #888; display: block; margin-bottom: 4px;">저자별 필터</label>
+                    <select id="modal-filter-author"
+                        style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ddd; font-size: 0.9rem;">
+                        <option value="">모든 저자</option>
+                    </select>
+                </div>
+                <div style="flex: 2; min-width: 200px;">
+                    <label style="font-size: 0.75rem; color: #888; display: block; margin-bottom: 4px;">자료 검색</label>
+                    <input type="text" id="modal-search-input" placeholder="제목이나 내용을 입력하세요..."
+                        style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ddd; font-size: 0.9rem;">
+                </div>
+            </div>
+            <div id="resource-modal-admin-header"
+                style="display: none; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 700; color: var(--secondary-color);"><i class="fas fa-plus-circle"></i> 이
+                        폴더에 새 자료 추가</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="cta-btn" id="sort-alpha-btn"
+                            style="padding: 5px 15px; font-size: 0.8rem; background: #eee; color: #333; border: 1px solid #ddd;">
+                            <i class="fas fa-sort-alpha-down"></i> 가나다순 정렬</button>
+                        <button class="cta-btn primary" id="toggle-modal-upload"
+                            style="padding: 5px 15px; font-size: 0.8rem;">업로드 창 열기</button>
+                    </div>
+                </div>
+
+                <form id="modal-upload-form" class="upload-form"
+                    style="display: none; margin-top: 15px; background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                    <input type="text" id="modal-post-title" placeholder="자료 제목"
+                        style="width:100%; margin-bottom:10px;">
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" id="modal-post-series" placeholder="시리즈 이름 (자동 입력됨)" style="flex: 2;">
+                        <select id="modal-post-lang" style="flex: 1; display: none;">
+                            <option value="한국어">한국어</option>
+                            <option value="English">English</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="Japanese">Japanese</option>
+                            <option value="Arabic">Arabic</option>
+                            <option value="Chinese">Chinese</option>
+                        </select>
+                        <input type="number" id="modal-post-order" value="0" style="flex: 1;" placeholder="순서">
+                        <input type="text" id="modal-post-price" placeholder="가격 (도서 전용)"
+                            style="flex: 1; display: none;">
+                    </div>
+                    <textarea id="modal-post-content" rows="3" placeholder="내용 또는 유튜브 링크"
+                        style="width:100%; margin-bottom:10px;"></textarea>
+                    <div id="modal-post-category-fields"
+                        style="display: none; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        <div class="input-group">
+                            <label style="font-size: 0.8rem; color: #666; display: block; margin-bottom: 5px;">주제별
+                                분류</label>
+                            <select id="modal-post-topic" style="width: 100%;">
+                                <option value="">-- 선택 안함 --</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label style="font-size: 0.8rem; color: #666; display: block; margin-bottom: 5px;">저자별
+                                분류</label>
+                            <select id="modal-post-author" style="width: 100%;">
+                                <option value="">-- 선택 안함 --</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label style="font-size: 0.8rem; color: #666; display: block; margin-bottom: 5px;">기타
+                                분류</label>
+                            <select id="modal-post-other-category" style="width: 100%;">
+                                <option value="">-- 선택 안함 --</option>
+                                <option value="기타">기타 자료</option>
+                                <option value="도서 목록">도서 목록</option>
+                                <option value="전도 소책자">전도 소책자</option>
+                                <option value="강해설교">강해설교</option>
+                                <option value="신학강론">신학강론</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label style="font-size: 0.8rem; color: #666; width: 80px;">상세 파일</label>
+                            <input type="file" id="modal-post-file" style="font-size: 0.8rem; flex: 1;">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label style="font-size: 0.8rem; color: #666; width: 80px;">썸네일</label>
+                            <input type="file" id="modal-post-cover" accept="image/*"
+                                style="font-size: 0.8rem; flex: 1;">
+                        </div>
+                    </div>
+                    <button type="submit" class="cta-btn primary" style="width: 100%; padding: 12px;">게시하기</button>
+                    <div id="modal-upload-progress"
+                        style="display:none; margin-top:10px; height:4px; background:#eee; border-radius:2px; overflow:hidden;">
+                        <div id="modal-upload-bar"
+                            style="width:0%; height:100%; background:var(--secondary-color); transition:width 0.3s;">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="resource-list-wrapper">
+                <ul id="resource-list-container" class="resource-list">
+                    <!-- Content injected via JS -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Music Player Container (Left) -->
+    <div class="bgm-player" id="bgm-player"
+        style="position: fixed; bottom: 2rem; left: 2rem; z-index: 1500; pointer-events: none;">
+        <button id="bgm-toggle-btn" class="bgm-control" onclick="if(window.toggleBGM) window.toggleBGM(event)"
+            style="pointer-events: auto;">
+            <span class="music-icon"><i class="fas fa-music"></i></span>
+        </button>
+        <div id="yt-player-container" style="display: none;"></div>
+    </div>
+
+
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+    <!-- PortOne SDK for actual payments -->
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+    <script src="data.js?v=restore_lastnight_v2"></script>
+    <script>
+        // --- Firebase Configuration (Migrated to HTML for Safety) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJbOaiElCypwgtPgbwdnudn3VC737fMrs",
+            authDomain: "kpuritan-home.firebaseapp.com",
+            projectId: "kpuritan-home",
+            storageBucket: "kpuritan-home.firebasestorage.app",
+            messagingSenderId: "1071220455502",
+            appId: "1:1071220455502:web:7f6f59b48c48a73437f8f0"
+        };
+
+        // Initialize Firebase Global Variables
+        window.db = null;
+        window.storage = null;
+        window.isAdmin = localStorage.getItem('isAdmin') === 'true';
+        window.useMock = false;
+
+        try {
+            if (firebase.apps.length === 0) {
+                firebase.initializeApp(firebaseConfig);
+                window.db = firebase.firestore();
+                window.storage = firebase.storage();
+                window.auth = firebase.auth();
+                console.log("✅ Firebase (HTML) 연결 성공! Auth 추가됨");
+            }
+        } catch (e) {
+            console.error("❌ Firebase 초기화 실패:", e);
+            window.useMock = true;
+        }
+
+        window.onerror = function (msg, url, lineNo, columnNo, error) {
+            alert('자바스크립트 에러 발생:\n' + msg + '\n라인: ' + lineNo);
+            return false;
+        };
+
+        // PDF.js worker 설정
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+        }
+
+        // --- Core Logic handled by main.js ---
+        console.log("Waiting for main.js to handle application logic...");
+
+        // Auto-run regardless of DB status (for Mock fallback)
+        setTimeout(() => {
+            if (typeof window.loadMainCarousels === 'function') {
+                window.loadMainCarousels();
+            }
+        }, 500);
+    </script>
+    <script src="bgm.js?v=1"></script>
+    <script src="stats.js?v=1"></script>
+    <script src="main.js?v=admin_hdr_fix_6"></script>
+    <script>
+        // --- Theology Explorer (Monergism Sidebar Style) Script ---
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (typeof topics === 'undefined' || typeof detailedTopics === 'undefined') {
+                    console.error("Theology data not loaded!");
+                    return;
+                }
+                initSidebarTheologyExplorer();
+            }, 800);
+        });
+
+        function initSidebarTheologyExplorer() {
+            const majorTopicsContainer = document.getElementById('sidebar-major-topics');
+            const searchInput = document.getElementById('sidebar-search-input');
+            const searchClear = document.getElementById('sidebar-search-clear');
+            const btnShowAll = document.getElementById('btn-show-all-resources');
             
-            <div class="form-group" id="art-title-group">
-              <label class="form-label" id="art-title-label">タイトル</label>
-              <input class="form-input" type="text" id="art-title" placeholder="資料 또는 설교의 제목 입력" required>
-            </div>
-
-            <div class="form-row" id="art-author-scripture-row">
-              <div class="form-group">
-                <label class="form-label" id="art-author-label">著者 / 説教者</label>
-                <input class="form-input" type="text" id="art-author" placeholder="例: ジョン・オーウェン、清水牧師" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" id="art-scripture-label">関連聖句（本文章など）</label>
-                <input class="form-input" type="text" id="art-scripture" placeholder="例: ローマの信徒への手紙 8:28 (任意)">
-              </div>
-            </div>
-
-            <div class="form-group" id="art-video-group">
-              <label class="form-label">YouTube動画リンク (동영상 링크 - 任意)</label>
-              <input class="form-input" type="text" id="art-video-url" placeholder="例: https://www.youtube.com/watch?v=xxxxxx">
-            </div>
-            <div class="form-group" id="art-photo-group" style="display: none;">
-              <label class="form-label">プロフィール写真URL (프로필 사진 URL - 任意)</label>
-              <div style="display: flex; gap: 8px; align-items: center;">
-                <input class="form-input" type="text" id="art-photo-url" placeholder="例: images/profile.jpg 또는 이미지 주소" style="flex: 1; margin-bottom: 0;">
-                <input type="file" id="art-photo-file" accept="image/*" style="display: none;" onchange="handlePhotoUpload(this)">
-                <button type="button" class="btn-submit" onclick="document.getElementById('art-photo-file').click()" style="background-color: var(--primary-color); width: auto; white-space: nowrap; margin-top: 0; padding: 0 15px; height: 38px; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                  <i class="fa-solid fa-image"></i> 사진 파일 선택
-                </button>
-              </div>
-              <div style="margin-top: 8px; font-size: 0.85rem; color: var(--text-light); display: flex; align-items: center; gap: 8px;">
-                <span>GitHub Token (사진 업로드용): </span>
-                <input type="password" id="admin-github-token" placeholder="토큰 입력" style="padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--border-color); width: 150px;" onchange="localStorage.setItem('wscal_github_token', this.value)">
-              </div>
-              <div id="art-photo-upload-status" style="font-size: 0.8rem; color: var(--text-light); margin-top: 4px; display: none;"></div>
-            </div>
-            <div class="form-group" style="display: none;">
-              <label class="form-label">投稿日 (게시날짜)</label>
-              <input class="form-input" type="date" id="art-date" required>
-            </div>
-
-            <div class="form-group" style="position: relative;">
-              <!-- Tistory Style Header & Mode Selector -->
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-                <label class="form-label" id="art-content-label" style="margin-bottom: 0; font-weight: bold;">
-                  <i class="fa-solid fa-file-pen"></i> 本文エディタ (본문 에디터)
-                </label>
+            // Sidebar toggle logic
+            const sidebar = document.getElementById('explore-sidebar');
+            const toggleBtn = document.getElementById('sidebar-toggle-btn');
+            if (sidebar && toggleBtn) {
+                const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+                const toggleText = toggleBtn.querySelector('.toggle-text');
                 
-                <!-- Tistory Mode Dropdown -->
-                <div class="tistory-mode-wrapper" id="tistory-mode-wrapper">
-                  <button type="button" class="tistory-mode-btn" id="tistory-current-mode-btn" onclick="toggleTistoryModeDropdown()">
-                    <span id="tistory-mode-text">기본모드</span> <i class="fa-solid fa-chevron-down" id="tistory-mode-arrow" style="font-size: 0.75rem; margin-left: 4px;"></i>
-                  </button>
-                  <div class="tistory-mode-menu" id="tistory-mode-menu">
-                    <div class="tistory-mode-item active" id="mode-opt-basic" onclick="selectTistoryMode('basic')">
-                      <i class="fa-solid fa-pen-to-square"></i> 기본모드
+                toggleBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('collapsed');
+                    if (sidebar.classList.contains('collapsed')) {
+                        toggleIcon.className = 'fas fa-chevron-right toggle-icon';
+                        toggleText.textContent = 'OPEN TOPICS';
+                    } else {
+                        toggleIcon.className = 'fas fa-chevron-left toggle-icon';
+                        toggleText.textContent = 'CLOSE TOPICS';
+                    }
+                });
+            }
+            
+            const defaultView = document.getElementById('default-carousel-view');
+            const filteredView = document.getElementById('filtered-results-view');
+            const resultsList = document.getElementById('filtered-results-list');
+            const resultsTitle = document.getElementById('filtered-results-title');
+            const resultsCloseBtn = document.getElementById('filtered-results-close-btn');
+
+            // 대주제 아이콘 맵
+            const topicIcons = {
+                "신론": "fa-cloud",
+                "인간론": "fa-user",
+                "기독론": "fa-cross",
+                "구원론(성령론)": "fa-dove",
+                "율법과 복음": "fa-scroll",
+                "그리스도인의 생활론": "fa-praying-hands",
+                "그리스도인의 가정": "fa-home",
+                "교회론": "fa-church",
+                "설교론": "fa-comment-alt",
+                "영적전쟁": "fa-shield-alt",
+                "종말론": "fa-hourglass-end",
+                "역사 신학": "fa-landmark",
+                "잘못된 신학": "fa-exclamation-triangle",
+                "전도, 부흥, 선교": "fa-globe-americas"
+            };
+
+            // 대주제 - 상세주제 키워드 맵핑 (간단히 클라이언트 사이드에서 분류)
+            const mapSubtopicsToMajor = (major) => {
+                const mappings = {
+                    "신론": ["하나님의 속성", "삼위일체", "성경", "창조", "하나님의 섭리", "무신론", "구속 언약", "행위 언약 (생명언약)", "하나님의 언약", "하나님의 뜻", "하나님의 영광", "하나님의 심판"],
+                    "인간론": ["원죄", "자유의지", "인간의 전적 타락", "전적 타락", "아담", "양심", "고통"],
+                    "기독론": ["그리스도의 순종", "속죄", "그리스도의 인성", "그리스도의 신성", "그리스도의 사역", "그리스도의 두 가지 의지", "기독론", "그리스도와의 연합"],
+                    "구원론(성령론)": ["성령의 유효한 부르심", "양자됨", "예정론", "성령의 일반 사역", "성령의 은사", "성령의 열매", "성령을 거스르는 죄", "중생", "회개", "칭의", "성화", "영화", "구원의 순서 (서정)", "선택", "성도의 견인", "배교와 타락"],
+                    "율법과 복음": ["율법", "십계명", "도덕률폐기론", "신율법주의", "율법과 복음"],
+                    "그리스도인의 생활론": ["경건", "기도", "자기부정", "자가 점검", "그리스도인의 자유", "제자도", "윤리학", "주일 성수", "우울증과 슬픔", "그리스도인의 삶"],
+                    "그리스도인의 가정": ["가정 예배", "결혼", "이혼과 재혼", "가족과 결혼", "기독교 교육"],
+                    "교회론": ["교회", "교회 정치", "성례", "세례", "성찬식", "교회의 직무", "집사와 장로들", "성도들의 교제", "교회론", "예배", "은혜의 수단", "위선자 분별", "교회 교육"],
+                    "설교론": ["설교자", "전도설교"],
+                    "영적전쟁": ["영적 전쟁", "사탄의 계략", "적그리스도"],
+                    "종말론": ["종말론", "죽음", "부활", "그리스도의 재림", "지옥", "천국", "영생", "하나님의 심판", "하나님의 나라"],
+                    "역사 신학": ["교회 역사", "청교도 역사", "종교개혁 역사", "신조", "신조와 신앙고백", "웨스트민스터 표준 문서", "하이델베르크 교리문답서", "칼빈주의", "복음주의", "펠라기우스주의", "소시니안주의", "이단, 그리고 이단자들"],
+                    "전도, 부흥, 선교": ["전도", "부흥", "선교"]
+                };
+                return mappings[major] || [];
+            };
+
+            // 사이드바 주제 목록 렌더링
+            const renderSidebarTopics = (filterText = "") => {
+                majorTopicsContainer.innerHTML = "";
+                
+                const filteredMajors = topics.filter(t => {
+                    if (!filterText) return true;
+                    if (t.toLowerCase().includes(filterText.toLowerCase())) return true;
+                    const subs = mapSubtopicsToMajor(t);
+                    return subs.some(sub => sub.toLowerCase().includes(filterText.toLowerCase()));
+                });
+
+                if (filteredMajors.length === 0) {
+                    majorTopicsContainer.innerHTML = `<div style="color: #999; padding: 1rem 0.5rem; font-size: 0.9rem;">일치하는 주제가 없습니다.</div>`;
+                    return;
+                }
+
+                filteredMajors.forEach(topic => {
+                    const iconClass = topicIcons[topic] || "fa-bookmark";
+                    const subs = mapSubtopicsToMajor(topic).filter(sub => 
+                        !filterText || sub.toLowerCase().includes(filterText.toLowerCase())
+                    );
+                    
+                    const topicGroup = document.createElement('div');
+                    topicGroup.className = "sidebar-topic-group-wrapper";
+                    
+                    const majorHeader = document.createElement('div');
+                    majorHeader.className = "sidebar-topic-item major-item";
+                    majorHeader.innerHTML = `
+                        <i class="fas ${iconClass} topic-icon"></i>
+                        <span class="topic-name">${topic}</span>
+                        ${subs.length > 0 ? '<i class="fas fa-chevron-down toggle-icon"></i>' : ''}
+                    `;
+                    
+                    majorHeader.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        document.querySelectorAll('.sidebar-topic-item').forEach(el => el.classList.remove('active'));
+                        btnShowAll.classList.remove('active');
+                        majorHeader.classList.add('active');
+
+                        if (subsContainer) {
+                            const isOpen = subsContainer.classList.toggle('open');
+                            const toggleIcon = majorHeader.querySelector('.toggle-icon');
+                            if (toggleIcon) {
+                                toggleIcon.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+                            }
+                        }
+
+                        loadTopicResources(topic, 'major');
+                    });
+
+                    topicGroup.appendChild(majorHeader);
+
+                    let subsContainer = null;
+                    if (subs.length > 0) {
+                        subsContainer = document.createElement('div');
+                        subsContainer.className = "sidebar-subtopics-container";
+                        if (filterText) {
+                            subsContainer.classList.add('open');
+                            const toggleIcon = majorHeader.querySelector('.toggle-icon');
+                            if (toggleIcon) toggleIcon.style.transform = 'rotate(180deg)';
+                        }
+
+                        subs.forEach(sub => {
+                            const subItem = document.createElement('div');
+                            subItem.className = "sidebar-topic-item sub-item";
+                            subItem.innerHTML = `<i class="fas fa-tag"></i> <span>${sub}</span>`;
+                            
+                            subItem.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                document.querySelectorAll('.sidebar-topic-item').forEach(el => el.classList.remove('active'));
+                                btnShowAll.classList.remove('active');
+                                subItem.classList.add('active');
+                                
+                                loadTopicResources(sub, 'sub');
+                            });
+                            subsContainer.appendChild(subItem);
+                        });
+                        topicGroup.appendChild(subsContainer);
+                    }
+
+                    majorTopicsContainer.appendChild(topicGroup);
+                });
+            };
+
+            btnShowAll.addEventListener('click', () => {
+                // 사이드바 카테고리 활성화 상태 및 아코디언 초기화
+                document.querySelectorAll('.sidebar-topic-item').forEach(el => el.classList.remove('active'));
+                btnShowAll.classList.add('active');
+                
+                // 열려있던 모든 서브 아코디언 닫기 및 화살표 각도 원복
+                document.querySelectorAll('.sidebar-subtopics-container').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('.major-item .toggle-icon').forEach(icon => icon.style.transform = 'rotate(0deg)');
+                
+                // 검색창 인풋 및 클리어 버튼 초기화
+                if (searchInput) {
+                    searchInput.value = '';
+                    if (searchClear) searchClear.style.display = 'none';
+                    const dropdown = document.getElementById('sidebar-search-dropdown');
+                    if (dropdown) dropdown.style.display = 'none';
+                }
+                renderSidebarTopics(''); // 사이드바 주제 목록 원상 복귀
+                
+                filteredView.style.display = 'none';
+                defaultView.style.display = 'block';
+                document.getElementById('recent-updates').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+
+            resultsCloseBtn.addEventListener('click', () => {
+                btnShowAll.click();
+            });
+
+            const loadTopicResources = async (name, type) => {
+                resultsTitle.textContent = `"${name}" 탐색 결과`;
+                resultsList.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--secondary-color); grid-column: 1/-1;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2.5rem; margin-bottom: 1rem;"></i>
+                        <p style="font-weight: 500;">자료를 불러오는 중입니다...</p>
                     </div>
-                    <div class="tistory-mode-item" id="mode-opt-markdown" onclick="selectTistoryMode('markdown')">
-                      <i class="fa-brands fa-markdown"></i> 마크다운
-                    </div>
-                    <div class="tistory-mode-item" id="mode-opt-html" onclick="selectTistoryMode('html')">
-                      <i class="fa-solid fa-code"></i> HTML
-                    </div>
-                  </div>
-                </div>
-              </div>
+                `;
+                
+                defaultView.style.display = 'none';
+                filteredView.style.display = 'block';
+                
+                setTimeout(() => {
+                    document.getElementById('recent-updates').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
 
-              <!-- Comprehensive Rich Text Formatting Toolbar -->
-              <div class="editor-quick-toolbar" id="editor-quick-toolbar">
-                <!-- Undo / Redo -->
-                <div class="toolbar-group">
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('undo')" title="실행 취소 (Ctrl+Z)">
-                    <i class="fa-solid fa-rotate-left"></i>
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('redo')" title="다시 실행 (Ctrl+Y)">
-                    <i class="fa-solid fa-rotate-right"></i>
-                  </button>
-                </div>
+                const isOffline = (typeof db === 'undefined' || !db);
+                const useMockMode = (typeof useMock !== 'undefined' && useMock) || isOffline;
 
-                <!-- Font Size & Paragraph Styles -->
-                <div class="toolbar-group">
-                  <select class="toolbar-select" onchange="execEditorFontSize(this.value); this.value='';" title="글자 크기 / 서식">
-                    <option value="">글자 크기/제목</option>
-                    <option value="h1">대제목 (H1)</option>
-                    <option value="h2">중제목 (H2)</option>
-                    <option value="h3">소제목 (H3)</option>
-                    <option value="p">본문 (기본 16px)</option>
-                    <option value="small">각주/작은글씨 (13px)</option>
-                  </select>
-                </div>
+                if (useMockMode) {
+                    setTimeout(() => {
+                        const mockPosts = [
+                            { id: "mock1", title: `[샘플] ${name} 신학의 정수와 실제`, content: `${name}에 대한 깊이 있는 분석과 개혁주의 교리적 핵심 해설입니다. 신자들의 경건 향상과 교회의 바른 세워짐을 위해 추천하는 강론 자료입니다.`, tags: [name] },
+                            { id: "mock2", title: `[샘플] ${name}과 개혁주의 신앙의 고백`, content: `역사적 개혁주의 신앙고백서들에 담긴 ${name}의 역사적 배경과 신학적 전개를 다루는 연구 논문 및 텍스트입니다.`, tags: [name] }
+                        ];
+                        renderResults(mockPosts, name);
+                    }, 500);
+                    return;
+                }
 
-                <!-- Text Style (Bold, Italic, Underline, Strike, Clear) -->
-                <div class="toolbar-group">
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('bold')" title="굵게 (Ctrl+B)">
-                    <i class="fa-solid fa-bold"></i>
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('italic')" title="기울임 (Ctrl+I)">
-                    <i class="fa-solid fa-italic"></i>
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('underline')" title="밑줄 (Ctrl+U)">
-                    <i class="fa-solid fa-underline"></i>
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('strikeThrough')" title="취소선">
-                    <i class="fa-solid fa-strikethrough"></i>
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('removeFormat')" title="서식 지우기">
-                    <i class="fa-solid fa-eraser"></i>
-                  </button>
-                </div>
+                try {
+                    let posts = [];
+                    if (type === 'major') {
+                        let q = db.collection("posts").where("tags", "array-contains", name);
+                        const snapshot = await q.get();
+                        snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
 
-                <!-- Text Color & Highlight -->
-                <div class="toolbar-group">
-                  <!-- Text Color Picker -->
-                  <div class="toolbar-color-btn" title="글자 색상 선택">
-                    <i class="fa-solid fa-font" id="toolbar-font-color-icon" style="color: #1e3a8a;"></i>
-                    <input type="color" class="toolbar-color-input" value="#1e3a8a" onchange="execEditorTextColor(this.value)">
-                  </div>
-                  <!-- Quick Colors -->
-                  <select class="toolbar-select" onchange="execEditorTextColor(this.value); this.value='';" title="글자 색상">
-                    <option value="">글자색</option>
-                    <option value="#000000" style="color:#000000;">■ 기본 검정</option>
-                    <option value="#1e3a8a" style="color:#1e3a8a;">■ 청교도 네이비</option>
-                    <option value="#c5a059" style="color:#c5a059;">■ 황금색 (골드)</option>
-                    <option value="#dc2626" style="color:#dc2626;">■ 빨간색 (강조)</option>
-                    <option value="#2563eb" style="color:#2563eb;">■ 파란색</option>
-                    <option value="#16a34a" style="color:#16a34a;">■ 초록색</option>
-                    <option value="#9333ea" style="color:#9333ea;">■ 보라색</option>
-                    <option value="#64748b" style="color:#64748b;">■ 회색</option>
-                  </select>
+                        if (name === '청교도 신학' || name === '전도, 부흥, 선교') {
+                            const bookletSnapshot = await db.collection("posts")
+                                .where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"])
+                                .get();
+                            bookletSnapshot.forEach(doc => {
+                                const data = doc.data();
+                                const dbTopic = data.topic || data.subBookletTopic || data.series;
+                                const dTopic = (typeof determineCategory === 'function') ? determineCategory(data.title, data.content) : null;
+                                const finalTopic = dbTopic || dTopic;
+                                if (name === '청교도 신학') {
+                                    if (!posts.some(p => p.id === doc.id)) {
+                                        posts.push({ id: doc.id, ...data });
+                                    }
+                                } else if (name === '전도, 부흥, 선교') {
+                                    if (!posts.some(p => p.id === doc.id) && (finalTopic === '전도, 부흥, 선교' || finalTopic === '전도' || finalTopic === '부흥' || finalTopic === '선교')) {
+                                        posts.push({ id: doc.id, ...data });
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+                        if (name === '설교자') {
+                            const snap1 = await db.collection("posts").where("subTopics", "array-contains", "설교자").get();
+                            const snap2 = await db.collection("posts").where("subTopics", "array-contains", "설교론").get();
+                            const seenIds = new Set();
+                            snap1.forEach(doc => {
+                                if (!seenIds.has(doc.id)) {
+                                    posts.push({ id: doc.id, ...doc.data() });
+                                    seenIds.add(doc.id);
+                                }
+                            });
+                            snap2.forEach(doc => {
+                                if (!seenIds.has(doc.id)) {
+                                    posts.push({ id: doc.id, ...doc.data() });
+                                    seenIds.add(doc.id);
+                                }
+                            });
+                        } else {
+                            let q = db.collection("posts").where("subTopics", "array-contains", name);
+                            const snapshot = await q.get();
+                            snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                        }
+                    }
 
-                  <!-- Highlight Background -->
-                  <select class="toolbar-select" onchange="execEditorHighlight(this.value); this.value='';" title="배경 형광펜">
-                    <option value="">형광펜</option>
-                    <option value="#fef08a" style="background:#fef08a;">🟨 노랑 형광펜</option>
-                    <option value="#bbf7d0" style="background:#bbf7d0;">🟩 연두 형광펜</option>
-                    <option value="#bae6fd" style="background:#bae6fd;">🟦 하늘 형광펜</option>
-                    <option value="#fbcfe8" style="background:#fbcfe8;">🌸 분홍 형광펜</option>
-                    <option value="#fef3c7" style="background:#fef3c7;">📙 연골드 형광펜</option>
-                    <option value="transparent">⬜ 형광펜 지우기</option>
-                  </select>
-                </div>
+                    posts.sort((a, b) => {
+                        const timeA = a.createdAt?.seconds || 0;
+                        const timeB = b.createdAt?.seconds || 0;
+                        return timeB - timeA;
+                    });
 
-                <!-- Text Alignment -->
-                <div class="toolbar-group">
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('justifyLeft')" title="왼쪽 정렬">
-                    <i class="fa-solid fa-align-left"></i>
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('justifyCenter')" title="가운데 정렬">
-                    <i class="fa-solid fa-align-center"></i>
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('justifyRight')" title="오른쪽 정렬">
-                    <i class="fa-solid fa-align-right"></i>
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('justifyFull')" title="양쪽 정렬">
-                    <i class="fa-solid fa-align-justify"></i>
-                  </button>
-                </div>
+                    renderResults(posts, name);
 
-                <!-- Lists & Indent -->
-                <div class="toolbar-group">
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('insertUnorderedList')" title="글머리 기호 목록 (•)">
-                    <i class="fa-solid fa-list-ul"></i>
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('insertOrderedList')" title="번호 매기기 목록 (1,2,3)">
-                    <i class="fa-solid fa-list-ol"></i>
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('indent')" title="들여쓰기">
-                    <i class="fa-solid fa-indent"></i>
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="execEditorCmd('outdent')" title="내어쓰기">
-                    <i class="fa-solid fa-outdent"></i>
-                  </button>
-                </div>
+                } catch (err) {
+                    console.error("Explorer query error:", err);
+                    resultsList.innerHTML = `<div style="text-align: center; padding: 2rem; color: red; grid-column: 1/-1;">자료를 불러오는 중에 오류가 발생했습니다.</div>`;
+                }
+            };
 
-                <!-- Callout Templates & Insertions -->
-                <div class="toolbar-group">
-                  <select class="toolbar-select" onchange="insertCalloutTemplate(this.value); this.value='';" title="성경 및 설교 전용 박스 템플릿" style="color: #4338ca; font-weight: 600;">
-                    <option value="">✨ 전용 템플릿 박스</option>
-                    <option value="scripture">📖 1. 성경 말씀 인용 박스</option>
-                    <option value="point">💡 2. 설교 요점/묵상 박스</option>
-                    <option value="highlight">⚠️ 3. 핵심 강조/주의 박스</option>
-                    <option value="summary">📌 4. 신학 요약 정리 박스</option>
-                  </select>
+            const renderResults = (posts, selectedTopic) => {
+                resultsList.innerHTML = "";
+                if (posts.length === 0) {
+                    resultsList.innerHTML = `<div style="text-align: center; padding: 3rem; color: #999; grid-column: 1/-1;">해당 주제로 등록된 자료가 아직 없습니다.</div>`;
+                    return;
+                }
 
-                  <button type="button" class="btn-tool-item" onclick="insertWysiwygQuote()" title="인용구">
-                    <i class="fa-solid fa-quote-left"></i> 인용구
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="insertWysiwygTable()" title="표 삽입">
-                    <i class="fa-solid fa-table"></i> 표
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="insertWysiwygLink()" title="링크 삽입">
-                    <i class="fa-solid fa-link"></i> 링크
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="insertWysiwygImage()" title="이미지 삽입">
-                    <i class="fa-solid fa-image"></i> 이미지
-                  </button>
-                  <button type="button" class="btn-tool-item" onclick="insertWysiwygHr()" title="구분선 삽입">
-                    <i class="fa-solid fa-minus"></i> 구분선
-                  </button>
-                </div>
-              </div>
+                posts.forEach(post => {
+                    const card = document.createElement('div');
+                    card.className = "explorer-result-card";
 
-              <!-- 1. 기본모드용 WYSIWYG 에디터 -->
-              <div id="art-editor-wysiwyg" class="editor-wysiwyg-box" contenteditable="true" placeholder="내용을 입력하세요..." oninput="syncWysiwygToTextarea()"></div>
+                    let thumbUrl = post.coverUrl;
+                    let isPdf = false;
+                    if (!thumbUrl && post.fileUrl) {
+                        if (/(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) isPdf = true;
+                        else thumbUrl = post.fileUrl;
+                    }
 
-              <!-- 2. HTML / 마크다운 모드용 코드 텍스트에리어 -->
-              <textarea class="form-input textarea-content code-mode" id="art-content" style="display: none; min-height: 400px;" placeholder="HTML/마크다운 코드를 입력하세요..." oninput="updateEditorPreviewIfActive()"></textarea>
+                    const finalSrc = thumbUrl || 'images/puritan-study.png';
+                    const tag = (post.tags && post.tags[0]) || selectedTopic;
+                    const dateText = post.createdAt ? new Date(post.createdAt.seconds * 1000).toLocaleDateString() : '최근 자료';
 
-              <!-- Live Preview Box (HTML/마크다운 모드용) -->
-              <div id="editor-preview-container" style="display: none; margin-top: 10px; border: 1px solid var(--border-color); border-radius: 6px; padding: 1.5rem; background: #ffffff;">
-                <div style="font-size: 0.85rem; font-weight: bold; color: var(--accent-color); margin-bottom: 0.8rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 6px;">
-                  <i class="fa-solid fa-eye"></i> 실시간 렌더링 미리보기 (Live Preview)
-                </div>
-                <div id="editor-preview-content" class="article-body-html" style="min-height: 100px;"></div>
-              </div>
-            </div>
+                    let content = post.content || '';
+                    const urlRegex = /(https?:\/\/[^\s]+)/g;
+                    const urlsInContent = content.match(urlRegex) || [];
+                    let primaryLink = post.fileUrl || (urlsInContent.length > 0 ? urlsInContent[0] : null);
 
-            <div style="display: flex; gap: 10px; margin-top: 1rem;">
-              <button class="btn-submit" type="submit" style="flex: 1;">保存して公開</button>
-              <button class="btn-submit" type="button" onclick="cancelWrite()" style="background-color: var(--text-light); width: 120px;">キャンセル</button>
-            </div>
-          </form>
-        </div>
+                    const displayContent = content.replace(urlRegex, '<a href="$1" target="_blank" onclick="event.stopPropagation()">$1</a>');
+                    const imgId = `sidebar-exp-thumb-${post.id}`;
+                    const thumbWrapId = `sidebar-exp-thumb-wrap-${post.id}`;
 
-        <!-- TAB 3: ARTICLE MANAGER LIST -->
-        <div id="admin-tab-articles" style="display: none;">
-          <h3 class="admin-section-title">登録済み記事資料의 관리</h3>
-          <div class="form-row" style="display: flex; gap: 15px; margin-bottom: 1rem; align-items: flex-end;">
-            <div class="form-group" style="margin: 0; flex: 1;">
-              <label class="form-label">親メニューフィルター</label>
-              <select class="form-input" id="filter-art-parent" onchange="resetAdminArticlesPage(); renderAdminArticleList()" style="max-width: 100%;">
-                <option value="all">すべての親カテゴリ</option>
-                <!-- Dynamically Populated -->
-              </select>
-            </div>
-            <div class="form-group" style="margin: 0; width: 150px;">
-              <label class="form-label">表示件数</label>
-              <select class="form-input" id="admin-art-pagesize" onchange="changeAdminPageSize(this.value)">
-                <option value="5">5件</option>
-                <option value="10" selected>10件</option>
-                <option value="15">15件</option>
-                <option value="20">20件</option>
-              </select>
-            </div>
-          </div>
-          <div class="admin-article-list" id="admin-articles-container">
-            <!-- Dynamically Populated -->
-          </div>
-          <!-- Pagination Controls for Admin -->
-          <div id="admin-articles-pagination" class="pagination-controls" style="margin-top: 1.5rem; justify-content: center;">
-            <!-- Dynamically Populated -->
-          </div>
-        </div>
+                    card.innerHTML = `
+                        <div id="${thumbWrapId}" class="explorer-result-thumb">
+                            <img id="${imgId}" src="${finalSrc}" alt="${post.title}" loading="lazy">
+                        </div>
+                        <div class="explorer-result-content">
+                            <div class="explorer-result-meta">
+                                <span class="explorer-result-tag">${tag}</span>
+                                <span>${dateText}</span>
+                            </div>
+                            <div class="explorer-result-title">${post.title}</div>
+                            <div class="explorer-result-desc">${displayContent}</div>
+                            <div class="explorer-result-action">
+                                ${primaryLink ? '<i class="fas fa-external-link-alt"></i> 자료 열기/다운로드' : '<i class="fas fa-book-open"></i> 상세 내용 보기'}
+                            </div>
+                        </div>
+                    `;
 
-        <!-- TAB 5: STATS (통계 관리) -->
-        <div id="admin-tab-stats" style="display: none;">
-          <h3 class="admin-section-title">総合資料統計と照会分析 (종합 자료 통계 및 조회 분석)</h3>
-          <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="stats-card" style="background-color: var(--bg-warm); border: 1px solid var(--border-color); border-radius: 6px; padding: 1.5rem; text-align: center;">
-              <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.5rem;">全記事数 (전체 글 수)</div>
-              <div id="stats-total-articles" style="font-size: 2rem; font-weight: 700; color: var(--primary-color);">0</div>
-            </div>
-            <div class="stats-card" style="background-color: var(--bg-warm); border: 1px solid var(--border-color); border-radius: 6px; padding: 1.5rem; text-align: center;">
-              <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.5rem;">累計閲覧数 (누적 조회수)</div>
-              <div id="stats-total-views" style="font-size: 2rem; font-weight: 700; color: var(--primary-color);">0</div>
-            </div>
-            <div class="stats-card" style="background-color: var(--bg-warm); border: 1px solid var(--border-color); border-radius: 6px; padding: 1.5rem; text-align: center;">
-              <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.5rem;">平均閲覧数 (평균 조회수)</div>
-              <div id="stats-avg-views" style="font-size: 2rem; font-weight: 700; color: var(--primary-color);">0</div>
-            </div>
-          </div>
-          
-          <h4 style="margin-bottom: 1rem; color: var(--primary-light); border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">資料別閲覧ランキング (자료별 조회수 랭킹)</h4>
-          <div style="overflow-x: auto;">
-            <table class="stats-table" style="width: 100%; border-collapse: collapse; background-color: white; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color);">
-              <thead>
-                <tr style="background-color: var(--primary-color); color: white; text-align: left;">
-                  <th style="padding: 12px 15px; font-weight: 500;">タイトル (제목)</th>
-                  <th style="padding: 12px 15px; font-weight: 500; width: 180px;">カテゴリ (카테고리)</th>
-                  <th style="padding: 12px 15px; font-weight: 500; width: 120px;">著者 (작성자)</th>
-                  <th style="padding: 12px 15px; font-weight: 500; width: 120px;">投稿日 (게시날짜)</th>
-                  <th style="padding: 12px 15px; font-weight: 500; width: 100px; text-align: right;">閲覧数 (조회수)</th>
-                </tr>
-              </thead>
-              <tbody id="stats-ranking-body">
-                <!-- Dynamically Populated -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </main>
-    </div>
-  </section>
+                    card.onclick = () => {
+                        if (primaryLink) {
+                            window.open(primaryLink, '_blank');
+                        } else {
+                            card.classList.toggle('expanded');
+                        }
+                    };
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-grid">
-      <div class="footer-col-about">
-        <h3>日本改革派神学と牧会</h3>
-        <p style="margin-top: 10px; line-height: 1.6; font-size: 0.85rem;">
-          当サイトは、ウェストミンスター信仰告白をはじめとする歴史的改革派信仰の基準に従い、純粋な福音の宣布、正しい教理の回復、教会再生、そして聖書に基づく健全な牧会生活をサポートするためのリソースを提供します。
-        </p>
-        <div class="footer-contact-block" style="margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.12); font-size: 0.84rem; line-height: 1.75; color: rgba(255,255,255,0.85);">
-          <div style="font-weight: 600; color: var(--accent-color); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-address-book"></i> Contact (お問い合わせ)
-          </div>
-          <div><i class="fa-solid fa-user-tie" style="color: var(--accent-color); margin-right: 6px; width: 14px;"></i> <strong>上代 淑恵</strong> 総務</div>
-          <div><i class="fa-solid fa-phone" style="color: var(--accent-color); margin-right: 6px; width: 14px;"></i> <a href="tel:080-4306-3863" style="color: rgba(255,255,255,0.9); text-decoration: none;">080-4306-3863</a></div>
-          <div><i class="fa-solid fa-envelope" style="color: var(--accent-color); margin-right: 6px; width: 14px;"></i> <a href="mailto:reformed.jp@gmail.com" style="color: rgba(255,255,255,0.9); text-decoration: none;">reformed.jp@gmail.com</a></div>
-          <div><i class="fa-solid fa-location-dot" style="color: var(--accent-color); margin-right: 6px; width: 14px;"></i> 東京都江東区北砂 3-12-5</div>
-        </div>
-      </div>
-      <div class="footer-col-links">
-        <h4>主要ナビゲーション</h4>
-        <ul class="footer-links-list">
-          <li><a href="#" onclick="selectMainMenu('menu_1787468975888')">ホーム セクション</a></li>
-          <li><a href="#" onclick="selectMainMenu('sermon')">聖書講解</a></li>
-          <li><a href="#" onclick="selectMainMenu('catechism')">教理教育と復興</a></li>
-          <li><a href="#" onclick="selectMainMenu('theology')">改革派神学</a></li>
-          <li><a href="#" onclick="selectMainMenu('discipleship')">伝道・弟子道</a></li>
-          <li><a href="#" onclick="selectMainMenu('pastor')">10分動画神学講義</a></li>
-          <li><a href="#" onclick="event.preventDefault(); navigateToContact();" style="color: var(--accent-color); font-weight: 500;">Contact (お問い合わせ)</a></li>
-        </ul>
-      </div>
-      <div class="footer-col-links">
-        <h4>神学的遺産</h4>
-        <ul class="footer-links-list">
-          <li><a href="#" onclick="event.preventDefault(); navigateToConfession('wcf');">ウェストミンスター信仰告白</a></li>
-          <li><a href="#" onclick="event.preventDefault(); navigateToConfession('wlc');">ウェストミンスター大教理問答</a></li>
-          <li><a href="#" onclick="event.preventDefault(); navigateToConfession('wsc');">ウェストミンスター小教理問答</a></li>
-          <li><a href="#" onclick="event.preventDefault(); navigateToConfession('heidelberg');">ハイデルベルク信仰問答</a></li>
-          <li><a href="#" onclick="event.preventDefault(); navigateToConfession('dort');">ドルト信仰基準</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div>
-        &copy; 2026 日本改革派神学と牧会. All Rights Reserved.
-      </div>
-    </div>
-  </footer>
+                    resultsList.appendChild(card);
 
-  <!-- BGM FLOATING BUTTON -->
-  <button id="bgm-toggle-btn" class="bgm-float-btn" onclick="toggleBgm()">
-    <i class="fa-solid fa-volume-xmark" style="margin-right: 6px;"></i>
-    <span class="bgm-text">BGM OFF</span>
-  </button>
+                    if (isPdf && !thumbUrl) {
+                        renderPdfThumbForSidebarExplorer(post.fileUrl, imgId, thumbWrapId);
+                    }
+                });
+            };
 
+            const renderPdfThumbForSidebarExplorer = async (url, imgId, wrapId) => {
+                const img = document.getElementById(imgId);
+                if (typeof pdfjsLib === 'undefined' || !img) return;
 
+                try {
+                    const loadingTask = pdfjsLib.getDocument(url);
+                    const pdf = await loadingTask.promise;
+                    const page = await pdf.getPage(1);
+                    const viewport = page.getViewport({ scale: 0.5 });
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    await page.render({ canvasContext: context, viewport: viewport }).promise;
+                    img.src = canvas.toDataURL();
+                } catch (e) {
+                    console.warn("Sidebar Explorer PDF rendering warning:", e);
+                }
+            };
 
-  <!-- CORE LOGIC AND DATA -->
-  <script src="data.js?v=20260910_02"></script>
-  <script src="mindmap.js?v=20260910_02"></script>
-  <script src="app.js?v=20260910_02"></script>
+            // 검색어 추천 목록 데이터 정의 및 정렬
+            const suggestionTopics = [
+                "십계명", "그리스도의 순종", "양자됨", "예정론", "고통", "적그리스도", "도덕률폐기론", "변증론", "배교", "사도신경", 
+                "성령의 유효한 부르심", "예산 편성, 교리", "알미니안주의", "무신론", "속죄", "하나님의 속성", "성경", "세례", "팔복", 
+                "거짓 믿음", "교리 교육", "독신", "성령의 은사", "은혜 언약", "행위 언약 (생명언약)", "성례", "그리스도의 인성", 
+                "그리스도의 신성", "그리스도의 사역", "그리스도의 두 가지 의지", "예배", "기독교 교육", "그리스도인의 자유", 
+                "기독론", "교회", "교회 정치", "교회 역사", "교회 사역", "성령의 일반 사역", "성도들의 교제", "성찬식", "양심", 
+                "상담", "구속 언약", "창조", "신조", "죽음", "하나님의 섭리", "사탄의 계략", "오류", "종말론", "영생", "복음주의", 
+                "복음 전도", "믿음", "가정 예배", "죄 용서", "자유의지", "성령의 열매", "일반 계시", "삼위일체", "지옥", "천국", 
+                "하이델베르크 교리문답서", "칼빈주의", "하이퍼 칼빈주의", "위선자", "주일 성수", "주기도문", "결혼", "원죄", 
+                "신칼빈주의", "신율법주의", "헌금과 십일조", "교회의 직무", "구원의 순서 (서정)", "웨스트민스터 표준 문서", 
+                "펠라기우스주의", "경건", "기도", "설교", "청교도 역사", "종교개혁 역사", "중생", "회개", "칭의", "성화", "영화", 
+                "율법", "부활", "그리스도의 재림", "자기부정", "자가 점검", "성령을 거스르는 죄", "소시니안주의", "영적 전쟁", 
+                "전적 타락", "그리스도와의 연합", "아담", "잘못된 신학", "성경 공부", "성경적 상담", "그리스도인의 삶", 
+                "신조와 신앙고백", "이단, 그리고 이단자들", "집사와 장로들", "우울증과 슬픔", "제자도", "이혼과 재혼", "교리 연구", 
+                "교회론", "교육 및 학문", "선택", "윤리학", "가족과 결혼", "하나님의 언약", "하나님의 영광", "하나님의 뜻", 
+                "하나님의 심판", "하나님의 나라", "율법과 복음", "은혜의 수단", "성도의 견인", "죄와 유혹", "인간의 전적 타락", 
+                "삼위 일체", "세계 선교", "세속화", "율법주의", "신사도운동", "오순절신학", "완전주의", "바울의 새관점", 
+                "현대복음주의", "R.T 캔달", "세대주의", "횐상주의", "찰스 피니", "위선자 분별", "배교와 타락"
+            ].sort((a, b) => a.localeCompare(b, 'ko'));
+
+            // 드롭다운 돔 엘리먼트 동적 생성
+            const searchBoxContainer = document.querySelector('.sidebar-search-box');
+            let dropdownEl = document.getElementById('sidebar-search-dropdown');
+            if (!dropdownEl && searchBoxContainer) {
+                dropdownEl = document.createElement('div');
+                dropdownEl.id = 'sidebar-search-dropdown';
+                dropdownEl.className = 'sidebar-search-dropdown';
+                dropdownEl.style.display = 'none';
+                dropdownEl.innerHTML = '<ul id="sidebar-search-dropdown-list"></ul>';
+                searchBoxContainer.appendChild(dropdownEl);
+            }
+            const dropdownList = document.getElementById('sidebar-search-dropdown-list');
+
+            const renderDropdown = (filterText = "") => {
+                if (!dropdownList) return;
+                dropdownList.innerHTML = "";
+                
+                const filtered = suggestionTopics.filter(topic => 
+                    !filterText || topic.toLowerCase().includes(filterText.toLowerCase())
+                );
+                
+                if (filtered.length === 0) {
+                    const li = document.createElement('li');
+                    li.style.color = '#999';
+                    li.style.cursor = 'default';
+                    li.textContent = "일치하는 주제가 없습니다.";
+                    dropdownList.appendChild(li);
+                    return;
+                }
+                
+                filtered.forEach(topic => {
+                    const li = document.createElement('li');
+                    li.textContent = topic;
+                    li.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        searchInput.value = topic;
+                        if (searchClear) searchClear.style.display = 'block';
+                        dropdownEl.style.display = 'none';
+                        
+                        // 메인 화면 우상단 검색과 동일하게 검색 팝업 실행
+                        if (typeof window.performSearch === 'function') {
+                            window.performSearch(topic);
+                        }
+                    });
+                    dropdownList.appendChild(li);
+                });
+            };
+
+            // 검색바 입력 시 사이드바 실시간 카테고리 필터링 및 추천 리스트 갱신
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                if (query) {
+                    searchClear.style.display = 'block';
+                } else {
+                    searchClear.style.display = 'none';
+                }
+                renderSidebarTopics(query);
+                renderDropdown(query);
+                dropdownEl.style.display = 'block';
+            });
+
+            // 포커스 또는 클릭 시 드롭다운 표출
+            searchInput.addEventListener('focus', () => {
+                renderDropdown(searchInput.value.trim());
+                dropdownEl.style.display = 'block';
+            });
+            
+            searchInput.addEventListener('click', (e) => {
+                e.stopPropagation();
+                renderDropdown(searchInput.value.trim());
+                dropdownEl.style.display = 'block';
+            });
+
+            // 바깥 영역 클릭 시 드롭다운 숨김
+            document.addEventListener('click', (e) => {
+                if (dropdownEl && !searchBoxContainer.contains(e.target)) {
+                    dropdownEl.style.display = 'none';
+                }
+            });
+
+            // Enter 키를 누르면 메인 우상단과 동일하게 팝업 검색 실행
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        if (dropdownEl) dropdownEl.style.display = 'none';
+                        if (typeof window.performSearch === 'function') {
+                            window.performSearch(query);
+                        }
+                    }
+                }
+            });
+
+            // 사이드바 검색 돋보기 아이콘 클릭 시 검색 실행
+            const sidebarSearchIcon = document.querySelector('.sidebar-search-icon');
+            if (sidebarSearchIcon) {
+                sidebarSearchIcon.style.cursor = 'pointer';
+                sidebarSearchIcon.addEventListener('click', () => {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        if (dropdownEl) dropdownEl.style.display = 'none';
+                        if (typeof window.performSearch === 'function') {
+                            window.performSearch(query);
+                        }
+                    }
+                });
+            }
+
+            searchClear.addEventListener('click', () => {
+                searchInput.value = '';
+                searchClear.style.display = 'none';
+                renderSidebarTopics('');
+                renderDropdown('');
+                dropdownEl.style.display = 'block';
+                searchInput.focus();
+            });
+
+            renderSidebarTopics();
+
+            // --- PC/Mobile UX Enhancements ---
+            
+            // 1. 최초 진입 시 토글 버튼 펄스 안내 모션 효과 (3.5초간 적용 후 해제)
+            const pcToggleBtn = document.getElementById('sidebar-toggle-btn');
+            if (pcToggleBtn) {
+                pcToggleBtn.classList.add('pulse-effect');
+                setTimeout(() => {
+                    pcToggleBtn.classList.remove('pulse-effect');
+                }, 3500);
+            }
+
+            // 2. 모바일 토픽 탐색 바텀시트 열기/닫기 제어
+            const mobileTrigger = document.getElementById('mobile-explore-trigger');
+            const mobileCloseBtn = document.getElementById('sidebar-mobile-close');
+            
+            if (mobileTrigger && sidebar) {
+                mobileTrigger.addEventListener('click', () => {
+                    sidebar.classList.add('mobile-open');
+                    document.body.style.overflow = 'hidden'; // 뒷배경 스크롤 잠금
+                });
+            }
+
+            const closeMobileSidebar = () => {
+                if (sidebar) {
+                    sidebar.classList.remove('mobile-open');
+                    document.body.style.overflow = 'auto'; // 스크롤 잠금 해제
+                }
+            };
+
+            if (mobileCloseBtn) {
+                mobileCloseBtn.addEventListener('click', closeMobileSidebar);
+            }
+
+            // 카테고리 클릭 시 모바일 드로어가 자동으로 닫히도록 연동
+            const topicItems = document.querySelectorAll('.sidebar-topic-item, #btn-show-all-resources');
+            topicItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    if (!item.classList.contains('major-item') || !item.querySelector('.toggle-icon')) {
+                        closeMobileSidebar();
+                    }
+                });
+            });
+
+            // 동적으로 로드되는 서브 카테고리 내부 클릭 이벤트 바인딩 보정
+            if (majorTopicsContainer) {
+                majorTopicsContainer.addEventListener('click', (e) => {
+                    const subItem = e.target.closest('.sub-item');
+                    if (subItem) {
+                        closeMobileSidebar();
+                    }
+                });
+            }
+        }
+    </script>
+    <!-- 모바일 전용 주제 탐색 플로팅 버튼 -->
+    <button id="mobile-explore-trigger" class="mobile-explore-btn">
+        <i class="fas fa-bars"></i> 주제 탐색
+    </button>
+
+    <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">
+        <i class="fas fa-envelope"></i>
+    </a>
 </body>
+
 </html>

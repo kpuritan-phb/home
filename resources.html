@@ -1,0 +1,3177 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자료 목록 | 한국 청교도 연구소</title>
+    <link rel="stylesheet" href="style.css?v=107">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+    <style>
+        .resources-hero {
+            height: 50vh;
+            position: relative;
+            background: url('hero-bg.jpg?v=2');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            border-bottom: 5px solid var(--secondary-color);
+            transition: height 0.4s ease;
+        }
+
+        .resources-hero.compact-hero {
+            height: 110px;
+        }
+
+        .resources-hero.compact-hero p {
+            display: none;
+        }
+
+        .resources-hero h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            font-family: 'Playfair Display', serif;
+            transition: font-size 0.3s ease;
+        }
+
+        .resources-hero.compact-hero h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0;
+        }
+
+        .resources-container {
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 4rem 40px;
+        }
+
+        .filter-section {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin-bottom: 3rem;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .resource-list-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .resource-list-grid.list-mode-active {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .resource-table-row:hover {
+            background-color: #fcfbf9 !important;
+        }
+
+        .resource-table-row:hover h4 {
+            color: #8c6d46 !important;
+            text-decoration: underline;
+        }
+
+        /* 5개씩 한 줄 대칭 배치 (5열 그리드) */
+        @media screen and (min-width: 1200px) {
+            .resource-list-grid:not(.list-mode-active) {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 18px;
+            }
+        }
+
+        @media screen and (min-width: 900px) and (max-width: 1199px) {
+            .resource-list-grid:not(.list-mode-active) {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 18px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .resource-table-row {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 8px !important;
+            }
+            .resources-view-controls-bar {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 10px !important;
+            }
+        }
+
+        .loading-spinner {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 5rem;
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 5rem;
+            color: #888;
+        }
+
+        /* Group view (Folders) - Enhanced for readability and premium feel */
+        .group-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .group-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border-color: var(--secondary-color);
+        }
+
+        .group-thumb {
+            width: 100%;
+            height: 140px;
+            background: #ffffff;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .group-card:hover .group-thumb {
+            background: var(--bg-warm);
+        }
+
+        .group-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+        }
+
+        /* ---------------------------------------------------------
+           Bible Navigation Styles (Index & Chapters)
+           --------------------------------------------------------- */
+
+        /* 1. Bible Book Index (Main View) */
+        .bible-index-container {
+            width: 100%;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .bible-index-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f0f0f0;
+        }
+
+        .bible-section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ffffff;
+        }
+
+        .bible-section-title {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            font-weight: 800;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .bible-section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 24px;
+            background: var(--secondary-color);
+            border-radius: 3px;
+        }
+
+        .bible-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+        }
+
+        .bible-book-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 10px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            color: #444;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            word-break: keep-all;
+        }
+
+        .bible-book-btn span {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .bible-book-btn:hover {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+            background: #ffffff;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(212, 175, 55, 0.1);
+        }
+
+        @media screen and (max-width: 1200px) {
+            .bible-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .bible-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* 2. Chapter Selector Grid (Selected Book View) */
+        .chapter-grid-container {
+            width: 100%;
+            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chapter-grid-header {
+            font-weight: 700;
+            color: var(--primary-color);
+            padding-left: 10px;
+            border-left: 4px solid var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+        }
+
+        .chapter-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background: #ffffff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .chapter-btn:hover {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+            background: #fff;
+            transform: translateY(-2px);
+        }
+
+        .chapter-btn.active {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2);
+        }
+
+        /* Bible chapter prev/next navigation */
+        .bible-chapter-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+            gap: 10px;
+        }
+
+        .bible-nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .bible-nav-btn:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+
+        .bible-nav-btn.disabled {
+            background: #ddd;
+            color: #999;
+            cursor: default;
+            pointer-events: none;
+            transform: none;
+        }
+
+        .bible-nav-current {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        @media screen and (max-width: 992px) {
+            .chapter-grid {
+                grid-template-columns: repeat(8, 1fr);
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .chapter-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .chapter-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .group-info {
+            padding: 1.5rem;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: white;
+        }
+
+        .group-title {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            line-height: 1.4;
+            font-family: 'Noto Serif KR', serif;
+            font-weight: 700;
+            word-break: keep-all;
+        }
+
+        .group-action {
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            margin-top: 12px;
+            font-weight: 600;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .group-card:hover .group-action {
+            opacity: 1;
+        }
+
+        /* Detail/List transition styles */
+        .back-nav {
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .back-nav button {
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .resources-hero h1 {
+                font-size: 2rem;
+            }
+
+            .resources-container {
+                padding: 2rem 1rem;
+            }
+
+            .filter-section {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Booklet Style List Layout */
+        /* Grid Layout for items (4 per line on desktop) */
+        .resource-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+            height: 100%;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-color: var(--secondary-color);
+        }
+
+        .resource-card-thumb {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #ffffff;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .resource-card-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .resource-card:hover .resource-card-thumb img {
+            transform: scale(1.05);
+        }
+
+        .resource-card-info {
+            padding: 16px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-grow: 1;
+        }
+
+        .resource-card-category {
+            font-size: 0.73rem;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-weight: 700;
+        }
+
+        .resource-card-title {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.35;
+            /* Line clamp for title */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .resource-card-desc {
+            font-size: 0.83rem;
+            color: #666;
+            line-height: 1.5;
+            /* Line clamp for desc */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-top: 2px;
+            white-space: pre-line;
+            /* Handle line breaks in Bible commentary */
+        }
+
+        .resource-card.expanded .resource-card-desc {
+            -webkit-line-clamp: unset;
+            line-clamp: unset;
+            display: block;
+            overflow: visible;
+        }
+
+        .resource-card.expanded {
+            height: auto;
+            grid-column: span 3;
+            /* Take more space if expanded on grid */
+        }
+
+        @media (max-width: 768px) {
+            .resource-card.expanded {
+                grid-column: span 1;
+            }
+        }
+
+        /* Responsive Grid for mobile */
+        @media screen and (max-width: 992px) {
+            .resource-list-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .resource-list-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .resource-card-title {
+                font-size: 1rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .resource-list-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Blog Style for Text-only Content (e.g. Bible Commentary) */
+        .resource-list-grid.blog-style {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 60px 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+        }
+
+        @media screen and (max-width: 768px) {
+            .resource-list-grid.blog-style {
+                padding: 40px 25px;
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+            }
+        }
+
+        .resource-list-grid.blog-style .resource-card {
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            background: transparent;
+            width: 100%;
+            transform: none !important;
+            cursor: default;
+        }
+
+        .resource-list-grid.blog-style .resource-card-info {
+            padding: 0;
+        }
+
+        .resource-list-grid.blog-style .resource-card-title {
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 40px;
+            font-family: 'Noto Serif KR', serif;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 20px;
+            display: block;
+            -webkit-line-clamp: unset;
+            line-clamp: unset;
+        }
+
+        @media screen and (max-width: 768px) {
+            .resource-list-grid.blog-style .resource-card-title {
+                font-size: 1.6rem;
+            }
+        }
+
+        .resource-list-grid.blog-style .resource-card-desc {
+            font-size: 1.35rem;
+            line-height: 2.1;
+            color: #2c3e50;
+            -webkit-line-clamp: unset;
+            line-clamp: unset;
+            display: block;
+            overflow: visible;
+            text-align: justify;
+        }
+
+        @media screen and (max-width: 768px) {
+            .resource-list-grid.blog-style .resource-card-desc {
+                font-size: 1.15rem;
+                line-height: 1.9;
+            }
+        }
+
+        .resource-list-grid.blog-style .resource-card-desc p {
+            margin: 0 0 28px 0;
+        }
+
+        .resource-list-grid.blog-style .resource-card-desc p:last-child {
+            margin-bottom: 0;
+        }
+
+        .resource-list-grid.blog-style .resource-card-desc .verse-num {
+            display: inline-block;
+            min-width: 1.6em;
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-family: 'Noto Serif KR', serif;
+            margin-right: 4px;
+        }
+
+        /* Hide the unnecessary category tag (e.g. "성경주석") in chapter reading view */
+        .resource-list-grid.blog-style .resource-card-category {
+            display: none;
+        }
+
+        /* Admin Drag & Drop Card Styling */
+        .admin-draggable-card {
+            cursor: grab !important;
+            position: relative;
+            user-select: none;
+            transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .admin-draggable-card:active {
+            cursor: grabbing !important;
+        }
+        .admin-draggable-card.is-dragging {
+            opacity: 0.35;
+            border: 2px dashed #8c6d46 !important;
+            transform: scale(0.97);
+        }
+        .admin-draggable-card.drag-over-target {
+            border: 2px solid #8c6d46 !important;
+            box-shadow: 0 0 20px rgba(140, 109, 70, 0.4) !important;
+            transform: translateY(-6px) scale(1.02);
+        }
+        .drag-grip-handle {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 15;
+            background: rgba(26, 52, 42, 0.88);
+            backdrop-filter: blur(6px);
+            color: #ffffff;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            pointer-events: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            letter-spacing: 0.02em;
+        }
+
+        /* Hero Banner */
+        .resources-hero {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .theology-tabs-container {
+            display: none !important;
+        }
+
+        .theology-sub-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: flex-start;
+            padding: 0 10px;
+            gap: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Center few items while allowing scrolling for many items */
+        .theology-sub-nav ul::before,
+        .theology-sub-nav ul::after {
+            content: '';
+            flex: 1;
+            min-width: 10px;
+        }
+
+        .theology-sub-nav ul::-webkit-scrollbar {
+            display: none;
+        }
+
+        .theology-sub-nav li {
+            flex: 1;
+            /* Each item takes equal width */
+            min-width: fit-content;
+            white-space: nowrap;
+            display: flex;
+        }
+
+        /* Centering trick for flex containers that might overflow */
+        .theology-sub-nav ul::before,
+        .theology-sub-nav ul::after {
+            content: '';
+            margin: auto;
+        }
+
+        .theology-tab-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            font-size: 0.9rem;
+            color: #555;
+            text-decoration: none;
+            padding: 20px 10px;
+            /* Taller items for premium feel */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            position: relative;
+            letter-spacing: -0.02em;
+        }
+
+        /* Hover Effect */
+        .theology-tab-btn:hover {
+            color: var(--secondary-color);
+            background: #ffffff;
+        }
+
+        /* Active State with elegant underline */
+        .theology-tab-btn.active {
+            color: var(--secondary-color);
+            background: #fff;
+            font-weight: 700;
+        }
+
+        .theology-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--secondary-color);
+            box-shadow: 0 -2px 10px rgba(44, 62, 80, 0.1);
+        }
+
+        /* Subtle Vertical Dividers */
+        .theology-sub-nav li+li {
+            border-left: 1px solid #f0f0f0;
+        }
+
+        @media screen and (max-width: 992px) {
+            .theology-sub-nav ul {
+                justify-content: flex-start;
+                /* Safe for scrolling on small screens */
+            }
+
+            .theology-sub-nav li {
+                flex: none;
+            }
+
+            .theology-tab-btn {
+                padding: 18px 25px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .resources-hero {
+                margin-bottom: 45px;
+            }
+
+            .theology-tabs-container {
+                width: 100%;
+                max-width: none;
+                left: 0;
+                transform: none;
+                border-radius: 0;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            }
+
+            .theology-tab-btn {
+                font-size: 0.88rem;
+                padding: 15px 18px;
+            }
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 50px;
+            margin-bottom: 50px;
+            grid-column: 1 / -1;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #333;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .page-btn.active {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        .page-btn.page-nav-btn {
+            width: auto;
+            min-width: 40px;
+            padding: 0 14px;
+            border-radius: 20px;
+            font-size: 0.86rem;
+            gap: 6px;
+        }
+
+        .page-btn:hover:not(.active):not(:disabled) {
+            background: #f0f0f0;
+            border-color: #cbd5e0;
+        }
+
+        /* 성경 강의 폴더 스타일 */
+        .sermon-folder-box {
+            background: #fff;
+            border: 1px solid #eae6df;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px auto;
+            max-width: 1200px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        .sermon-folder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eae6df;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .sermon-folder-header h3 {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.02em;
+        }
+
+        .sermon-folder-tip {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .sermon-folder-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .folder-tab-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #fcfbf9;
+            color: var(--text-color);
+            border: 1px solid #e1dbcf;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .folder-tab-btn:hover {
+            background-color: #f3efe6;
+            border-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        .folder-tab-btn.active {
+            background-color: #c29a53; /* 황토색 */
+            color: #fff;
+            border-color: #b28a43;
+        }
+
+        @media (max-width: 768px) {
+            .sermon-folder-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .sermon-folder-tip {
+                margin-top: 5px;
+            }
+            .folder-tab-btn {
+                padding: 10px 18px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-eng">KPI</span>
+                <span class="logo-kor">한국 청교도 연구소</span>
+                <span class="logo-since">Since 2001</span>
+            </a>
+            <button class="mobile-menu-toggle" aria-label="메뉴 열기" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="index.html#about">연구소 소개</a></li>
+                    <li class="dropdown">
+                        <a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90">강해설교 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="sermon-dropdown">
+                            <ul class="dropdown-list">
+                                <!-- JS injected content -->
+                            </ul>
+                        </div>
+                    </li>
+                    <li><a href="resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98">세미나, 강의</a></li>
+                    <li><a href="resources.html?cat=%EC%84%B1%EA%B2%BD%EC%A3%BC%EC%84%9D">성경주석</a></li>
+                    <li class="dropdown mega-dropdown">
+                        <a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99">청교도 신학 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="puritan-dropdown">
+                            <ul class="dropdown-list">
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99" style="font-weight: 800; border-bottom: 1px dashed var(--secondary-color);">청교도 신학 전체보기</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%8B%A0%EB%A1%A0">1. 신론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9D%B8%EA%B0%84%EB%A1%A0">2. 인간론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B8%B0%EB%8F%85%EB%A1%A0">3. 기독론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%AC%EC%9B%90%EB%A1%A0%28%EC%84%B1%EB%A0%B9%EB%A1%A0%29">4. 구원론/성령론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9C%A8%EB%B2%95%EA%B3%BC%20%EB%B3%B5%EC%9D%8C">5. 율법과 복음</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B7%B8%EB%A6%AC%EC%8A%A4%EB%8F%84%EC%9D%B8%EC%9D%98%20%EC%83%9D%ED%99%9C%EB%A1%A0">6. 그리스도인의 생활론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B7%B8%EB%A6%AC%EC%8A%A4%EB%8F%84%EC%9D%B8%EC%9D%98%20%EA%B0%80%EC%A0%95">7. 그리스도인의 가정</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%90%ED%9A%8C%EB%A1%A0">8. 교회론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%84%A4%EA%B5%90%EB%A1%A0">9. 설교론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%98%81%EC%A0%81%EC%A0%84%EC%9F%81">10. 영적전쟁</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%A2%85%EB%A7%90%EB%A1%A0">11. 종말론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%97%AD%EC%82%AC%20%EC%8B%A0%ED%95%99">12. 역사 신학</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9E%98%EB%AA%BB%EB%90%9C%20%EC%8B%A0%ED%95%99">13. 잘못된 신학</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="evangelism-dropdown">
+                            <ul class="dropdown-list">
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 전체</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%A0%84%EB%8F%84">1. 전도</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EB%B6%80%ED%9D%A5">2. 부흥</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%84%A0%EA%B5%90">3. 선교</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%EB%A7%8C%ED%99%94">전도만화</a></li>
+                    <li><a href="resources.html?cat=%EC%8B%A0%ED%95%99%EA%B0%95%EB%A1%A0">신학강론</a></li>
+                    <li><a href="https://smartstore.naver.com/kpuritan_phb" target="_blank">PHB 출판사</a></li>
+                    <li><a href="seminary.html">SRS 신학대학원</a></li>
+                </ul>
+            </nav>
+            <div class="header-right">
+                <div class="search-bar" onclick="openAllTopicsModal()" style="cursor: pointer; user-select: none;">
+                    <i class="fas fa-search search-icon" style="color: var(--secondary-color);"></i>
+                    <span style="padding-left: 0.5rem; font-size: 0.85rem; color: #555; font-weight: 500;">주제별 신학 검색...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="resources-hero">
+            <div class="hero-content">
+                <h1 id="page-title">모든 자료</h1>
+                <p>청교도 신학과 개혁주의 신앙의 정수를 만나보세요.</p>
+            </div>
+        </section>
+
+        <div class="resources-container">
+            <div id="bible-grid-wrapper" style="display: none;"></div>
+            <div id="chapter-grid-wrapper" class="chapter-grid-container" style="display: none;"></div>
+            <div class="filter-section" id="filter-wrapper">...</div>
+
+            <div id="resources-grid" class="resource-list-grid">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> 자료를 불러오는 중...
+                </div>
+            </div>
+            <div id="pagination" class="pagination"></div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Korea Puritan Institute</h4>
+                <p>한국 청교도 연구소는 청교도 신학과 개혁주의 신념을 연구하고 성경적인 자료를 제공합니다.</p>
+                <div class="social-links">
+                    <a href="https://www.youtube.com/@kpuritan" title="YouTube" target="_blank"
+                        rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.instagram.com/k_puritan_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                        target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="Naver Blog" class="naver-link">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>Email: kpuritan.phb@gmail.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Korea Puritan Institute. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">
+                <a href="admin.html"
+                    style="color: #666; text-decoration: none;">관리자 로그인</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    </script>
+
+    <script src="data.js"></script>
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJbOaiElCypwgtPgbwdnudn3VC737fMrs",
+            authDomain: "kpuritan-home.firebaseapp.com",
+            projectId: "kpuritan-home",
+            storageBucket: "kpuritan-home.firebasestorage.app",
+            messagingSenderId: "1071220455502",
+            appId: "1:1071220455502:web:7f6f59b48c48a73437f8f0"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        const auth = firebase.auth();
+
+        async function ensureAuth() {
+            if (!auth.currentUser) {
+                try {
+                    await auth.signInAnonymously();
+                    console.log("Auth session established. UID:", auth.currentUser?.uid);
+                } catch(e) {
+                    console.warn("Auth initialization notice:", e);
+                }
+            }
+        }
+        ensureAuth();
+
+        const grid = document.getElementById('resources-grid');
+        const filterWrapper = document.getElementById('filter-wrapper');
+        const bibleWrapper = document.getElementById('bible-grid-wrapper');
+        const chapterWrapper = document.getElementById('chapter-grid-wrapper');
+        const pageTitle = document.getElementById('page-title');
+        const theologyTabsWrapper = document.getElementById('theological-tabs');
+        const sermonFolderTabs = document.getElementById('sermon-folder-tabs');
+        const theologyTabBtns = document.querySelectorAll('.theology-tab-btn');
+        const paginationEl = document.getElementById('pagination');
+
+        let allCurrentPosts = [];
+        let currentPage = 1;
+        let currentViewMode = localStorage.getItem('resourcesViewMode') || 'list'; // 'list' (기본값: 제목만 보기) 또는 'grid' (카드형)
+        let itemsPerPage = parseInt(localStorage.getItem('resourcesItemsPerPage')) || (currentViewMode === 'list' ? 15 : 12);
+        let currentSortOption = localStorage.getItem('resourcesSortOption') || 'custom'; // 'custom', 'title_asc', 'title_desc', 'date_desc', 'date_asc'
+
+        const BIBLE_BOOKS = [
+            { name: "창세기", chapters: 50, test: 'old' }, { name: "출애굽기", chapters: 40, test: 'old' }, { name: "레위기", chapters: 27, test: 'old' }, { name: "민수기", chapters: 36, test: 'old' }, { name: "신명기", chapters: 34, test: 'old' },
+            { name: "여호수아", chapters: 24, test: 'old' }, { name: "사사기", chapters: 21, test: 'old' }, { name: "룻기", chapters: 4, test: 'old' }, { name: "사무엘상", chapters: 31, test: 'old' }, { name: "사무엘하", chapters: 24, test: 'old' },
+            { name: "열왕기상", chapters: 22, test: 'old' }, { name: "열왕기하", chapters: 25, test: 'old' }, { name: "역대상", chapters: 29, test: 'old' }, { name: "역대하", chapters: 36, test: 'old' }, { name: "에스라", chapters: 10, test: 'old' },
+            { name: "느헤미야", chapters: 13, test: 'old' }, { name: "에스더", chapters: 10, test: 'old' }, { name: "욥기", chapters: 42, test: 'old' }, { name: "시편", chapters: 150, test: 'old' }, { name: "잠언", chapters: 31, test: 'old' },
+            { name: "전도서", chapters: 12, test: 'old' }, { name: "아가", chapters: 8, test: 'old' }, { name: "이사야", chapters: 66, test: 'old' }, { name: "예레미야", chapters: 52, test: 'old' }, { name: "예레미야 애가", chapters: 5, test: 'old' },
+            { name: "에스겔", chapters: 48, test: 'old' }, { name: "다니엘", chapters: 12, test: 'old' }, { name: "호세아", chapters: 14, test: 'old' }, { name: "요엘", chapters: 3, test: 'old' }, { name: "아모스", chapters: 9, test: 'old' },
+            { name: "오바댜", chapters: 1, test: 'old' }, { name: "요나", chapters: 4, test: 'old' }, { name: "미가", chapters: 7, test: 'old' }, { name: "나훔", chapters: 3, test: 'old' }, { name: "하박국", chapters: 3, test: 'old' },
+            { name: "스바냐", chapters: 3, test: 'old' }, { name: "학개", chapters: 2, test: 'old' }, { name: "스가랴", chapters: 14, test: 'old' }, { name: "말라기", chapters: 4, test: 'old' },
+            { name: "마태복음", chapters: 28, test: 'new' }, { name: "마가복음", chapters: 16, test: 'new' }, { name: "누가복음", chapters: 24, test: 'new' }, { name: "요한복음", chapters: 21, test: 'new' }, { name: "사도행전", chapters: 28, test: 'new' },
+            { name: "로마서", chapters: 16, test: 'new' }, { name: "고린도전서", chapters: 16, test: 'new' }, { name: "고린도후서", chapters: 13, test: 'new' }, { name: "갈라디아서", chapters: 6, test: 'new' }, { name: "에베소서", chapters: 6, test: 'new' },
+            { name: "빌립보서", chapters: 4, test: 'new' }, { name: "골로새서", chapters: 4, test: 'new' }, { name: "데살로니가전서", chapters: 5, test: 'new' }, { name: "데살로니가후서", chapters: 3, test: 'new' }, { name: "디모데전서", chapters: 6, test: 'new' },
+            { name: "디모데후서", chapters: 4, test: 'new' }, { name: "디도서", chapters: 3, test: 'new' }, { name: "빌레몬서", chapters: 1, test: 'new' }, { name: "히브리서", chapters: 13, test: 'new' }, { name: "야고보서", chapters: 5, test: 'new' },
+            { name: "베드로전서", chapters: 5, test: 'new' }, { name: "베드로후서", chapters: 3, test: 'new' }, { name: "요한1서", chapters: 5, test: 'new' }, { name: "요한2서", chapters: 1, test: 'new' }, { name: "요한3서", chapters: 1, test: 'new' },
+            { name: "유다서", chapters: 1, test: 'new' }, { name: "요한계시록", chapters: 22, test: 'new' }
+        ];
+
+        let currentType = 'topic'; // 'topic' or 'author'
+        let currentCategory = null; // clicked topic/author name
+        window.isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+        // Add hook for main.js deletion/update to refresh this page
+        window.loadAdminPosts = () => {
+            if (currentCategory) loadCategoryItems(currentCategory);
+            else if (typeof loadCategories === 'function') loadCategories();
+        };
+
+        const topicKeywords = {
+            '신론': ['하나님', '삼위일체', '성경', '계시', '섭리', '창조', '주권', '속성', '영광', '작정', '예정', '성경 연구의 정석', '성교촬리', '진리이지', '사도신경', '웨스트민스터 소교리문답'],
+            '인간론': ['죄', '타락', '인간', '심성', '부패', '전적 부패', '양심', '불편한 거울', '죄: 하나님을 향한 타격'],
+            '기독론': ['그리스도', '예수', '성육신', '속죄', '십자가', '중보자', '부활', '직무', '비하', '승귀'],
+            '구원론(성령론)': ['구원', '성령', '중생', '회심', '믿음', '칭의', '성화', '거듭남', '은혜', '자유의지', '회개', '부르심', '양자', '견인', '확신', '점검', '유사 그리스도인', '위선', '아버지의 이끄심', '의심하는 영혼', '구원 얻는 믿음의 증거', '거짓 믿음', '영혼의 진단', '참된 믿음인가', '위선적인', '진정으로 거듭났습니까', '확신의 길', '열 처녀 비유', '거듭남: 하나님 나라', '영접하는 자', '뱀에 물린 자', '인생이라는 여행', '회개와 하나님 나라', '회심의 사역', '그리스도께 나아가야', '현대 복음주의', '영혼의 의사', '미국교회 1차 대각성', '뉴욕 대부흥', '칭의와 성화'],
+            '율법과 복음': ['율법', '복음', '도덕률', '도덕률폐기론', '율법의 변호', '율법의 옹호'],
+            '그리스도인의 생활론': ['기도', '묵상', '생활', '경건', '고난', '가정', '결혼', '자녀', '양육', '순종', '상한 갈대', '심령이 가난한', '유익', '세속적 마음', '위로와 회복', '경건의 큰 유익', '땅의 일을 생각하는 자', '약함과 능력', '그리스도인의 위대한 관심사', '사람을 낚는 기술', '경건의 실천', '현대 심리학'],
+            '그리스도인의 가정': ['그리스도인의 가정', '가정 예배', '부부', '남편', '아내', '가족'],
+            '교회론': ['교회', '회원', '예배', '성례', '세례', '성찬', '권징', '직분', '목사', '장로', '집사', '장로교', '공의회', '로마 카톨릭', '미국과 한국 장로교회', '예루살렘 공의회', '유산'],
+            '설교론': ['설교', '설교자', '청중', '해석', '최근의 설교론', '참된 설교자 분별', '분별', '설교학'],
+            '영적전쟁': ['영적전쟁', '시험', '유혹', '마귀', '사탄', '전투', '계략', '사탄의 최초의 전략', '영혼의 도성', '거룩한 전쟁', '영적 전장', '사탄의 계략', '사탄의 전략'],
+            '종말론': ['심판', '재림', '종말', '부활', '마지막', '천국', '지옥', '사후', '영생', '최후의 심판'],
+            '역사 신학': ['역사', '교회사', '청교도', '개혁주의', '인물', '변증', '전통', '유산', '뿌리', '맥락', '사상사', '교리의 역사', '칼빈주의 역사'],
+            '전도, 부흥, 선교': ['전도', '부흥', '선교', '복음', '구령', '영혼 구원', '전도자', '선교사', '대위임령', '대각성', '부흥운동', '잃어버린 양']
+        };
+
+        function determineCategory(title, content) {
+            if (!title) return null; // Defensive check for missing title
+            const combined = (title + ' ' + (content || '')).toLowerCase();
+            for (const [category, keywords] of Object.entries(topicKeywords)) {
+                if (keywords.some(keyword => combined.includes(keyword.toLowerCase()))) {
+                    return category;
+                }
+            }
+            return null;
+        }
+
+        window.customSeriesCovers = {};
+
+        async function loadSeriesCovers() {
+            try {
+                // 1. Read from localStorage cache
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('series_cover_')) {
+                        const sName = key.replace('series_cover_', '');
+                        window.customSeriesCovers[sName] = localStorage.getItem(key);
+                    }
+                }
+
+                // 2. Read from series_covers if permitted
+                try {
+                    const snapshot = await db.collection('series_covers').get();
+                    snapshot.forEach(doc => {
+                        window.customSeriesCovers[doc.id] = doc.data().coverUrl;
+                    });
+                } catch(e) {}
+            } catch (e) {
+                console.warn('loadSeriesCovers error:', e);
+            }
+        }
+
+        async function init() {
+            await loadSeriesCovers();
+            const urlParams = new URLSearchParams(window.location.search);
+            const typeParam = urlParams.get('type');
+            let catParam = urlParams.get('cat');
+            const bParam = urlParams.get('b');
+            const subTopicParam = urlParams.get('subTopic');
+
+            if (typeParam) currentType = typeParam;
+
+            if (catParam === '5분 신학강론') {
+                catParam = '신학강론';
+            }
+            if (catParam === '전도, 선교') {
+                catParam = '전도, 부흥, 선교';
+            }
+            currentCategory = catParam;
+
+            // Compact hero when navigating into a book or chapter
+            const heroSection = document.querySelector('.resources-hero');
+            if (heroSection) {
+                if (catParam === '성경주석' && bParam) {
+                    heroSection.classList.add('compact-hero');
+                } else {
+                    heroSection.classList.remove('compact-hero');
+                }
+            }
+            updateUI();
+
+            if (currentCategory === '성경주석' && !bParam) {
+                grid.style.display = 'none';
+                bibleWrapper.style.display = 'block';
+                chapterWrapper.style.display = 'none';
+                if (filterWrapper) filterWrapper.style.display = 'none';
+                loadBibleBooks();
+            } else if (currentCategory === '성경주석' && bParam) {
+                const sParam = urlParams.get('s');
+                grid.style.display = sParam ? 'grid' : 'none';
+                bibleWrapper.style.display = 'none';
+                chapterWrapper.style.display = 'block';
+                if (filterWrapper) filterWrapper.style.display = 'none';
+                await loadCategoryItems('성경주석');
+            } else if (currentCategory) {
+                grid.style.display = 'grid';
+                bibleWrapper.style.display = 'none';
+                chapterWrapper.style.display = 'none';
+                if (filterWrapper) filterWrapper.style.display = 'none';
+                await loadCategoryItems(currentCategory);
+            } else if (subTopicParam) {
+                grid.style.display = 'grid';
+                bibleWrapper.style.display = 'none';
+                chapterWrapper.style.display = 'none';
+                if (filterWrapper) filterWrapper.style.display = 'none';
+                await loadSubtopicItems(subTopicParam);
+            } else {
+                grid.style.display = 'grid';
+                bibleWrapper.style.display = 'none';
+                chapterWrapper.style.display = 'none';
+                if (filterWrapper) filterWrapper.style.display = 'none';
+                // 기존의 대주제 탭폴더 구조 대신, 전체 리스트가 바로 나오도록 변경
+                await loadAllResources(typeParam || 'latest');
+            }
+
+            updateUI();
+        }
+
+        function loadBibleBooks() {
+            bibleWrapper.innerHTML = '';
+            bibleWrapper.className = 'bible-index-container';
+            pageTitle.textContent = '성경주석';
+
+            const oldTestament = BIBLE_BOOKS.filter(b => b.test === 'old');
+            const newTestament = BIBLE_BOOKS.filter(b => b.test === 'new');
+
+            const renderBibleSection = (title, list) => {
+                const section = document.createElement('div');
+                section.className = 'bible-index-section';
+                section.innerHTML = `
+                    <div class="bible-section-header">
+                        <div class="bible-section-title">${title}</div>
+                    </div>
+                    <div class="bible-grid"></div>
+                `;
+                const bibleGrid = section.querySelector('.bible-grid');
+
+                list.forEach(book => {
+                    const btn = document.createElement('div');
+                    btn.className = 'bible-book-btn';
+                    btn.innerHTML = `${book.name}<span>${book.chapters} CH</span>`;
+                    btn.onclick = () => {
+                        const url = new URL(window.location);
+                        url.searchParams.set('cat', '성경주석');
+                        url.searchParams.set('b', book.name);
+                        url.searchParams.delete('s');
+                        window.history.pushState({}, '', url);
+                        init();
+                    };
+                    bibleGrid.appendChild(btn);
+                });
+                bibleWrapper.appendChild(section);
+            };
+
+            renderBibleSection('구약 (Old Testament)', oldTestament);
+            renderBibleSection('신약 (New Testament)', newTestament);
+        }
+
+        function updateUI() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const s = urlParams.get('s') || "";
+            const b = urlParams.get('b') || "";
+            const subTopic = urlParams.get('subTopic') || "";
+
+            if (subTopic) {
+                filterWrapper.style.display = 'none';
+                if (pageTitle) pageTitle.textContent = `신학 주제: ${subTopic}`;
+            } else if (currentCategory) {
+                filterWrapper.style.display = 'none';
+                let title = currentCategory;
+                if (b) title += ` > ${b}`;
+                if (s) title += ` > ${s}`;
+                if (pageTitle) pageTitle.textContent = title;
+            } else {
+                // 전체보기 뷰이므로 불필요한 필터 가림
+                if (filterWrapper) filterWrapper.style.display = 'none';
+                bibleWrapper.style.display = 'none';
+                if (chapterWrapper) chapterWrapper.style.display = 'none';
+
+                const type = urlParams.get('type');
+                if (pageTitle) {
+                    if (type === 'latest') pageTitle.textContent = '최신 업데이트 전체 자료';
+                    else if (type === 'recommended') pageTitle.textContent = '추천 자료 전체 목록';
+                    else pageTitle.textContent = '최신 업데이트 전체 자료';
+                }
+            }
+
+            activateHeaderDropdown();
+        }
+
+        function activateHeaderDropdown() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const cat = urlParams.get('cat') || "";
+            const s = urlParams.get('s') || "";
+
+            // Reset active from all dropdown links
+            document.querySelectorAll('header nav li.dropdown a').forEach(a => a.classList.remove('active'));
+
+            let targetDropdownLi = null;
+
+            if (cat === '강해설교') {
+                const sermonDrop = document.getElementById('sermon-dropdown');
+                if (sermonDrop) targetDropdownLi = sermonDrop.closest('li.dropdown');
+            } else if (cat === '청교도 신학') {
+                const puritanDrop = document.getElementById('puritan-dropdown');
+                if (puritanDrop) targetDropdownLi = puritanDrop.closest('li.dropdown');
+            } else if (cat === '세미나, 강의' || cat === '세미나' || cat === '강의') {
+                const seminarDrop = document.getElementById('seminar-dropdown');
+                if (seminarDrop) targetDropdownLi = seminarDrop.closest('li.dropdown');
+            } else if (cat === '전도, 부흥, 선교' || cat === '전도, 선교' || cat.includes('전도') || cat.includes('부흥') || cat.includes('선교')) {
+                const evDrop = document.getElementById('evangelism-dropdown');
+                if (evDrop) {
+                    targetDropdownLi = evDrop.closest('li.dropdown');
+                } else {
+                    const evLink = document.querySelector('header nav a[href*="전도"]');
+                    if (evLink) targetDropdownLi = evLink.closest('li.dropdown');
+                }
+            }
+
+            if (targetDropdownLi) {
+                const links = targetDropdownLi.querySelectorAll('.dropdown-list a');
+                links.forEach(a => {
+                    const href = a.getAttribute('href') || '';
+                    const text = a.textContent.trim();
+                    if (!s && !href.includes('&s=')) {
+                        a.classList.add('active');
+                    } else if (s && (href.includes(`&s=${encodeURIComponent(s)}`) || text === s.trim() || text.endsWith(s.trim()))) {
+                        a.classList.add('active');
+                    }
+                });
+            }
+        }
+        window.activateHeaderDropdown = activateHeaderDropdown;
+
+        window.setSermonSubTopic = function(val) {
+            const u = new URL(window.location.href);
+            if (val) {
+                u.searchParams.set('subTopic', val);
+            } else {
+                u.searchParams.delete('subTopic');
+            }
+            window.history.pushState({}, '', u.toString());
+            currentPage = 1;
+            loadCategoryItems('청교도 신학');
+            updateUI();
+        };
+
+        window.switchViewMode = function(mode) {
+            currentViewMode = mode;
+            localStorage.setItem('resourcesViewMode', mode);
+            if (mode === 'list' && itemsPerPage === 12) {
+                itemsPerPage = 15;
+                localStorage.setItem('resourcesItemsPerPage', 15);
+            } else if (mode === 'grid' && itemsPerPage === 15) {
+                itemsPerPage = 12;
+                localStorage.setItem('resourcesItemsPerPage', 12);
+            }
+            currentPage = 1;
+            renderPage(1);
+        };
+
+        window.changeItemsPerPage = function(val) {
+            itemsPerPage = parseInt(val) || 15;
+            localStorage.setItem('resourcesItemsPerPage', itemsPerPage);
+            currentPage = 1;
+            renderPage(1);
+        };
+
+        function applySorting(postsArray, sortOption = currentSortOption) {
+            if (currentCategory === '강해설교' && postsArray.some(p => p.order !== undefined && p.order !== null)) {
+                postsArray.sort((a, b) => {
+                    const orderA = (a.order !== undefined && a.order !== null) ? a.order : ((a.customOrder !== undefined && a.customOrder !== null) ? a.customOrder : 9999);
+                    const orderB = (b.order !== undefined && b.order !== null) ? b.order : ((b.customOrder !== undefined && b.customOrder !== null) ? b.customOrder : 9999);
+                    return orderA - orderB;
+                });
+                return;
+            }
+            if (sortOption === 'date_asc') {
+                postsArray.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+            } else { // 'date_desc' (기본값)
+                postsArray.sort((a, b) => {
+                    const orderA = (a.customOrder !== undefined && a.customOrder !== null) ? a.customOrder : null;
+                    const orderB = (b.customOrder !== undefined && b.customOrder !== null) ? b.customOrder : null;
+                    if (orderA !== null && orderB !== null) return orderA - orderB;
+                    if (orderA !== null) return -1;
+                    if (orderB !== null) return 1;
+                    return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+                });
+            }
+        }
+
+        window.setSermonChapterFilter = function(ch) {
+            const u = new URL(window.location);
+            if (ch) {
+                u.searchParams.set('ch', ch);
+            } else {
+                u.searchParams.delete('ch');
+            }
+            window.history.pushState({}, '', u);
+            loadCategoryItems('강해설교');
+            updateUI();
+        };
+
+        window.changeSortOption = async function(sortVal) {
+            currentSortOption = sortVal;
+            localStorage.setItem('resourcesSortOption', sortVal);
+            applySorting(allCurrentPosts, sortVal);
+
+            if (window.isAdmin && sortVal === 'date_asc') {
+                allCurrentPosts.forEach((p, idx) => {
+                    p.customOrder = idx;
+                });
+                await saveAllCustomOrders();
+                showOrderToast(`'오래된 등록순'으로 순서가 저장되었습니다.`);
+            }
+
+            currentPage = 1;
+            renderPage(1);
+        };
+
+        function getSortOptionName(val) {
+            return val === 'date_asc' ? '오래된 등록순' : '최신 등록순';
+        }
+
+        function openPostDetail(post) {
+            if (window.Stats) {
+                window.Stats.track('click', {
+                    id: post.id,
+                    type: 'resource_item',
+                    title: post.title,
+                    category: currentCategory
+                });
+            }
+
+            let content = post.content || '';
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            const urlsInContent = content.match(urlRegex) || [];
+            let primaryLink = post.fileUrl || (urlsInContent.length > 0 ? urlsInContent[0] : null);
+
+            const hasText = post.content && post.content.trim().length > 5;
+            if (hasText) {
+                window.open(`viewer.html?id=${post.id}`, '_self');
+            } else if (primaryLink && /(?:\.|%2E)pdf($|\?|#)/i.test(primaryLink)) {
+                window.open(primaryLink, '_blank');
+            } else if (primaryLink && primaryLink !== '#') {
+                window.open(primaryLink, '_self');
+            } else {
+                window.open(`viewer.html?id=${post.id}`, '_self');
+            }
+        }
+
+        function renderPage(page) {
+            currentPage = page;
+            grid.innerHTML = '';
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageItems = allCurrentPosts.slice(start, end);
+            const urlParams = new URLSearchParams(window.location.search);
+
+            if (currentCategory === '강해설교' && urlParams.get('s')) {
+                const sVal = urlParams.get('s');
+                const selectedCh = urlParams.get('ch') || "";
+                const totalSeriesCount = window.seriesTotalCount || allCurrentPosts.length;
+
+                const topBar = document.createElement('div');
+                topBar.style.cssText = 'grid-column: 1 / -1; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 14px 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 10px;';
+                topBar.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <i class="fas fa-book-open" style="color: #8c6d46; font-size: 1.25rem;"></i>
+                        <span style="font-weight: 800; font-size: 1.15rem; color: #1a342a;">${sVal}</span>
+                        <span style="font-size: 0.85rem; color: #718096; background: #edf2f7; padding: 3px 12px; border-radius: 20px; font-weight: 600;">총 ${totalSeriesCount}편</span>
+                        ${selectedCh ? `<span style="font-size: 0.82rem; color: #8c6d46; background: #faf5ee; padding: 3px 10px; border-radius: 6px; font-weight: 700; border: 1px solid #ecd5b8;">${selectedCh}장 필터링 (${allCurrentPosts.length}편)</span>` : ''}
+                        ${window.isAdmin ? `
+                        <span style="font-size: 0.82rem; color: #2e7d32; background: #e8f5e9; padding: 4px 10px; border-radius: 6px; font-weight: 700; border: 1px solid #c8e6c9; display: inline-flex; align-items: center; gap: 5px;">
+                            <i class="fas fa-arrows-alt"></i> 순서 드래그 변경 (자동 저장)
+                        </span>` : ''}
+                    </div>
+                    <button type="button" onclick="const u = new URL(window.location); u.searchParams.delete('s'); u.searchParams.delete('ch'); window.history.pushState({}, '', u); loadCategoryItems('강해설교'); updateUI();"
+                        style="border: none; background: #f7fafc; color: #8c6d46; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px; border: 1px solid #e2e8f0; transition: all 0.2s;">
+                        <i class="fas fa-arrow-left"></i> 전체 강해 목록 (구약/신약)
+                    </button>
+                `;
+                grid.appendChild(topBar);
+
+                // 장(Chapter) 바로가기 탭 바 (베드로전서 등 1장부터 5장까지 순서대로 즉시 이동)
+                if (window.seriesChapterCounts && Object.keys(window.seriesChapterCounts).length > 0) {
+                    const chBar = document.createElement('div');
+                    chBar.className = 'chapter-filter-bar';
+                    chBar.style.cssText = 'grid-column: 1 / -1; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: #ffffff; padding: 12px 18px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02);';
+                    
+                    let btnsHtml = `
+                        <span style="font-weight: 800; font-size: 0.92rem; color: #1a342a; margin-right: 4px; display: inline-flex; align-items: center; gap: 6px;">
+                            <i class="fas fa-layer-group" style="color: #8c6d46;"></i> 장별 바로보기:
+                        </span>
+                        <button type="button" onclick="setSermonChapterFilter('')"
+                            style="border: 1px solid ${!selectedCh ? '#8c6d46' : '#cbd5e0'}; background: ${!selectedCh ? '#8c6d46' : '#fcfbf9'}; color: ${!selectedCh ? '#ffffff' : '#2d3748'}; padding: 6px 14px; border-radius: 8px; font-weight: 700; font-size: 0.86rem; cursor: pointer; transition: all 0.2s; box-shadow: ${!selectedCh ? '0 2px 6px rgba(140,109,70,0.25)' : 'none'};">
+                            전체 (${totalSeriesCount}편)
+                        </button>
+                    `;
+                    const chKeys = Object.keys(window.seriesChapterCounts).map(Number).sort((a, b) => a - b);
+                    chKeys.forEach(ch => {
+                        const isAct = selectedCh === String(ch);
+                        const cnt = window.seriesChapterCounts[ch];
+                        btnsHtml += `
+                            <button type="button" onclick="setSermonChapterFilter('${ch}')"
+                                style="border: 1px solid ${isAct ? '#8c6d46' : '#cbd5e0'}; background: ${isAct ? '#8c6d46' : '#fcfbf9'}; color: ${isAct ? '#ffffff' : '#2d3748'}; padding: 6px 14px; border-radius: 8px; font-weight: 700; font-size: 0.86rem; cursor: pointer; transition: all 0.2s; box-shadow: ${isAct ? '0 2px 6px rgba(140,109,70,0.25)' : 'none'};">
+                                ${ch}장 (${cnt}편)
+                            </button>
+                        `;
+                    });
+                    chBar.innerHTML = btnsHtml;
+                    grid.appendChild(chBar);
+                }
+            }
+
+            if (currentCategory === '청교도 신학' && urlParams.get('s') === '설교론') {
+                const subTopic = urlParams.get('subTopic') || "";
+                const subBar = document.createElement('div');
+                subBar.style.cssText = 'grid-column: 1 / -1; margin-bottom: 16px; display: flex; align-items: center; justify-content: flex-start; background: #ffffff; padding: 14px 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 10px;';
+                
+                const makeSubBtn = (label, val, icon) => {
+                    const isActive = subTopic === val;
+                    return `
+                        <button type="button" onclick="setSermonSubTopic('${val}')"
+                            style="border: 1px solid ${isActive ? '#8c6d46' : '#cbd5e0'}; background: ${isActive ? '#8c6d46' : '#ffffff'}; color: ${isActive ? '#ffffff' : '#2d3748'}; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s; box-shadow: ${isActive ? '0 3px 10px rgba(140,109,70,0.25)' : 'none'};">
+                            <i class="${icon}"></i> ${label}
+                        </button>
+                    `;
+                };
+
+                subBar.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <span style="font-weight: 800; font-size: 1rem; color: #1a342a; display: flex; align-items: center; gap: 6px; margin-right: 4px;">
+                            <i class="fas fa-folder-open" style="color: #8c6d46;"></i> 9. 설교론 하위 분류:
+                        </span>
+                        ${makeSubBtn('전체 설교론', '', 'fas fa-th-large')}
+                        ${makeSubBtn('설교자', '설교자', 'fas fa-user-tie')}
+                        ${makeSubBtn('전도설교', '전도설교', 'fas fa-bullhorn')}
+                    </div>
+                `;
+                grid.appendChild(subBar);
+            }
+
+            const isBible = currentCategory === '성경주석';
+            const sParam = urlParams.get('s');
+            const totalPages = Math.ceil(allCurrentPosts.length / itemsPerPage);
+
+            if (!isBible || !sParam) {
+                const controlBar = document.createElement('div');
+                controlBar.className = 'resources-view-controls-bar';
+                controlBar.style.cssText = 'grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 12px 18px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 12px;';
+                
+                controlBar.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <span style="font-size: 0.88rem; color: #4a5568; font-weight: 700;">
+                            <i class="fas fa-sliders-h" style="color: #8c6d46;"></i> 보기 방식:
+                        </span>
+                        <div style="display: inline-flex; background: #edf2f7; padding: 3px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <button type="button" onclick="switchViewMode('list')"
+                                style="border: none; background: ${currentViewMode === 'list' ? '#1a342a' : 'transparent'}; color: ${currentViewMode === 'list' ? '#ffffff' : '#4a5568'}; padding: 6px 14px; border-radius: 6px; font-weight: 700; font-size: 0.84rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; box-shadow: ${currentViewMode === 'list' ? '0 2px 6px rgba(0,0,0,0.15)' : 'none'};">
+                                <i class="fas fa-list"></i> 제목만 보기 (목록형)
+                            </button>
+                            <button type="button" onclick="switchViewMode('grid')"
+                                style="border: none; background: ${currentViewMode === 'grid' ? '#1a342a' : 'transparent'}; color: ${currentViewMode === 'grid' ? '#ffffff' : '#4a5568'}; padding: 6px 14px; border-radius: 6px; font-weight: 700; font-size: 0.84rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; box-shadow: ${currentViewMode === 'grid' ? '0 2px 6px rgba(0,0,0,0.15)' : 'none'};">
+                                <i class="fas fa-th-large"></i> 썸네일과 함께 보기 (카드형)
+                            </button>
+                        </div>
+                        ${window.isAdmin ? `
+                        <span style="font-size: 0.8rem; color: #2e7d32; background: #e8f5e9; padding: 5px 12px; border-radius: 6px; font-weight: 700; border: 1px solid #c8e6c9; display: inline-flex; align-items: center; gap: 5px; margin-left: 4px;">
+                            <i class="fas fa-arrows-alt"></i> 드래그로 순서 변경 가능 (자동 저장)
+                        </span>` : ''}
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                            <span style="font-size: 0.85rem; color: #718096; font-weight: 600;">
+                                <i class="fas fa-sort-amount-down" style="color: #8c6d46;"></i> 정렬:
+                            </span>
+                            <select onchange="changeSortOption(this.value)"
+                                style="padding: 6px 10px; font-size: 0.85rem; border: 1px solid #cbd5e0; border-radius: 6px; background: #fcfbf9; color: #2d3748; font-weight: 700; cursor: pointer; outline: none;">
+                                <option value="date_desc" ${currentSortOption !== 'date_asc' ? 'selected' : ''}>🕒 최신 등록순</option>
+                                <option value="date_asc" ${currentSortOption === 'date_asc' ? 'selected' : ''}>🕒 오래된 등록순</option>
+                            </select>
+                        </div>
+
+                        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                            <span style="font-size: 0.85rem; color: #718096; font-weight: 600;">페이지당 표시:</span>
+                            <select onchange="changeItemsPerPage(this.value)"
+                                style="padding: 6px 10px; font-size: 0.85rem; border: 1px solid #cbd5e0; border-radius: 6px; background: #fcfbf9; color: #2d3748; font-weight: 700; cursor: pointer; outline: none;">
+                                <option value="5" ${itemsPerPage === 5 ? 'selected' : ''}>5개씩 보기</option>
+                                <option value="10" ${itemsPerPage === 10 ? 'selected' : ''}>10개씩 보기</option>
+                                <option value="15" ${itemsPerPage === 15 ? 'selected' : ''}>15개씩 보기</option>
+                                <option value="20" ${itemsPerPage === 20 ? 'selected' : ''}>20개씩 보기</option>
+                            </select>
+                            <span style="font-size: 0.82rem; color: #a0aec0; font-weight: 600; margin-left: 2px;">(총 ${allCurrentPosts.length}건)</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(controlBar);
+            }
+
+            if (pageItems.length === 0) {
+                const emptyEl = document.createElement('div');
+                emptyEl.className = 'no-results';
+                emptyEl.style.gridColumn = '1 / -1';
+                emptyEl.innerText = '해당 분류에 등록된 자료가 없습니다.';
+                grid.appendChild(emptyEl);
+                if (paginationEl) paginationEl.innerHTML = '';
+                return;
+            }
+
+            if (currentViewMode === 'list' && (!isBible || !sParam)) {
+                grid.className = 'resource-list-grid list-mode-active';
+                const tableWrapper = document.createElement('div');
+                tableWrapper.className = 'resource-table-wrapper';
+                tableWrapper.style.cssText = 'grid-column: 1 / -1; width: 100%; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow-x: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.03);';
+                
+                pageItems.forEach((post, index) => {
+                    const postNum = start + index + 1;
+                    const author = post.author || '저자 미상';
+                    const topicBadge = post.subTopic || post.series || post.topic || currentCategory || '자료';
+                    const postDate = post.createdAt ? new Date(post.createdAt.seconds * 1000).toLocaleDateString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit' }).replace(/\. /g, '.').replace(/\.$/, '') : '-';
+
+                    const row = document.createElement('div');
+                    row.className = 'resource-table-row' + (window.isAdmin ? ' admin-draggable-card' : '');
+                    row.id = `resource-row-${post.id}`;
+                    row.style.cssText = 'display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #f0f4f8; transition: background 0.15s; cursor: pointer; gap: 14px;';
+                    
+                    if (window.isAdmin) {
+                        row.setAttribute('draggable', 'true');
+                        row.addEventListener('dragstart', (e) => handleCardDragStart(e, post, row));
+                        row.addEventListener('dragover', (e) => handleCardDragOver(e, row));
+                        row.addEventListener('dragleave', (e) => handleCardDragLeave(e, row));
+                        row.addEventListener('dragend', (e) => handleCardDragEnd(e, row));
+                        row.addEventListener('drop', (e) => handleCardDrop(e, post, row));
+                    }
+
+                    row.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0;">
+                            ${window.isAdmin ? `
+                            <div class="drag-grip-handle" style="color: #a0aec0; cursor: grab; padding: 0 4px; font-size: 1.1rem;" title="마우스로 끌어서 순서 변경">
+                                <i class="fas fa-grip-vertical"></i>
+                            </div>` : ''}
+                            <span style="font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: #edf2f7; color: #2d3748; border: 1px solid #cbd5e0; flex-shrink: 0; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                ${topicBadge}
+                            </span>
+                            <h4 style="margin: 0; font-size: 1rem; color: #1a342a; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0;" title="${post.title || ''}">
+                                ${post.title || '제목 없음'}
+                            </h4>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 16px; flex-shrink: 0;">
+                            <span style="font-size: 0.82rem; color: #718096; white-space: nowrap;">
+                                <i class="far fa-user" style="color: #a0aec0; margin-right: 3px;"></i> ${author}
+                            </span>
+                            <span style="font-size: 0.8rem; color: #a0aec0; white-space: nowrap;">
+                                ${postDate}
+                            </span>
+                            ${window.isAdmin ? `
+                            <div style="display: flex; gap: 6px;" onclick="event.stopPropagation()">
+                                <button onclick="window.openEditModal('${post.id}')" style="background: #f39c12; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.76rem; font-weight: 700;">
+                                    <i class="fas fa-edit"></i> 수정
+                                </button>
+                                <button onclick="window.deletePost('${post.id}')" style="background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.76rem; font-weight: 700;">
+                                    <i class="fas fa-trash"></i> 삭제
+                                </button>
+                            </div>` : ''}
+                        </div>
+                    `;
+
+                    row.onclick = () => openPostDetail(post);
+                    row.onmouseenter = () => row.style.background = '#fcfbf9';
+                    row.onmouseleave = () => row.style.background = '';
+                    tableWrapper.appendChild(row);
+                });
+
+                grid.appendChild(tableWrapper);
+            } else {
+                grid.className = 'resource-list-grid';
+                pageItems.forEach(post => renderResourceItem(post));
+            }
+            renderPagination();
+        }
+
+        function renderPagination() {
+            if (!paginationEl) return;
+            paginationEl.innerHTML = '';
+
+            const totalPages = Math.ceil(allCurrentPosts.length / itemsPerPage);
+            if (totalPages <= 1) return;
+
+            const createBtn = (html, pageNum, isActive = false, isDisabled = false, isNav = false, tooltip = '') => {
+                const btn = document.createElement('button');
+                btn.className = `page-btn ${isActive ? 'active' : ''} ${isNav ? 'page-nav-btn' : ''}`;
+                btn.innerHTML = html;
+                if (tooltip) btn.title = tooltip;
+                if (isDisabled) {
+                    btn.style.opacity = '0.35';
+                    btn.style.cursor = 'not-allowed';
+                    btn.disabled = true;
+                } else {
+                    btn.onclick = () => {
+                        window.scrollTo({ top: 400, behavior: 'smooth' });
+                        renderPage(pageNum);
+                    };
+
+                    if (window.isAdmin) {
+                        btn.ondragover = (e) => {
+                            e.preventDefault();
+                            btn.style.background = '#8c6d46';
+                            btn.style.color = '#ffffff';
+                            btn.style.transform = 'scale(1.15)';
+                            btn.style.boxShadow = '0 4px 15px rgba(140,109,70,0.4)';
+                        };
+                        btn.ondragleave = () => {
+                            btn.style.transform = 'none';
+                            btn.style.boxShadow = 'none';
+                            if (!isActive) {
+                                btn.style.background = '';
+                                btn.style.color = '';
+                            }
+                        };
+                        btn.ondrop = async (e) => {
+                            e.preventDefault();
+                            btn.style.transform = 'none';
+                            btn.style.boxShadow = 'none';
+                            await handleDropOnPageBtn(e, pageNum);
+                        };
+                    }
+                }
+                return btn;
+            };
+
+            // 1. 처음 페이지 [⏮]
+            if (currentPage > 1) {
+                paginationEl.appendChild(createBtn('<i class="fas fa-angle-double-left"></i> 처음', 1, false, false, true, '처음 페이지 (1P)'));
+            }
+
+            // 2. 이전 페이지 [◀ 이전]
+            paginationEl.appendChild(createBtn('<i class="fas fa-chevron-left"></i> 이전', Math.max(1, currentPage - 1), false, currentPage === 1, true, '이전 페이지'));
+
+            // 3. 페이지 번호 그룹 (현재 페이지 기준 최대 10개 표시)
+            const maxVisible = 10;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+            let endPage = startPage + maxVisible - 1;
+
+            if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            if (startPage > 1) {
+                paginationEl.appendChild(createBtn('1', 1, 1 === currentPage));
+                if (startPage > 2) {
+                    const dots = document.createElement('span');
+                    dots.innerText = '...';
+                    dots.style.cssText = 'align-self: center; color: #a0aec0; padding: 0 4px; font-weight: bold; font-size: 0.9rem;';
+                    paginationEl.appendChild(dots);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                paginationEl.appendChild(createBtn(i, i, i === currentPage));
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const dots = document.createElement('span');
+                    dots.innerText = '...';
+                    dots.style.cssText = 'align-self: center; color: #a0aec0; padding: 0 4px; font-weight: bold; font-size: 0.9rem;';
+                    paginationEl.appendChild(dots);
+                }
+                paginationEl.appendChild(createBtn(totalPages, totalPages, totalPages === currentPage));
+            }
+
+            // 4. 다음 페이지 [다음 ▶]
+            paginationEl.appendChild(createBtn('다음 <i class="fas fa-chevron-right"></i>', Math.min(totalPages, currentPage + 1), false, currentPage === totalPages, true, '다음 페이지'));
+
+            // 5. 끝 페이지 [⏭]
+            if (currentPage < totalPages) {
+                paginationEl.appendChild(createBtn('끝 <i class="fas fa-angle-double-right"></i>', totalPages, false, false, true, `마지막 페이지 (${totalPages}P)`));
+            }
+        }
+
+        function renderExpositionsIndex(posts) {
+            grid.innerHTML = '';
+            grid.className = 'resource-list-grid';
+            if (paginationEl) paginationEl.innerHTML = '';
+
+            const OT_BOOKS = [
+                { series: "신명기 강해", eng: "Deuteronomy", desc: "모세의 고별 설교와 언약의 갱신" },
+                { series: "사사기 강해", eng: "Judges", desc: "사사 시대의 영적 암흑과 하나님의 구원" },
+                { series: "룻기 강해", eng: "Ruth", desc: "룻과 보아스를 통한 구속사의 은혜와 예표" }
+            ];
+
+            const NT_BOOKS = [
+                { series: "누가복음 강해", eng: "Luke", desc: "잃어버린 자를 찾아 구원하시는 예수 그리스도" },
+                { series: "사도행전 강해", eng: "Acts", desc: "성령의 역사와 복음의 확장을 증거하는 사도행전" },
+                { series: "베드로전서", eng: "1 Peter", desc: "고난 속의 산 소망과 거룩한 순례자의 삶 (로버트 레이튼)" },
+                { series: "유다서 강해", eng: "Jude", desc: "신자들의 정체성과 거짓 교훈에 대항하는 믿음의 변증" }
+            ];
+
+            const SPECIAL_BOOKS = [
+                { series: "천로역정 강해", eng: "Pilgrim's Progress", desc: "존 번연의 영적 순례의 길과 구원의 실재" }
+            ];
+
+            const dbSeriesList = [...new Set(posts.map(p => (p.series || '').trim()).filter(Boolean))];
+
+            const sections = [
+                {
+                    title: "구약 성경 강해",
+                    badge: "구약",
+                    badgeBg: "#1a342a",
+                    engSubtitle: "Old Testament Expositions",
+                    books: OT_BOOKS
+                },
+                {
+                    title: "신약 성경 강해",
+                    badge: "신약",
+                    badgeBg: "#8c6d46",
+                    engSubtitle: "New Testament Expositions",
+                    books: NT_BOOKS
+                },
+                {
+                    title: "특별 강해 시리즈",
+                    badge: "특별",
+                    badgeBg: "#4a5568",
+                    engSubtitle: "Special Exposition Series",
+                    books: SPECIAL_BOOKS
+                }
+            ];
+
+            const knownSeries = new Set([...OT_BOOKS, ...NT_BOOKS, ...SPECIAL_BOOKS].map(b => b.series));
+            const extraSeries = dbSeriesList.filter(s => !knownSeries.has(s));
+            if (extraSeries.length > 0) {
+                extraSeries.forEach(s => {
+                    sections[2].books.push({
+                        series: s,
+                        eng: s.replace(' 강해', ''),
+                        desc: `${s} 성경 강해`
+                    });
+                });
+            }
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'expositions-index-container';
+            wrapper.style.cssText = 'grid-column: 1 / -1; display: flex; flex-direction: column; gap: 40px; margin: 10px 0 30px 0; width: 100%;';
+
+            sections.forEach(sec => {
+                const activeBooks = sec.books.filter(b => dbSeriesList.includes(b.series) || posts.some(p => p.series === b.series || p.title?.includes(b.series)));
+                if (activeBooks.length === 0) return;
+
+                const secEl = document.createElement('div');
+                secEl.className = 'expos-section-block';
+
+                secEl.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid ${sec.badgeBg}; padding-bottom: 12px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="background: ${sec.badgeBg}; color: #ffffff; font-size: 0.82rem; padding: 4px 12px; border-radius: 6px; font-weight: 700; letter-spacing: 0.03em;">${sec.badge}</span>
+                            <h2 style="margin: 0; font-size: 1.35rem; font-weight: 800; color: #1a342a; letter-spacing: -0.02em;">${sec.title}</h2>
+                        </div>
+                        <span style="font-size: 0.88rem; color: #718096; font-weight: 600;">${sec.engSubtitle}</span>
+                    </div>
+                    <div class="expos-section-cards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px;"></div>
+                `;
+
+                const cardsContainer = secEl.querySelector('.expos-section-cards');
+
+                activeBooks.forEach(b => {
+                    const seriesPosts = posts.filter(p => p.series === b.series || (!p.series && p.title?.includes(b.series)));
+                    const firstWithCover = seriesPosts.find(p => p.coverUrl) || seriesPosts[0];
+                    
+                    // 썸네일 통일성 보장: 커스텀 저장값 우선 -> 유다서 등 낱개 파일 썸네일 방지 -> 표준 디자인 생성
+                    let coverUrl = window.customSeriesCovers?.[b.series];
+                    if (!coverUrl) {
+                        if (b.series === '천로역정 강해') {
+                            coverUrl = firstWithCover?.coverUrl || 'images/puritan-study.png';
+                        } else if (b.series === '유다서 강해') {
+                            coverUrl = generateStandardSeriesCover('유다서', 'Jude');
+                        } else if (firstWithCover?.coverUrl && !firstWithCover.coverUrl.includes('placeholder')) {
+                            coverUrl = firstWithCover.coverUrl;
+                        } else {
+                            coverUrl = generateStandardSeriesCover(b.series, b.eng);
+                        }
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'sermon-book-card';
+                    card.style.cssText = 'background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04); cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; position: relative;';
+
+                    card.innerHTML = `
+                        <div class="book-card-thumb" style="height: 190px; position: relative; overflow: hidden; background: #f8fafc;">
+                            <img src="${coverUrl}" alt="${b.series}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" />
+                            <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.3) 100%); pointer-events: none;"></div>
+                            ${window.isAdmin ? `
+                            <button onclick="event.stopPropagation(); window.openEditSeriesCoverModal('${b.series}', '${b.eng}')"
+                                style="position: absolute; top: 10px; right: 10px; background: rgba(26,52,42,0.9); backdrop-filter: blur(4px); color: #ecc94b; border: 1px solid rgba(236,201,75,0.4); padding: 4px 10px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                                <i class="fas fa-image"></i> 썸네일 변경
+                            </button>` : ''}
+                            <div style="position: absolute; bottom: 12px; left: 14px; z-index: 2;">
+                                <span style="font-size: 0.75rem; background: rgba(0,0,0,0.6); color: #ffffff; padding: 3px 9px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">${b.eng}</span>
+                            </div>
+                        </div>
+                        <div class="book-card-body" style="padding: 18px 20px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <h3 style="margin: 0 0 6px 0; font-size: 1.18rem; font-weight: 800; color: #1a342a; letter-spacing: -0.02em;">${b.series}</h3>
+                                <p style="margin: 0; font-size: 0.84rem; color: #718096; line-height: 1.45;">${b.desc}</p>
+                            </div>
+                            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #f0f4f8; display: flex; align-items: center; justify-content: space-between; color: #8c6d46; font-size: 0.86rem; font-weight: 700;">
+                                <span>강해 바로보기</span>
+                                <i class="fas fa-arrow-right" style="font-size: 0.75rem;"></i>
+                            </div>
+                        </div>
+                    `;
+
+                    card.onmouseenter = () => {
+                        card.style.transform = 'translateY(-5px)';
+                        card.style.boxShadow = '0 14px 28px rgba(0,0,0,0.1)';
+                        card.style.borderColor = '#8c6d46';
+                    };
+                    card.onmouseleave = () => {
+                        card.style.transform = 'translateY(0)';
+                        card.style.boxShadow = '0 4px 15px rgba(0,0,0,0.04)';
+                        card.style.borderColor = '#e2e8f0';
+                    };
+
+                    card.onclick = () => {
+                        const url = new URL(window.location);
+                        url.searchParams.set('cat', '강해설교');
+                        url.searchParams.set('s', b.series);
+                        window.history.pushState({}, '', url);
+                        currentCategory = '강해설교';
+                        loadCategoryItems('강해설교');
+                        updateUI();
+                    };
+
+                    cardsContainer.appendChild(card);
+                });
+
+                wrapper.appendChild(secEl);
+            });
+
+            grid.appendChild(wrapper);
+        }
+
+        const BIBLE_BOOK_ENG_MAP = {
+            // 구약 39권
+            '창세기': 'Genesis', '출애굽기': 'Exodus', '레위기': 'Leviticus', '민수기': 'Numbers', '신명기': 'Deuteronomy',
+            '여호수아': 'Joshua', '사사기': 'Judges', '룻기': 'Ruth', '사무엘상': '1 Samuel', '사무엘하': '2 Samuel',
+            '열왕기상': '1 Kings', '열왕기하': '2 Kings', '역대상': '1 Chronicles', '역대하': '2 Chronicles',
+            '에스라': 'Ezra', '느헤미야': 'Nehemiah', '에스더': 'Esther', '욥기': 'Job', '시편': 'Psalms',
+            '잠언': 'Proverbs', '전도서': 'Ecclesiastes', '아가': 'Song of Songs', '이사야': 'Isaiah',
+            '예레미야': 'Jeremiah', '예레미야애가': 'Lamentations', '에스겔': 'Ezekiel', '다니엘': 'Daniel',
+            '호세아': 'Hosea', '요엘': 'Joel', '아모스': 'Amos', '오바댜': 'Obadiah', '요나': 'Jonah',
+            '미가': 'Micah', '나훔': 'Nahum', '하박국': 'Habakkuk', '스바냐': 'Zephaniah', '학개': 'Haggai',
+            '스가랴': 'Zechariah', '말라기': 'Malachi',
+            // 신약 27권
+            '마태복음': 'Matthew', '마가복음': 'Mark', '누가복음': 'Luke', '요한복음': 'John', '사도행전': 'Acts',
+            '로마서': 'Romans', '고린도전서': '1 Corinthians', '고린도후서': '2 Corinthians', '갈라디아서': 'Galatians',
+            '에베소서': 'Ephesians', '빌립보서': 'Philippians', '골로새서': 'Colossians', '데살로니가전서': '1 Thessalonians',
+            '데살로니가후서': '2 Thessalonians', '디모데전서': '1 Timothy', '디모데후서': '2 Timothy', '디도서': 'Titus',
+            '빌레몬서': 'Philemon', '히브리서': 'Hebrews', '야고보서': 'James', '베드로전서': '1 Peter', '베드로후서': '2 Peter',
+            '요한일서': '1 John', '요한이서': '2 John', '요한삼서': '3 John', '유다서': 'Jude', '요한계시록': 'Revelation',
+            // 특별 강해
+            '천로역정': "Pilgrim's Progress", '설교론': 'Expository Preaching', '웨스트민스터': 'Westminster', '하이델베르크': 'Heidelberg', '도르트': 'Dordt'
+        };
+
+        function generateStandardSeriesCover(koreanName, englishName) {
+            let cleanKor = (koreanName || '').replace(' 강해', '').replace('강해', '').trim();
+            if (!cleanKor) cleanKor = '강해설교';
+
+            // Auto-detect English title
+            let cleanEng = (englishName || '').replace(' 강해', '').replace('강해', '').trim();
+            if (!cleanEng || cleanEng === cleanKor) {
+                cleanEng = BIBLE_BOOK_ENG_MAP[cleanKor];
+                if (!cleanEng) {
+                    for (const [k, eng] of Object.entries(BIBLE_BOOK_ENG_MAP)) {
+                        if (cleanKor.includes(k) || k.includes(cleanKor)) {
+                            cleanEng = eng;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!cleanEng) cleanEng = cleanKor;
+
+            const colorMap = {
+                '신명기': { g1: '#ffecd2', g2: '#fcb69f', bg: '#fdfbfb' },
+                '사사기': { g1: '#a8edea', g2: '#fed6e3', bg: '#f4fbfb' },
+                '룻기': { g1: '#c2e9fb', g2: '#a1c4fd', bg: '#f7faff' },
+                '누가복음': { g1: '#d4fc79', g2: '#96e6a1', bg: '#f7fcf7' },
+                '사도행전': { g1: '#e0c3fc', g2: '#8ec5fc', bg: '#faf8ff' },
+                '유다서': { g1: '#fbc2eb', g2: '#a6c1ee', bg: '#fcf8fc' },
+                '로마서': { g1: '#ffecd2', g2: '#fcb69f', bg: '#fdfbfb' },
+                '요한복음': { g1: '#a1c4fd', g2: '#c2e9fb', bg: '#f0f9ff' },
+                '마태복음': { g1: '#fed6e3', g2: '#a8edea', bg: '#fbfcfd' },
+                '마가복음': { g1: '#d4fc79', g2: '#96e6a1', bg: '#f7fcf7' },
+                '요한계시록': { g1: '#e0c3fc', g2: '#8ec5fc', bg: '#faf8ff' },
+                '천로역정': { g1: '#ffecd2', g2: '#fcb69f', bg: '#fdfbfb' }
+            };
+
+            let theme = colorMap[cleanKor];
+            if (!theme) {
+                let hash = 0;
+                for (let i = 0; i < cleanKor.length; i++) hash = (hash << 5) - hash + cleanKor.charCodeAt(i);
+                const defaultThemes = [
+                    { g1: '#fbc2eb', g2: '#a6c1ee', bg: '#fcf8fc' },
+                    { g1: '#ffecd2', g2: '#fcb69f', bg: '#fdfbfb' },
+                    { g1: '#a1c4fd', g2: '#c2e9fb', bg: '#f0f9ff' },
+                    { g1: '#d4fc79', g2: '#96e6a1', bg: '#f7fcf7' },
+                    { g1: '#e0c3fc', g2: '#8ec5fc', bg: '#faf8ff' }
+                ];
+                theme = defaultThemes[Math.abs(hash) % defaultThemes.length];
+            }
+
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="600" height="360">
+                <defs>
+                    <radialGradient id="rg_${encodeURIComponent(cleanKor)}" cx="50%" cy="46%" r="50%">
+                        <stop offset="0%" stop-color="${theme.g1}" stop-opacity="0.95"/>
+                        <stop offset="60%" stop-color="${theme.g2}" stop-opacity="0.55"/>
+                        <stop offset="100%" stop-color="${theme.bg}" stop-opacity="0"/>
+                    </radialGradient>
+                    <filter id="blur_${encodeURIComponent(cleanKor)}" x="-25%" y="-25%" width="150%" height="150%">
+                        <feGaussianBlur stdDeviation="35"/>
+                    </filter>
+                </defs>
+                <rect width="600" height="360" fill="${theme.bg}"/>
+                <circle cx="300" cy="155" r="175" fill="url(#rg_${encodeURIComponent(cleanKor)})" filter="url(#blur_${encodeURIComponent(cleanKor)})"/>
+                <text x="300" y="144" text-anchor="middle" font-family="'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif" font-size="64" font-weight="900" fill="#111827" letter-spacing="-1.5">${cleanKor}</text>
+                <text x="300" y="206" text-anchor="middle" font-family="'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif" font-size="40" font-weight="700" fill="#1f2937" letter-spacing="0.2">${cleanEng}</text>
+            </svg>`;
+
+            return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.trim());
+        }
+
+        window.openEditSeriesCoverModal = function(seriesName, engName) {
+            let modal = document.getElementById('edit-series-cover-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'edit-series-cover-modal';
+                modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 100000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 20px;';
+                document.body.appendChild(modal);
+            }
+
+            const cleanKor = (seriesName || '').replace(' 강해', '').replace('강해', '').trim();
+            const resolvedEng = (engName && engName !== seriesName) ? engName : (BIBLE_BOOK_ENG_MAP[cleanKor] || cleanKor);
+            // 처음에는 저장된 커스텀 커버가 없으면 완전히 비어있는 빈 화면으로 시작
+            const savedCover = window.customSeriesCovers[seriesName] || '';
+
+            modal.innerHTML = `
+                <div style="background: #ffffff; border-radius: 16px; width: 100%; max-width: 520px; padding: 26px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); position: relative; animation: fadeIn 0.2s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #edf2f7; padding-bottom: 14px;">
+                        <h3 style="margin: 0; font-size: 1.22rem; font-weight: 800; color: #1a342a;">
+                            <i class="fas fa-image" style="color: #8c6d46;"></i> '${seriesName}' 썸네일 관리
+                        </h3>
+                        <button onclick="document.getElementById('edit-series-cover-modal').style.display='none'" style="background: none; border: none; font-size: 1.3rem; color: #a0aec0; cursor: pointer;">&times;</button>
+                    </div>
+
+                    <!-- 썸네일 미리보기 -->
+                    <div style="margin-bottom: 18px;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 700; color: #4a5568; margin-bottom: 6px;">현재 썸네일 미리보기:</label>
+                        <div id="series-cover-preview-container" style="width: 100%; height: 180px; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                            <img id="series-cover-preview-img" src="${savedCover}" style="width: 100%; height: 100%; object-fit: cover; display: ${savedCover ? 'block' : 'none'};" />
+                            <div id="series-cover-empty-placeholder" style="display: ${savedCover ? 'none' : 'flex'}; flex-direction: column; align-items: center; justify-content: center; color: #a0aec0; gap: 6px;">
+                                <i class="fas fa-image" style="font-size: 2.2rem; color: #cbd5e0;"></i>
+                                <span style="font-size: 0.84rem; font-weight: 600;">썸네일을 선택하거나 표준 디자인을 생성하세요</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 방법 1: 내 컴퓨터 파일에서 그림 올리기 -->
+                    <div style="margin-bottom: 16px; background: #f8fafc; border: 2px dashed #cbd5e0; padding: 14px; border-radius: 10px; text-align: center;">
+                        <input type="file" id="series-cover-file-input" accept="image/*" onchange="handleSeriesCoverFileUpload(event)" style="display: none;" />
+                        <button type="button" onclick="document.getElementById('series-cover-file-input').click()"
+                            style="background: #1a342a; color: #ffffff; border: none; padding: 9px 18px; border-radius: 8px; font-weight: 800; font-size: 0.86rem; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; box-shadow: 0 2px 6px rgba(0,0,0,0.12);">
+                            <i class="fas fa-folder-open"></i> 내 PC에서 그림 파일 선택 / 업로드
+                        </button>
+                        <div id="series-upload-status" style="font-size: 0.8rem; color: #718096; margin-top: 6px;">JPG, PNG, WebP 등 이미지 파일 선택</div>
+                    </div>
+
+                    <!-- 방법 2: 통일된 자동 생성 버튼 -->
+                    <div style="margin-bottom: 16px;">
+                        <button type="button" onclick="applyGeneratedStandardCover('${seriesName}', '${resolvedEng}')"
+                            style="width: 100%; background: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 0.86rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;">
+                            <i class="fas fa-magic"></i> '${cleanKor} (${resolvedEng})' 표준 디자인으로 자동 생성 적용
+                        </button>
+                    </div>
+
+                    <!-- 방법 3: 직접 이미지 URL 입력 -->
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #4a5568; margin-bottom: 5px;">또는 웹 이미지 URL 링크 입력:</label>
+                        <input type="text" id="series-cover-url-input" value="${savedCover.startsWith('data:') ? '' : savedCover}" placeholder="https://... 또는 이미지 URL"
+                            oninput="
+                                const img = document.getElementById('series-cover-preview-img');
+                                const ph = document.getElementById('series-cover-empty-placeholder');
+                                if (this.value) {
+                                    img.src = this.value;
+                                    img.style.display = 'block';
+                                    if (ph) ph.style.display = 'none';
+                                } else {
+                                    img.style.display = 'none';
+                                    if (ph) ph.style.display = 'flex';
+                                }
+                            "
+                            style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e0; border-radius: 8px; font-size: 0.88rem; outline: none; box-sizing: border-box;" />
+                    </div>
+
+                    <!-- 하단 액션 버튼 -->
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button type="button" onclick="document.getElementById('edit-series-cover-modal').style.display='none'"
+                            style="background: #edf2f7; color: #4a5568; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; cursor: pointer;">
+                            취소
+                        </button>
+                        <button type="button" onclick="saveSeriesCover('${seriesName}')"
+                            style="background: #8c6d46; color: #ffffff; border: none; padding: 10px 22px; border-radius: 8px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+                            <i class="fas fa-save"></i> 썸네일 저장
+                        </button>
+                    </div>
+                </div>
+            `;
+            modal.style.display = 'flex';
+        };
+
+        function compressImageFile(file, maxWidth = 800, maxHeight = 480, quality = 0.85) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > maxWidth || height > maxHeight) {
+                            const ratio = Math.min(maxWidth / width, maxHeight / height);
+                            width = Math.round(width * ratio);
+                            height = Math.round(height * ratio);
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.onerror = () => resolve(e.target.result);
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => resolve(null);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        window.handleSeriesCoverFileUpload = async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const previewImg = document.getElementById('series-cover-preview-img');
+            const placeholder = document.getElementById('series-cover-empty-placeholder');
+            const urlInput = document.getElementById('series-cover-url-input');
+            const uploadStatus = document.getElementById('series-upload-status');
+
+            if (uploadStatus) uploadStatus.innerHTML = '<span style="color: #3182ce; font-weight:700;"><i class="fas fa-spinner fa-spin"></i> 이미지 처리 및 업로드 중...</span>';
+
+            const compressedDataUrl = await compressImageFile(file, 800, 480, 0.85);
+            if (compressedDataUrl) {
+                if (previewImg) {
+                    previewImg.src = compressedDataUrl;
+                    previewImg.style.display = 'block';
+                }
+                if (placeholder) {
+                    placeholder.style.display = 'none';
+                }
+                if (urlInput) urlInput.value = compressedDataUrl;
+            }
+
+            await ensureAuth();
+
+            try {
+                if (storage) {
+                    const safeName = (file.name || 'cover.jpg').replace(/[^a-zA-Z0-9._-]/g, '_');
+                    const storageRef = storage.ref(`covers/series_${Date.now()}_${safeName}`);
+                    const uploadTask = await storageRef.put(file);
+                    const downloadUrl = await uploadTask.ref.getDownloadURL();
+                    if (urlInput) urlInput.value = downloadUrl;
+                    if (previewImg) {
+                        previewImg.src = downloadUrl;
+                        previewImg.style.display = 'block';
+                    }
+                    if (placeholder) placeholder.style.display = 'none';
+                    if (uploadStatus) uploadStatus.innerHTML = '<span style="color: #38a169; font-weight:700;"><i class="fas fa-check-circle"></i> 업로드 완료!</span>';
+                    return;
+                }
+            } catch (err) {
+                console.warn('Storage upload notice (using optimized image):', err);
+            }
+            if (uploadStatus) uploadStatus.innerHTML = '<span style="color: #38a169; font-weight:700;"><i class="fas fa-check-circle"></i> 이미지 준비 완료!</span>';
+        };
+
+        window.applyGeneratedStandardCover = function(seriesName, engName) {
+            const cleanKor = (seriesName || '').replace(' 강해', '').replace('강해', '').trim();
+            const resolvedEng = (engName && engName !== seriesName) ? engName : (BIBLE_BOOK_ENG_MAP[cleanKor] || cleanKor);
+            const svgUrl = generateStandardSeriesCover(seriesName, resolvedEng);
+            const previewImg = document.getElementById('series-cover-preview-img');
+            const placeholder = document.getElementById('series-cover-empty-placeholder');
+            const urlInput = document.getElementById('series-cover-url-input');
+            const uploadStatus = document.getElementById('series-upload-status');
+
+            if (previewImg) {
+                previewImg.src = svgUrl;
+                previewImg.style.display = 'block';
+            }
+            if (placeholder) {
+                placeholder.style.display = 'none';
+            }
+            if (urlInput) urlInput.value = svgUrl;
+            if (uploadStatus) uploadStatus.innerHTML = `<span style="color: #2b6cb0; font-weight:700;"><i class="fas fa-check-circle"></i> '${cleanKor} (${resolvedEng})' 표준 디자인이 생성되었습니다. [썸네일 저장]을 누르면 반영됩니다.</span>`;
+        };
+
+        window.saveSeriesCover = async function(seriesName) {
+            const inputVal = document.getElementById('series-cover-url-input').value.trim();
+            const previewSrc = document.getElementById('series-cover-preview-img').src;
+            const finalUrl = inputVal || previewSrc;
+
+            if (!finalUrl) {
+                alert('썸네일 이미지를 지정해주세요.');
+                return;
+            }
+
+            try {
+                await ensureAuth();
+
+                // 1. Update posts with matching series name in 'posts' collection (guaranteed write permissions)
+                try {
+                    const snap = await db.collection('posts').where('series', '==', seriesName).get();
+                    if (!snap.empty) {
+                        const batch = db.batch();
+                        snap.forEach(doc => {
+                            batch.update(doc.ref, { 
+                                seriesCoverUrl: finalUrl,
+                                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        });
+                        await batch.commit();
+                    }
+                } catch(postErr) {
+                    console.warn('Updating posts seriesCoverUrl notice:', postErr);
+                }
+
+                // 2. Also save to series_covers collection if allowed
+                try {
+                    await db.collection('series_covers').doc(seriesName).set({
+                        coverUrl: finalUrl,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                } catch(scErr) {
+                    console.warn('series_covers collection write notice:', scErr);
+                }
+
+                // 3. Update localStorage and in-memory cache
+                localStorage.setItem(`series_cover_${seriesName}`, finalUrl);
+                window.customSeriesCovers[seriesName] = finalUrl;
+
+                document.getElementById('edit-series-cover-modal').style.display = 'none';
+                showOrderToast(`'${seriesName}' 썸네일이 성공적으로 저장되었습니다!`);
+                await loadCategoryItems('강해설교');
+            } catch (err) {
+                console.error('saveSeriesCover error:', err);
+                // Fallback to local cache so user immediately sees their chosen thumbnail
+                localStorage.setItem(`series_cover_${seriesName}`, finalUrl);
+                window.customSeriesCovers[seriesName] = finalUrl;
+                document.getElementById('edit-series-cover-modal').style.display = 'none';
+                showOrderToast(`'${seriesName}' 썸네일이 적용되었습니다.`);
+                await loadCategoryItems('강해설교');
+            }
+        };
+
+        function renderSeriesTabs(category, uniqueSeries) {
+            updateSubnavBar();
+        }
+
+        function resetTheologyTabs() {
+            updateSubnavBar();
+            updateUI();
+        }
+
+        function resetEvangelismTabs() {
+            updateSubnavBar();
+            updateUI();
+        }
+
+        let originalSubtopicPosts = [];
+
+        async function loadSubtopicItems(subTopic) {
+            grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 자료를 불러오는 중...</div>';
+            
+            try {
+                let query = db.collection("posts").where("subTopics", "array-contains", subTopic);
+                const snapshot = await query.get();
+                let posts = [];
+                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+
+                if (posts.length === 0) {
+                    grid.innerHTML = '<div class="no-results">해당 주제로 등록된 자료(슬라이드/동영상)가 아직 없습니다.</div>';
+                    if (paginationEl) paginationEl.innerHTML = '';
+                    const subnavEl = document.getElementById('persistent-category-subnav');
+                    if (subnavEl) subnavEl.style.display = 'none';
+                    return;
+                }
+
+                grid.innerHTML = '';
+                const isBlog = false;
+                grid.className = 'resource-list-grid';
+
+                applySorting(posts, currentSortOption);
+
+                originalSubtopicPosts = posts;
+                allCurrentPosts = posts;
+
+                renderSubtopicFilterTabs(subTopic);
+                renderPage(1);
+
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = '<div class="no-results">자료를 불러오는 중에 오류가 발생했습니다.</div>';
+            }
+        }
+
+        function renderSubtopicFilterTabs(subTopic) {
+            const pdfCount = originalSubtopicPosts.filter(p => p.fileUrl && p.fileUrl.toLowerCase().includes('.pdf')).length;
+            const ytCount = originalSubtopicPosts.filter(p => p.content && (p.content.includes('youtube.com') || p.content.includes('youtu.be'))).length;
+            const totalCount = originalSubtopicPosts.length;
+
+            const subnavEl = document.getElementById('persistent-category-subnav');
+            const ul = document.getElementById('subnav-list');
+            if (subnavEl && ul) {
+                subnavEl.style.display = 'block';
+                ul.innerHTML = `
+                    <li><a href="javascript:void(0)" class="active" id="btn-filter-all" onclick="filterSubtopic('all')">전체 자료 (${totalCount})</a></li>
+                    <li><a href="javascript:void(0)" id="btn-filter-pdf" onclick="filterSubtopic('pdf')">슬라이드 (PDF) (${pdfCount})</a></li>
+                    <li><a href="javascript:void(0)" id="btn-filter-yt" onclick="filterSubtopic('yt')">유튜브 동영상 (${ytCount})</a></li>
+                `;
+            }
+        }
+
+        window.filterSubtopic = function(type) {
+            const ul = document.getElementById('subnav-list');
+            if (ul) {
+                const btns = ul.querySelectorAll('a');
+                btns.forEach(btn => btn.classList.remove('active'));
+            }
+
+            if (type === 'all') {
+                const btn = document.getElementById('btn-filter-all');
+                if (btn) btn.classList.add('active');
+                allCurrentPosts = originalSubtopicPosts;
+            } else if (type === 'pdf') {
+                const btn = document.getElementById('btn-filter-pdf');
+                if (btn) btn.classList.add('active');
+                allCurrentPosts = originalSubtopicPosts.filter(p => p.fileUrl && p.fileUrl.toLowerCase().includes('.pdf'));
+            } else if (type === 'yt') {
+                const btn = document.getElementById('btn-filter-yt');
+                if (btn) btn.classList.add('active');
+                allCurrentPosts = originalSubtopicPosts.filter(p => p.content && (p.content.includes('youtube.com') || p.content.includes('youtu.be')));
+            }
+
+            if (allCurrentPosts.length === 0) {
+                grid.innerHTML = '<div class="no-results">해당 분류의 자료가 없습니다.</div>';
+                if (paginationEl) paginationEl.innerHTML = '';
+            } else {
+                grid.innerHTML = '';
+                renderPage(1);
+            }
+        }
+
+        async function loadCategoryItems(category) {
+            if (category === "5분 신학강론") {
+                category = "신학강론";
+            }
+            grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 자료를 불러오는 중...</div>';
+
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const s = urlParams.get('s');
+                const b = urlParams.get('b');
+                const subTopic = urlParams.get('subTopic');
+
+                let posts = [];
+
+                if (category === '신학강론') {
+                    // 1. 신학강론 및 5분 신학강론 카테고리 글들을 조회
+                    const snap1 = await db.collection("posts").where("tags", "array-contains-any", ["신학강론", "5분 신학강론"]).get();
+                    snap1.forEach(doc => {
+                        posts.push({ id: doc.id, ...doc.data() });
+                    });
+
+                    // 2. 유튜브 링크가 본문에 포함된 글들도 조회해서 합침
+                    const allSnap = await db.collection("posts").orderBy("createdAt", "desc").limit(1000).get();
+                    allSnap.forEach(doc => {
+                        const data = doc.data();
+                        const content = data.content || '';
+                        const isYt = content.includes('youtube.com') || content.includes('youtu.be');
+                        if (isYt && !posts.some(p => p.id === doc.id)) {
+                            posts.push({ id: doc.id, ...data });
+                        }
+                    });
+                } else if (category === '설교자') {
+                    const snap1 = await db.collection("posts").where("tags", "array-contains", "설교자").get();
+                    const snap2 = await db.collection("posts").where("tags", "array-contains", "설교론").get();
+                    const seenIds = new Set();
+                    snap1.forEach(doc => {
+                        if (!seenIds.has(doc.id)) {
+                            posts.push({ id: doc.id, ...doc.data() });
+                            seenIds.add(doc.id);
+                        }
+                    });
+                    snap2.forEach(doc => {
+                        if (!seenIds.has(doc.id)) {
+                            posts.push({ id: doc.id, ...doc.data() });
+                            seenIds.add(doc.id);
+                        }
+                    });
+                } else if (category === '청교도 신학') {
+                    const snap1 = await db.collection("posts").where("tags", "array-contains", "청교도 신학").get();
+                    const seenIds = new Set();
+                    snap1.forEach(doc => {
+                        posts.push({ id: doc.id, ...doc.data() });
+                        seenIds.add(doc.id);
+                    });
+
+                    try {
+                        const snap2 = await db.collection("posts").where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF", "설교론", "설교자", "전도설교"]).get();
+                        snap2.forEach(doc => {
+                            if (!seenIds.has(doc.id)) {
+                                posts.push({ id: doc.id, ...doc.data() });
+                                seenIds.add(doc.id);
+                            }
+                        });
+                    } catch (e) {
+                        console.warn("Booklet/Sermon fetch fallback:", e);
+                    }
+
+                    if (s) {
+                        posts = posts.filter(p => {
+                            const dbTopic = p.topic || p.subBookletTopic || p.series;
+                            const tags = Array.isArray(p.tags) ? p.tags : [];
+                            const dTopic = typeof determineCategory === 'function' ? determineCategory(p.title || '', p.content || '') : null;
+                            const isMatch = (dbTopic === s) || (tags.includes(s)) || (dTopic === s);
+                            if (s === '설교론') {
+                                return isMatch || tags.includes('설교자') || tags.includes('전도설교') || p.subTopic === '설교자' || p.subTopic === '전도설교';
+                            }
+                            return isMatch;
+                        });
+                    }
+                    if (subTopic) {
+                        posts = posts.filter(p => {
+                            const tags = Array.isArray(p.tags) ? p.tags : [];
+                            return (p.subTopic === subTopic) || (p.series === subTopic) || tags.includes(subTopic) || (p.topic === subTopic) || (p.title && p.title.includes(subTopic));
+                        });
+                    }
+                } else if (category === '전도, 부흥, 선교' || category === '전도, 선교') {
+                    const excludeKeywords = [
+                        "신론", "인간론", "기독론", "구원론", "성령론", "구원론(성령론)",
+                        "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론",
+                        "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학", "청교도 신학",
+                        "강해설교", "도서 목록", "전도만화", "신학강론", "성경주석", "5분 신학강론"
+                    ];
+
+                    const snap1 = await db.collection("posts").where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도, 선교", "전도", "부흥", "선교", "부흥신학"]).get();
+                    const seenIds = new Set();
+                    snap1.forEach(doc => {
+                        if (!seenIds.has(doc.id)) {
+                            const data = doc.data();
+                            const topic = data.topic || '';
+                            const other = data.otherCategory || '';
+                            const tags = Array.isArray(data.tags) ? data.tags : [];
+
+                            const isOtherCategory = excludeKeywords.includes(topic) ||
+                                excludeKeywords.includes(other) ||
+                                tags.some(t => excludeKeywords.includes(t));
+
+                            if (!isOtherCategory) {
+                                posts.push({ id: doc.id, ...data });
+                                seenIds.add(doc.id);
+                            }
+                        }
+                    });
+
+                    if (s) {
+                        posts = posts.filter(p => {
+                            const series = (p.series || '').trim();
+                            const subTopic = (p.subTopic || '').trim();
+                            const tags = Array.isArray(p.tags) ? p.tags : [];
+                            const title = (p.title || '').toLowerCase();
+                            const content = (p.content || '').toLowerCase();
+
+                            if (s === '전도') {
+                                if (series === '전도' || subTopic === '전도' || tags.includes('전도')) return true;
+                                if (!series && !subTopic && !tags.includes('부흥') && !tags.includes('선교')) return true;
+                                return false;
+                            } else if (s === '부흥') {
+                                return series === '부흥' || subTopic === '부흥' || tags.includes('부흥') || tags.includes('부흥신학') ||
+                                    title.includes('부흥') || title.includes('대각성') || content.includes('부흥');
+                            } else if (s === '선교') {
+                                return series === '선교' || subTopic === '선교' || tags.includes('선교') ||
+                                    title.includes('선교') || content.includes('선교');
+                            }
+                            return true;
+                        });
+                    }
+                } else if (category === '세미나, 강의' || category === '세미나' || category === '강의') {
+                    const snap1 = await db.collection("posts").where("tags", "array-contains-any", ["세미나, 강의", "세미나", "강의"]).get();
+                    const seenIds = new Set();
+                    snap1.forEach(doc => {
+                        if (!seenIds.has(doc.id)) {
+                            posts.push({ id: doc.id, ...doc.data() });
+                            seenIds.add(doc.id);
+                        }
+                    });
+                    if (s) {
+                        posts = posts.filter(p => p.series === s || (p.tags && p.tags.includes(s)));
+                    }
+                } else if (category === '성경주석') {
+                    if (b) {
+                        const bookData = BIBLE_BOOKS.find(bk => bk.name === b);
+                        if (bookData) {
+                            renderBibleChaptersGrid(b, bookData.chapters);
+                        }
+                        let query = db.collection("posts").where("tags", "array-contains", "성경주석");
+                        const snapshot = await query.get();
+                        snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+
+                        posts = posts.filter(p => p.series === b);
+                        if (s) {
+                            const target = s.endsWith('장') ? s : s + '장';
+                            posts = posts.filter(p => p.title && p.title.includes(' ' + target));
+                        }
+                    }
+                } else {
+                    let query = db.collection("posts").where("tags", "array-contains", category);
+                    if (s) {
+                        query = query.where("series", "==", s);
+                    }
+                    const snapshot = await query.get();
+                    snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                }
+
+                if (category === '강해설교') {
+                    if (!s) {
+                        renderExpositionsIndex(posts);
+                        return;
+                    }
+                    window.seriesTotalCount = posts.length;
+                    window.seriesChapterCounts = {};
+                    posts.forEach(p => {
+                        const m = (p.title || '').match(/(\d+)장/);
+                        if (m) {
+                            const chNum = m[1];
+                            window.seriesChapterCounts[chNum] = (window.seriesChapterCounts[chNum] || 0) + 1;
+                        }
+                    });
+
+                    // 강해설교는 항상 1장 1절부터 순서대로(order 오름차순) 정렬
+                    posts.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+                    const chParam = urlParams.get('ch');
+                    if (chParam) {
+                        posts = posts.filter(p => (p.title || '').includes(chParam + '장'));
+                    }
+                }
+
+                if (posts.length === 0) {
+                    grid.innerHTML = '<div class="no-results">등록된 자료가 없습니다.</div>';
+                    return;
+                }
+
+                grid.innerHTML = '';
+                // Change container class to list for items
+                const isBlog = currentCategory === '성경주석' && s;
+                grid.className = 'resource-list-grid' + (isBlog ? ' blog-style' : '');
+
+
+
+                // Sort by currentSortOption (custom, title, or date)
+                allCurrentPosts = posts;
+                applySorting(allCurrentPosts, currentSortOption);
+
+                // [요청] 특정 게시물 고정 (2주간: ~2026-05-05)
+                const PINNED_TITLE = "히브리서의 경고와 심판: 영적 몰락의 해부학";
+                const PINNED_UNTIL = new Date('2026-05-05');
+                if (new Date() < PINNED_UNTIL) {
+                    const idx = allCurrentPosts.findIndex(p => p.title === PINNED_TITLE);
+                    if (idx > -1) {
+                        const [pinned] = allCurrentPosts.splice(idx, 1);
+                        allCurrentPosts.unshift(pinned);
+                    }
+                }
+
+                renderPage(1);
+
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = '<div class="no-results">오류가 발생했습니다.</div>';
+            }
+        }
+
+        function sortPostsByCustomOrder(postsArray) {
+            postsArray.sort((a, b) => {
+                const orderA = (a.customOrder !== undefined && a.customOrder !== null) ? a.customOrder : null;
+                const orderB = (b.customOrder !== undefined && b.customOrder !== null) ? b.customOrder : null;
+                if (orderA !== null && orderB !== null) return orderA - orderB;
+                if (orderA !== null) return -1;
+                if (orderB !== null) return 1;
+                return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+            });
+        }
+
+        let draggedPostId = null;
+
+        function handleCardDragStart(e, post, element) {
+            draggedPostId = post.id;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', post.id);
+            element.classList.add('is-dragging');
+            showDragPageEdgePanels();
+        }
+
+        function handleCardDragOver(e, element) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if (!element.classList.contains('is-dragging')) {
+                element.classList.add('drag-over-target');
+            }
+        }
+
+        function handleCardDragLeave(e, element) {
+            element.classList.remove('drag-over-target');
+        }
+
+        function handleCardDragEnd(e, element) {
+            element.classList.remove('is-dragging');
+            document.querySelectorAll('.admin-draggable-card').forEach(c => c.classList.remove('drag-over-target'));
+            hideDragPageEdgePanels();
+        }
+
+        async function handleCardDrop(e, targetPost, element) {
+            e.preventDefault();
+            element.classList.remove('drag-over-target');
+            hideDragPageEdgePanels();
+            const sourceId = e.dataTransfer.getData('text/plain') || draggedPostId;
+            const targetId = targetPost.id;
+
+            if (!sourceId || !targetId || sourceId === targetId) return;
+
+            const fromIndex = allCurrentPosts.findIndex(p => p.id === sourceId);
+            const toIndex = allCurrentPosts.findIndex(p => p.id === targetId);
+
+            if (fromIndex > -1 && toIndex > -1) {
+                const [movedItem] = allCurrentPosts.splice(fromIndex, 1);
+                allCurrentPosts.splice(toIndex, 0, movedItem);
+
+                // Update customOrder index locally
+                allCurrentPosts.forEach((p, idx) => {
+                    p.customOrder = idx;
+                });
+
+                renderPage(currentPage);
+                await saveAllCustomOrders();
+                showOrderToast('순서가 성공적으로 저장되었습니다.');
+            }
+        }
+
+        // 사이드 가장자리 드롭존 표시
+        function showDragPageEdgePanels() {
+            const totalPages = Math.ceil(allCurrentPosts.length / itemsPerPage);
+            if (totalPages <= 1) return;
+
+            // 다음 페이지 드롭존 (우측)
+            if (currentPage < totalPages) {
+                let nextPanel = document.getElementById('drag-next-page-panel');
+                if (!nextPanel) {
+                    nextPanel = document.createElement('div');
+                    nextPanel.id = 'drag-next-page-panel';
+                    nextPanel.style.cssText = 'position: fixed; right: 0; top: 22%; bottom: 22%; width: 140px; z-index: 10000; background: rgba(26, 52, 42, 0.94); color: #ffffff; backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; justify-content: center; border-top-left-radius: 20px; border-bottom-left-radius: 20px; box-shadow: -8px 0 30px rgba(0,0,0,0.35); border: 2px dashed #ecc94b; text-align: center; padding: 16px; cursor: pointer; transition: all 0.2s ease;';
+                    nextPanel.ondragover = (e) => {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        nextPanel.style.background = 'rgba(140, 109, 70, 0.98)';
+                        nextPanel.style.transform = 'scale(1.05)';
+                        nextPanel.style.boxShadow = '-12px 0 40px rgba(236,201,75,0.4)';
+                    };
+                    nextPanel.ondragleave = () => {
+                        nextPanel.style.background = 'rgba(26, 52, 42, 0.94)';
+                        nextPanel.style.transform = 'none';
+                        nextPanel.style.boxShadow = '-8px 0 30px rgba(0,0,0,0.35)';
+                    };
+                    nextPanel.ondrop = async (e) => {
+                        e.preventDefault();
+                        hideDragPageEdgePanels();
+                        await handleDropMoveToNextPage(e);
+                    };
+                    document.body.appendChild(nextPanel);
+                }
+                nextPanel.innerHTML = `
+                    <i class="fas fa-arrow-right fa-2x" style="color: #ecc94b; margin-bottom: 10px;"></i>
+                    <div style="font-weight: 800; font-size: 0.98rem; line-height: 1.3;">다음 페이지로<br>이동 (Drop)</div>
+                    <div style="font-size: 0.78rem; color: #cbd5e0; margin-top: 6px;">(Page ${currentPage + 1})</div>
+                `;
+                nextPanel.style.display = 'flex';
+            }
+
+            // 이전 페이지 드롭존 (좌측)
+            if (currentPage > 1) {
+                let prevPanel = document.getElementById('drag-prev-page-panel');
+                if (!prevPanel) {
+                    prevPanel = document.createElement('div');
+                    prevPanel.id = 'drag-prev-page-panel';
+                    prevPanel.style.cssText = 'position: fixed; left: 0; top: 22%; bottom: 22%; width: 140px; z-index: 10000; background: rgba(26, 52, 42, 0.94); color: #ffffff; backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; justify-content: center; border-top-right-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 8px 0 30px rgba(0,0,0,0.35); border: 2px dashed #ecc94b; text-align: center; padding: 16px; cursor: pointer; transition: all 0.2s ease;';
+                    prevPanel.ondragover = (e) => {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        prevPanel.style.background = 'rgba(140, 109, 70, 0.98)';
+                        prevPanel.style.transform = 'scale(1.05)';
+                        prevPanel.style.boxShadow = '12px 0 40px rgba(236,201,75,0.4)';
+                    };
+                    prevPanel.ondragleave = () => {
+                        prevPanel.style.background = 'rgba(26, 52, 42, 0.94)';
+                        prevPanel.style.transform = 'none';
+                        prevPanel.style.boxShadow = '8px 0 30px rgba(0,0,0,0.35)';
+                    };
+                    prevPanel.ondrop = async (e) => {
+                        e.preventDefault();
+                        hideDragPageEdgePanels();
+                        await handleDropMoveToPrevPage(e);
+                    };
+                    document.body.appendChild(prevPanel);
+                }
+                prevPanel.innerHTML = `
+                    <i class="fas fa-arrow-left fa-2x" style="color: #ecc94b; margin-bottom: 10px;"></i>
+                    <div style="font-weight: 800; font-size: 0.98rem; line-height: 1.3;">이전 페이지로<br>이동 (Drop)</div>
+                    <div style="font-size: 0.78rem; color: #cbd5e0; margin-top: 6px;">(Page ${currentPage - 1})</div>
+                `;
+                prevPanel.style.display = 'flex';
+            }
+        }
+
+        function hideDragPageEdgePanels() {
+            const nextPanel = document.getElementById('drag-next-page-panel');
+            if (nextPanel) nextPanel.style.display = 'none';
+            const prevPanel = document.getElementById('drag-prev-page-panel');
+            if (prevPanel) prevPanel.style.display = 'none';
+        }
+
+        // 우측 패널에 놓았을 때: 다음 페이지 1번째 자리로 이동
+        async function handleDropMoveToNextPage(e) {
+            const sourceId = e.dataTransfer.getData('text/plain') || draggedPostId;
+            if (!sourceId) return;
+
+            const fromIndex = allCurrentPosts.findIndex(p => p.id === sourceId);
+            if (fromIndex === -1) return;
+
+            const targetIndex = Math.min(currentPage * itemsPerPage, allCurrentPosts.length - 1);
+            const [movedItem] = allCurrentPosts.splice(fromIndex, 1);
+            allCurrentPosts.splice(targetIndex, 0, movedItem);
+
+            allCurrentPosts.forEach((p, idx) => {
+                p.customOrder = idx;
+            });
+
+            const targetPage = currentPage + 1;
+            renderPage(targetPage);
+            await saveAllCustomOrders();
+            showOrderToast(`'${movedItem.title || '자료'}'이(가) ${targetPage}페이지 1번째로 이동되었습니다!`);
+        }
+
+        // 좌측 패널에 놓았을 때: 이전 페이지 마지막 자리로 이동
+        async function handleDropMoveToPrevPage(e) {
+            const sourceId = e.dataTransfer.getData('text/plain') || draggedPostId;
+            if (!sourceId) return;
+
+            const fromIndex = allCurrentPosts.findIndex(p => p.id === sourceId);
+            if (fromIndex === -1) return;
+
+            const targetIndex = Math.max(0, (currentPage - 1) * itemsPerPage - 1);
+            const [movedItem] = allCurrentPosts.splice(fromIndex, 1);
+            allCurrentPosts.splice(targetIndex, 0, movedItem);
+
+            allCurrentPosts.forEach((p, idx) => {
+                p.customOrder = idx;
+            });
+
+            const targetPage = currentPage - 1;
+            renderPage(targetPage);
+            await saveAllCustomOrders();
+            showOrderToast(`'${movedItem.title || '자료'}'이(가) ${targetPage}페이지로 이동되었습니다!`);
+        }
+
+        // 하단 페이지 번호 버튼에 놓았을 때
+        async function handleDropOnPageBtn(e, targetPage) {
+            const sourceId = e.dataTransfer.getData('text/plain') || draggedPostId;
+            if (!sourceId) return;
+
+            const fromIndex = allCurrentPosts.findIndex(p => p.id === sourceId);
+            if (fromIndex === -1) return;
+
+            const targetIndex = Math.min((targetPage - 1) * itemsPerPage, allCurrentPosts.length - 1);
+            const [movedItem] = allCurrentPosts.splice(fromIndex, 1);
+            allCurrentPosts.splice(targetIndex, 0, movedItem);
+
+            allCurrentPosts.forEach((p, idx) => {
+                p.customOrder = idx;
+            });
+
+            renderPage(targetPage);
+            await saveAllCustomOrders();
+            showOrderToast(`'${movedItem.title || '자료'}'이(가) ${targetPage}페이지로 이동되었습니다!`);
+        }
+
+        async function saveAllCustomOrders() {
+            try {
+                const batch = db.batch();
+                allCurrentPosts.forEach((p, idx) => {
+                    const ref = db.collection('posts').doc(p.id);
+                    batch.update(ref, { customOrder: idx });
+                });
+                await batch.commit();
+            } catch (err) {
+                console.error("Firestore batch update failed:", err);
+                showOrderToast('순서 저장 실패: ' + err.message);
+            }
+        }
+
+        function showOrderToast(msg) {
+            let toast = document.getElementById('admin-order-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'admin-order-toast';
+                toast.style.cssText = 'position: fixed; bottom: 30px; right: 30px; z-index: 9999; background: #1a342a; color: #ffffff; padding: 14px 24px; border-radius: 10px; font-weight: 700; font-size: 0.92rem; box-shadow: 0 8px 24px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 10px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; transform: translateY(20px); pointer-events: none; border-left: 4px solid #8c6d46;';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fas fa-check-circle" style="color: #48bb78; font-size: 1.1rem;"></i> ${msg}`;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+            }, 3000);
+        }
+
+        function renderResourceItem(post) {
+            const itemEl = document.createElement('div');
+            const isBible = currentCategory === '성경주석';
+
+            // Auto-expand Bible chapters if specifically selected
+            const urlParams = new URLSearchParams(window.location.search);
+            const s = urlParams.get('s');
+
+            itemEl.className = 'resource-card' + (isBible && s ? ' expanded' : '');
+
+            if (window.isAdmin) {
+                itemEl.setAttribute('draggable', 'true');
+                itemEl.classList.add('admin-draggable-card');
+                itemEl.addEventListener('dragstart', (e) => handleCardDragStart(e, post, itemEl));
+                itemEl.addEventListener('dragover', (e) => handleCardDragOver(e, itemEl));
+                itemEl.addEventListener('dragleave', (e) => handleCardDragLeave(e, itemEl));
+                itemEl.addEventListener('dragend', (e) => handleCardDragEnd(e, itemEl));
+                itemEl.addEventListener('drop', (e) => handleCardDrop(e, post, itemEl));
+            }
+
+            let thumbUrl = post.coverUrl;
+            let isPdf = false;
+
+            if (!thumbUrl && post.fileUrl) {
+                if (/(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) isPdf = true;
+                else thumbUrl = post.fileUrl;
+            }
+
+            // For Bible commentary, we don't need the default icon if viewing specific chapter
+            const showThumb = !isBible || !s;
+            const finalSrc = thumbUrl || 'images/puritan-study.png';
+            const imgId = `res-thumb-${post.id}`;
+            const containerId = `res-cover-wrap-${post.id}`;
+            const category = currentCategory || (post.tags && post.tags[0]) || '자료';
+
+            let content = post.content || '';
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            const urlsInContent = content.match(urlRegex) || [];
+            let primaryLink = post.fileUrl || (urlsInContent.length > 0 ? urlsInContent[0] : null);
+
+            let displayContent;
+            if (isBible) {
+                // One-pass regex to handle ":1", "1:26", or ",1:26". Keeps only the verse number.
+                // It captures either (Chapter:Verse) or (:Verse) or (,Chapter:Verse)
+                content = content.replace(/[,]?[:]?(\d+):(\d+)|[:](\d+)/g, (match, ch, vs, verseOnly) => {
+                    const v = vs || verseOnly;
+                    return '\n\n' + v + ' ';
+                });
+                content = content.trim();
+
+                // Wrap each verse block in its own <p> with the verse number styled,
+                // so paragraphs are visually separated instead of relying on raw newlines.
+                const blocks = content.split(/\n\n+/).filter(b => b.trim());
+                displayContent = blocks.map(block => {
+                    const m = block.match(/^(\d+)\s+([\s\S]*)$/);
+                    if (m) {
+                        return `<p><span class="verse-num">${m[1]}</span>${m[2].trim()}</p>`;
+                    }
+                    return `<p>${block.trim()}</p>`;
+                }).join('');
+                displayContent = displayContent.replace(urlRegex, '<a href="$1" target="_blank" onclick="event.stopPropagation()">$1</a>');
+            } else {
+                // Autolink content for display
+                displayContent = content.replace(urlRegex, '<a href="$1" target="_blank" onclick="event.stopPropagation()">$1</a>');
+            }
+
+            itemEl.innerHTML = `
+                ${window.isAdmin ? `<div class="drag-grip-handle"><i class="fas fa-grip-lines"></i> 드래그 이동</div>` : ''}
+                ${showThumb ? `
+                <div id="${containerId}" class="resource-card-thumb">
+                    <img id="${imgId}" src="${finalSrc}" alt="${post.title}">
+                </div>` : ''}
+                <div class="resource-card-info">
+                    <div class="resource-card-category">${category}</div>
+                    <div class="resource-card-title">${post.title}</div>
+                    <div class="resource-card-desc">${displayContent}</div>
+                    ${window.isAdmin ? `
+                    <div class="resource-admin-actions" style="margin-top: 15px; display: flex; gap: 10px; border-top: 1px solid #eee; padding-top: 15px;" onclick="event.stopPropagation()">
+                        <button onclick="window.openEditModal('${post.id}')" class="admin-btn edit" style="background:#f39c12; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; font-size:0.85rem;">
+                            <i class="fas fa-edit"></i> 수정
+                        </button>
+                        <button onclick="window.deletePost('${post.id}')" class="admin-btn delete" style="background:#e74c3c; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; font-size:0.85rem;">
+                            <i class="fas fa-trash"></i> 삭제
+                        </button>
+                    </div>` : ''}
+                </div>
+            `;
+
+            itemEl.onclick = () => {
+                if (window.Stats) {
+                    window.Stats.track('click', {
+                        id: post.id,
+                        type: 'resource_item',
+                        title: post.title,
+                        category: currentCategory
+                    });
+                }
+
+                // If it has text content, open premium viewer
+                const hasText = post.content && post.content.trim().length > 5;
+                if (hasText) {
+                    window.open(`viewer.html?id=${post.id}`, '_self');
+                } else if (primaryLink && /(?:\.|%2E)pdf($|\?|#)/i.test(primaryLink)) {
+                    window.open(primaryLink, '_blank');
+                } else if (primaryLink && primaryLink !== '#') {
+                    window.open(primaryLink, '_self');
+                } else {
+                    window.open(`viewer.html?id=${post.id}`, '_self');
+                }
+            };
+
+            grid.appendChild(itemEl);
+
+            if (isPdf && !thumbUrl) {
+                renderPdfToImage(post.fileUrl, imgId, containerId);
+            }
+        }
+
+        // PDF rendering helper from booklets.html
+        async function renderPdfToImage(url, imgId, containerId) {
+            const img = document.getElementById(imgId);
+            const container = document.getElementById(containerId);
+            if (typeof pdfjsLib === 'undefined') return;
+
+            try {
+                const loadingTask = pdfjsLib.getDocument(url);
+                const pdf = await loadingTask.promise;
+                const page = await pdf.getPage(1);
+                const viewport = page.getViewport({ scale: 0.8 });
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                await page.render({ canvasContext: context, viewport: viewport }).promise;
+                if (img) img.src = canvas.toDataURL();
+            } catch (e) {
+                console.warn("PDF Thumb Error", e);
+            }
+        }
+
+        function navigateToChapter(bookName, chapterNum) {
+            const url = new URL(window.location);
+            url.searchParams.set('cat', '성경주석');
+            url.searchParams.set('b', bookName);
+            url.searchParams.set('s', `${chapterNum}장`);
+            window.history.pushState({}, '', url);
+            init();
+        }
+
+        function renderBibleChaptersGrid(bookName, chapterCount) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentTag = urlParams.get('cat');
+            const currentSub = urlParams.get('s') || "";
+            const currentChapterNum = currentSub ? parseInt(currentSub) : 0;
+
+            const prevNum = currentChapterNum > 1 ? currentChapterNum - 1 : null;
+            const nextNum = currentChapterNum > 0 && currentChapterNum < chapterCount ? currentChapterNum + 1 : null;
+
+            chapterWrapper.innerHTML = `
+                <div class="chapter-grid-header">${bookName} 장 선택</div>
+                <div class="chapter-grid"></div>
+                <div class="bible-chapter-nav">
+                    <button class="bible-nav-btn ${!prevNum ? 'disabled' : ''}" id="btn-prev-chapter">
+                        <i class="fas fa-chevron-left"></i> 이전 장
+                    </button>
+                    <span class="bible-nav-current">${currentChapterNum > 0 ? `${bookName} ${currentChapterNum}장` : bookName}</span>
+                    <button class="bible-nav-btn ${!nextNum ? 'disabled' : ''}" id="btn-next-chapter">
+                        다음 장 <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            `;
+            const chapterGrid = chapterWrapper.querySelector('.chapter-grid');
+
+            for (let i = 1; i <= chapterCount; i++) {
+                const sLabel = `${i}장`;
+                const btn = document.createElement('button');
+                btn.className = `chapter-btn ${currentSub === sLabel ? 'active' : ''}`;
+                btn.textContent = `${i}`;
+                btn.onclick = () => navigateToChapter(bookName, i);
+                chapterGrid.appendChild(btn);
+            }
+
+            if (prevNum) {
+                chapterWrapper.querySelector('#btn-prev-chapter').onclick = () => navigateToChapter(bookName, prevNum);
+            }
+            if (nextNum) {
+                chapterWrapper.querySelector('#btn-next-chapter').onclick = () => navigateToChapter(bookName, nextNum);
+            }
+
+            chapterWrapper.style.display = 'block';
+        }
+
+        window.onpopstate = () => init();
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+    <div class="bgm-player" id="bgm-player"
+        style="position: fixed; bottom: 2rem; left: 2rem; z-index: 1500; pointer-events: none;">
+        <button id="bgm-toggle-btn" class="bgm-control" onclick="if(window.toggleBGM) window.toggleBGM(event)"
+            style="pointer-events: auto;">
+            <span class="music-icon"><i class="fas fa-music"></i></span>
+        </button>
+        <div id="yt-player-container" style="display: none;"></div>
+    </div>
+
+    <script src="bgm.js?v=1"></script>
+    <script src="stats.js?v=1"></script>
+    <script src="main.js?v=1"></script>
+
+
+    <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">
+        <i class="fas fa-envelope"></i>
+    </a>
+</body>
+
+</html>

@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자료 추가 | 한국 청교도 연구소</title>
+    <link rel="stylesheet" href="style.css?v=106">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .edit-container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-header {
+            border-bottom: 2px solid var(--secondary-color);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .edit-header h2 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .form-section h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            padding: 12px 25px;
+            background: #999;
+            color: white;
+            border-radius: 4px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            padding: 12px 40px;
+            background: #1a342a;
+            color: white;
+            border-radius: 4px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-save:hover {
+            background: #1a342a;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-eng">KPI</span>
+                <span class="logo-kor">한국 청교도 연구소</span>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <div class="edit-container">
+            <div class="edit-header">
+                <h2>새 자료 추가</h2>
+                <button onclick="window.close()" style="background:none; border:none; cursor:pointer; color:#888;"><i
+                        class="fas fa-times"></i> 닫기</button>
+            </div>
+
+            <form id="full-add-form">
+                <div class="form-section">
+                    <h3>분류 설정</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="input-group">
+                            <label>주제별 분류</label>
+                            <select id="add-topic">
+                                <option value="">-- 선택 안함 --</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>저자별 분류</label>
+                            <select id="add-author">
+                                <option value="">-- 선택 안함 --</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>기타 분류</label>
+                            <select id="add-other-category">
+                                <option value="">-- 선택 안함 --</option>
+                                <option value="기타">기타 자료</option>
+                                <option value="도서 목록">도서 목록</option>
+                                <option value="전도 소책자">전도 소책자</option>
+                                <option value="전도만화">전도만화</option>
+                                <option value="강해설교">강해설교</option>
+                                <option value="전도설교">전도설교</option>
+                                <option value="설교자">설교자</option>
+                                <option value="세미나, 강의">세미나, 강의</option>
+                                <option value="신학강론">신학강론</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="extra-options" style="margin-top: 15px;">
+                        <div class="input-group" id="add-sub-topic-group" style="display: none; margin-bottom: 15px;">
+                            <label>신학 하위 분류 (청교도 신학/소책자 전용)</label>
+                            <select id="add-sub-topic" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                                <option value="">-- 선택 안함 --</option>
+                                <option value="신론">1. 신론</option>
+                                <option value="인간론">2. 인간론</option>
+                                <option value="기독론">3. 기독론</option>
+                                <option value="구원론(성령론)">4. 구원론(성령론)</option>
+                                <option value="율법과 복음">5. 율법과 복음</option>
+                                <option value="그리스도인의 생활론">6. 그리스도인의 생활론</option>
+                                <option value="그리스도인의 가정">7. 그리스도인의 가정</option>
+                                <option value="교회론">8. 교회론</option>
+                                <option value="설교론">9. 설교론</option>
+                                <option value="영적전쟁">10. 영적전쟁</option>
+                                <option value="종말론">11. 종말론</option>
+                                <option value="역사 신학">12. 역사 신학</option>
+                                <option value="잘못된 신학">13. 잘못된 신학</option>
+                            </select>
+                        </div>
+                        <div class="input-group" id="add-detail-topic-group" style="display: none; margin-bottom: 15px;">
+                            <label>상세 분류 선택</label>
+                            <select id="add-detail-topic" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                                <option value="">-- 선택 안함 --</option>
+                            </select>
+                        </div>
+                        <div class="input-group" id="add-lang-group" style="display: none;">
+                            <label>언어 (소책자 전용)</label>
+                            <select id="add-lang" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                                <option value="한국어">한국어</option>
+                                <option value="English">English</option>
+                                <option value="Spanish">Spanish</option>
+                                <option value="Japanese">Japanese</option>
+                                <option value="Arabic">Arabic</option>
+                                <option value="Chinese">Chinese</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-section">
+                    <h3>기본 정보</h3>
+                    <div class="input-group">
+                        <label>제목</label>
+                        <input type="text" id="add-title" required
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-top: 15px;">
+                        <div class="input-group">
+                            <label>시리즈/폴더명</label>
+                            <input type="text" id="add-series"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                        </div>
+                        <div class="input-group">
+                            <label>정렬 순서</label>
+                            <input type="number" id="add-order" value="0"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                        </div>
+                    </div>
+                    <div class="input-group" style="margin-top: 15px;">
+                        <label>가격 (도서 전용)</label>
+                        <input type="text" id="add-price" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>내용</h3>
+                    <div class="input-group">
+                        <label style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>상세 내용 / 유튜브 링크</span>
+                            <span style="font-size: 0.8rem; font-weight: normal; color: #888;">* 긴 글을 편하게 작성하실 수 있도록 넓은 화면을 지원하며, 텍스트에 따라 자동으로 늘어납니다.</span>
+                        </label>
+                        <textarea id="add-content" rows="16"
+                            style="width: 100%; min-height: 420px; padding: 16px; border: 1px solid #ddd; border-radius: 6px; font-family: 'Noto Sans KR', 'Inter', sans-serif; font-size: 1.05rem; line-height: 1.85; box-sizing: border-box; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <!-- 추천 태그 UI 삽입 -->
+                    <div id="subtopics-recommendation-wrapper" style="margin-top: 15px; background: #fcfaf7; padding: 15px; border-radius: 8px; border: 1px dashed var(--secondary-color); display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <label style="font-weight: 700; color: var(--primary-color); display: block; margin: 0;">
+                                <i class="fas fa-magic"></i> 자동 분석된 신학 상세 주제 (본문/제목 기반)
+                            </label>
+                            <button type="button" id="btn-add-manual-subtopic" onclick="openSubtopicsPicker()" style="padding: 3px 10px; font-size: 0.75rem; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                <i class="fas fa-plus"></i> 주제 직접 선택
+                            </button>
+                        </div>
+                        <div id="recommended-subtopics-tags" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            <!-- 칩이 들어갈 자리 -->
+                        </div>
+                        <p style="font-size: 0.75rem; color: #888; margin-top: 8px; margin-bottom: 0;">* 지우고 싶은 주제가 있다면 태그의 X 버튼을 클릭하세요. 자동으로 분석되어 포함됩니다.</p>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>파일 및 이미지</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="input-group">
+                            <label>표지 이미지</label>
+                            <input type="file" id="add-cover" accept="image/*">
+                        </div>
+                        <div class="input-group">
+                            <label>상세 파일 (PDF 등)</label>
+                            <input type="file" id="add-file">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn-cancel" onclick="window.close()">취소</button>
+                    <button type="button" class="btn-save" id="btn-add-action">자료 등록하기</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="data.js"></script>
+    <script>
+        // Init Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJbOaiElCypwgtPgbwdnudn3VC737fMrs",
+            authDomain: "kpuritan-home.firebaseapp.com",
+            projectId: "kpuritan-home",
+            storageBucket: "kpuritan-home.firebasestorage.app",
+            messagingSenderId: "1071220455502",
+            appId: "1:1071220455502:web:7f6f59b48c48a73437f8f0"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        const auth = firebase.auth();
+
+        // Populate Selects
+        const topicSelect = document.getElementById('add-topic');
+        topics.forEach(t => {
+            const op = document.createElement('option');
+            op.value = t; op.innerText = t;
+            topicSelect.appendChild(op);
+        });
+
+        const authorSelect = document.getElementById('add-author');
+        authors.forEach(a => {
+            const op = document.createElement('option');
+            op.value = a; op.innerText = a;
+            authorSelect.appendChild(op);
+        });
+
+        // Toggle UI logic
+        const otherSelect = document.getElementById('add-other-category');
+        const subTopicGroup = document.getElementById('add-sub-topic-group');
+        const langGroup = document.getElementById('add-lang-group');
+        const subSelect = document.getElementById('add-sub-topic');
+
+        const majorToSubtopicsMap = {
+            "신론": ["하나님의 속성", "삼위일체", "성경", "창조", "하나님의 섭리", "무신론", "구속 언약", "행위 언약 (생명언약)", "하나님의 언약", "하나님의 뜻", "하나님의 영광", "하나님의 심판"],
+            "인간론": ["원죄", "자유의지", "인간의 전적 타락", "전적 타락", "아담", "양심", "고통"],
+            "기독론": ["그리스도의 순종", "속죄", "그리스도의 인성", "그리스도의 신성", "그리스도의 사역", "그리스도의 두 가지 의지", "기독론", "그리스도와의 연합"],
+            "구원론(성령론)": ["성령의 유효한 부르심", "양자됨", "예정론", "성령의 일반 사역", "성령의 은사", "성령의 열매", "성령을 거스르는 죄", "중생", "회개", "칭의", "성화", "영화", "구원의 순서 (서정)", "선택", "성도의 견인", "배교와 타락"],
+            "율법과 복음": ["율법", "십계명", "도덕률폐기론", "신율법주의", "율법과 복음"],
+            "그리스도인의 생활론": ["경건", "기도", "자기부정", "자가 점검", "그리스도인의 자유", "제자도", "윤리학", "주일 성수", "우울증과 슬픔", "그리스도인의 삶"],
+            "그리스도인의 가정": ["가정 예배", "결혼", "이혼과 재혼", "가족과 결혼", "기독교 교육"],
+            "교회론": ["교회", "교회 정치", "성례", "세례", "성찬식", "교회의 직무", "집사와 장로들", "성도들의 교제", "교회론", "예배", "은혜의 수단", "위선자 분별", "교회 교육"],
+            "설교론": ["설교자", "전도설교"],
+            "전도설교": ["전도설교"],
+            "설교자": ["설교자"],
+            "영적전쟁": ["영적 전쟁", "사탄의 계략", "적그리스도"],
+            "종말론": ["종말론", "죽음", "부활", "그리스도의 재림", "지옥", "천국", "영생", "하나님의 심판", "하나님의 나라"],
+            "역사 신학": ["교회 역사", "청교도 역사", "종교개혁 역사", "신조", "신조와 신앙고백", "웨스트민스터 표준 문서", "하이델베르크 교리문답서", "칼빈주의", "복음주의", "펠라기우스주의", "소시니안주의", "이단, 그리고 이단자들"],
+            "전도, 부흥, 선교": ["전도", "부흥", "선교"],
+            "청교도 신학": ["신론", "인간론", "기독론", "구원론(성령론)", "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론", "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학"]
+        };
+
+        const detailTopicGroup = document.getElementById('add-detail-topic-group');
+        const detailTopicSelect = document.getElementById('add-detail-topic');
+
+        function updateSubTopicVisibility() {
+            const topic = topicSelect.value;
+            const other = otherSelect.value;
+
+            if (topic || other === '전도 소책자') {
+                subTopicGroup.style.display = 'block';
+                
+                // 옵션 동적 생성
+                subSelect.innerHTML = '<option value="">-- 선택 안함 --</option>';
+                let currentOptions = [];
+                if (topic && majorToSubtopicsMap[topic]) {
+                    currentOptions = majorToSubtopicsMap[topic];
+                } else if (other === '전도 소책자') {
+                    currentOptions = majorToSubtopicsMap["청교도 신학"];
+                }
+
+                currentOptions.forEach((opt, idx) => {
+                    const op = document.createElement('option');
+                    op.value = opt;
+                    op.innerText = `${idx + 1}. ${opt}`;
+                    subSelect.appendChild(op);
+                });
+            } else {
+                subTopicGroup.style.display = 'none';
+            }
+
+            if (other === '전도 소책자') {
+                langGroup.style.display = 'block';
+            } else {
+                langGroup.style.display = 'none';
+            }
+
+            updateDetailTopicVisibility();
+        }
+
+        function updateDetailTopicVisibility() {
+            if (!detailTopicGroup || !detailTopicSelect) return;
+            const topic = topicSelect.value;
+            const subTopic = subSelect.value;
+            const other = otherSelect.value;
+
+            let activeKey = "";
+            if (topic === '청교도 신학' || (other === '전도 소책자' && subTopic)) {
+                activeKey = subTopic;
+            } else if (topic && topic !== '청교도 신학') {
+                activeKey = topic;
+            }
+
+            if (activeKey && majorToSubtopicsMap[activeKey] && majorToSubtopicsMap[activeKey].length > 0) {
+                detailTopicGroup.style.display = 'block';
+                detailTopicSelect.innerHTML = '<option value="">-- 선택 안함 --</option>';
+                majorToSubtopicsMap[activeKey].forEach(opt => {
+                    const op = document.createElement('option');
+                    op.value = opt;
+                    op.innerText = opt;
+                    detailTopicSelect.appendChild(op);
+                });
+            } else {
+                detailTopicGroup.style.display = 'none';
+                detailTopicSelect.innerHTML = '<option value="">-- 선택 안함 --</option>';
+            }
+        }
+
+        otherSelect.addEventListener('change', updateSubTopicVisibility);
+        topicSelect.addEventListener('change', updateSubTopicVisibility);
+        subSelect.addEventListener('change', updateDetailTopicVisibility);
+
+        // --- 상세 주제 자동 분석 및 수동 추가를 위한 State ---
+        const excludedSubtopics = new Set();
+        const manuallyAddedSubtopics = [];
+
+        function updateRecommendedSubtopics() {
+            const title = (document.getElementById('add-title').value || '').trim();
+            const content = (document.getElementById('add-content').value || '').trim();
+            const wrapper = document.getElementById('subtopics-recommendation-wrapper');
+            const tagsContainer = document.getElementById('recommended-subtopics-tags');
+
+            if (!wrapper || !tagsContainer) return;
+
+            const combinedText = (title + ' ' + content).toLowerCase();
+            const detected = [];
+
+            if (typeof detailedTopicKeywords !== 'undefined') {
+                for (const [topicKey, keywords] of Object.entries(detailedTopicKeywords)) {
+                    if (keywords.some(kw => combinedText.includes(kw.toLowerCase()))) {
+                        detected.push(topicKey);
+                    }
+                }
+            }
+
+            // 합치기 (수동 추가 포함 & 제외된 것 제외)
+            const finalSubtopics = [
+                ...new Set([
+                    ...detected.filter(t => !excludedSubtopics.has(t)),
+                    ...manuallyAddedSubtopics
+                ])
+            ];
+
+            if (finalSubtopics.length === 0 && detected.length === 0 && manuallyAddedSubtopics.length === 0) {
+                wrapper.style.display = 'none';
+                return;
+            }
+
+            wrapper.style.display = 'block';
+            tagsContainer.innerHTML = '';
+
+            finalSubtopics.forEach(sub => {
+                const isManual = manuallyAddedSubtopics.includes(sub);
+                const tagEl = document.createElement('span');
+                tagEl.style.cssText = 'display:inline-flex; align-items:center; gap:5px; padding:5px 12px; font-size:0.85rem; border-radius:15px; border: 1px solid ' + (isManual ? '#1a342a' : '#c59c5e') + '; background:' + (isManual ? '#eef6f3' : '#fdfaf5') + '; color:' + (isManual ? '#1a342a' : '#c59c5e') + '; font-weight:500;';
+                tagEl.innerHTML = `
+                    <span>${sub}</span>
+                    <i class="fas fa-times-circle" style="cursor:pointer; font-size:0.95rem; opacity:0.75;" onclick="removeSubtopicTag('${sub}')"></i>
+                `;
+                tagsContainer.appendChild(tagEl);
+            });
+        }
+
+        window.removeSubtopicTag = function(sub) {
+            excludedSubtopics.add(sub);
+            const idx = manuallyAddedSubtopics.indexOf(sub);
+            if (idx > -1) {
+                manuallyAddedSubtopics.splice(idx, 1);
+            }
+            updateRecommendedSubtopics();
+        };
+
+        // --- 신학 상세 소주제 선택기 모달 관련 로직 ---
+        const detailedTopics = [
+            "십계명", "그리스도의 순종", "양자됨", "예정론", "고통", "적그리스도", "도덕률폐기론", "변증론", "배교", "사도신경", 
+            "성령의 유효한 부르심", "예산 편성, 교리", "알미니안주의", "무신론", "속죄", "하나님의 속성", "성경", "세례", "팔복", 
+            "거짓 믿음", "교리 교육", "독신", "성령의 은사", "은혜 언약", "행위 언약 (생명언약)", "성례", "그리스도의 인성", 
+            "그리스도의 신성", "그리스도의 사역", "그리스도의 두 가지 의지", "예배", "기독교 교육", "그리스도인의 자유", 
+            "기독론", "교회", "교회 정치", "교회 역사", "교회 사역", "성령의 일반 사역", "성도들의 교제", "성찬식", "양심", 
+            "상담", "구속 언약", "창조", "신조", "죽음", "하나님의 섭리", "사탄의 계략", "오류", "종말론", "영생", "복음주의", 
+            "복음 전도", "믿음", "가정 예배", "죄 용서", "자유의지", "성령의 열매", "일반 계시", "삼위일체", "지옥", "천국", 
+            "하이델베르크 교리문답서", "칼빈주의", "하이퍼 칼빈주의", "위선자", "주일 성수", "주기도문", "결혼", "원죄", 
+            "신칼빈주의", "신율법주의", "헌금과 십일조", "교회의 직무", "구원의 순서 (서정)", "웨스트민스터 표준 문서", 
+            "펠라기우스주의", "경건", "기도", "설교", "청교도 역사", "종교개혁 역사", "중생", "회개", "칭의", "성화", "영화", 
+            "율법", "부활", "그리스도의 재림", "자기부정", "자가 점검", "성령을 거스르는 죄", "소시니안주의", "영적 전쟁", 
+            "전적 타락", "그리스도와의 연합", "아담", "잘못된 신학", "성경 공부", "성경적 상담", "그리스도인의 삶", 
+            "신조와 신앙고백", "이단, 그리고 이단자들", "집사와 장로들", "우울증과 슬픔", "제자도", "이혼과 재혼", "교리 연구", 
+            "교회론", "교육 및 학문", "선택", "윤리학", "가족과 결혼", "하나님의 언약", "하나님의 영광", "하나님의 뜻", 
+            "하나님의 심판", "하나님의 나라", "율법과 복음", "은혜의 수단", "성도의 견인", "죄와 유혹", "인간의 전적 타락", 
+            "삼위 일체", "세계 선교", "세속화", "율법주의", "신사도운동", "오순절신학", "완전주의", "바울의 새관점", 
+            "현대복음주의", "R.T 캔달", "세대주의", "횐상주의", "찰스 피니", "위선자 분별", "배교와 타락"
+        ].sort((a, b) => a.localeCompare(b, 'ko'));
+
+        const pickerModal = document.getElementById('subtopics-picker-modal');
+        const pickerListContainer = document.getElementById('picker-list-container');
+        const pickerSearchInput = document.getElementById('picker-search-input');
+        let tempSelectedSubtopics = [];
+
+        window.openSubtopicsPicker = function() {
+            tempSelectedSubtopics = [...manuallyAddedSubtopics];
+            pickerSearchInput.value = '';
+            renderPickerList('');
+            pickerModal.style.display = 'flex';
+        };
+
+        window.closeSubtopicsPicker = function() {
+            pickerModal.style.display = 'none';
+        };
+
+        function renderPickerList(filterText = '') {
+            if (!pickerListContainer) return;
+            pickerListContainer.innerHTML = '';
+
+            const listData = detailedTopics.filter(t => 
+                !filterText || t.toLowerCase().includes(filterText.toLowerCase())
+            );
+
+            if (listData.length === 0) {
+                pickerListContainer.innerHTML = '<div style="text-align:center; color:#999; padding:20px 0;">검색 결과가 없습니다.</div>';
+                return;
+            }
+
+            listData.forEach(topic => {
+                const isChecked = tempSelectedSubtopics.includes(topic);
+                const label = document.createElement('label');
+                label.style.cssText = 'display: flex; align-items: center; gap: 10px; padding: 8px 12px; margin-bottom: 6px; border-radius: 6px; background: #ffffff; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s;';
+                
+                label.onmouseover = () => label.style.background = '#f8fafc';
+                label.onmouseout = () => label.style.background = '#ffffff';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = isChecked;
+                checkbox.style.cssText = 'width: 16px; height: 16px; accent-color: #1a342a; cursor: pointer;';
+                
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        if (!tempSelectedSubtopics.includes(topic)) {
+                            tempSelectedSubtopics.push(topic);
+                        }
+                    } else {
+                        tempSelectedSubtopics = tempSelectedSubtopics.filter(t => t !== topic);
+                    }
+                });
+
+                const textSpan = document.createElement('span');
+                textSpan.textContent = topic;
+                textSpan.style.cssText = 'font-size: 0.9rem; font-weight: 500; color: #334155;';
+
+                label.appendChild(checkbox);
+                label.appendChild(textSpan);
+                pickerListContainer.appendChild(label);
+            });
+        }
+
+        pickerSearchInput.addEventListener('input', (e) => {
+            renderPickerList(e.target.value.trim());
+        });
+
+        window.applySelectedSubtopics = function() {
+            manuallyAddedSubtopics.length = 0;
+            tempSelectedSubtopics.forEach(t => {
+                if (excludedSubtopics.has(t)) {
+                    excludedSubtopics.delete(t);
+                }
+                manuallyAddedSubtopics.push(t);
+            });
+            updateRecommendedSubtopics();
+            closeSubtopicsPicker();
+        };
+
+        // 입력창에 변경 리스너 바인딩
+        document.getElementById('add-title').addEventListener('input', updateRecommendedSubtopics);
+        document.getElementById('add-content').addEventListener('input', updateRecommendedSubtopics);
+
+        // Pre-fill from URL Params
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('topic')) document.getElementById('add-topic').value = urlParams.get('topic');
+        if (urlParams.get('author')) document.getElementById('add-author').value = urlParams.get('author');
+        if (urlParams.get('category')) {
+            document.getElementById('add-other-category').value = urlParams.get('category');
+            otherSelect.dispatchEvent(new Event('change'));
+        }
+        if (urlParams.get('series')) document.getElementById('add-series').value = urlParams.get('series');
+        if (urlParams.get('subTopic')) document.getElementById('add-sub-topic').value = urlParams.get('subTopic');
+
+        // --- DEBUGGING & SAFETY PATCHES ---
+        let clickCount = 0;
+
+        // Track page unloads
+        window.addEventListener('beforeunload', (e) => {
+            console.warn('DEBUG: [CORE] beforeunload triggered. Page is about to unload!');
+        });
+        window.addEventListener('pagehide', (e) => {
+            console.warn('DEBUG: [CORE] pagehide triggered.');
+        });
+        window.addEventListener('unload', (e) => {
+            console.warn('DEBUG: [CORE] unload triggered.');
+        });
+
+        // Block all default form submissions
+        document.getElementById('full-add-form').addEventListener('submit', (e) => {
+            clickCount++;
+            console.warn(`DEBUG: [FORM] Form submit event fired. Target:`, e.target, `Count: ${clickCount}`);
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+
+        // Save Data
+        document.getElementById('btn-add-action').addEventListener('click', async (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            clickCount++;
+            console.log(`DEBUG: [ADD_BTN] Click handler started. Count: ${clickCount}`);
+
+            const btn = document.getElementById('btn-add-action');
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = "업로드 중...";
+
+            try {
+                // --- AUTHENTICATION CHECK & RE-LOGIN ---
+                let currentUser = firebase.auth().currentUser;
+                console.log("DEBUG: [AUTH] Current auth status:", currentUser ? `Logged in as ${currentUser.uid}` : "Not logged in");
+
+                if (!currentUser) {
+                    console.warn("DEBUG: [AUTH] User not authenticated. Attempting emergency anonymous sign-in...");
+                    btn.innerText = "인증 시도 중...";
+                    try {
+                        await firebase.auth().signInAnonymously();
+                        currentUser = firebase.auth().currentUser;
+                        console.log("DEBUG: [AUTH] Anonymous sign-in success. UID:", currentUser.uid);
+                    } catch (authError) {
+                        console.error("DEBUG: [AUTH] Sign-in failed:", authError);
+                        throw new Error("관리자 권한 인증에 실패했습니다. (사유: " + authError.message + ")");
+                    }
+                }
+
+                btn.innerText = "등록 중...";
+
+                const topic = document.getElementById('add-topic').value;
+                const author = document.getElementById('add-author').value;
+                const other = document.getElementById('add-other-category').value;
+                const subTopic = document.getElementById('add-sub-topic').value;
+
+                let tags = [topic, author, other].filter(t => t !== "");
+
+                // --- [추가] 주제별 자동 태깅 및 시리즈 매칭 ---
+                const puritanTopics = ["신론", "인간론", "기독론", "구원론(성령론)", "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론", "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학"];
+                let finalSeries = document.getElementById('add-series').value.trim() || '';
+
+                if (puritanTopics.includes(topic)) {
+                    if (!tags.includes("청교도 신학")) tags.push("청교도 신학");
+                    if (!finalSeries) finalSeries = topic; // 주제를 시리즈(폴더)로 자동 지정
+                }
+                if (topic === "전도" || topic === "부흥" || topic === "선교" || topic === "전도, 부흥, 선교") {
+                    if (!tags.includes("전도, 부흥, 선교")) tags.push("전도, 부흥, 선교");
+                    if (topic === "전도" && !tags.includes("전도")) tags.push("전도");
+                    if (topic === "부흥" && !tags.includes("부흥")) tags.push("부흥");
+                    if (topic === "선교" && !tags.includes("선교")) tags.push("선교");
+                }
+
+                if (other === '전도 소책자') {
+                    const lang = document.getElementById('add-lang').value;
+                    if (lang) tags.push(lang);
+                }
+
+                if (tags.length === 0) {
+                    throw new Error("최소 하나 이상의 분류를 선택해야 합니다.");
+                }
+
+                // 현재 매칭/직접 추가된 최종 상세 주제 목록 계산
+                const finalMatchedSubtopics = [];
+                const titleText = (document.getElementById('add-title').value || '').trim();
+                const contentText = (document.getElementById('add-content').value || '').trim();
+                const combinedText = (titleText + ' ' + contentText).toLowerCase();
+
+                if (typeof detailedTopicKeywords !== 'undefined') {
+                    for (const [topicKey, keywords] of Object.entries(detailedTopicKeywords)) {
+                        if (keywords.some(kw => combinedText.includes(kw.toLowerCase())) && !excludedSubtopics.has(topicKey)) {
+                            finalMatchedSubtopics.push(topicKey);
+                        }
+                    }
+                }
+                // 수동 추가 병합
+                manuallyAddedSubtopics.forEach(ms => {
+                    if (!finalMatchedSubtopics.includes(ms)) finalMatchedSubtopics.push(ms);
+                });
+
+                // 드롭다운 선택 소주제 강제 포함
+                if (subTopic && (topic || other === "전도 소책자")) {
+                    if (!finalMatchedSubtopics.includes(subTopic)) {
+                        finalMatchedSubtopics.push(subTopic);
+                    }
+                }
+
+                // 상세 분류 강제 포함
+                const detailTopic = document.getElementById('add-detail-topic')?.value || "";
+                if (detailTopic) {
+                    if (!finalMatchedSubtopics.includes(detailTopic)) {
+                        finalMatchedSubtopics.push(detailTopic);
+                    }
+                    if (!tags.includes(detailTopic)) {
+                        tags.push(detailTopic);
+                    }
+                }
+
+                const addData = {
+                    topic, author, otherCategory: other, tags,
+                    title: document.getElementById('add-title').value.trim() || "제목 없음",
+                    series: finalSeries,
+                    order: Number(document.getElementById('add-order').value),
+                    recent_order: 0,
+                    price: document.getElementById('add-price').value.trim() || "",
+                    content: document.getElementById('add-content').value,
+                    subTopics: finalMatchedSubtopics,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if ((topic || other === "전도 소책자") && subTopic) {
+                    // Update series with the subTopic for consistency
+                    addData.series = subTopic;
+
+                    if (other === "전도 소책자") {
+                        addData.subBookletTopic = subTopic; // legacy compat
+                    }
+                }
+
+                // File Uploads
+                const coverInput = document.getElementById('add-cover');
+                if (coverInput.files[0]) {
+                    const file = coverInput.files[0];
+                    const ref = storage.ref(`covers/${Date.now()}_${file.name}`);
+                    await ref.put(file);
+                    addData.coverUrl = await ref.getDownloadURL();
+                }
+
+                const fileInput = document.getElementById('add-file');
+                if (fileInput.files[0]) {
+                    const file = fileInput.files[0];
+                    const ref = storage.ref(`files/${Date.now()}_${file.name}`);
+                    await ref.put(file);
+                    addData.fileUrl = await ref.getDownloadURL();
+                }
+
+                await db.collection('posts').add(addData);
+                alert("등록되었습니다.");
+
+                if (window.opener && !window.opener.closed) {
+                    if (window.opener.loadAdminPosts) window.opener.loadAdminPosts();
+                    if (window.opener.loadRecentPostsGrid) window.opener.loadRecentPostsGrid();
+                    if (window.opener.loadAdminPicks) window.opener.loadAdminPicks();
+                    if (window.opener.loadAdminSeries) {
+                        const portalCards = window.opener.document.querySelectorAll('.admin-portal-card.active');
+                        if (portalCards.length > 0) {
+                            const activeTab = portalCards[0].id.replace('tab-', '');
+                            if (activeTab === 'bible-study') window.opener.loadAdminSeries('강해설교');
+                        }
+                    }
+                }
+                window.close();
+
+            } catch (error) {
+                console.error("Add error details:", error);
+
+                let errorMsg = "등록 중 오류가 발생했습니다: " + error.message;
+                if (error.code === 'permission-denied') {
+                    errorMsg = "권한이 없습니다 (Missing Permissions).\n\n해결 방법:\n1. 메인 페이지에서 다시 로그인을 시도해 주세요.\n2. 로그인이 되어있는데도 안 된다면 창을 닫고 다시 열어 보세요.";
+                }
+
+                alert(errorMsg);
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
+        });
+    </script>
+    <!-- 주제 선택 멀티 모달 레이어 -->
+    <div id="subtopics-picker-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 480px; height: 80vh; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.2); box-sizing: border-box;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 15px;">
+                <h3 style="margin: 0; font-size: 1.1rem; color: #1a342a; font-weight: 700;">신학 주제 선택 (중복 가능)</h3>
+                <button type="button" onclick="closeSubtopicsPicker()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #888; line-height: 1;">&times;</button>
+            </div>
+            <!-- 실시간 검색 인풋 -->
+            <input type="text" id="picker-search-input" placeholder="원하는 주제 검색..." style="width: 100%; padding: 10px 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 0.9rem;">
+            <!-- 체크박스 스크롤 목록 -->
+            <div id="picker-list-container" style="flex: 1; overflow-y: auto; border: 1px solid #eee; border-radius: 6px; padding: 10px; margin-bottom: 15px; background: #fafafa;">
+                <!-- JavaScript로 동적 삽입 -->
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #eee; padding-top: 15px;">
+                <button type="button" onclick="closeSubtopicsPicker()" style="padding: 10px 20px; background: #f1f5f9; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; color: #475569;">취소</button>
+                <button type="button" onclick="applySelectedSubtopics()" style="padding: 10px 25px; background: #1a342a; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">선택 완료</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORDER MANAGER | ADMIN</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --admin-bg: #050505;
+            --admin-card: #111;
+            --admin-accent: #ffffff;
+            --admin-text: #eee;
+            --admin-secondary: #666;
+            --admin-border: #222;
+        }
+
+        body.admin-body {
+            background-color: var(--admin-bg);
+            color: var(--admin-text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .admin-title-group h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+        }
+
+        .admin-title-group p {
+            margin: 5px 0 0;
+            color: var(--admin-secondary);
+            font-size: 0.9rem;
+        }
+
+        .btn-save {
+            background: var(--admin-accent);
+            color: #000;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
+        }
+
+        .tab-controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--admin-border);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: none;
+            color: var(--admin-secondary);
+            border: none;
+            padding: 10px 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #fff;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -11px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #fff;
+        }
+
+        .reorder-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .reorder-item {
+            background: var(--admin-card);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: grab;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border: 1px solid var(--admin-border);
+            position: relative;
+        }
+
+        .reorder-item:hover {
+            border-color: #444;
+            transform: translateY(-5px);
+        }
+
+        .reorder-item:active {
+            cursor: grabbing;
+        }
+
+        .reorder-item.ghost {
+            opacity: 0.2;
+            background: #222;
+        }
+
+        .item-thumb-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            background: #000;
+            position: relative;
+        }
+
+        .item-thumb-container.portrait {
+            aspect-ratio: 9/16;
+        }
+
+        .item-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .reorder-item:hover .item-thumb {
+            opacity: 1;
+        }
+
+        .item-info {
+            padding: 15px;
+        }
+
+        .item-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: #aaa;
+            line-height: 1.4;
+        }
+
+        .item-id {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            color: #fff;
+            z-index: 2;
+        }
+
+        /* Modal */
+        #export-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-inner {
+            background: #111;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #222;
+            animation: modalFadeIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .code-area {
+            background: #000;
+            color: #00ffaa;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            overflow-y: auto;
+            flex-grow: 1;
+            margin: 25px 0;
+            font-size: 0.8rem;
+            white-space: pre;
+            border: 1px solid #1a1a1a;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .btn-outline {
+            background: none;
+            color: #fff;
+            border: 1px solid #333;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            border-color: #fff;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="admin-body">
+
+    <div class="admin-container">
+        <header class="admin-header">
+            <div class="admin-title-group">
+                <h1>Works Order</h1>
+                <p>드래그하여 순서를 변경하고 아래 버튼을 눌러 확정하세요.</p>
+            </div>
+            <button id="export-btn" class="btn-save">
+                <i class="fas fa-check-circle"></i> 순서 확정 및 코드 생성
+            </button>
+        </header>
+
+        <nav class="tab-controls">
+            <button class="tab-btn active" data-type="landscape">LONG FORM (Landscape)</button>
+            <button class="tab-btn" data-type="portrait">SHORT FORM (Portrait)</button>
+        </nav>
+
+        <main id="landscape-container">
+            <ul id="landscape-list" class="reorder-list"></ul>
+        </main>
+
+        <main id="portrait-container" style="display: none;">
+            <ul id="portrait-list" class="reorder-list"></ul>
+        </main>
+    </div>
+
+    <div id="export-modal">
+        <div class="modal-inner">
+            <h2 style="margin: 0; font-size: 1.5rem;">순서가 변경되었습니다</h2>
+            <p style="color: #666; font-size: 0.95rem; margin-top: 10px;">아래 코드를 <b>모두 복사</b>하여 채팅창에 붙여넣어주세요.</p>
+            <div id="code-output" class="code-area"></div>
+            <div class="modal-footer">
+                <button id="copy-btn" class="btn-save" style="background: #fff; color: #000;">
+                    <i class="fas fa-copy"></i> 복사하기
+                </button>
+                <button id="close-modal" class="btn-outline">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script type="module">
+        import works from './works.js';
+
+        let sortedLandscape = works.filter(w => w.orientation === 'landscape');
+        let sortedPortrait = works.filter(w => w.orientation === 'portrait');
+
+        const landscapeList = document.getElementById('landscape-list');
+        const portraitList = document.getElementById('portrait-list');
+
+        function renderList(type) {
+            const list = type === 'landscape' ? landscapeList : portraitList;
+            const data = type === 'landscape' ? sortedLandscape : sortedPortrait;
+
+            list.innerHTML = '';
+            data.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'reorder-item';
+                li.dataset.id = item.id;
+
+                let thumb = item.thumbnail;
+                if (!thumb || thumb.includes('unsplash')) {
+                    if (item.videoUrl && (item.videoUrl.includes('youtube.com') || item.videoUrl.includes('youtu.be'))) {
+                        let videoId = '';
+                        if (item.videoUrl.includes('embed/')) {
+                            videoId = item.videoUrl.split('embed/')[1].split('?')[0];
+                        } else {
+                            videoId = item.videoUrl.split('/').pop().split('?')[0];
+                        }
+                        thumb = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                    }
+                }
+
+                li.innerHTML = `
+                    <span class="item-id">#${index + 1}</span>
+                    <div class="item-thumb-container ${type === 'portrait' ? 'portrait' : ''}">
+                        <img src="${thumb}" class="item-thumb" loading="lazy">
+                    </div>
+                    <div class="item-info">
+                        <p class="item-title">${item.title}</p>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        new Sortable(landscapeList, {
+            animation: 150,
+            ghostClass: 'ghost',
+            onEnd: () => {
+                const newIds = Array.from(landscapeList.querySelectorAll('.reorder-item')).map(el => parseInt(el.dataset.id));
+                const newSorted = [];
+                newIds.forEach(id => {
+                    const item = sortedLandscape.find(w => w.id === id);
+                    if (item) newSorted.push(item);
+                });
+                sortedLandscape = newSorted;
+                renderList('landscape');
+            }
+        });
+
+        new Sortable(portraitList, {
+            animation: 150,
+            ghostClass: 'ghost',
+            onEnd: () => {
+                const newIds = Array.from(portraitList.querySelectorAll('.reorder-item')).map(el => parseInt(el.dataset.id));
+                const newSorted = [];
+                newIds.forEach(id => {
+                    const item = sortedPortrait.find(w => w.id === id);
+                    if (item) newSorted.push(item);
+                });
+                sortedPortrait = newSorted;
+                renderList('portrait');
+            }
+        });
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const type = btn.dataset.type;
+                document.getElementById('landscape-container').style.display = type === 'landscape' ? 'block' : 'none';
+                document.getElementById('portrait-container').style.display = type === 'portrait' ? 'block' : 'none';
+                renderList(type);
+            });
+        });
+
+        document.getElementById('export-btn').addEventListener('click', () => {
+            const combined = [...sortedLandscape, ...sortedPortrait];
+            const jsCode = `const works = ${JSON.stringify(combined, null, 4)};\n\nexport default works;`;
+
+            document.getElementById('code-output').textContent = jsCode;
+            document.getElementById('export-modal').style.display = 'flex';
+        });
+
+        document.getElementById('close-modal').addEventListener('click', () => {
+            document.getElementById('export-modal').style.display = 'none';
+        });
+
+        document.getElementById('copy-btn').addEventListener('click', () => {
+            const code = document.getElementById('code-output').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('코드가 복사되었습니다! 이제 AI 채팅창에 "이 코드로 업데이트해줘"라고 메시지를 보내주세요.');
+            });
+        });
+
+        renderList('landscape');
+        renderList('portrait');
+    </script>
+</body>
+
+</html>

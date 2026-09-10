@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu | 한국 청교도 연구소</title>
+    <link rel="stylesheet" href="style.css?v=106">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Noto+Sans+KR:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --menu-bg: #2d2f31;
+            --menu-accent: #1a342a;
+            --menu-text: #ffffff;
+        }
+
+        body {
+            background-color: var(--menu-bg);
+            color: var(--menu-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .menu-header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--menu-bg);
+            z-index: 100;
+        }
+
+        .close-btn {
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 10px;
+            transition: transform 0.3s;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+            color: var(--menu-accent);
+        }
+
+        .menu-content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-item {
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: menuFadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes menuFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-link {
+            color: white;
+            text-decoration: none;
+            font-size: 2.2rem;
+            font-weight: 900;
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: -0.04em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+
+        .menu-link:hover {
+            color: var(--menu-accent);
+            padding-left: 10px;
+        }
+
+        .menu-link i {
+            font-size: 1.2rem;
+            opacity: 0.5;
+        }
+
+        .menu-sub-list {
+            list-style: none;
+            padding-left: 1rem;
+            margin-top: 1rem;
+            border-left: 3px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .menu-sub-link {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: block;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .menu-sub-link:hover {
+            color: var(--menu-accent);
+            transform: translateX(5px);
+        }
+
+        .menu-sub-sub-list {
+            list-style: none;
+            padding-left: 1.5rem;
+            margin-top: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            border-left: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-sub-sub-link {
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            display: block;
+            transition: color 0.3s;
+        }
+
+        .menu-sub-sub-link:hover {
+            color: var(--menu-accent);
+        }
+
+        .menu-footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 2rem;
+        }
+
+        .footer-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.2rem;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.2);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .footer-copy {
+            color: rgba(10, 124, 104, 0.6);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="menu-header">
+        <a href="index.html" class="logo">
+            <span class="logo-eng">KPI</span>
+        </a>
+        <button class="close-btn" onclick="window.history.back()">
+            <i class="fas fa-times"></i>
+        </button>
+    </header>
+    <main class="menu-content">
+        <ul class="menu-list">
+            <li class="menu-item" style="animation-delay: 0.05s;">
+                <a href="index.html#about" class="menu-link">연구소 소개 <i class="fas fa-arrow-right"></i></a>
+            </li>
+            <li class="menu-item" style="animation-delay: 0.1s;">
+                <span class="menu-link">강해설교 <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></span>
+                <ul class="menu-sub-list" id="mobile-sermon-series">
+                    <li><a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90" class="menu-sub-link">강해설교 전체</a></li>
+                    <!-- JS injected -->
+                </ul>
+            </li>
+            <li class="menu-item" style="animation-delay: 0.15s;">
+                <a href="resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98" class="menu-link">세미나, 강의 <i class="fas fa-arrow-right"></i></a>
+            </li>
+            <li class="menu-item" style="animation-delay: 0.2s;">
+                <a href="resources.html?cat=%EC%84%B1%EA%B2%BD%EC%A3%BC%EC%84%9D" class="menu-link">성경주석 <i
+                        class="fas fa-arrow-right"></i></a>
+            </li>
+            <li class="menu-item" style="animation-delay: 0.3s;">
+                <span class="menu-link">청교도 신학 <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></span>
+                <ul class="menu-sub-list">
+                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99" class="menu-sub-link" style="font-weight: 800; border-bottom: 1px dashed rgba(255,255,255,0.2);">청교도 신학 전체보기</a></li>
+                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%8B%A0%EB%A1%A0" class="menu-sub-link">1. 신론</a></li>
+                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9D%B8%EA%B0%84%EB%A1%A0" class="menu-sub-link">2. 인간론</a></li>
+                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B8%B0%EB%8F%85%EB%A1%A0" class="menu-sub-link">3. 기독론</a></li>
+                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%AC%EC%9B%90%EB%A1%A0%28%EC%84%B1%EB%A0%B9%EB%A1%A0%29" class="menu-sub-link">4. 구원론(성령론)</a></li>
+                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9C%A8%EB%B2%95%EA%B3%BC%20%EB%B3%B5%EC%9D%8C" class="menu-sub-link">5. 율법과 복음</a></li>
+                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B7%B8%EB%A6%AC%EC%8A%A4%EB%8F%84%EC%9D%B8%EC%9D%98%20%EC%83%9D%ED%99%9C%EB%A1%A0" class="menu-sub-link">6. 그리스도인의 생활론</a></li>
+                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B7%B8%EB%A6%AC%EC%8A%A4%EB%8F%84%EC%9D%B8%EC%9D%98%20%EA%B0%80%EC%A0%95" class="menu-sub-link">7. 그리스도인의 가정</a></li>
+                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%90%ED%9A%8C%EB%A1%A0" class="menu-sub-link">8. 교회론</a></li>
+                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%84%A4%EA%B5%90%EB%A1%A0" class="menu-sub-link">9. 설교론</a></li>
+                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%98%81%EC%A0%81%EC%A0%84%EC%9F%81" class="menu-sub-link">10. 영적전쟁</a></li>
+                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%A2%85%EB%A7%90%EB%A1%A0" class="menu-sub-link">11. 종말론</a></li>
+                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%97%AD%EC%82%AC%20%EC%8B%A0%ED%95%99" class="menu-sub-link">12. 역사 신학</a></li>
+                    <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9E%98%EB%AA%BB%EB%90%9C%20%EC%8B%A0%ED%95%99" class="menu-sub-link">13. 잘못된 신학</a></li>
+                </ul>
+            </li>
+            <li class="menu-item" style="animation-delay: 0.4s;">
+                <span class="menu-link">전도, 부흥, 선교 <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></span>
+                <ul class="menu-sub-list">
+                    <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90" class="menu-sub-link">전도, 부흥, 선교 전체</a></li>
+                    <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%A0%84%EB%8F%84" class="menu-sub-link">1. 전도</a></li>
+                    <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EB%B6%80%ED%9D%A5" class="menu-sub-link">2. 부흥</a></li>
+                    <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%84%A0%EA%B5%90" class="menu-sub-link">3. 선교</a></li>
+                </ul>
+            </li>
+            <li class="menu-item" style="animation-delay: 0.5s;">
+                <a href="resources.html?cat=%EC%A0%84%EB%8F%84%EB%A7%8C%ED%99%94" class="menu-link">전도만화 <i class="fas fa-arrow-right"></i></a>
+            </li>
+            <li class="menu-item" style="animation-delay: 0.6s;">
+                <a href="resources.html?cat=%EC%8B%A0%ED%95%99%EA%B0%95%EB%A1%A0" class="menu-link">신학강론 <i class="fas fa-arrow-right"></i></a>
+            </li>
+            <li class="menu-item" style="animation-delay: 0.7s;">
+                <a href="https://smartstore.naver.com/kpuritan_phb" class="menu-link" target="_blank">PHB 출판사 <i class="fas fa-arrow-right"></i></a>
+            </li>
+            <li class="menu-item" style="animation-delay: 0.8s;">
+                <a href="seminary.html" class="menu-link">SRS 신학대학원 <i class="fas fa-arrow-right"></i></a>
+            </li>
+        </ul>
+    </main>
+    <footer class="menu-footer">
+        <span class="footer-logo">KPI</span>
+        <div class="footer-copy">&copy; 2026 Korea Puritan Institute.</div>
+        <div style="margin-top: 15px;">
+            <a href="admin.html"
+                style="color: rgba(10, 124, 104, 0.6); text-decoration: none; font-size: 0.8rem;">관리자 로그인</a>
+        </div>
+    </footer>
+    
+
+    <!-- Music Player Container -->
+    <div class="bgm-player" id="bgm-player"
+        style="position: fixed; bottom: 2rem; left: 2rem; z-index: 1500; pointer-events: none;">
+        <button id="bgm-toggle-btn" class="bgm-control" onclick="if(window.toggleBGM) window.toggleBGM(event)"
+            style="pointer-events: auto; display: none;">
+            <span class="music-icon"><i class="fas fa-music"></i></span>
+        </button>
+        <div id="yt-player-container" style="display: none;"></div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJbOaiElCypwgtPgbwdnudn3VC737fMrs",
+            authDomain: "kpuritan-home.firebaseapp.com",
+            projectId: "kpuritan-home",
+            storageBucket: "kpuritan-home.firebasestorage.app",
+            messagingSenderId: "1071220455502",
+            appId: "1:1071220455502:web:7f6f59b48c48a73437f8f0"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
+    <script src="main.js?v=2"></script>
+    <script src="bgm.js?v=1"></script>
+</body>
+
+</html>

@@ -2259,6 +2259,32 @@ document.addEventListener('DOMContentLoaded', () => {
         if (trigger) trigger.style.display = 'none';
     };
 
+    // --- Global Post Thumbnail Helper ---
+    window.getPostThumbnail = (post) => {
+        if (!post) return 'images/puritan-study.png';
+        
+        // 1) 직접 지정된 coverUrl이 있는 경우
+        if (post.coverUrl && typeof post.coverUrl === 'string' && post.coverUrl.trim()) {
+            return post.coverUrl.trim();
+        }
+        
+        // 2) fileUrl이 직접 이미지 파일인 경우
+        if (post.fileUrl && /\.(jpeg|jpg|gif|png|webp|svg)($|\?|#)/i.test(post.fileUrl)) {
+            return post.fileUrl;
+        }
+        
+        // 3) content 또는 fileUrl 내에 YouTube 영상 링크가 있는 경우 -> 고화질 YouTube 썸네일 자동 추출
+        const contentText = (post.content || '') + ' ' + (post.fileUrl || '');
+        const ytRegex = /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/;
+        const ytMatch = contentText.match(ytRegex);
+        if (ytMatch && ytMatch[1]) {
+            return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+        }
+        
+        // 4) 기본 플레이스홀더 이미지
+        return 'images/puritan-study.png';
+    };
+
     // --- Carousel Logic Start ---
     window.scrollCarousel = (id, offset) => {
         const carousel = document.getElementById(id);
@@ -2279,34 +2305,33 @@ document.addEventListener('DOMContentLoaded', () => {
             let preventClick = false;
 
             const handleStart = (e) => {
-                if (window.innerWidth > 768) return;
                 isDown = true;
                 track.style.scrollBehavior = 'auto';
                 
-                startX = (e.pageX || (e.touches && e.touches[0].pageX)) - track.offsetLeft;
+                const clientX = e.pageX || (e.touches && e.touches[0].pageX);
+                startX = clientX - track.offsetLeft;
                 scrollLeft = track.scrollLeft;
                 startTime = Date.now();
-                lastX = e.pageX || (e.touches && e.touches[0].pageX);
+                lastX = clientX;
                 preventClick = false;
             };
 
             const handleMove = (e) => {
                 if (!isDown) return;
-                if (e.cancelable) e.preventDefault();
-
-                const x = (e.pageX || (e.touches && e.touches[0].pageX)) - track.offsetLeft;
+                const clientX = e.pageX || (e.touches && e.touches[0].pageX);
+                const x = clientX - track.offsetLeft;
                 const walk = (x - startX);
-                track.scrollLeft = scrollLeft - walk;
-
-                const now = Date.now();
-                const currentX = e.pageX || (e.touches && e.touches[0].pageX);
-                if (now - lastMoveTime > 10) {
-                    lastX = currentX;
-                    lastMoveTime = now;
+                
+                if (Math.abs(walk) > 5) {
+                    if (e.cancelable && e.type === 'touchmove') e.preventDefault();
+                    track.scrollLeft = scrollLeft - walk;
+                    preventClick = true;
                 }
 
-                if (Math.abs(walk) > 10) {
-                    preventClick = true;
+                const now = Date.now();
+                if (now - lastMoveTime > 10) {
+                    lastX = clientX;
+                    lastMoveTime = now;
                 }
             };
 
@@ -2353,19 +2378,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isDown) {
                     isDown = false;
                     track.style.scrollBehavior = 'smooth';
-                    const card = track.querySelector('.carousel-item-wrapper') || track.querySelector('.carousel-card');
-                    if (card) {
-                        const cardWidth = card.offsetWidth;
-                        const style = window.getComputedStyle(track);
-                        const gap = parseInt(style.getPropertyValue('column-gap')) || parseInt(style.getPropertyValue('gap')) || 16;
-                        const stepWidth = cardWidth + gap;
-                        const targetScrollLeft = Math.round(track.scrollLeft / stepWidth) * stepWidth;
-                        track.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
-                    }
                 }
             });
 
-            track.addEventListener('touchstart', handleStart);
+            track.addEventListener('touchstart', handleStart, { passive: true });
             track.addEventListener('touchmove', handleMove, { passive: false });
             track.addEventListener('touchend', handleEnd);
 
@@ -2379,9 +2395,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.createCarouselCard = (post, docId) => {
-        const date = post.createdAt ? (typeof post.createdAt.toDate === 'function' ? post.createdAt.toDate().toLocaleDateString() : '최근') : '최근';
-        const displayCategory = post.tags ? post.tags[0] : '자료';
-        let thumbUrl = post.coverUrl || 'images/puritan-study.png';
+        const date = post.createdAt ? (typeof post.createdAt.toDate === 'function' ? post.createdAt.toDate().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }) : (post.createdAt.seconds ? new Date(post.createdAt.seconds * 1000).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }) : (typeof post.createdAt === 'string' ? post.createdAt.slice(0, 10) : '최근'))) : '최근';
+        const displayCategory = (post.tags && post.tags[0]) || post.category || post.otherCategory || '자료';
+        const thumbUrl = window.getPostThumbnail(post);
 
         const card = document.createElement('div');
         card.className = 'carousel-card has-thumb';
@@ -2389,29 +2405,37 @@ document.addEventListener('DOMContentLoaded', () => {
         card.style.backgroundSize = 'cover';
         card.style.backgroundPosition = 'center';
 
-        if (!post.coverUrl && post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) {
+        // PDF 썸네일 비동기 렌더링 시도 (순수 PDF이고 커버나 유튜브 썸네일이 없을 때)
+        if (!post.coverUrl && !thumbUrl.includes('img.youtube.com') && post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) {
             if (window.pdfjsLib) {
-                const loadingTask = window.pdfjsLib.getDocument(post.fileUrl);
-                loadingTask.promise.then(pdf => {
-                    pdf.getPage(1).then(page => {
-                        const scale = 0.5;
+                try {
+                    const loadingTask = window.pdfjsLib.getDocument({
+                        url: post.fileUrl,
+                        disableWorker: true
+                    });
+                    loadingTask.promise.then(pdf => {
+                        return pdf.getPage(1);
+                    }).then(page => {
+                        const scale = 0.6;
                         const viewport = page.getViewport({ scale });
                         const canvas = document.createElement('canvas');
                         const context = canvas.getContext('2d');
                         canvas.height = viewport.height;
                         canvas.width = viewport.width;
 
-                        page.render({
+                        return page.render({
                             canvasContext: context,
                             viewport: viewport
                         }).promise.then(() => {
-                            const thumbnailUrl = canvas.toDataURL();
+                            const thumbnailUrl = canvas.toDataURL('image/jpeg', 0.8);
                             card.style.backgroundImage = `url("${thumbnailUrl}")`;
                         });
+                    }).catch(err => {
+                        // Safe fallback without error
                     });
-                }).catch(err => {
-                    console.warn('PDF thumbnail failed, keeping default:', err);
-                });
+                } catch (e) {
+                    // Safe catch
+                }
             }
         }
 
@@ -2421,7 +2445,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const contentDiv = document.createElement('div');
         contentDiv.className = 'carousel-bottom-content';
         contentDiv.innerHTML = `
-            <div class="carousel-bottom-title">${post.title}</div>
+            <div class="carousel-bottom-title" title="${post.title || ''}">${post.title || '제목 없음'}</div>
             <div class="carousel-bottom-meta">${date}</div>
         `;
 
@@ -2431,6 +2455,8 @@ document.addEventListener('DOMContentLoaded', () => {
         wrapper.addEventListener('click', () => {
             if (window.openResourceModal) {
                 window.openResourceModal(displayCategory, post.series || '', docId);
+            } else {
+                window.location.href = `viewer.html?id=${docId}`;
             }
         });
         return wrapper;
@@ -2446,31 +2472,31 @@ document.addEventListener('DOMContentLoaded', () => {
             if (listWrapper) listWrapper.style.display = 'none';
             if (carouselWrapper) carouselWrapper.style.display = 'block';
             if (btnList) {
+                btnList.classList.remove('active');
                 btnList.style.background = 'transparent';
                 btnList.style.color = '#64748b';
                 btnList.style.boxShadow = 'none';
-                btnList.classList.remove('active');
             }
             if (btnCard) {
+                btnCard.classList.add('active');
                 btnCard.style.background = '#1a342a';
                 btnCard.style.color = '#ffffff';
                 btnCard.style.boxShadow = '0 1px 3px rgba(0,0,0,0.12)';
-                btnCard.classList.add('active');
             }
         } else {
             if (listWrapper) listWrapper.style.display = 'block';
             if (carouselWrapper) carouselWrapper.style.display = 'none';
             if (btnList) {
+                btnList.classList.add('active');
                 btnList.style.background = '#1a342a';
                 btnList.style.color = '#ffffff';
                 btnList.style.boxShadow = '0 1px 3px rgba(0,0,0,0.12)';
-                btnList.classList.add('active');
             }
             if (btnCard) {
+                btnCard.classList.remove('active');
                 btnCard.style.background = 'transparent';
                 btnCard.style.color = '#64748b';
                 btnCard.style.boxShadow = 'none';
-                btnCard.classList.remove('active');
             }
         }
     };
@@ -2481,7 +2507,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const tag = (post.tags && post.tags[0]) || post.category || post.otherCategory || '자료';
         const author = post.author || '청교도';
-        const dateStr = post.createdAt ? (typeof post.createdAt.toDate === 'function' ? post.createdAt.toDate().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }) : (typeof post.createdAt === 'string' ? post.createdAt.slice(0, 10) : '')) : '';
+        const dateStr = post.createdAt ? (typeof post.createdAt.toDate === 'function' ? post.createdAt.toDate().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }) : (post.createdAt.seconds ? new Date(post.createdAt.seconds * 1000).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }) : (typeof post.createdAt === 'string' ? post.createdAt.slice(0, 10) : ''))) : '';
 
         item.innerHTML = `
             <div class="home-list-item-top">
@@ -2489,7 +2515,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="home-list-meta">${dateStr || author}</span>
             </div>
             <div class="home-list-item-title-row">
-                <span class="home-list-item-title" title="${post.title}">${post.title}</span>
+                <span class="home-list-item-title" title="${post.title || ''}">${post.title || '제목 없음'}</span>
                 <i class="fas fa-chevron-right home-list-arrow"></i>
             </div>
         `;
@@ -2498,7 +2524,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (window.openResourceModal) {
                 window.openResourceModal(tag, post.series || '', docId);
             } else {
-                window.open(`viewer.html?id=${docId}`, '_self');
+                window.location.href = `viewer.html?id=${docId}`;
             }
         };
 
@@ -2510,11 +2536,11 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (!cardElement) return;
 
-            const loadingTask = pdfjsLib.getDocument(url);
+            const loadingTask = pdfjsLib.getDocument({ url: url, disableWorker: true });
             const pdf = await loadingTask.promise;
             const page = await pdf.getPage(1);
 
-            const viewport = page.getViewport({ scale: 1.5 });
+            const viewport = page.getViewport({ scale: 1.2 });
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
             canvas.height = viewport.height;
@@ -2522,31 +2548,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             await page.render({ canvasContext: context, viewport: viewport }).promise;
 
-            const imageUrl = canvas.toDataURL('image/png');
+            const imageUrl = canvas.toDataURL('image/jpeg', 0.8);
             cardElement.style.backgroundImage = `url("${imageUrl}")`;
             cardElement.style.backgroundSize = 'cover';
             cardElement.style.backgroundPosition = 'center';
-            cardElement.style.color = 'white';
             cardElement.classList.add('has-thumb');
-
-            // 태그와 버튼 스타일도 업데이트
-            const tag = cardElement.querySelector('.carousel-card-tag');
-            if (tag) tag.style.cssText = ''; // Rely on CSS class instead
-
-            const meta = cardElement.querySelector('.carousel-card-meta span');
-            if (meta) meta.style.color = 'rgba(255,255,255,0.8)';
-
-            const btn = cardElement.querySelector('.carousel-icon-btn');
-            if (btn) btn.style.cssText = 'background: white; color: var(--primary-color);';
-
-            console.log('✅ PDF 카드 썸네일 렌더링 성공:', url);
         } catch (e) {
-            console.warn("⚠️ PDF 카드 썸네일 렌더링 실패 (CORS 가능성):", e.message);
-            // Fallback: Use a default placeholder if PDF rendering fails
             cardElement.style.backgroundImage = `url("images/puritan-study.png")`;
             cardElement.style.backgroundSize = 'cover';
             cardElement.style.backgroundPosition = 'center';
-            cardElement.style.opacity = '0.8'; // Subtle look for placeholder
         }
     }
 
@@ -2594,7 +2604,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (track) {
                 track.innerHTML = '';
                 data.forEach(item => {
-                    track.appendChild(createCarouselCard({
+                    track.appendChild(window.createCarouselCard({
                         title: item.title,
                         tags: [item.cat],
                         createdAt: { toDate: () => new Date() },
@@ -2631,10 +2641,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // 전체 자료에서 충분히 랜덤하게 뽑기 위해 최대 2000개를 가져옴
-            const snapshot = await window.db.collection("posts").orderBy("createdAt", "desc").limit(2000).get();
+            const snapshot = await window.db.collection("posts").orderBy("createdAt", "desc").limit(500).get();
             if (snapshot.empty) {
                 console.log("No posts found");
+                window.renderMockCarousels();
                 return;
             }
 
@@ -2650,24 +2660,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (newTrack) newTrack.innerHTML = '';
                 if (newList) newList.innerHTML = '';
 
-                // [요청] 성경주석, 세미나, 강의 제외
+                // 성경주석, 세미나, 강의 제외
                 const filteredLatest = allPosts.filter(item => {
                     const tags = item.data.tags || [];
                     const excluded = ['성경주석', '세미나, 강의', '세미나', '강의', '신학강론', '5분 신학강론', '오분 신학 강론'];
                     return !tags.some(tag => excluded.includes(tag));
                 });
 
-                filteredLatest.slice(0, 24).forEach(item => {
+                const targetPosts = filteredLatest.length > 0 ? filteredLatest : allPosts;
+
+                targetPosts.slice(0, 24).forEach(item => {
                     latestIds.add(item.id);
                     if (newList) newList.appendChild(window.createHomeListItem(item.data, item.id));
-                });
-
-                filteredLatest.slice(0, 24).forEach(item => {
-                    if (newTrack) newTrack.appendChild(createCarouselCard(item.data, item.id));
+                    if (newTrack) newTrack.appendChild(window.createCarouselCard(item.data, item.id));
                 });
             }
 
-            // 2. Featured Topics (강해설교가 아닌 것들 우선, 청교도 관련 주제 위주)
+            // 2. Featured Topics (필요시)
             const topicTrack = document.getElementById('carousel-topic');
             if (topicTrack) {
                 topicTrack.innerHTML = '';
@@ -2684,44 +2693,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayTopics = [...displayTopics].sort(() => 0.5 - Math.random());
 
                 displayTopics.slice(0, 24).forEach(item => {
-                    topicTrack.appendChild(createCarouselCard(item.data, item.id));
+                    topicTrack.appendChild(window.createCarouselCard(item.data, item.id));
                 });
             }
 
-            // 3. Recommended Materials (랜덤 추천 자료 - 4열 x 6줄 = 24개)
+            // 3. Recommended Materials (추천 자료 - 24개)
             const sermonTrack = document.getElementById('carousel-sermon');
             const sermonList = document.getElementById('list-sermon');
             if (sermonTrack || sermonList) {
                 if (sermonTrack) sermonTrack.innerHTML = '';
                 if (sermonList) sermonList.innerHTML = '';
 
-                let recommendedItems = allPosts.slice(30).filter(item => {
-                    const url = item.data.fileUrl || "";
-                    return /(?:\.|%2E)pdf($|\?|#)/i.test(url);
-                });
-
-                if (recommendedItems.length < 10) {
-                    recommendedItems = allPosts.slice(12).filter(item => {
-                        const url = item.data.fileUrl || "";
-                        return /(?:\.|%2E)pdf($|\?|#)/i.test(url);
-                    });
-                }
-
-                if (recommendedItems.length < 5) {
-                    recommendedItems = allPosts.filter(item => {
-                        const url = item.data.fileUrl || "";
-                        return /(?:\.|%2E)pdf($|\?|#)/i.test(url);
-                    });
+                let recommendedItems = allPosts.filter(item => !latestIds.has(item.id));
+                if (recommendedItems.length < 12) {
+                    recommendedItems = allPosts;
                 }
 
                 const shuffledRecs = [...recommendedItems].sort(() => 0.5 - Math.random());
 
                 shuffledRecs.slice(0, 24).forEach(item => {
                     if (sermonList) sermonList.appendChild(window.createHomeListItem(item.data, item.id));
-                });
-
-                shuffledRecs.slice(0, 24).forEach(item => {
-                    if (sermonTrack) sermonTrack.appendChild(createCarouselCard(item.data, item.id));
+                    if (sermonTrack) sermonTrack.appendChild(window.createCarouselCard(item.data, item.id));
                 });
             }
             initCarouselDrag();
@@ -2732,9 +2724,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Set up Infinite Scroll Observer removed to keep main page clean (limit 4)
-
-    // Initial Load
     // Initial Load
     console.log("Initializing carousels directly...");
     setTimeout(loadMainCarousels, 150);

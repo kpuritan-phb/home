@@ -272,187 +272,7 @@
             </div>
         </section>
         </section>
-
-        <script>
-            // Emergency Fallback for Carousels
-            setTimeout(() => {
-                const checkAndFill = (id) => {
-                    const track = document.getElementById(id);
-                    // 내용이 없거나 loading-msg만 있으면 fallback 실행
-                    if (track && (track.children.length === 0 || track.querySelector('.loading-msg'))) {
-                        console.warn(`Fallback triggered for ${id}`);
-                        track.innerHTML = '';
-                        const mockData = [
-                            { title: "[샘플] 청교도 신학의 정수", cat: "청교도 신학", date: "2026.01.15" },
-                            { title: "[샘플] 웨스트민스터 신앙고백 해설", cat: "신앙고백", date: "2026.01.12" },
-                            { title: "[샘플] 리처드 십스의 상한 갈대", cat: "경건 서적", date: "2026.01.10" },
-                            { title: "[샘플] 가정 예배 지침서", cat: "신자의 삶", date: "2026.01.05" },
-                            { title: "[샘플] 은혜의 수단으로서의 기도", cat: "청교도 신학", date: "2026.01.03" },
-                            { title: "[샘플] 참된 회심의 성경적 표지", cat: "회심", date: "2026.01.01" },
-                            { title: "[샘플] 그리스도의 위격과 사역", cat: "기독론", date: "2025.12.28" },
-                            { title: "[샘플] 성화의 신비와 능력", cat: "성화", date: "2025.12.25" },
-                            { title: "[샘플] 영적 전쟁에서 승리하는 법", cat: "영적전쟁", date: "2025.12.20" },
-                            { title: "[샘플] 그리스도인의 가정과 결혼", cat: "그리스도인의 가정", date: "2025.12.15" },
-                            { title: "[샘플] 복음 전도와 하나님의 주권", cat: "전도, 부흥, 선교", date: "2025.12.10" },
-                            { title: "[샘플] 장로교 정치 원리와 실제", cat: "교회론", date: "2025.12.05" }
-                        ];
-
-                        mockData.forEach(item => {
-                            const div = document.createElement('div');
-                            div.className = 'carousel-card';
-                            div.innerHTML = `
-                                <div class="carousel-card-content">
-                                    <div class="carousel-card-tag">${item.cat}</div>
-                                    <div class="carousel-card-title">${item.title}</div>
-                                    <div class="carousel-card-meta">
-                                        <span>${item.date}</span>
-                                        <div class="carousel-icon-btn"><i class="fas fa-arrow-right"></i></div>
-                                    </div>
-                                </div>
-                            `;
-                            div.onclick = () => {
-                                try {
-                                    if (window.openResourceModal) {
-                                        window.openResourceModal(item.cat);
-                                    } else {
-                                        // 급한대로 제목만이라도 보여주는 fallback
-                                        console.warn("Main Script Not Loaded - Basic Alert");
-                                        // alert("상세 보기 기능 로딩 중... (Main Script Not Loaded)\n제목: " + post.title); // post.title이 아니라 item.title이 맞음
-                                        openLocalMockModal(item.cat, item.title); // Fallback to local mock modal
-                                    }
-                                } catch (e) {
-                                    console.warn("Using local modal fallback:", e);
-                                    openLocalMockModal(item.cat, item.title);
-                                }
-                            };
-                            track.appendChild(div);
-                        });
-                    }
-                };
-
-                // 자체 로컬 모달 오픈 함수 (Main.js 의존성 제거)
-                const openLocalMockModal = (cat, clickedTitle) => {
-                    const modal = document.getElementById('resource-modal');
-                    const list = document.getElementById('resource-list-container');
-                    const title = document.getElementById('resource-modal-title');
-
-                    if (modal && list) {
-                        modal.classList.add('show');
-                        if (title) title.textContent = cat + " 자료 목록 (샘플)";
-                        list.innerHTML = '';
-
-                        // 클릭한 아이템을 최상단에 보여줌
-                        const li = document.createElement('li');
-                        li.className = 'resource-item';
-                        li.style.border = '2px solid var(--secondary-color)';
-                        li.innerHTML = `
-                            <div class="resource-header" style="margin-bottom:5px;">
-                                <span style="font-size:0.8rem; color:var(--secondary-color);">샘플 자료</span>
-                                <span style="font-size:0.8rem; color:#888;">2024.01.18</span>
-                            </div>
-                            <h3 style="margin:0 0 10px 0; font-size:1.1rem;">${clickedTitle || cat + ' 관련 자료'}</h3>
-                            <p style="font-size:0.9rem; color:#555; margin-bottom: 15px;">
-                                본 자료는 샘플 데이터입니다. (데이터베이스 연결 대기 중)<br>
-                                만약 계속 이 화면이 보인다면 아래 버튼을 눌러보세요.
-                            </p>
-                            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                                <button onclick="window.loadMainCarousels ? window.loadMainCarousels() : alert('메인 스크립트가 아직 로드되지 않았습니다.');" 
-                                    style="padding:8px 15px; background:var(--primary-color); color:white; border:none; border-radius:4px; cursor:pointer;">
-                                    <i class="fas fa-sync-alt"></i> 실제 데이터 불러오기 (강제 시도)
-                                </button>
-                                <a href="#" class="premium-btn" style="display:inline-block; text-decoration:none; color:var(--secondary-color); border:1px solid var(--secondary-color); padding:8px 15px; border-radius:4px; font-size:0.9rem;">
-                                    <i class="fas fa-file-pdf"></i> [샘플] PDF 디자인 예시
-                                </a>
-                            </div>
-                        `;
-                        list.appendChild(li);
-
-                        // 추가 샘플들
-                        const extras = ['심화 연구 자료', '관련 특강 영상', '참고 문헌 리스트'];
-                        extras.forEach(ex => {
-                            const eli = document.createElement('li');
-                            eli.className = 'resource-item';
-                            eli.innerHTML = `
-                                <h4 style="margin:0 0 5px 0;">[샘플] ${cat} ${ex}</h4>
-                                <p style="font-size:0.8rem; color:#999; margin-bottom:10px;">준비 중입니다.</p>
-                                <button style="background:#eee; border:none; padding:5px 10px; border-radius:4px; color:#aaa; cursor:not-allowed;">
-                                    <i class="fas fa-lock"></i> 접근 제한
-                                </button>
-                            `;
-                            list.appendChild(eli);
-                        });
-                    } else {
-                        alert("모달 요소를 찾을 수 없습니다. 페이지를 새로고침 해주세요.");
-                    }
-                };
-
-                if (window.isDataLoaded) return; // 실제 데이터가 로드되었으면 샘플 덮어쓰기 방지
-                checkAndFill('carousel-new');
-                checkAndFill('carousel-topic');
-                checkAndFill('carousel-sermon');
-            }, 8000); // 8초 대기
-        </script>
-
-        <style>
-            @keyframes spin {
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-
-            .load-more-trigger {
-                width: 100%;
-            }
-        </style>
-
-        <script>
-            // Emergency Fallback: Standalone Mock Data Renderer
-            // This script runs if the main logic fails to populate the grid within 1.5 seconds.
-            setTimeout(() => {
-                const grid = document.getElementById('recent-posts-grid');
-                if (grid && grid.children.length === 0) {
-                    console.warn("Emergency Fallback Triggered: Rendering Standalone Mock Data");
-
-                    const mockData = [
-                        { title: "청교도 신학의 정수: 존 오웬의 성령론", cat: "청교도 신학", date: "2026.01.15" },
-                        { title: "현대 교회를 위한 웨스트민스터 신앙고백 해설", cat: "신앙고백", date: "2026.01.12" },
-                        { title: "고난 속의 위로: 리처드 십스의 상한 갈대", cat: "경건 서적", date: "2026.01.10" },
-                        { title: "설교란 무엇인가? 마틴 로이드 존스의 설교학", cat: "설교학", date: "2026.01.08" },
-                        { title: "가정 예배의 회복과 실제적인 지침", cat: "신자의 삶", date: "2026.01.05" },
-                        { title: "요한계시록 강해 시리즈 (1): 승리하신 그리스도", cat: "강해설교", date: "2026.01.01" }
-                    ];
-
-                    mockData.forEach(item => {
-                        const div = document.createElement('div');
-                        div.className = 'recent-card-premium';
-                        div.innerHTML = `
-                            <div class="recent-card-inner">
-                                <div class="recent-card-top">
-                                    <span class="recent-status-pill">SAMPLE</span>
-                                    <span class="recent-category-tag">${item.cat}</span>
-                                </div>
-                                <h3 class="recent-title-premium">${item.title}</h3>
-                                <div class="recent-card-footer">
-                                    <span class="recent-date-premium"><i class="far fa-calendar-alt"></i> ${item.date}</span>
-                                    <button class="recent-link-btn">
-                                        상세보기 <i class="fas fa-chevron-right"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                        div.querySelector('.recent-card-inner').addEventListener('click', () => {
-                            if (window.openResourceModal) {
-                                window.openResourceModal(item.cat);
-                            } else {
-                                console.warn("Main Script Not Loaded - Basic Alert");
-                                // alert('자료 로딩 중입니다. 잠시만 기다려주세요.');
-                            }
-                        });
-                        grid.appendChild(div);
-                    });
-                }
-            }, 1500);
-        </script>
+        </section>
         <section class="newsletter-section">
             <div class="newsletter-container">
                 <div class="newsletter-text">
@@ -758,7 +578,7 @@
         }
 
         window.onerror = function (msg, url, lineNo, columnNo, error) {
-            alert('자바스크립트 에러 발생:\n' + msg + '\n라인: ' + lineNo);
+            console.error('JS Error:', msg, 'Line:', lineNo, error);
             return false;
         };
 
@@ -1078,16 +898,12 @@
                     const card = document.createElement('div');
                     card.className = "explorer-result-card";
 
-                    let thumbUrl = post.coverUrl;
-                    let isPdf = false;
-                    if (!thumbUrl && post.fileUrl) {
-                        if (/(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl)) isPdf = true;
-                        else thumbUrl = post.fileUrl;
-                    }
-
-                    const finalSrc = thumbUrl || 'images/puritan-study.png';
+                    const finalSrc = (typeof window.getPostThumbnail === 'function') 
+                        ? window.getPostThumbnail(post) 
+                        : (post.coverUrl || 'images/puritan-study.png');
+                    const isPdf = (!post.coverUrl && post.fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(post.fileUrl));
                     const tag = (post.tags && post.tags[0]) || selectedTopic;
-                    const dateText = post.createdAt ? new Date(post.createdAt.seconds * 1000).toLocaleDateString() : '최근 자료';
+                    const dateText = post.createdAt ? (post.createdAt.seconds ? new Date(post.createdAt.seconds * 1000).toLocaleDateString('ko-KR') : '최근 자료') : '최근 자료';
 
                     let content = post.content || '';
                     const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -1125,7 +941,7 @@
 
                     resultsList.appendChild(card);
 
-                    if (isPdf && !thumbUrl) {
+                    if (isPdf && !post.coverUrl && !finalSrc.includes('img.youtube.com')) {
                         renderPdfThumbForSidebarExplorer(post.fileUrl, imgId, thumbWrapId);
                     }
                 });

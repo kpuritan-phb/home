@@ -21,7 +21,7 @@
     <meta property="twitter:description" content="청교도 신학과 개혁주의 신념을 연구하고 성경적인 자료를 제공하는 한국 청교도 연구소입니다.">
     <meta property="twitter:image" content="og-image.png?v=4">
 
-    <link rel="stylesheet" href="style.css?v=20260912_v1">
+    <link rel="stylesheet" href="style.css?v=20260912_v2">
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
     <link rel="icon" type="image/x-icon" href="favicon.ico?v=2">
@@ -114,11 +114,35 @@
     </header>
 
     <main>
-        <section class="hero">
-            <div class="hero-content">
-                <span class="hero-subtitle">한국 청교도 연구소</span>
-                <h1>KOREA PURITAN <br>INSTITUTE</h1>
-                <p class="hero-description">청교도 신학과 개혁주의 신앙을 연구하고 성경적 자료를 제공하여 한국교회의 갱신과 회복을 섬깁니다.</p>
+        <!-- ═══════════════════════════════════════════════
+             HERO CAROUSEL SECTION
+             슬라이드 데이터 → heroSlides 배열 (body 하단 script)
+             검색창은 슬라이드와 독립 고정 — main.js 코드 변경 없음
+        ═══════════════════════════════════════════════ -->
+        <section class="hero hero-carousel-section" id="hero-section">
+
+            <!-- ── 슬라이드 트랙 (움직이는 영역) ── -->
+            <div class="hero-slider-track" id="hero-slider-track">
+                <!-- JS가 heroSlides 배열 기반으로 슬라이드를 동적 생성 -->
+            </div>
+
+            <!-- ── 좌우 내비게이션 버튼 ── -->
+            <button class="hero-nav-btn hero-prev" id="hero-prev" aria-label="이전 슬라이드">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="hero-nav-btn hero-next" id="hero-next" aria-label="다음 슬라이드">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <!-- ── Dot indicator ── -->
+            <div class="hero-dots" id="hero-dots" role="tablist" aria-label="슬라이드 선택"></div>
+
+            <!-- ══════════════════════════════════════════
+                 고정 검색창 — 슬라이드와 독립, z-index: 30
+                 ⚠ id="main-search-input" / id="main-search-btn" 절대 변경 금지
+                 main.js의 triggerMainSearch() 가 직접 참조함
+            ══════════════════════════════════════════ -->
+            <div class="hero-search-fixed">
                 <div class="main-search-wrapper">
                     <div class="main-search-box">
                         <i class="fas fa-search main-search-icon"></i>
@@ -127,6 +151,7 @@
                     </div>
                 </div>
             </div>
+
         </section>
 
         <!-- Unified Explore Layout Section -->
@@ -1185,6 +1210,341 @@
     <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">
         <i class="fas fa-envelope"></i>
     </a>
+    <!-- ═══════════════════════════════════════════════════════════
+         HERO CAROUSEL — 슬라이드 데이터 & 구동 스크립트
+         ─────────────────────────────────────────────────────────
+         ▸ heroSlides 배열 하나에서 모든 슬라이드를 관리합니다.
+         ▸ type: "brand" → KPI 브랜드 슬라이드
+         ▸ type: "book"  → PHB 도서 홍보 슬라이드
+         ▸ bookImage     → 실제 책 표지 이미지 경로로 교체하세요.
+         ▸ backgroundImage → 슬라이드 배경 이미지 경로로 교체하세요.
+         ▸ link          → "자세히 보기" 버튼의 이동 URL.
+    ═══════════════════════════════════════════════════════════ -->
+    <script>
+    (function () {
+        'use strict';
+
+        /* ══════════════════════════════════════════
+           ★ 슬라이드 데이터 — 이곳을 수정하세요 ★
+           ══════════════════════════════════════════ */
+        const heroSlides = [
+            /* ─── Slide 1: KPI 브랜드 ─── */
+            {
+                type: 'brand',
+                subtitle: '한국 청교도 연구소',
+                title: 'KOREA PURITAN\nINSTITUTE',
+                description: '청교도 신학과 개혁주의 신앙을 연구하고 성경적 자료를 제공하여\n한국교회의 갱신과 회복을 섬깁니다.',
+                backgroundImage: 'hero-bg.jpg?v=2',
+                link: null
+            },
+
+            /* ─── Slide 2: PHB 도서 홍보 ─── */
+            {
+                type: 'book',
+                category: 'PHB 출판사',
+                badge: '청교도 신학 고전',
+                title: '기독교 완전 무장론',
+                author: '윌리엄 거널 저 | 김홍만 역',
+                tagline: '영적 전쟁의 고전 — 청교도 신학의 정수',
+                description: '에베소서 6:10–18을 기반으로 신자의 영적 전쟁을 상세히 다룬\n청교도 신학의 최대 고전. 전 3권 완역.',
+                bookImage: '',   /* ← 책 표지 이미지 경로를 입력하세요 */
+                backgroundImage: 'hero-bg.jpg?v=2',
+                link: 'https://smartstore.naver.com/kpuritan_phb'
+            },
+
+            /* ─── Slide 3: PHB 도서 홍보 ─── */
+            {
+                type: 'book',
+                category: 'PHB 출판사',
+                badge: '개혁주의 경건',
+                title: '경건의 실천',
+                author: '루이스 베일리 저 | 김홍만 역',
+                tagline: '17세기 최고의 경건서',
+                description: '청교도 시대 전 세계에서 가장 많이 읽힌 경건 도서.\n성경적 신앙의 실천을 깊이 있게 안내합니다.',
+                bookImage: '',   /* ← 책 표지 이미지 경로를 입력하세요 */
+                backgroundImage: 'hero-bg.jpg?v=2',
+                link: 'https://smartstore.naver.com/kpuritan_phb'
+            },
+
+            /* ─── Slide 4: PHB 도서 홍보 ─── */
+            {
+                type: 'book',
+                category: 'PHB 출판사',
+                badge: '기독론 강해',
+                title: '죄 죽이기',
+                author: '존 오웬 저 | 김홍만 역',
+                tagline: '성화의 핵심을 파헤치다',
+                description: '청교도 신학자 존 오웬의 성화론 고전.\n그리스도인의 죄와 싸우는 방법을 성경적으로 가르칩니다.',
+                bookImage: '',   /* ← 책 표지 이미지 경로를 입력하세요 */
+                backgroundImage: 'hero-bg.jpg?v=2',
+                link: 'https://smartstore.naver.com/kpuritan_phb'
+            },
+
+            /* ─── Slide 5: PHB 신간/추천 ─── */
+            {
+                type: 'book',
+                category: 'PHB 출판사 신간',
+                badge: '신간 추천',
+                title: '구속사 성경 해설노트',
+                author: '김홍만 저',
+                tagline: '창세기부터 요한계시록까지 — 구속사의 흐름',
+                description: '성경 전체를 구속사적 관점으로 해설한 성경 연구 필독서.\n한국청교도연구소 김홍만 소장의 역작.',
+                bookImage: '',   /* ← 책 표지 이미지 경로를 입력하세요 */
+                backgroundImage: 'hero-bg.jpg?v=2',
+                link: 'https://smartstore.naver.com/kpuritan_phb'
+            }
+        ];
+
+        /* ══════════════════════════════════════════
+           슬라이더 설정
+        ══════════════════════════════════════════ */
+        const INTERVAL_MS   = 5000;   // 자동 전환 간격 (ms)
+        const FADE_DURATION = 700;    // 전환 애니메이션 (ms — CSS와 맞춤)
+
+        let currentIndex = 0;
+        let autoTimer    = null;
+        let isAnimating  = false;
+
+        /* ── 목업 책 표지 SVG 생성기 ── */
+        function makeMockCover(title, author) {
+            const colors = [
+                ['#1a3a5c','#c8a96e'],
+                ['#2c1810','#d4a855'],
+                ['#0b2d1f','#b8936a'],
+                ['#3b1f0e','#e8c07a'],
+                ['#1c1f3a','#c09060']
+            ];
+            const idx  = Math.abs(title.charCodeAt(0)) % colors.length;
+            const [bg, gold] = colors[idx];
+            const shortTitle = title.length > 10 ? title.slice(0, 10) + '…' : title;
+            const shortAuthor= author.length > 16 ? author.slice(0, 16) + '…' : author;
+            return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="200" height="280">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="${bg}"/>
+      <stop offset="100%" stop-color="${bg}CC"/>
+    </linearGradient>
+    <linearGradient id="spine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="rgba(0,0,0,0.4)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </linearGradient>
+  </defs>
+  <!-- 배경 -->
+  <rect width="200" height="280" fill="url(#bg)"/>
+  <!-- 책 등 그림자 -->
+  <rect width="18" height="280" fill="url(#spine)"/>
+  <!-- 상단 금박 테두리 -->
+  <rect x="14" y="14" width="172" height="252" fill="none" stroke="${gold}" stroke-width="1.5" opacity="0.6"/>
+  <rect x="18" y="18" width="164" height="244" fill="none" stroke="${gold}" stroke-width="0.5" opacity="0.3"/>
+  <!-- 중앙 장식 십자가 -->
+  <g opacity="0.25" transform="translate(100,118)">
+    <line x1="0" y1="-32" x2="0" y2="32" stroke="${gold}" stroke-width="1.5"/>
+    <line x1="-22" y1="-6" x2="22" y2="-6" stroke="${gold}" stroke-width="1.5"/>
+  </g>
+  <!-- PHB 로고 텍스트 -->
+  <text x="100" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="9"
+        fill="${gold}" opacity="0.9" letter-spacing="3">PHB</text>
+  <!-- 가로줄 -->
+  <line x1="30" y1="52" x2="170" y2="52" stroke="${gold}" stroke-width="0.7" opacity="0.5"/>
+  <!-- 제목 -->
+  <text x="100" y="88" text-anchor="middle" font-family="'Nanum Myeongjo',Georgia,serif"
+        font-size="16" font-weight="bold" fill="#ffffff" letter-spacing="0.5">${shortTitle}</text>
+  <!-- 구분선 -->
+  <line x1="60" y1="100" x2="140" y2="100" stroke="${gold}" stroke-width="0.7" opacity="0.6"/>
+  <!-- 저자 -->
+  <text x="100" y="240" text-anchor="middle" font-family="Georgia,serif"
+        font-size="9" fill="${gold}" opacity="0.8" letter-spacing="1">${shortAuthor}</text>
+  <!-- 하단 장식 -->
+  <line x1="30" y1="250" x2="170" y2="250" stroke="${gold}" stroke-width="0.7" opacity="0.5"/>
+</svg>`)}`;
+        }
+
+        /* ── 슬라이드 HTML 생성 ── */
+        function buildSlide(slide, index) {
+            const div = document.createElement('div');
+            div.className = 'hero-slide' + (index === 0 ? ' active' : '');
+            div.setAttribute('data-index', index);
+            div.setAttribute('role', 'tabpanel');
+            div.setAttribute('aria-label', `슬라이드 ${index + 1}`);
+
+            // 배경 레이어
+            const bgStyle = slide.backgroundImage
+                ? `background-image: url('${slide.backgroundImage}');`
+                : '';
+
+            if (slide.type === 'brand') {
+                div.innerHTML = `
+                    <div class="hs-bg" style="${bgStyle}"></div>
+                    <div class="hs-overlay hs-overlay--brand"></div>
+                    <div class="hs-content hs-content--brand">
+                        <div class="hs-brand-inner">
+                            <span class="hs-subtitle">${slide.subtitle}</span>
+                            <h1 class="hs-title-brand">${slide.title.replace('\n','<br>')}</h1>
+                            <p class="hs-desc-brand">${slide.description.replace('\n','<br>')}</p>
+                        </div>
+                    </div>`;
+            } else {
+                // 목업 표지 또는 실제 이미지
+                const imgSrc = slide.bookImage && slide.bookImage.trim()
+                    ? slide.bookImage
+                    : makeMockCover(slide.title, slide.author);
+
+                div.innerHTML = `
+                    <div class="hs-bg" style="${bgStyle}"></div>
+                    <div class="hs-overlay hs-overlay--book"></div>
+                    <div class="hs-content hs-content--book">
+                        <div class="hs-book-text">
+                            <div class="hs-book-badge">
+                                <span class="hs-category">${slide.category}</span>
+                                ${slide.badge ? `<span class="hs-badge-label">${slide.badge}</span>` : ''}
+                            </div>
+                            <h2 class="hs-book-title">${slide.title}</h2>
+                            <p class="hs-book-author">${slide.author}</p>
+                            <p class="hs-book-tagline">${slide.tagline}</p>
+                            <p class="hs-book-desc">${slide.description.replace('\n','<br>')}</p>
+                            ${slide.link ? `<a href="${slide.link}" class="hs-cta-btn" target="_blank" rel="noopener">자세히 보기 <i class="fas fa-arrow-right"></i></a>` : ''}
+                        </div>
+                        <div class="hs-book-cover-wrap">
+                            <div class="hs-book-cover-inner">
+                                <img src="${imgSrc}"
+                                     alt="${slide.title} 표지"
+                                     class="hs-book-cover-img"
+                                     loading="${index === 0 ? 'eager' : 'lazy'}"
+                                     decoding="async">
+                            </div>
+                        </div>
+                    </div>`;
+            }
+            return div;
+        }
+
+        /* ── Dot 생성 ── */
+        function buildDots() {
+            const container = document.getElementById('hero-dots');
+            if (!container) return;
+            container.innerHTML = '';
+            heroSlides.forEach((_, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'hero-dot' + (i === 0 ? ' active' : '');
+                btn.setAttribute('role', 'tab');
+                btn.setAttribute('aria-label', `슬라이드 ${i + 1}`);
+                btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+                btn.addEventListener('click', () => goTo(i));
+                container.appendChild(btn);
+            });
+        }
+
+        /* ── 슬라이드 전환 ── */
+        function goTo(next) {
+            if (isAnimating || next === currentIndex) return;
+            isAnimating = true;
+
+            const slides  = document.querySelectorAll('.hero-slide');
+            const dots    = document.querySelectorAll('.hero-dot');
+            const prevIdx = currentIndex;
+
+            // 다음 슬라이드 준비 (fade-in 예비)
+            slides[next].classList.add('entering');
+
+            // 약간 지연 후 트랜지션
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    slides[prevIdx].classList.remove('active');
+                    slides[prevIdx].classList.add('leaving');
+                    slides[next].classList.remove('entering');
+                    slides[next].classList.add('active');
+
+                    if (dots[prevIdx]) {
+                        dots[prevIdx].classList.remove('active');
+                        dots[prevIdx].setAttribute('aria-selected', 'false');
+                    }
+                    if (dots[next]) {
+                        dots[next].classList.add('active');
+                        dots[next].setAttribute('aria-selected', 'true');
+                    }
+
+                    currentIndex = next;
+
+                    setTimeout(() => {
+                        slides[prevIdx].classList.remove('leaving');
+                        isAnimating = false;
+                    }, FADE_DURATION);
+                });
+            });
+        }
+
+        function nextSlide() { goTo((currentIndex + 1) % heroSlides.length); }
+        function prevSlide() { goTo((currentIndex - 1 + heroSlides.length) % heroSlides.length); }
+
+        /* ── 자동 재생 ── */
+        function startAuto() {
+            stopAuto();
+            autoTimer = setInterval(nextSlide, INTERVAL_MS);
+        }
+        function stopAuto() {
+            if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+        }
+
+        /* ── 초기화 ── */
+        function init() {
+            const track = document.getElementById('hero-slider-track');
+            const section = document.getElementById('hero-section');
+            if (!track || !section) return;
+
+            // 슬라이드 렌더
+            heroSlides.forEach((slide, i) => track.appendChild(buildSlide(slide, i)));
+
+            // Dots
+            buildDots();
+
+            // 화살표 버튼
+            const prevBtn = document.getElementById('hero-prev');
+            const nextBtn = document.getElementById('hero-next');
+            if (prevBtn) prevBtn.addEventListener('click', () => { stopAuto(); prevSlide(); startAuto(); });
+            if (nextBtn) nextBtn.addEventListener('click', () => { stopAuto(); nextSlide(); startAuto(); });
+
+            // Hover — 자동재생 일시정지
+            section.addEventListener('mouseenter', stopAuto);
+            section.addEventListener('mouseleave', startAuto);
+            section.addEventListener('focusin',    stopAuto);
+            section.addEventListener('focusout',   startAuto);
+
+            // 모바일 스와이프
+            let touchStartX = 0;
+            let touchStartY = 0;
+            section.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].clientX;
+                touchStartY = e.changedTouches[0].clientY;
+            }, { passive: true });
+            section.addEventListener('touchend', (e) => {
+                const dx = e.changedTouches[0].clientX - touchStartX;
+                const dy = e.changedTouches[0].clientY - touchStartY;
+                if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+                    stopAuto();
+                    if (dx < 0) nextSlide(); else prevSlide();
+                    startAuto();
+                }
+            }, { passive: true });
+
+            // 키보드 접근성
+            section.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft')  { stopAuto(); prevSlide(); startAuto(); }
+                if (e.key === 'ArrowRight') { stopAuto(); nextSlide(); startAuto(); }
+            });
+
+            // 자동 시작
+            startAuto();
+        }
+
+        // DOM 준비 후 실행
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+    </script>
 </body>
 
 </html>

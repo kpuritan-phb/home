@@ -4853,12 +4853,7 @@ footer {
 }
 
 .hs-overlay--brand {
-    background: linear-gradient(
-        105deg,
-        rgba(11, 26, 48, 0.82) 0%,
-        rgba(11, 26, 48, 0.55) 50%,
-        rgba(11, 26, 48, 0.25) 100%
-    );
+    background: transparent;
 }
 
 .hs-overlay--book {

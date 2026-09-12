@@ -279,6 +279,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+        let mainDumpCache = null;
+        const getMainDump = async () => {
+            if (mainDumpCache) return mainDumpCache;
+            try {
+                const resp = await fetch('all_posts_dump.json');
+                if (resp.ok) {
+                    mainDumpCache = await resp.json();
+                    return mainDumpCache;
+                }
+            } catch(e) {}
+            return [];
+        };
+
         // Fetch and populate sermon series dropdown
         const populateSermonChoices = async () => {
             const desktopDropdown = document.querySelector('#sermon-dropdown .dropdown-list');
@@ -286,15 +299,30 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!desktopDropdown && !mobileDropdown) return;
 
             try {
-                const snapshot = await db.collection("posts")
-                    .where("tags", "array-contains", "강해설교")
-                    .get();
-
                 const seriesSet = new Set();
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    if (data.series && data.series.trim()) seriesSet.add(data.series.trim());
-                });
+                try {
+                    const snapshot = await Promise.race([
+                        db.collection("posts").where("tags", "array-contains", "강해설교").get(),
+                        new Promise((_, r) => setTimeout(() => r(new Error('timeout')), 3500))
+                    ]);
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        if (data.series && data.series.trim()) seriesSet.add(data.series.trim());
+                    });
+                } catch(e) {
+                    console.warn("populateSermonChoices fallback:", e);
+                    const dump = await getMainDump();
+                    dump.filter(p => Array.isArray(p.tags) && p.tags.includes("강해설교")).forEach(p => {
+                        if (p.series && p.series.trim()) seriesSet.add(p.series.trim());
+                    });
+                }
+
+                if (seriesSet.size === 0) {
+                    const dump = await getMainDump();
+                    dump.filter(p => Array.isArray(p.tags) && p.tags.includes("강해설교")).forEach(p => {
+                        if (p.series && p.series.trim()) seriesSet.add(p.series.trim());
+                    });
+                }
 
                 const sortedSeries = Array.from(seriesSet).sort((a, b) => a.localeCompare(b, 'ko'));
 
@@ -328,15 +356,30 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!desktopDropdown && !mobileDropdown) return;
 
             try {
-                const snapshot = await db.collection("posts")
-                    .where("tags", "array-contains", "세미나, 강의")
-                    .get();
-
                 const seriesSet = new Set();
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    if (data.series && data.series.trim()) seriesSet.add(data.series.trim());
-                });
+                try {
+                    const snapshot = await Promise.race([
+                        db.collection("posts").where("tags", "array-contains", "세미나, 강의").get(),
+                        new Promise((_, r) => setTimeout(() => r(new Error('timeout')), 3500))
+                    ]);
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        if (data.series && data.series.trim()) seriesSet.add(data.series.trim());
+                    });
+                } catch(e) {
+                    console.warn("populateSeminarChoices fallback:", e);
+                    const dump = await getMainDump();
+                    dump.filter(p => Array.isArray(p.tags) && (p.tags.includes("세미나, 강의") || p.tags.includes("세미나") || p.tags.includes("강의"))).forEach(p => {
+                        if (p.series && p.series.trim()) seriesSet.add(p.series.trim());
+                    });
+                }
+
+                if (seriesSet.size === 0) {
+                    const dump = await getMainDump();
+                    dump.filter(p => Array.isArray(p.tags) && (p.tags.includes("세미나, 강의") || p.tags.includes("세미나") || p.tags.includes("강의"))).forEach(p => {
+                        if (p.series && p.series.trim()) seriesSet.add(p.series.trim());
+                    });
+                }
 
                 const sortedSeries = Array.from(seriesSet).filter(s => s !== '기독론').sort((a, b) => a.localeCompare(b, 'ko'));
 

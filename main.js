@@ -861,6 +861,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let themeColor = 'var(--primary-color)';
             if (tabName === 'bible-study') themeColor = 'var(--secondary-color)';
             if (tabName === 'booklet') themeColor = '#e67e22';
+            if (tabName === 'hero-slides') themeColor = '#d69e2e';
             if (tabName === 'organizer') themeColor = '#27ae60';
             if (tabName === 'stats') themeColor = '#9b59b6';
             if (tabName === 'order') themeColor = '#1a342a';
@@ -877,6 +878,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetSection = document.getElementById(`admin-${tabName}-section`);
         if (targetSection) {
             targetSection.style.display = (tabName === 'general') ? 'grid' : 'block';
+        }
+
+        if (tabName === 'hero-slides' && typeof window.loadAdminHeroSlides === 'function') {
+            window.loadAdminHeroSlides();
         }
 
         // 탭 별 데이터 로드 로직
@@ -3469,6 +3474,288 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, 1000);
 });
+
+/* ══════════════════════════════════════════
+   ★ 메인 배너 슬라이더 관리 기능 (Admin Hero Slides)
+   ══════════════════════════════════════════ */
+const DEFAULT_HERO_SLIDES = [
+    {
+        type: 'brand',
+        subtitle: '한국 청교도 연구소',
+        title: 'KOREA PURITAN\nINSTITUTE',
+        description: '청교도 신학과 개혁주의 신앙을 연구하고 성경적 자료를 제공하여\n한국교회의 갱신과 회복을 섬깁니다.',
+        backgroundImage: 'hero-bg.jpg?v=2',
+        link: null
+    },
+    {
+        type: 'book',
+        category: 'PHB 출판사',
+        badge: '청교도 신학 고전',
+        title: '기독교 완전 무장론',
+        author: '윌리엄 거널 저 | 김홍만 역',
+        tagline: '영적 전쟁의 고전 — 청교도 신학의 정수',
+        description: '에베소서 6:10–18을 기반으로 신자의 영적 전쟁을 상세히 다룬\n청교도 신학의 최대 고전. 전 3권 완역.',
+        bookImage: '',
+        backgroundImage: 'hero-bg.jpg?v=2',
+        link: 'https://smartstore.naver.com/kpuritan_phb'
+    },
+    {
+        type: 'book',
+        category: 'PHB 출판사',
+        badge: '개혁주의 경건',
+        title: '경건의 실천',
+        author: '루이스 베일리 저 | 김홍만 역',
+        tagline: '17세기 최고의 경건서',
+        description: '청교도 시대 전 세계에서 가장 많이 읽힌 경건 도서.\n성경적 신앙의 실천을 깊이 있게 안내합니다.',
+        bookImage: '',
+        backgroundImage: 'hero-bg.jpg?v=2',
+        link: 'https://smartstore.naver.com/kpuritan_phb'
+    },
+    {
+        type: 'book',
+        category: 'PHB 출판사',
+        badge: '기독론 강해',
+        title: '죄 죽이기',
+        author: '존 오웬 저 | 김홍만 역',
+        tagline: '성화의 핵심을 파헤치다',
+        description: '청교도 신학자 존 오웬의 성화론 고전.\n그리스도인의 죄와 싸우는 방법을 성경적으로 가르칩니다.',
+        bookImage: '',
+        backgroundImage: 'hero-bg.jpg?v=2',
+        link: 'https://smartstore.naver.com/kpuritan_phb'
+    },
+    {
+        type: 'book',
+        category: 'PHB 출판사 신간',
+        badge: '신간 추천',
+        title: '구속사 성경 해설노트',
+        author: '김홍만 저',
+        tagline: '창세기부터 요한계시록까지 — 구속사의 흐름',
+        description: '성경 전체를 구속사적 관점으로 해설한 성경 연구 필독서.\n한국청교도연구소 김홍만 소장의 역작.',
+        bookImage: '',
+        backgroundImage: 'hero-bg.jpg?v=2',
+        link: 'https://smartstore.naver.com/kpuritan_phb'
+    }
+];
+
+window.getAdminHeroSlides = async function() {
+    try {
+        const local = localStorage.getItem('kpuritan_hero_slides');
+        if (local) {
+            const parsed = JSON.parse(local);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+        if (window.db) {
+            const snap = await fetchWithTimeout(window.db.collection('settings').doc('hero_slides').get(), 3000);
+            if (snap.exists && snap.data().slides && Array.isArray(snap.data().slides)) {
+                const slides = snap.data().slides;
+                localStorage.setItem('kpuritan_hero_slides', JSON.stringify(slides));
+                return slides;
+            }
+        }
+    } catch(e) {
+        console.warn("getAdminHeroSlides error:", e);
+    }
+    return DEFAULT_HERO_SLIDES;
+};
+
+window.saveAdminHeroSlidesList = async function(slides) {
+    localStorage.setItem('kpuritan_hero_slides', JSON.stringify(slides));
+    if (window.db) {
+        try {
+            await ensureAuth();
+            await window.db.collection('settings').doc('hero_slides').set({
+                slides: slides,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+        } catch(e) {
+            console.warn("Save hero slides to Firestore notice:", e);
+        }
+    }
+};
+
+window.loadAdminHeroSlides = async function() {
+    const container = document.getElementById('hero-slides-list-container');
+    if (!container) return;
+
+    container.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;"><i class="fas fa-spinner fa-spin"></i> 슬라이드 목록을 불러오는 중입니다...</p>';
+
+    const slides = await window.getAdminHeroSlides();
+    container.innerHTML = '';
+
+    slides.forEach((slide, idx) => {
+        const item = document.createElement('div');
+        item.style.cssText = 'background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); flex-wrap: wrap;';
+
+        const isBrand = slide.type === 'brand';
+        item.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 14px; flex: 1; min-width: 280px;">
+                <span style="background: ${isBrand ? '#1a342a' : '#d69e2e'}; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.82rem; white-space: nowrap;">
+                    ${idx + 1}번 ${isBrand ? '대문 슬라이드 (기본)' : '도서/배너 슬라이드'}
+                </span>
+                <div>
+                    <h4 style="margin: 0 0 4px 0; font-size: 1.05rem; font-weight: 800; color: #2d3748;">
+                        ${slide.title.replace('\n', ' ')}
+                    </h4>
+                    <p style="margin: 0; font-size: 0.85rem; color: #718096;">
+                        ${isBrand ? slide.subtitle : `${slide.category || ''} | ${slide.author || ''} | ${slide.tagline || ''}`}
+                    </p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button type="button" onclick="openHeroSlideModal(${idx})" class="cta-btn"
+                    style="padding: 7px 14px; margin:0; background: #3182ce; color: white; border: none; border-radius: 6px; font-weight: 700; font-size: 0.84rem; cursor: pointer;">
+                    <i class="fas fa-edit"></i> 수정
+                </button>
+                ${!isBrand && idx > 0 ? `
+                <button type="button" onclick="deleteHeroSlide(${idx})" class="cta-btn"
+                    style="padding: 7px 14px; margin:0; background: #e53e3e; color: white; border: none; border-radius: 6px; font-weight: 700; font-size: 0.84rem; cursor: pointer;">
+                    <i class="fas fa-trash"></i> 삭제
+                </button>` : ''}
+            </div>
+        `;
+        container.appendChild(item);
+    });
+};
+
+window.openHeroSlideModal = async function(editIndex = null) {
+    const slides = await window.getAdminHeroSlides();
+    const slide = editIndex !== null ? slides[editIndex] : {
+        type: 'book',
+        category: 'PHB 출판사',
+        badge: '추천 도서',
+        title: '',
+        author: '',
+        tagline: '',
+        description: '',
+        bookImage: '',
+        backgroundImage: 'hero-bg.jpg?v=2',
+        link: 'https://smartstore.naver.com/kpuritan_phb'
+    };
+
+    let modal = document.getElementById('admin-hero-slide-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'admin-hero-slide-modal';
+        modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 100000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 20px;';
+        document.body.appendChild(modal);
+    }
+
+    modal.innerHTML = `
+        <div style="background: white; border-radius: 14px; width: 100%; max-width: 580px; padding: 26px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); position: relative; max-height: 90vh; overflow-y: auto;">
+            <button onclick="document.getElementById('admin-hero-slide-modal').style.display='none'"
+                style="position: absolute; top: 18px; right: 18px; background: none; border: none; font-size: 1.3rem; color: #a0aec0; cursor: pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 style="margin-top:0; margin-bottom: 20px; font-size: 1.3rem; color: #1a342a; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-image" style="color: #d69e2e;"></i> ${editIndex !== null ? '슬라이드 수정하기' : '새 슬라이드 추가하기'}
+            </h3>
+            <form onsubmit="saveHeroSlide(event, ${editIndex})">
+                <div style="display: grid; gap: 14px;">
+                    <div>
+                        <label style="display:block; font-weight:700; font-size:0.88rem; margin-bottom:4px; color:#4a5568;">카테고리 (태그 1)</label>
+                        <input type="text" id="hs-form-category" value="${slide.category || 'PHB 출판사'}" required
+                            style="width:100%; padding:9px 12px; border:1px solid #cbd5e0; border-radius:6px; font-size:0.9rem;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-weight:700; font-size:0.88rem; margin-bottom:4px; color:#4a5568;">배지 라벨 (태그 2)</label>
+                        <input type="text" id="hs-form-badge" value="${slide.badge || '추천 도서'}"
+                            style="width:100%; padding:9px 12px; border:1px solid #cbd5e0; border-radius:6px; font-size:0.9rem;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-weight:700; font-size:0.88rem; margin-bottom:4px; color:#4a5568;">도서 / 자료 제목</label>
+                        <input type="text" id="hs-form-title" value="${slide.title || ''}" required placeholder="예: 기독교 완전 무장론"
+                            style="width:100%; padding:9px 12px; border:1px solid #cbd5e0; border-radius:6px; font-size:0.9rem;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-weight:700; font-size:0.88rem; margin-bottom:4px; color:#4a5568;">저자 / 역자</label>
+                        <input type="text" id="hs-form-author" value="${slide.author || ''}" placeholder="예: 윌리엄 거널 저 | 김홍만 역"
+                            style="width:100%; padding:9px 12px; border:1px solid #cbd5e0; border-radius:6px; font-size:0.9rem;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-weight:700; font-size:0.88rem; margin-bottom:4px; color:#4a5568;">한 줄 캐치프레이즈</label>
+                        <input type="text" id="hs-form-tagline" value="${slide.tagline || ''}" placeholder="예: 영적 전쟁의 고전 — 청교도 신학의 정수"
+                            style="width:100%; padding:9px 12px; border:1px solid #cbd5e0; border-radius:6px; font-size:0.9rem;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-weight:700; font-size:0.88rem; margin-bottom:4px; color:#4a5568;">상세 설명</label>
+                        <textarea id="hs-form-desc" rows="3" placeholder="도서 또는 자료에 대한 상세 설명..."
+                            style="width:100%; padding:9px 12px; border:1px solid #cbd5e0; border-radius:6px; font-size:0.9rem;">${slide.description || ''}</textarea>
+                    </div>
+                    <div>
+                        <label style="display:block; font-weight:700; font-size:0.88rem; margin-bottom:4px; color:#4a5568;">표지 이미지 URL (비워두면 자동 표준 디자인 생성)</label>
+                        <input type="text" id="hs-form-cover" value="${slide.bookImage || ''}" placeholder="https://... 이미지 URL 주소"
+                            style="width:100%; padding:9px 12px; border:1px solid #cbd5e0; border-radius:6px; font-size:0.9rem;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-weight:700; font-size:0.88rem; margin-bottom:4px; color:#4a5568;">이동할 링크 주소 (구매 또는 상세보기 링크)</label>
+                        <input type="text" id="hs-form-link" value="${slide.link || 'https://smartstore.naver.com/kpuritan_phb'}" placeholder="https://..."
+                            style="width:100%; padding:9px 12px; border:1px solid #cbd5e0; border-radius:6px; font-size:0.9rem;">
+                    </div>
+                </div>
+                <div style="margin-top: 22px; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" onclick="document.getElementById('admin-hero-slide-modal').style.display='none'"
+                        style="padding: 10px 18px; background: #edf2f7; color: #4a5568; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">취소</button>
+                    <button type="submit"
+                        style="padding: 10px 24px; background: #d69e2e; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">저장하기</button>
+                </div>
+            </form>
+        </div>
+    `;
+    modal.style.display = 'flex';
+};
+
+window.saveHeroSlide = async function(e, editIndex) {
+    e.preventDefault();
+    const slides = await window.getAdminHeroSlides();
+
+    const category = document.getElementById('hs-form-category').value.trim();
+    const badge = document.getElementById('hs-form-badge').value.trim();
+    const title = document.getElementById('hs-form-title').value.trim();
+    const author = document.getElementById('hs-form-author').value.trim();
+    const tagline = document.getElementById('hs-form-tagline').value.trim();
+    const description = document.getElementById('hs-form-desc').value.trim();
+    const bookImage = document.getElementById('hs-form-cover').value.trim();
+    const link = document.getElementById('hs-form-link').value.trim();
+
+    const newSlide = {
+        type: 'book',
+        category,
+        badge,
+        title,
+        author,
+        tagline,
+        description,
+        bookImage,
+        backgroundImage: 'hero-bg.jpg?v=2',
+        link
+    };
+
+    if (editIndex !== null && editIndex >= 0 && editIndex < slides.length) {
+        if (slides[editIndex].type === 'brand') {
+            newSlide.type = 'brand';
+            newSlide.subtitle = category || '한국 청교도 연구소';
+        }
+        slides[editIndex] = newSlide;
+    } else {
+        slides.push(newSlide);
+    }
+
+    await window.saveAdminHeroSlidesList(slides);
+    document.getElementById('admin-hero-slide-modal').style.display = 'none';
+    alert('슬라이드가 성공적으로 저장되었습니다!');
+    await window.loadAdminHeroSlides();
+};
+
+window.deleteHeroSlide = async function(idx) {
+    if (!confirm('이 슬라이드를 삭제하시겠습니까?')) return;
+    const slides = await window.getAdminHeroSlides();
+    if (idx > 0 && idx < slides.length) {
+        slides.splice(idx, 1);
+        await window.saveAdminHeroSlidesList(slides);
+        alert('슬라이드가 삭제되었습니다.');
+        await window.loadAdminHeroSlides();
+    }
+};
 
 // End of main.js (BGM logic moved to bgm.js)
 

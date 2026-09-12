@@ -131,44 +131,50 @@
                             style="font-size: 0.9em; margin-top: 0.5rem; color: var(--secondary-color);">연결 상태: 확인됨</p>
                     </div>
 
-                    <!-- 관리자 메뉴 선택 (6단 포털) -->
+                    <!-- 관리자 메뉴 선택 (7단 포털) -->
                     <div class="admin-portal-grid"
-                        style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 40px; margin-top: 20px;">
+                        style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 40px; margin-top: 20px;">
                         <div class="admin-portal-card active" onclick="switchAdminTab('general')" id="tab-general"
                             style="background: #fff; padding: 20px 10px; border-radius: 12px; border: 2px solid var(--primary-color); text-align: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
                             <i class="fas fa-book"
                                 style="font-size: 1.4rem; color: var(--primary-color); margin-bottom: 10px;"></i>
-                            <h3 style="margin-bottom: 5px; font-size: 0.95rem;">일반 자료 관리</h3>
+                            <h3 style="margin-bottom: 5px; font-size: 0.9rem;">일반 자료</h3>
                         </div>
                         <div class="admin-portal-card" onclick="switchAdminTab('bible-study')" id="tab-bible-study"
                             style="background: #fff; padding: 20px 10px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
                             <i class="fas fa-scroll"
                                 style="font-size: 1.4rem; color: var(--secondary-color); margin-bottom: 10px;"></i>
-                            <h3 style="margin-bottom: 5px; font-size: 0.95rem;">강해설교 관리</h3>
+                            <h3 style="margin-bottom: 5px; font-size: 0.9rem;">강해설교</h3>
                         </div>
                         <div class="admin-portal-card" onclick="switchAdminTab('booklet')" id="tab-booklet"
                             style="background: #fff; padding: 20px 10px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
                             <i class="fas fa-bullhorn"
                                 style="font-size: 1.4rem; color: #e67e22; margin-bottom: 10px;"></i>
-                            <h3 style="margin-bottom: 5px; font-size: 0.95rem;">소책자 관리</h3>
+                            <h3 style="margin-bottom: 5px; font-size: 0.9rem;">소책자</h3>
+                        </div>
+                        <div class="admin-portal-card" onclick="switchAdminTab('hero-slides')" id="tab-hero-slides"
+                            style="background: #fff; padding: 20px 10px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
+                            <i class="fas fa-images"
+                                style="font-size: 1.4rem; color: #d69e2e; margin-bottom: 10px;"></i>
+                            <h3 style="margin-bottom: 5px; font-size: 0.9rem;">메인 슬라이더</h3>
                         </div>
                         <div class="admin-portal-card" onclick="switchAdminTab('organizer')" id="tab-organizer"
                             style="background: #fff; padding: 20px 10px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
                             <i class="fas fa-folder-tree"
                                 style="font-size: 1.4rem; color: #27ae60; margin-bottom: 10px;"></i>
-                            <h3 style="margin-bottom: 5px; font-size: 0.95rem;">폴더 드래그 분류</h3>
+                            <h3 style="margin-bottom: 5px; font-size: 0.9rem;">폴더 분류</h3>
                         </div>
                         <div class="admin-portal-card" onclick="switchAdminTab('stats')" id="tab-stats"
                             style="background: #fff; padding: 20px 10px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
                             <i class="fas fa-chart-line"
                                 style="font-size: 1.4rem; color: #9b59b6; margin-bottom: 10px;"></i>
-                            <h3 style="margin-bottom: 5px; font-size: 0.95rem;">통합 통계</h3>
+                            <h3 style="margin-bottom: 5px; font-size: 0.9rem;">통합 통계</h3>
                         </div>
                         <div class="admin-portal-card" onclick="switchAdminTab('order')" id="tab-order"
                             style="background: #fff; padding: 20px 10px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
                             <i class="fas fa-sort-amount-down-alt"
                                 style="font-size: 1.4rem; color: #1a342a; margin-bottom: 10px;"></i>
-                            <h3 style="margin-bottom: 5px; font-size: 0.95rem;">자료 순서 관리</h3>
+                            <h3 style="margin-bottom: 5px; font-size: 0.9rem;">자료 순서</h3>
                         </div>
                     </div>
                 </div>
@@ -393,6 +399,30 @@
                             <p style="font-size: 0.85rem; color: #2d3748; margin: 0;"><i class="fas fa-info-circle"></i> 목록을 드래그하여 순서를 바꾼 후 <strong>'순서 최종 저장하기'</strong> 버튼을 클릭하세요.</p>
                             <button onclick="saveCurrentOrder()" id="save-order-btn" class="cta-btn primary"
                                 style="margin: 0; padding: 10px 30px; background: #1a342a; border-color: #1a342a; display: none;">순서 최종 저장하기</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. 메인 배너 슬라이더 관리 섹션 -->
+                <div class="admin-tab-content" id="admin-hero-slides-section" style="display: none;">
+                    <div class="upload-form" style="background: #fff; margin-bottom: 30px; border-radius: 12px; padding: 25px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #edf2f7; padding-bottom: 15px; margin-bottom: 20px;">
+                            <div>
+                                <h3 style="margin:0; font-size: 1.25rem; color: #1a202c; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-images" style="color: #d69e2e;"></i> 메인 대문 슬라이더 (도서/배너) 관리
+                                </h3>
+                                <p style="margin: 5px 0 0 0; font-size: 0.88rem; color: #718096;">
+                                    홈페이지 대문에 노출되는 도서 추천 배너 슬라이드를 자유롭게 추가, 수정, 삭제하실 수 있습니다.
+                                </p>
+                            </div>
+                            <button type="button" onclick="openHeroSlideModal()" class="cta-btn"
+                                style="padding: 10px 18px; margin: 0; background: #d69e2e; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-plus-circle"></i> 새 슬라이드 추가
+                            </button>
+                        </div>
+
+                        <div id="hero-slides-list-container" style="display: flex; flex-direction: column; gap: 12px; min-height: 180px;">
+                            <p style="text-align: center; color: #999; padding: 40px;">슬라이드 목록을 불러오는 중입니다...</p>
                         </div>
                     </div>
                 </div>

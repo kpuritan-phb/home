@@ -1487,22 +1487,49 @@
         }
 
         /* ── 초기화 ── */
-        function init() {
+        async function init() {
             const track = document.getElementById('hero-slider-track');
             const section = document.getElementById('hero-section');
             if (!track || !section) return;
 
+            let activeSlides = heroSlides;
+
+            // Load custom slides from localStorage or Firestore if available
+            try {
+                const customSlidesRaw = localStorage.getItem('kpuritan_hero_slides');
+                if (customSlidesRaw) {
+                    const parsed = JSON.parse(customSlidesRaw);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        activeSlides = parsed;
+                    }
+                }
+                if (window.db && typeof fetchWithTimeout === 'function') {
+                    try {
+                        const snap = await fetchWithTimeout(window.db.collection('settings').doc('hero_slides').get(), 3000);
+                        if (snap.exists && snap.data().slides && Array.isArray(snap.data().slides)) {
+                            activeSlides = snap.data().slides;
+                            localStorage.setItem('kpuritan_hero_slides', JSON.stringify(activeSlides));
+                        }
+                    } catch (fsErr) {
+                        console.warn("Firestore hero_slides load notice:", fsErr);
+                    }
+                }
+            } catch (e) {
+                console.warn("Custom hero slides load notice:", e);
+            }
+
+            track.innerHTML = '';
             // 슬라이드 렌더
-            heroSlides.forEach((slide, i) => track.appendChild(buildSlide(slide, i)));
+            activeSlides.forEach((slide, i) => track.appendChild(buildSlide(slide, i)));
 
             // Dots
-            buildDots();
+            buildDots(activeSlides.length);
 
             // 화살표 버튼
             const prevBtn = document.getElementById('hero-prev');
             const nextBtn = document.getElementById('hero-next');
-            if (prevBtn) prevBtn.addEventListener('click', () => { stopAuto(); prevSlide(); startAuto(); });
-            if (nextBtn) nextBtn.addEventListener('click', () => { stopAuto(); nextSlide(); startAuto(); });
+            if (prevBtn) prevBtn.onclick = () => { stopAuto(); prevSlide(activeSlides.length); startAuto(activeSlides.length); };
+            if (nextBtn) nextBtn.onclick = () => { stopAuto(); nextSlide(activeSlides.length); startAuto(activeSlides.length); };
 
             // Hover — 자동재생 일시정지
             section.addEventListener('mouseenter', stopAuto);

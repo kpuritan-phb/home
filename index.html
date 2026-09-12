@@ -1476,8 +1476,19 @@
             });
         }
 
-        function nextSlide() { goTo((currentIndex + 1) % heroSlides.length); }
-        function prevSlide() { goTo((currentIndex - 1 + heroSlides.length) % heroSlides.length); }
+        function getSlidesCount() {
+            const slides = document.querySelectorAll('.hero-slide');
+            return slides.length > 0 ? slides.length : heroSlides.length;
+        }
+
+        function nextSlide() {
+            const count = getSlidesCount();
+            goTo((currentIndex + 1) % count);
+        }
+        function prevSlide() {
+            const count = getSlidesCount();
+            goTo((currentIndex - 1 + count) % count);
+        }
 
         /* ── 자동 재생 ── */
         function startAuto() {
@@ -1530,8 +1541,8 @@
             // 화살표 버튼
             const prevBtn = document.getElementById('hero-prev');
             const nextBtn = document.getElementById('hero-next');
-            if (prevBtn) prevBtn.onclick = () => { stopAuto(); prevSlide(activeSlides.length); startAuto(activeSlides.length); };
-            if (nextBtn) nextBtn.onclick = () => { stopAuto(); nextSlide(activeSlides.length); startAuto(activeSlides.length); };
+            if (prevBtn) prevBtn.onclick = () => { stopAuto(); prevSlide(); startAuto(); };
+            if (nextBtn) nextBtn.onclick = () => { stopAuto(); nextSlide(); startAuto(); };
 
             // Hover — 자동재생 일시정지
             section.addEventListener('mouseenter', stopAuto);

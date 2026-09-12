@@ -1422,11 +1422,12 @@
         }
 
         /* ── Dot 생성 ── */
-        function buildDots() {
+        function buildDots(slidesList) {
             const container = document.getElementById('hero-dots');
             if (!container) return;
             container.innerHTML = '';
-            heroSlides.forEach((_, i) => {
+            const list = Array.isArray(slidesList) ? slidesList : heroSlides;
+            list.forEach((_, i) => {
                 const btn = document.createElement('button');
                 btn.className = 'hero-dot' + (i === 0 ? ' active' : '');
                 btn.setAttribute('role', 'tab');
@@ -1446,14 +1447,21 @@
             const dots    = document.querySelectorAll('.hero-dot');
             const prevIdx = currentIndex;
 
+            if (!slides || slides.length === 0 || !slides[next]) {
+                isAnimating = false;
+                return;
+            }
+
             // 다음 슬라이드 준비 (fade-in 예비)
             slides[next].classList.add('entering');
 
             // 약간 지연 후 트랜지션
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    slides[prevIdx].classList.remove('active');
-                    slides[prevIdx].classList.add('leaving');
+                    if (slides[prevIdx]) {
+                        slides[prevIdx].classList.remove('active');
+                        slides[prevIdx].classList.add('leaving');
+                    }
                     slides[next].classList.remove('entering');
                     slides[next].classList.add('active');
 
@@ -1469,7 +1477,7 @@
                     currentIndex = next;
 
                     setTimeout(() => {
-                        slides[prevIdx].classList.remove('leaving');
+                        if (slides[prevIdx]) slides[prevIdx].classList.remove('leaving');
                         isAnimating = false;
                     }, FADE_DURATION);
                 });
@@ -1483,21 +1491,39 @@
 
         function nextSlide() {
             const count = getSlidesCount();
+            if (count === 0) return;
             goTo((currentIndex + 1) % count);
         }
         function prevSlide() {
             const count = getSlidesCount();
+            if (count === 0) return;
             goTo((currentIndex - 1 + count) % count);
         }
 
         /* ── 자동 재생 ── */
         function startAuto() {
             stopAuto();
+            const count = getSlidesCount();
+            if (count <= 1) return;
             autoTimer = setInterval(nextSlide, INTERVAL_MS);
         }
         function stopAuto() {
             if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
         }
+
+        /* ── 동적 슬라이드 렌더 함수 ── */
+        function renderHeroSlides(slidesList) {
+            const track = document.getElementById('hero-slider-track');
+            if (!track) return;
+            stopAuto();
+            currentIndex = 0;
+            track.innerHTML = '';
+            const slides = (Array.isArray(slidesList) && slidesList.length > 0) ? slidesList : heroSlides;
+            slides.forEach((slide, i) => track.appendChild(buildSlide(slide, i)));
+            buildDots(slides);
+            startAuto();
+        }
+        window.renderHeroSlides = renderHeroSlides;
 
         /* ── 초기화 ── */
         async function init() {
@@ -1507,7 +1533,7 @@
 
             let activeSlides = heroSlides;
 
-            // Load custom slides from localStorage or Firestore if available
+            // 1. localStorage 빠른 렌더링
             try {
                 const customSlidesRaw = localStorage.getItem('kpuritan_hero_slides');
                 if (customSlidesRaw) {
@@ -1516,27 +1542,42 @@
                         activeSlides = parsed;
                     }
                 }
+            } catch (e) {
+                console.warn("Custom hero slides cache read notice:", e);
+            }
+
+            renderHeroSlides(activeSlides);
+
+            // 2. Firestore 최신 데이터 동기화
+            const fetchLatestSlides = async () => {
                 if (window.db && typeof fetchWithTimeout === 'function') {
                     try {
-                        const snap = await fetchWithTimeout(window.db.collection('settings').doc('hero_slides').get(), 3000);
-                        if (snap.exists && snap.data().slides && Array.isArray(snap.data().slides)) {
-                            activeSlides = snap.data().slides;
-                            localStorage.setItem('kpuritan_hero_slides', JSON.stringify(activeSlides));
+                        const snap = await fetchWithTimeout(window.db.collection('settings').doc('hero_slides').get(), 4000);
+                        if (snap && snap.exists && snap.data().slides && Array.isArray(snap.data().slides)) {
+                            const latestSlides = snap.data().slides;
+                            localStorage.setItem('kpuritan_hero_slides', JSON.stringify(latestSlides));
+                            renderHeroSlides(latestSlides);
                         }
                     } catch (fsErr) {
                         console.warn("Firestore hero_slides load notice:", fsErr);
                     }
                 }
-            } catch (e) {
-                console.warn("Custom hero slides load notice:", e);
+            };
+
+            fetchLatestSlides();
+            // window.db가 지연 로딩되는 경우 재시도
+            if (!window.db) {
+                let checkCount = 0;
+                const dbTimer = setInterval(() => {
+                    checkCount++;
+                    if (window.db) {
+                        clearInterval(dbTimer);
+                        fetchLatestSlides();
+                    } else if (checkCount > 10) {
+                        clearInterval(dbTimer);
+                    }
+                }, 500);
             }
-
-            track.innerHTML = '';
-            // 슬라이드 렌더
-            activeSlides.forEach((slide, i) => track.appendChild(buildSlide(slide, i)));
-
-            // Dots
-            buildDots(activeSlides.length);
 
             // 화살표 버튼
             const prevBtn = document.getElementById('hero-prev');
@@ -1550,20 +1591,24 @@
             section.addEventListener('focusin',    stopAuto);
             section.addEventListener('focusout',   startAuto);
 
-            // 모바일 스와이프
+            // 모바일 스와이프 (손가락 터치 슬라이드)
             let touchStartX = 0;
             let touchStartY = 0;
             section.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].clientX;
-                touchStartY = e.changedTouches[0].clientY;
+                if (e.changedTouches && e.changedTouches.length > 0) {
+                    touchStartX = e.changedTouches[0].clientX;
+                    touchStartY = e.changedTouches[0].clientY;
+                }
             }, { passive: true });
             section.addEventListener('touchend', (e) => {
-                const dx = e.changedTouches[0].clientX - touchStartX;
-                const dy = e.changedTouches[0].clientY - touchStartY;
-                if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
-                    stopAuto();
-                    if (dx < 0) nextSlide(); else prevSlide();
-                    startAuto();
+                if (e.changedTouches && e.changedTouches.length > 0) {
+                    const dx = e.changedTouches[0].clientX - touchStartX;
+                    const dy = e.changedTouches[0].clientY - touchStartY;
+                    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+                        stopAuto();
+                        if (dx < 0) nextSlide(); else prevSlide();
+                        startAuto();
+                    }
                 }
             }, { passive: true });
 
@@ -1572,9 +1617,6 @@
                 if (e.key === 'ArrowLeft')  { stopAuto(); prevSlide(); startAuto(); }
                 if (e.key === 'ArrowRight') { stopAuto(); nextSlide(); startAuto(); }
             });
-
-            // 자동 시작
-            startAuto();
         }
 
         // DOM 준비 후 실행

@@ -5148,24 +5148,25 @@ footer {
 
 @media (max-width: 768px) {
     .hero.hero-carousel-section {
-        height: auto;
-        min-height: 560px;
+        height: 78vh;
+        min-height: 520px;
+        max-height: 660px;
     }
 
     .hs-content {
         padding: 0 1.2rem;
-        align-items: flex-start;
-        padding-top: 5.5rem;
+        align-items: center;
+        padding-top: 1.5rem;
     }
 
     .hs-content--brand {
         justify-content: flex-start;
-        padding-top: 6rem;
+        padding-top: 4rem;
     }
 
     .hs-title-brand {
-        font-size: 2.6rem;
-        line-height: 1.0;
+        font-size: 2.3rem;
+        line-height: 1.1;
     }
 
     .hs-desc-brand {
@@ -5174,14 +5175,15 @@ footer {
 
     .hs-content--book {
         flex-direction: column-reverse;
-        justify-content: flex-end;
+        justify-content: center;
         align-items: center;
-        gap: 1.2rem;
-        padding-top: 5rem;
+        gap: 1rem;
+        padding-top: 2.5rem;
     }
 
     .hs-book-cover-wrap {
         width: 100%;
+        display: flex;
         justify-content: center;
     }
 
@@ -5190,9 +5192,10 @@ footer {
     }
 
     .hs-book-cover-img {
-        height: 180px;
-        max-width: 130px;
+        height: 160px;
+        max-width: 115px;
         border-radius: 3px 6px 6px 3px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
     }
 
     .hs-book-text {
@@ -5200,29 +5203,30 @@ footer {
         text-align: center;
     }
 
-    .hs-book-badge   { justify-content: center; }
-    .hs-book-title   { font-size: 1.6rem; }
-    .hs-book-author  { font-size: 0.82rem; }
-    .hs-book-tagline { font-size: 0.9rem; }
+    .hs-book-badge   { justify-content: center; margin-bottom: 0.5rem; }
+    .hs-book-title   { font-size: 1.45rem; margin-bottom: 0.3rem; }
+    .hs-book-author  { font-size: 0.8rem; margin-bottom: 0.3rem; }
+    .hs-book-tagline { font-size: 0.85rem; margin-bottom: 0.6rem; }
     .hs-book-desc    { display: none; }
-    .hs-cta-btn      { font-size: 0.88rem; padding: 0.65rem 1.4rem; }
+    .hs-cta-btn      { font-size: 0.85rem; padding: 0.55rem 1.2rem; }
 
-    .hero-nav-btn { width: 38px; height: 38px; font-size: 0.9rem; }
-    .hero-prev    { left: 0.6rem; }
-    .hero-next    { right: 0.6rem; }
+    .hero-nav-btn { width: 36px; height: 36px; font-size: 0.85rem; z-index: 20; }
+    .hero-prev    { left: 0.4rem; }
+    .hero-next    { right: 0.4rem; }
 
-    .hero-dots { bottom: 7.5rem; }
+    .hero-dots { bottom: 6.8rem; z-index: 20; }
 
     .hero-search-fixed {
-        bottom: 1.5rem;
+        bottom: 1.2rem;
         max-width: 100%;
         padding: 0 1rem;
     }
 }
 
 @media (max-width: 480px) {
-    .hs-title-brand { font-size: 2rem; }
-    .hs-subtitle    { font-size: 0.82rem; }
+    .hs-title-brand { font-size: 1.9rem; }
+    .hs-subtitle    { font-size: 0.8rem; }
+    .hero.hero-carousel-section { min-height: 490px; }
 }
 
 /* ── 기존 .hero::before 오버레이 (모바일 미디어쿼리)가 캐러셀에 중복 적용되지 않도록 차단 ── */

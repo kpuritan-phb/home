@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연구소 소개 및 섬기는 사람들 | 한국 청교도 연구소</title>
+    <link rel="stylesheet" href="style.css?v=20260912_v3">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+    <link rel="icon" type="image/x-icon" href="favicon.ico?v=2">
+    <link rel="icon" type="image/png" href="favicon.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fcfbf9;
+            color: #2d3748;
+        }
+
+        /* Hero Header */
+        .about-page-hero {
+            background: linear-gradient(135deg, #1a342a 0%, #0f231b 100%);
+            color: #ffffff;
+            padding: 80px 20px 60px;
+            text-align: center;
+            position: relative;
+            box-shadow: inset 0 -10px 30px rgba(0,0,0,0.15);
+        }
+
+        .about-page-hero h1 {
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+        }
+
+        .about-page-hero p {
+            font-size: 1.05rem;
+            color: #d1d5db;
+            max-width: 680px;
+            margin: 0 auto;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .about-main-container {
+            max-width: 1100px;
+            margin: -30px auto 80px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* 2 Column Grid for Intro and Team */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 36px;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Left Side: Original Institution Introduction Text */
+        .about-text-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
+            border: 1px solid #ede8e1;
+            line-height: 1.9;
+        }
+
+        .about-text-card h2 {
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #1a342a;
+            margin-bottom: 24px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid #1a342a;
+        }
+
+        .about-text-card p {
+            margin-bottom: 18px;
+            font-size: 1.02rem;
+            color: #334155;
+            word-break: keep-all;
+        }
+
+        .about-text-card p.highlight-desc {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1a342a;
+            background: #f4f7f5;
+            padding: 18px 22px;
+            border-left: 4px solid #8c6d46;
+            border-radius: 6px;
+            margin: 24px 0;
+            line-height: 1.7;
+        }
+
+        /* Right Side: Served People Section (섬기는 사람들 Cards) */
+        .about-people-section {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .section-header-box {
+            background: #ffffff;
+            padding: 24px 30px;
+            border-radius: 16px;
+            border: 1px solid #ede8e1;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header-box h2 {
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1a342a;
+            margin: 0;
+        }
+
+        .section-header-box span {
+            font-size: 0.85rem;
+            color: #8c6d46;
+            font-weight: 700;
+            background: #fdfaf5;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid #f0e6d6;
+        }
+
+        /* Person Profile Card */
+        .person-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .person-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e0;
+        }
+
+        .person-card.featured {
+            border: 2px solid #8c6d46;
+            background: #fdfbf7;
+        }
+
+        .person-photo {
+            width: 115px;
+            height: 140px;
+            object-fit: cover;
+            object-position: top center;
+            border-radius: 12px;
+            border: 1px solid #cbd5e0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            flex-shrink: 0;
+        }
+
+        .person-info {
+            flex: 1;
+        }
+
+        .person-name-group {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+        }
+
+        .person-name {
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #1a342a;
+            margin: 0;
+        }
+
+        .person-role {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #8c6d46;
+        }
+
+        .person-details {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0 0 0;
+            font-size: 0.88rem;
+            color: #4a5568;
+            line-height: 1.65;
+        }
+
+        .person-details li {
+            margin-bottom: 5px;
+            position: relative;
+            padding-left: 14px;
+            word-break: keep-all;
+        }
+
+        .person-details li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #8c6d46;
+            font-weight: bold;
+        }
+
+        /* Institution Goals Footer Box */
+        .goals-footer-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 36px;
+            border: 1px solid #ede8e1;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+        }
+
+        .goals-footer-card h3 {
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #1a342a;
+            margin-top: 0;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .goals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .goal-item {
+            background: #f8fafc;
+            padding: 16px 20px;
+            border-radius: 10px;
+            border: 1px solid #edf2f7;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .goal-item i {
+            color: #38a169;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav-overlay"></div>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-eng">KPI</span>
+                <span class="logo-kor">한국 청교도 연구소</span>
+                <span class="logo-since">Since 2001</span>
+            </a>
+            <button class="mobile-menu-toggle" aria-label="메뉴 열기" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="about.html" class="active">연구소 소개</a></li>
+                    <li class="dropdown">
+                        <a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90">강해설교 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="sermon-dropdown">
+                            <ul class="dropdown-list">
+                                <!-- JS injected -->
+                            </ul>
+                        </div>
+                    </li>
+                    <li><a href="resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98">세미나, 강의</a></li>
+                    <li><a href="resources.html?cat=%EC%84%B1%EA%B2%BD%EC%A3%BC%EC%84%9D">성경주석</a></li>
+                    <li class="dropdown mega-dropdown">
+                        <a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99">청교도 신학 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="puritan-dropdown">
+                            <ul class="dropdown-list">
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99" style="font-weight: 800; border-bottom: 1px dashed var(--secondary-color);">청교도 신학 전체보기</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%8B%A0%EB%A1%A0">1. 신론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9D%B8%EA%B0%84%EB%A1%A0">2. 인간론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B8%B0%EB%8F%85%EB%A1%A0">3. 기독론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%AC%EC%9B%90%EB%A1%A0%28%EC%84%B1%EB%A0%B9%EB%A1%A0%29">4. 구원론/성령론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9C%A8%EB%B2%95%EA%B3%BC%20%EB%B3%B5%EC%9D%8C">5. 율법과 복음</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B7%B8%EB%A6%AC%EC%8A%A4%EB%8F%84%EC%9D%B8%EC%9D%98%20%EC%83%9D%ED%99%9C%EB%A1%A0">6. 그리스도인의 생활론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B7%B8%EB%A6%AC%EC%8A%A4%EB%8F%84%EC%9D%B8%EC%9D%98%20%EA%B0%80%EC%A0%95">7. 그리스도인의 가정</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%90%ED%9A%8C%EB%A1%A0">8. 교회론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%84%A4%EA%B5%90%EB%A1%A0">9. 설교론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%98%81%EC%A0%81%EC%A0%84%EC%9F%81">10. 영적전쟁</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%A2%85%EB%A7%90%EB%A1%A0">11. 종말론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%97%AD%EC%82%AC%20%EC%8B%A0%ED%95%99">12. 역사 신학</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9E%98%EB%AA%BB%EB%90%9C%20%EC%8B%A0%ED%95%99">13. 잘못된 신학</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content">
+                            <ul class="dropdown-list">
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 전체보기</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%A0%84%EB%8F%84">1. 전도</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EB%B6%80%ED%9D%A5">2. 부흥</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%84%A0%EA%B5%90">3. 선교</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><a href="booklets.html">전도만화</a></li>
+                    <li><a href="resources.html?cat=%EC%8B%A0%ED%95%99%EA%B0%95%EB%A1%A0">신학강론</a></li>
+                    <li><a href="books.html">PHB 출판사</a></li>
+                    <li><a href="seminary.html">SRS 신학대학원</a></li>
+                </ul>
+            </nav>
+            <div class="header-right">
+                <button class="search-trigger-btn" onclick="openAllTopicsModal()" aria-label="주제별 검색">
+                    <i class="fas fa-search"></i>
+                    <span>주제별 신학 검색...</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="about-page-hero">
+            <h1>한국 청교도 연구소</h1>
+            <p>성경의 절대적 권위와 개혁주의 신앙 전통 위에서 청교도 신학과 목회적 유산을 섬깁니다.</p>
+        </section>
+
+        <!-- Main Content -->
+        <div class="about-main-container">
+            <div class="about-grid">
+                <!-- Left: Institution Introduction Paragraphs -->
+                <div class="about-text-card">
+                    <h2>연구소 소개</h2>
+                    <p>한국 청교도 연구소는 성경의 절대적 권위와 하나님의 주권을 중심으로 한 개혁주의 신앙 전통 위에서, 청교도들의 신학과 경건, 그리고 목회적 유산을 연구하고 소개하기 위해 설립되었습니다.</p>
+                    <p>청교도들은 단순한 과거의 신학자들이 아니라, 말씀에 의해 형성된 삶을 추구했던 신앙의 증인들이었습니다. 그들은 교리와 삶, 신학과 경건, 공적 예배와 개인의 신앙을 분리하지 않았으며, 오직 하나님의 영광(Soli Deo Gloria)을 목적으로 교회와 성도의 삶을 개혁하고자 했습니다.</p>
+
+                    <p class="highlight-desc">본 연구소는 청교도들의 설교, 신학 저작, 경건 문헌들을 번역·소개하고, 그 신학적 깊이와 목회적 통찰을 오늘의 한국 교회와 성도들에게 바르게 전달하고자 합니다.</p>
+
+                    <p>우리는 청교도 신학이 단지 학문적 연구의 대상이 아니라, 오늘날에도 교회를 새롭게 하고 성도를 거룩으로 이끄는 살아 있는 유산임을 확신합니다.</p>
+                    <p>한국 청교도 연구소는 웨스트민스터 신앙고백과 대·소요리문답으로 대표되는 개혁주의 신앙 고백 전통을 존중하며, 성경 중심적 설교, 언약 신학, 구원의 은혜 교리, 성화와 경건의 균형을 강조합니다.</p>
+                    <p>우리는 새로운 것을 만들어내기보다, 이미 하나님께서 교회를 위해 허락하신 신실한 신앙의 유산을 다시 발견하고 충실히 계승하는 일에 헌신하고자 합니다. 오직 성경으로 돌아가고, 성경이 가르치는 바른 교리와 거룩한 삶을 회복하기를 소망합니다.</p>
+                </div>
+
+                <!-- Right: Served People Profile Cards -->
+                <div class="about-people-section">
+                    <div class="section-header-box">
+                        <h2>섬기는 사람들</h2>
+                        <span>사역자 프로필</span>
+                    </div>
+
+                    <!-- 1. 김홍만 -->
+                    <div class="person-card featured">
+                        <img src="images/kim-hongman.jpg" alt="김홍만 소장" class="person-photo">
+                        <div class="person-info">
+                            <div class="person-name-group">
+                                <h3 class="person-name">김홍만</h3>
+                            </div>
+                            <div class="person-role">한국청교도연구소 소장</div>
+                            <ul class="person-details">
+                                <li>Seokyeong University | Seoul, South Korea (BA)</li>
+                                <li>Chongshin Theological Seminary | Seoul, South Korea (M. Div.)</li>
+                                <li>Alliance Theological Seminary (MPS)</li>
+                                <li>Reformed Theological Seminary (D. Miss.)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 2. 배가현 -->
+                    <div class="person-card">
+                        <img src="images/bae-gahyeon.jpg" alt="배가현 전도사" class="person-photo">
+                        <div class="person-info">
+                            <div class="person-name-group">
+                                <h3 class="person-name">배가현</h3>
+                                <span class="person-role">전도사</span>
+                            </div>
+                            <ul class="person-details">
+                                <li>Southwestern Reformed Seminary (M.Div)</li>
+                                <li>유튜브 &lt;kei is loved&gt;</li>
+                                <li>Puritan Heritage Books 간사</li>
+                                <li>한국 청교도 연구소 전도사</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 3. 이수민 -->
+                    <div class="person-card">
+                        <img src="images/lee-sumin.jpg" alt="이수민 간사" class="person-photo">
+                        <div class="person-info">
+                            <div class="person-name-group">
+                                <h3 class="person-name">이수민</h3>
+                                <span class="person-role">간사</span>
+                            </div>
+                            <ul class="person-details">
+                                <li>B.A. in Theology, Korea Baptist Theological University</li>
+                                <li>M.Div. Candidate, Southwestern Reformed Seminary</li>
+                                <li>Puritan Heritage Books 실장</li>
+                                <li>한국청교도연구소 간사</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Goals Box -->
+            <div class="goals-footer-card">
+                <h3><i class="fas fa-compass" style="color: #8c6d46;"></i> 연구소의 지향점</h3>
+                <div class="goals-grid">
+                    <div class="goal-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>설교자들이 성경을 더 깊이 이해하도록 돕습니다.</span>
+                    </div>
+                    <div class="goal-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>성도들이 하나님 앞에 경건하게 살도록 격려합니다.</span>
+                    </div>
+                    <div class="goal-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>한국 교회가 개혁주의 신앙의 뿌리를 회복하도록 섬깁니다.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <a href="index.html" class="footer-logo">한국 청교도 연구소</a>
+        <p>&copy; 2026 Korea Puritan Research Institute. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.youtube.com/@kei_is_loved" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://smartstore.naver.com/kpuritan_phb" target="_blank" aria-label="Naver Smartstore" class="naver-link">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="currentColor" d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z"/>
+                </svg>
+            </a>
+        </div>
+    </footer>
+
+    <script src="bgm.js?v=1"></script>
+    <script src="stats.js?v=1"></script>
+    <script src="main.js?v=20260912_v2"></script>
+</body>
+
+</html>

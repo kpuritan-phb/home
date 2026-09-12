@@ -4790,8 +4790,8 @@ footer {
     min-height: 560px;
     position: relative;
     overflow: hidden;
-    background: #0b1a30;
-    background-image: none;
+    /* JS 렌더 전 흰 화면 방지 — 배경 이미지를 fallback으로 미리 표시 */
+    background: #0b1a30 url('hero-bg.jpg?v=2') center/cover no-repeat;
     background-attachment: initial;
     display: block;
 }

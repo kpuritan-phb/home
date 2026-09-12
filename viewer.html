@@ -1297,11 +1297,11 @@
                         chNums.forEach(ch => {
                             const chGroup = document.createElement('div');
                             chGroup.className = 'sidebar-ch-group';
-                            chGroup.style.css?v=20260912_v1Text = 'border-bottom: 1px dashed #ede8df; padding: 3px 0;';
+                            chGroup.style.cssText = 'border-bottom: 1px dashed #ede8df; padding: 3px 0;';
 
                             const chHeader = document.createElement('div');
                             chHeader.className = 'sidebar-ch-header';
-                            chHeader.style.css?v=20260912_v1Text = 'padding: 6px 14px 4px 18px; font-weight: 800; font-size: 0.8rem; color: #8c6d46; background: #faf7f2; display: flex; align-items: center; justify-content: space-between;';
+                            chHeader.style.cssText = 'padding: 6px 14px 4px 18px; font-weight: 800; font-size: 0.8rem; color: #8c6d46; background: #faf7f2; display: flex; align-items: center; justify-content: space-between;';
                             chHeader.innerHTML = `<span><i class="fas fa-bookmark" style="font-size:0.75rem; margin-right:5px;"></i> 제 ${ch}장</span><span style="font-size:0.72rem; color:#a0aec0;">${chapterMap[ch].length}편</span>`;
                             chGroup.appendChild(chHeader);
 

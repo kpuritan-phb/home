@@ -3687,12 +3687,9 @@ window.openHeroSlideModal = async function(editIndex = null) {
                             <input type="file" id="hs-form-file" accept="image/*" onchange="previewHeroCoverFile(this)"
                                 style="font-size:0.85rem; border: 1px solid #cbd5e0; padding: 6px 10px; border-radius: 6px; flex: 1;">
                         </div>
-                        <p id="hs-upload-status" style="font-size: 0.8rem; color: #718096; margin: 4px 0 0 0;"></p>
-                    </div>
-                    <div>
-                        <label style="display:block; font-weight:700; font-size:0.88rem; margin-bottom:4px; color:#4a5568;">또는 표지 이미지 URL 주소</label>
-                        <input type="text" id="hs-form-cover" value="${slide.bookImage || ''}" placeholder="https://... 또는 직접 이미지 업로드"
-                            style="width:100%; padding:9px 12px; border:1px solid #cbd5e0; border-radius:6px; font-size:0.9rem;">
+                        <p id="hs-upload-status" style="font-size: 0.8rem; color: #718096; margin: 4px 0 0 0;">
+                            ${slide.bookImage ? `<span style="color: #4a5568;">현재 등록된 표지: <a href="${slide.bookImage}" target="_blank" style="color: #2b6cb0; text-decoration: underline;">이미지 보기</a></span>` : ''}
+                        </p>
                     </div>
                     <div>
                         <label style="display:block; font-weight:700; font-size:0.88rem; margin-bottom:4px; color:#4a5568;">이동할 링크 주소 (구매 또는 상세보기 링크)</label>
@@ -3738,7 +3735,7 @@ window.saveHeroSlide = async function(e, editIndex) {
         const author = document.getElementById('hs-form-author').value.trim();
         const tagline = document.getElementById('hs-form-tagline').value.trim();
         const description = document.getElementById('hs-form-desc').value.trim();
-        let bookImage = document.getElementById('hs-form-cover').value.trim();
+        let bookImage = (editIndex !== null && slides[editIndex]) ? (slides[editIndex].bookImage || '') : '';
         const link = document.getElementById('hs-form-link').value.trim();
 
         const fileInput = document.getElementById('hs-form-file');

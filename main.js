@@ -3682,8 +3682,16 @@ window.openHeroSlideModal = async function(editIndex = null) {
                             style="width:100%; padding:9px 12px; border:1px solid #cbd5e0; border-radius:6px; font-size:0.9rem;">${slide.description || ''}</textarea>
                     </div>
                     <div>
-                        <label style="display:block; font-weight:700; font-size:0.88rem; margin-bottom:4px; color:#4a5568;">표지 이미지 URL (비워두면 자동 표준 디자인 생성)</label>
-                        <input type="text" id="hs-form-cover" value="${slide.bookImage || ''}" placeholder="https://... 이미지 URL 주소"
+                        <label style="display:block; font-weight:700; font-size:0.88rem; margin-bottom:4px; color:#4a5568;">표지 이미지 업로드 (직접 이미지 파일 선택)</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="file" id="hs-form-file" accept="image/*" onchange="previewHeroCoverFile(this)"
+                                style="font-size:0.85rem; border: 1px solid #cbd5e0; padding: 6px 10px; border-radius: 6px; flex: 1;">
+                        </div>
+                        <p id="hs-upload-status" style="font-size: 0.8rem; color: #718096; margin: 4px 0 0 0;"></p>
+                    </div>
+                    <div>
+                        <label style="display:block; font-weight:700; font-size:0.88rem; margin-bottom:4px; color:#4a5568;">또는 표지 이미지 URL 주소</label>
+                        <input type="text" id="hs-form-cover" value="${slide.bookImage || ''}" placeholder="https://... 또는 직접 이미지 업로드"
                             style="width:100%; padding:9px 12px; border:1px solid #cbd5e0; border-radius:6px; font-size:0.9rem;">
                     </div>
                     <div>
@@ -3695,7 +3703,7 @@ window.openHeroSlideModal = async function(editIndex = null) {
                 <div style="margin-top: 22px; display: flex; justify-content: flex-end; gap: 10px;">
                     <button type="button" onclick="document.getElementById('admin-hero-slide-modal').style.display='none'"
                         style="padding: 10px 18px; background: #edf2f7; color: #4a5568; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">취소</button>
-                    <button type="submit"
+                    <button type="submit" id="hs-submit-btn"
                         style="padding: 10px 24px; background: #d69e2e; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">저장하기</button>
                 </div>
             </form>
@@ -3704,46 +3712,104 @@ window.openHeroSlideModal = async function(editIndex = null) {
     modal.style.display = 'flex';
 };
 
+window.previewHeroCoverFile = function(input) {
+    if (input.files && input.files[0]) {
+        const statusEl = document.getElementById('hs-upload-status');
+        if (statusEl) {
+            statusEl.innerHTML = `<span style="color: #2b6cb0; font-weight: 700;"><i class="fas fa-file-image"></i> '${input.files[0].name}' 선택됨 ([저장하기] 누르면 업로드됩니다)</span>`;
+        }
+    }
+};
+
 window.saveHeroSlide = async function(e, editIndex) {
     e.preventDefault();
-    const slides = await window.getAdminHeroSlides();
-
-    const category = document.getElementById('hs-form-category').value.trim();
-    const badge = document.getElementById('hs-form-badge').value.trim();
-    const title = document.getElementById('hs-form-title').value.trim();
-    const author = document.getElementById('hs-form-author').value.trim();
-    const tagline = document.getElementById('hs-form-tagline').value.trim();
-    const description = document.getElementById('hs-form-desc').value.trim();
-    const bookImage = document.getElementById('hs-form-cover').value.trim();
-    const link = document.getElementById('hs-form-link').value.trim();
-
-    const newSlide = {
-        type: 'book',
-        category,
-        badge,
-        title,
-        author,
-        tagline,
-        description,
-        bookImage,
-        backgroundImage: 'hero-bg.jpg?v=2',
-        link
-    };
-
-    if (editIndex !== null && editIndex >= 0 && editIndex < slides.length) {
-        if (slides[editIndex].type === 'brand') {
-            newSlide.type = 'brand';
-            newSlide.subtitle = category || '한국 청교도 연구소';
-        }
-        slides[editIndex] = newSlide;
-    } else {
-        slides.push(newSlide);
+    const submitBtn = document.getElementById('hs-submit-btn');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 저장 중...';
     }
 
-    await window.saveAdminHeroSlidesList(slides);
-    document.getElementById('admin-hero-slide-modal').style.display = 'none';
-    alert('슬라이드가 성공적으로 저장되었습니다!');
-    await window.loadAdminHeroSlides();
+    try {
+        const slides = await window.getAdminHeroSlides();
+
+        const category = document.getElementById('hs-form-category').value.trim();
+        const badge = document.getElementById('hs-form-badge').value.trim();
+        const title = document.getElementById('hs-form-title').value.trim();
+        const author = document.getElementById('hs-form-author').value.trim();
+        const tagline = document.getElementById('hs-form-tagline').value.trim();
+        const description = document.getElementById('hs-form-desc').value.trim();
+        let bookImage = document.getElementById('hs-form-cover').value.trim();
+        const link = document.getElementById('hs-form-link').value.trim();
+
+        const fileInput = document.getElementById('hs-form-file');
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            try {
+                if (window.ensureAuth) await window.ensureAuth();
+                if (window.storage) {
+                    const ref = window.storage.ref(`covers/hero_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`);
+                    const snap = await ref.put(file);
+                    bookImage = await snap.ref.getDownloadURL();
+                } else if (window.firebase && window.firebase.storage) {
+                    const storage = window.firebase.storage();
+                    const ref = storage.ref(`covers/hero_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`);
+                    const snap = await ref.put(file);
+                    bookImage = await snap.ref.getDownloadURL();
+                } else {
+                    // Fallback to DataURL for offline / direct preview
+                    bookImage = await new Promise((res) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => res(e.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                }
+            } catch(upErr) {
+                console.warn("Cover image upload notice:", upErr);
+                // DataURL Fallback
+                bookImage = await new Promise((res) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => res(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        const newSlide = {
+            type: 'book',
+            category,
+            badge,
+            title,
+            author,
+            tagline,
+            description,
+            bookImage,
+            backgroundImage: 'hero-bg.jpg?v=2',
+            link
+        };
+
+        if (editIndex !== null && editIndex >= 0 && editIndex < slides.length) {
+            if (slides[editIndex].type === 'brand') {
+                newSlide.type = 'brand';
+                newSlide.subtitle = category || '한국 청교도 연구소';
+            }
+            slides[editIndex] = newSlide;
+        } else {
+            slides.push(newSlide);
+        }
+
+        await window.saveAdminHeroSlidesList(slides);
+        document.getElementById('admin-hero-slide-modal').style.display = 'none';
+        alert('슬라이드가 성공적으로 저장되었습니다!');
+        await window.loadAdminHeroSlides();
+    } catch(err) {
+        console.error("saveHeroSlide error:", err);
+        alert("저장 중 오류가 발생했습니다: " + err.message);
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '저장하기';
+        }
+    }
 };
 
 window.deleteHeroSlide = async function(idx) {

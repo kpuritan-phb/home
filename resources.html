@@ -2721,11 +2721,20 @@
                         }
                     } else {
                         let query = db.collection("posts").where("tags", "array-contains", category);
-                        if (s) {
-                            query = query.where("series", "==", s);
-                        }
                         const snapshot = await fetchWithTimeout(query.get(), 4000);
                         snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                        if (s) {
+                            const cleanS = s.trim();
+                            const shortS = cleanS.replace(/\s*강해$/, '');
+                            posts = posts.filter(p => {
+                                const pSeries = (p.series || '').trim();
+                                const pTitle = (p.title || '').trim();
+                                const pTags = Array.isArray(p.tags) ? p.tags : [];
+                                return pSeries === cleanS || pSeries === shortS || pSeries.includes(shortS) ||
+                                       pTitle.includes(cleanS) || pTitle.includes(shortS) ||
+                                       pTags.includes(cleanS);
+                            });
+                        }
                     }
                 } catch (e) {
                     console.warn("Firestore fetch timeout/error, switching to dump fallback:", e);
@@ -2749,7 +2758,16 @@
                     } else {
                         posts = dump.filter(p => Array.isArray(p.tags) && p.tags.includes(category));
                         if (s) {
-                            posts = posts.filter(p => p.series === s);
+                            const cleanS = s.trim();
+                            const shortS = cleanS.replace(/\s*강해$/, '');
+                            posts = posts.filter(p => {
+                                const pSeries = (p.series || '').trim();
+                                const pTitle = (p.title || '').trim();
+                                const pTags = Array.isArray(p.tags) ? p.tags : [];
+                                return pSeries === cleanS || pSeries === shortS || pSeries.includes(shortS) ||
+                                       pTitle.includes(cleanS) || pTitle.includes(shortS) ||
+                                       pTags.includes(cleanS);
+                            });
                         }
                     }
                 }
@@ -2757,6 +2775,18 @@
                 if ((!posts || posts.length === 0) && !usedFallback) {
                     const dump = await getFallbackPosts();
                     posts = dump.filter(p => Array.isArray(p.tags) && p.tags.includes(category));
+                    if (s) {
+                        const cleanS = s.trim();
+                        const shortS = cleanS.replace(/\s*강해$/, '');
+                        posts = posts.filter(p => {
+                            const pSeries = (p.series || '').trim();
+                            const pTitle = (p.title || '').trim();
+                            const pTags = Array.isArray(p.tags) ? p.tags : [];
+                            return pSeries === cleanS || pSeries === shortS || pSeries.includes(shortS) ||
+                                   pTitle.includes(cleanS) || pTitle.includes(shortS) ||
+                                   pTags.includes(cleanS);
+                        });
+                    }
                 }
 
                 if (category === '강해설교') {

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>자료 목록 | 한국 청교도 연구소</title>
-    <link rel="stylesheet" href="style.css?v=107">
+    <link rel="stylesheet" href="style.css?v=20260912_v1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
     <style>
@@ -1142,7 +1142,7 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
     </script>
 
-    <script src="data.js"></script>
+    <script src="data.js?v=20260912_v1"></script>
     <script>
         // Firebase Config
         const firebaseConfig = {
@@ -1207,7 +1207,7 @@
         let currentCategory = null; // clicked topic/author name
         window.isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-        // Add hook for main.js deletion/update to refresh this page
+        // Add hook for main.js?v=20260912_v1 deletion/update to refresh this page
         window.loadAdminPosts = () => {
             if (currentCategory) loadCategoryItems(currentCategory);
             else if (typeof loadCategories === 'function') loadCategories();
@@ -1578,7 +1578,7 @@
                 const totalSeriesCount = window.seriesTotalCount || allCurrentPosts.length;
 
                 const topBar = document.createElement('div');
-                topBar.style.cssText = 'grid-column: 1 / -1; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 14px 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 10px;';
+                topBar.style.css?v=20260912_v1Text = 'grid-column: 1 / -1; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 14px 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 10px;';
                 topBar.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                         <i class="fas fa-book-open" style="color: #8c6d46; font-size: 1.25rem;"></i>
@@ -1601,7 +1601,7 @@
                 if (window.seriesChapterCounts && Object.keys(window.seriesChapterCounts).length > 0) {
                     const chBar = document.createElement('div');
                     chBar.className = 'chapter-filter-bar';
-                    chBar.style.cssText = 'grid-column: 1 / -1; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: #ffffff; padding: 12px 18px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02);';
+                    chBar.style.css?v=20260912_v1Text = 'grid-column: 1 / -1; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: #ffffff; padding: 12px 18px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02);';
                     
                     let btnsHtml = `
                         <span style="font-weight: 800; font-size: 0.92rem; color: #1a342a; margin-right: 4px; display: inline-flex; align-items: center; gap: 6px;">
@@ -1631,7 +1631,7 @@
             if (currentCategory === '청교도 신학' && urlParams.get('s') === '설교론') {
                 const subTopic = urlParams.get('subTopic') || "";
                 const subBar = document.createElement('div');
-                subBar.style.cssText = 'grid-column: 1 / -1; margin-bottom: 16px; display: flex; align-items: center; justify-content: flex-start; background: #ffffff; padding: 14px 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 10px;';
+                subBar.style.css?v=20260912_v1Text = 'grid-column: 1 / -1; margin-bottom: 16px; display: flex; align-items: center; justify-content: flex-start; background: #ffffff; padding: 14px 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 10px;';
                 
                 const makeSubBtn = (label, val, icon) => {
                     const isActive = subTopic === val;
@@ -1663,7 +1663,7 @@
             if (!isBible || !sParam) {
                 const controlBar = document.createElement('div');
                 controlBar.className = 'resources-view-controls-bar';
-                controlBar.style.cssText = 'grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 12px 18px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 12px;';
+                controlBar.style.css?v=20260912_v1Text = 'grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 12px 18px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 12px;';
                 
                 controlBar.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
@@ -1728,7 +1728,7 @@
                 grid.className = 'resource-list-grid list-mode-active';
                 const tableWrapper = document.createElement('div');
                 tableWrapper.className = 'resource-table-wrapper';
-                tableWrapper.style.cssText = 'grid-column: 1 / -1; width: 100%; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow-x: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.03);';
+                tableWrapper.style.css?v=20260912_v1Text = 'grid-column: 1 / -1; width: 100%; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow-x: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.03);';
                 
                 pageItems.forEach((post, index) => {
                     const postNum = start + index + 1;
@@ -1739,7 +1739,7 @@
                     const row = document.createElement('div');
                     row.className = 'resource-table-row' + (window.isAdmin ? ' admin-draggable-card' : '');
                     row.id = `resource-row-${post.id}`;
-                    row.style.cssText = 'display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #f0f4f8; transition: background 0.15s; cursor: pointer; gap: 14px;';
+                    row.style.css?v=20260912_v1Text = 'display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #f0f4f8; transition: background 0.15s; cursor: pointer; gap: 14px;';
                     
                     if (window.isAdmin) {
                         row.setAttribute('draggable', 'true');
@@ -1868,7 +1868,7 @@
                 if (startPage > 2) {
                     const dots = document.createElement('span');
                     dots.innerText = '...';
-                    dots.style.cssText = 'align-self: center; color: #a0aec0; padding: 0 4px; font-weight: bold; font-size: 0.9rem;';
+                    dots.style.css?v=20260912_v1Text = 'align-self: center; color: #a0aec0; padding: 0 4px; font-weight: bold; font-size: 0.9rem;';
                     paginationEl.appendChild(dots);
                 }
             }
@@ -1881,7 +1881,7 @@
                 if (endPage < totalPages - 1) {
                     const dots = document.createElement('span');
                     dots.innerText = '...';
-                    dots.style.cssText = 'align-self: center; color: #a0aec0; padding: 0 4px; font-weight: bold; font-size: 0.9rem;';
+                    dots.style.css?v=20260912_v1Text = 'align-self: center; color: #a0aec0; padding: 0 4px; font-weight: bold; font-size: 0.9rem;';
                     paginationEl.appendChild(dots);
                 }
                 paginationEl.appendChild(createBtn(totalPages, totalPages, totalPages === currentPage));
@@ -1958,7 +1958,7 @@
 
             const wrapper = document.createElement('div');
             wrapper.className = 'expositions-index-container';
-            wrapper.style.cssText = 'grid-column: 1 / -1; display: flex; flex-direction: column; gap: 40px; margin: 10px 0 30px 0; width: 100%;';
+            wrapper.style.css?v=20260912_v1Text = 'grid-column: 1 / -1; display: flex; flex-direction: column; gap: 40px; margin: 10px 0 30px 0; width: 100%;';
 
             sections.forEach(sec => {
                 const activeBooks = sec.books.filter(b => dbSeriesList.includes(b.series) || posts.some(p => p.series === b.series || p.title?.includes(b.series)));
@@ -2000,7 +2000,7 @@
 
                     const card = document.createElement('div');
                     card.className = 'sermon-book-card';
-                    card.style.cssText = 'background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04); cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; position: relative;';
+                    card.style.css?v=20260912_v1Text = 'background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04); cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; position: relative;';
 
                     card.innerHTML = `
                         <div class="book-card-thumb" style="height: 190px; position: relative; overflow: hidden; background: #f8fafc;">
@@ -2152,7 +2152,7 @@
             if (!modal) {
                 modal = document.createElement('div');
                 modal.id = 'edit-series-cover-modal';
-                modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 100000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 20px;';
+                modal.style.css?v=20260912_v1Text = 'position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 100000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 20px;';
                 document.body.appendChild(modal);
             }
 
@@ -2793,7 +2793,7 @@
                 if (!nextPanel) {
                     nextPanel = document.createElement('div');
                     nextPanel.id = 'drag-next-page-panel';
-                    nextPanel.style.cssText = 'position: fixed; right: 0; top: 22%; bottom: 22%; width: 140px; z-index: 10000; background: rgba(26, 52, 42, 0.94); color: #ffffff; backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; justify-content: center; border-top-left-radius: 20px; border-bottom-left-radius: 20px; box-shadow: -8px 0 30px rgba(0,0,0,0.35); border: 2px dashed #ecc94b; text-align: center; padding: 16px; cursor: pointer; transition: all 0.2s ease;';
+                    nextPanel.style.css?v=20260912_v1Text = 'position: fixed; right: 0; top: 22%; bottom: 22%; width: 140px; z-index: 10000; background: rgba(26, 52, 42, 0.94); color: #ffffff; backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; justify-content: center; border-top-left-radius: 20px; border-bottom-left-radius: 20px; box-shadow: -8px 0 30px rgba(0,0,0,0.35); border: 2px dashed #ecc94b; text-align: center; padding: 16px; cursor: pointer; transition: all 0.2s ease;';
                     nextPanel.ondragover = (e) => {
                         e.preventDefault();
                         e.dataTransfer.dropEffect = 'move';
@@ -2827,7 +2827,7 @@
                 if (!prevPanel) {
                     prevPanel = document.createElement('div');
                     prevPanel.id = 'drag-prev-page-panel';
-                    prevPanel.style.cssText = 'position: fixed; left: 0; top: 22%; bottom: 22%; width: 140px; z-index: 10000; background: rgba(26, 52, 42, 0.94); color: #ffffff; backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; justify-content: center; border-top-right-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 8px 0 30px rgba(0,0,0,0.35); border: 2px dashed #ecc94b; text-align: center; padding: 16px; cursor: pointer; transition: all 0.2s ease;';
+                    prevPanel.style.css?v=20260912_v1Text = 'position: fixed; left: 0; top: 22%; bottom: 22%; width: 140px; z-index: 10000; background: rgba(26, 52, 42, 0.94); color: #ffffff; backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; justify-content: center; border-top-right-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 8px 0 30px rgba(0,0,0,0.35); border: 2px dashed #ecc94b; text-align: center; padding: 16px; cursor: pointer; transition: all 0.2s ease;';
                     prevPanel.ondragover = (e) => {
                         e.preventDefault();
                         e.dataTransfer.dropEffect = 'move';
@@ -2947,7 +2947,7 @@
             if (!toast) {
                 toast = document.createElement('div');
                 toast.id = 'admin-order-toast';
-                toast.style.cssText = 'position: fixed; bottom: 30px; right: 30px; z-index: 9999; background: #1a342a; color: #ffffff; padding: 14px 24px; border-radius: 10px; font-weight: 700; font-size: 0.92rem; box-shadow: 0 8px 24px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 10px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; transform: translateY(20px); pointer-events: none; border-left: 4px solid #8c6d46;';
+                toast.style.css?v=20260912_v1Text = 'position: fixed; bottom: 30px; right: 30px; z-index: 9999; background: #1a342a; color: #ffffff; padding: 14px 24px; border-radius: 10px; font-weight: 700; font-size: 0.92rem; box-shadow: 0 8px 24px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 10px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; transform: translateY(20px); pointer-events: none; border-left: 4px solid #8c6d46;';
                 document.body.appendChild(toast);
             }
             toast.innerHTML = `<i class="fas fa-check-circle" style="color: #48bb78; font-size: 1.1rem;"></i> ${msg}`;
@@ -3166,7 +3166,7 @@
 
     <script src="bgm.js?v=1"></script>
     <script src="stats.js?v=1"></script>
-    <script src="main.js?v=1"></script>
+    <script src="main.js?v=20260912_v1"></script>
 
 
     <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">

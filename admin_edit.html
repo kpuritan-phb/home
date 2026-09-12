@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Deployment Trigger: 2026-02-19 23:10:20 (Force Refresh) -->
     <title>관리자 - 수정하기 | 한국 청교도 연구소</title>
-    <link rel="stylesheet" href="style.css?v=106">
+    <link rel="stylesheet" href="style.css?v=20260912_v1">
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -263,7 +263,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    <script src="data.js"></script>
+    <script src="data.js?v=20260912_v1"></script>
     <script>
         // Init Firebase
         const firebaseConfig = {
@@ -453,7 +453,7 @@
             finalSubtopics.forEach(sub => {
                 const isManual = manuallyAddedSubtopics.includes(sub);
                 const tagEl = document.createElement('span');
-                tagEl.style.cssText = 'display:inline-flex; align-items:center; gap:5px; padding:5px 12px; font-size:0.85rem; border-radius:15px; border: 1px solid ' + (isManual ? '#1a342a' : '#c59c5e') + '; background:' + (isManual ? '#eef6f3' : '#fdfaf5') + '; color:' + (isManual ? '#1a342a' : '#c59c5e') + '; font-weight:500;';
+                tagEl.style.css?v=20260912_v1Text = 'display:inline-flex; align-items:center; gap:5px; padding:5px 12px; font-size:0.85rem; border-radius:15px; border: 1px solid ' + (isManual ? '#1a342a' : '#c59c5e') + '; background:' + (isManual ? '#eef6f3' : '#fdfaf5') + '; color:' + (isManual ? '#1a342a' : '#c59c5e') + '; font-weight:500;';
                 tagEl.innerHTML = `
                     <span>${sub}</span>
                     <i class="fas fa-times-circle" style="cursor:pointer; font-size:0.95rem; opacity:0.75;" onclick="removeSubtopicTag('${sub}')"></i>
@@ -590,7 +590,7 @@
                     listData.forEach(topic => {
                         const isChecked = tempSelectedSubtopics.includes(topic);
                         const label = document.createElement('label');
-                        label.style.cssText = 'display: flex; align-items: center; gap: 10px; padding: 8px 12px; margin-bottom: 6px; border-radius: 6px; background: #ffffff; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s;';
+                        label.style.css?v=20260912_v1Text = 'display: flex; align-items: center; gap: 10px; padding: 8px 12px; margin-bottom: 6px; border-radius: 6px; background: #ffffff; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s;';
                         
                         label.onmouseover = () => label.style.background = '#f8fafc';
                         label.onmouseout = () => label.style.background = '#ffffff';
@@ -598,7 +598,7 @@
                         const checkbox = document.createElement('input');
                         checkbox.type = 'checkbox';
                         checkbox.checked = isChecked;
-                        checkbox.style.cssText = 'width: 16px; height: 16px; accent-color: #1a342a; cursor: pointer;';
+                        checkbox.style.css?v=20260912_v1Text = 'width: 16px; height: 16px; accent-color: #1a342a; cursor: pointer;';
                         
                         checkbox.addEventListener('change', (e) => {
                             if (e.target.checked) {
@@ -612,7 +612,7 @@
 
                         const textSpan = document.createElement('span');
                         textSpan.textContent = topic;
-                        textSpan.style.cssText = 'font-size: 0.9rem; font-weight: 500; color: #334155;';
+                        textSpan.style.css?v=20260912_v1Text = 'font-size: 0.9rem; font-weight: 500; color: #334155;';
 
                         label.appendChild(checkbox);
                         label.appendChild(textSpan);

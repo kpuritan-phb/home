@@ -3539,18 +3539,32 @@ const DEFAULT_HERO_SLIDES = [
 
 window.getAdminHeroSlides = async function() {
     try {
+        if (window.db && typeof fetchWithTimeout === 'function') {
+            try {
+                const snap = await fetchWithTimeout(window.db.collection('posts').doc('settings_hero_slides').get(), 4000);
+                if (snap && snap.exists && snap.data().slides && Array.isArray(snap.data().slides) && snap.data().slides.length > 0) {
+                    const slides = snap.data().slides;
+                    localStorage.setItem('kpuritan_hero_slides', JSON.stringify(slides));
+                    return slides;
+                }
+            } catch (fsErr1) {
+                console.warn("getAdminHeroSlides posts notice:", fsErr1);
+            }
+            try {
+                const snap2 = await fetchWithTimeout(window.db.collection('settings').doc('hero_slides').get(), 3000);
+                if (snap2 && snap2.exists && snap2.data().slides && Array.isArray(snap2.data().slides) && snap2.data().slides.length > 0) {
+                    const slides = snap2.data().slides;
+                    localStorage.setItem('kpuritan_hero_slides', JSON.stringify(slides));
+                    return slides;
+                }
+            } catch (fsErr2) {
+                console.warn("getAdminHeroSlides settings notice:", fsErr2);
+            }
+        }
         const local = localStorage.getItem('kpuritan_hero_slides');
         if (local) {
             const parsed = JSON.parse(local);
             if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        }
-        if (window.db) {
-            const snap = await fetchWithTimeout(window.db.collection('settings').doc('hero_slides').get(), 3000);
-            if (snap.exists && snap.data().slides && Array.isArray(snap.data().slides)) {
-                const slides = snap.data().slides;
-                localStorage.setItem('kpuritan_hero_slides', JSON.stringify(slides));
-                return slides;
-            }
         }
     } catch(e) {
         console.warn("getAdminHeroSlides error:", e);
@@ -3563,10 +3577,18 @@ window.saveAdminHeroSlidesList = async function(slides) {
     if (window.db) {
         try {
             await ensureAuth();
-            await window.db.collection('settings').doc('hero_slides').set({
+            await window.db.collection('posts').doc('settings_hero_slides').set({
+                type: 'system_setting',
                 slides: slides,
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             }, { merge: true });
+
+            try {
+                await window.db.collection('settings').doc('hero_slides').set({
+                    slides: slides,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+            } catch(subErr) {}
         } catch(e) {
             console.warn("Save hero slides to Firestore notice:", e);
         }

@@ -1552,8 +1552,18 @@
             const fetchLatestSlides = async () => {
                 if (window.db && typeof fetchWithTimeout === 'function') {
                     try {
-                        const snap = await fetchWithTimeout(window.db.collection('settings').doc('hero_slides').get(), 4000);
-                        if (snap && snap.exists && snap.data().slides && Array.isArray(snap.data().slides)) {
+                        let snap = null;
+                        try {
+                            snap = await fetchWithTimeout(window.db.collection('posts').doc('settings_hero_slides').get(), 4000);
+                        } catch (e1) {}
+                        
+                        if (!snap || !snap.exists || !snap.data() || !Array.isArray(snap.data().slides)) {
+                            try {
+                                snap = await fetchWithTimeout(window.db.collection('settings').doc('hero_slides').get(), 3000);
+                            } catch (e2) {}
+                        }
+
+                        if (snap && snap.exists && snap.data() && snap.data().slides && Array.isArray(snap.data().slides) && snap.data().slides.length > 0) {
                             const latestSlides = snap.data().slides;
                             localStorage.setItem('kpuritan_hero_slides', JSON.stringify(latestSlides));
                             renderHeroSlides(latestSlides);

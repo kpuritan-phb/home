@@ -599,7 +599,7 @@
     </script>
     <script src="bgm.js?v=1"></script>
     <script src="stats.js?v=1"></script>
-    <script src="main.js?v=20260912_v1"></script>
+    <script src="main.js?v=20260912_v2"></script>
     <script>
         // --- Theology Explorer (Monergism Sidebar Style) Script ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -808,69 +808,85 @@
                     document.getElementById('recent-updates').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 100);
 
-                const isOffline = (typeof db === 'undefined' || !db);
-                const useMockMode = (typeof useMock !== 'undefined' && useMock) || isOffline;
-
-                if (useMockMode) {
-                    setTimeout(() => {
-                        const mockPosts = [
-                            { id: "mock1", title: `[샘플] ${name} 신학의 정수와 실제`, content: `${name}에 대한 깊이 있는 분석과 개혁주의 교리적 핵심 해설입니다. 신자들의 경건 향상과 교회의 바른 세워짐을 위해 추천하는 강론 자료입니다.`, tags: [name] },
-                            { id: "mock2", title: `[샘플] ${name}과 개혁주의 신앙의 고백`, content: `역사적 개혁주의 신앙고백서들에 담긴 ${name}의 역사적 배경과 신학적 전개를 다루는 연구 논문 및 텍스트입니다.`, tags: [name] }
-                        ];
-                        renderResults(mockPosts, name);
-                    }, 500);
-                    return;
-                }
-
                 try {
                     let posts = [];
-                    if (type === 'major') {
-                        let q = db.collection("posts").where("tags", "array-contains", name);
-                        const snapshot = await q.get();
-                        snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                    const fetchTimeout = (promise, ms = 3500) => Promise.race([
+                        promise,
+                        new Promise((_, r) => setTimeout(() => r(new Error('timeout')), ms))
+                    ]);
 
-                        if (name === '청교도 신학' || name === '전도, 부흥, 선교') {
-                            const bookletSnapshot = await db.collection("posts")
-                                .where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"])
-                                .get();
-                            bookletSnapshot.forEach(doc => {
-                                const data = doc.data();
-                                const dbTopic = data.topic || data.subBookletTopic || data.series;
-                                const dTopic = (typeof determineCategory === 'function') ? determineCategory(data.title, data.content) : null;
-                                const finalTopic = dbTopic || dTopic;
-                                if (name === '청교도 신학') {
-                                    if (!posts.some(p => p.id === doc.id)) {
-                                        posts.push({ id: doc.id, ...data });
-                                    }
-                                } else if (name === '전도, 부흥, 선교') {
-                                    if (!posts.some(p => p.id === doc.id) && (finalTopic === '전도, 부흥, 선교' || finalTopic === '전도' || finalTopic === '부흥' || finalTopic === '선교')) {
-                                        posts.push({ id: doc.id, ...data });
-                                    }
-                                }
-                            });
-                        }
-                    } else {
-                        if (name === '설교자') {
-                            const snap1 = await db.collection("posts").where("subTopics", "array-contains", "설교자").get();
-                            const snap2 = await db.collection("posts").where("subTopics", "array-contains", "설교론").get();
-                            const seenIds = new Set();
-                            snap1.forEach(doc => {
-                                if (!seenIds.has(doc.id)) {
-                                    posts.push({ id: doc.id, ...doc.data() });
-                                    seenIds.add(doc.id);
-                                }
-                            });
-                            snap2.forEach(doc => {
-                                if (!seenIds.has(doc.id)) {
-                                    posts.push({ id: doc.id, ...doc.data() });
-                                    seenIds.add(doc.id);
-                                }
-                            });
-                        } else {
-                            let q = db.collection("posts").where("subTopics", "array-contains", name);
-                            const snapshot = await q.get();
+                    const getDump = async () => {
+                        try {
+                            const res = await fetch('all_posts_dump.json');
+                            if (res.ok) return await res.json();
+                        } catch(e) {}
+                        return [];
+                    };
+
+                    try {
+                        if (type === 'major') {
+                            let q = db.collection("posts").where("tags", "array-contains", name);
+                            const snapshot = await fetchTimeout(q.get());
                             snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+
+                            if (name === '청교도 신학' || name === '전도, 부흥, 선교') {
+                                try {
+                                    const bookletSnapshot = await fetchTimeout(db.collection("posts")
+                                        .where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"])
+                                        .get(), 2500);
+                                    bookletSnapshot.forEach(doc => {
+                                        const data = doc.data();
+                                        const dbTopic = data.topic || data.subBookletTopic || data.series;
+                                        const dTopic = (typeof determineCategory === 'function') ? determineCategory(data.title, data.content) : null;
+                                        const finalTopic = dbTopic || dTopic;
+                                        if (name === '청교도 신학') {
+                                            if (!posts.some(p => p.id === doc.id)) {
+                                                posts.push({ id: doc.id, ...data });
+                                            }
+                                        } else if (name === '전도, 부흥, 선교') {
+                                            if (!posts.some(p => p.id === doc.id) && (finalTopic === '전도, 부흥, 선교' || finalTopic === '전도' || finalTopic === '부흥' || finalTopic === '선교')) {
+                                                posts.push({ id: doc.id, ...data });
+                                            }
+                                        }
+                                    });
+                                } catch(e) {}
+                            }
+                        } else {
+                            if (name === '설교자') {
+                                const snap1 = await fetchTimeout(db.collection("posts").where("subTopics", "array-contains", "설교자").get());
+                                const snap2 = await fetchTimeout(db.collection("posts").where("subTopics", "array-contains", "설교론").get());
+                                const seenIds = new Set();
+                                snap1.forEach(doc => {
+                                    if (!seenIds.has(doc.id)) {
+                                        posts.push({ id: doc.id, ...doc.data() });
+                                        seenIds.add(doc.id);
+                                    }
+                                });
+                                snap2.forEach(doc => {
+                                    if (!seenIds.has(doc.id)) {
+                                        posts.push({ id: doc.id, ...doc.data() });
+                                        seenIds.add(doc.id);
+                                    }
+                                });
+                            } else {
+                                let q = db.collection("posts").where("subTopics", "array-contains", name);
+                                const snapshot = await fetchTimeout(q.get());
+                                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                            }
                         }
+                    } catch(e) {
+                        console.warn("loadTopicResources fallback triggered:", e);
+                        const dump = await getDump();
+                        if (type === 'major') {
+                            posts = dump.filter(p => Array.isArray(p.tags) && (p.tags.includes(name) || (name === '청교도 신학' && (p.tags.includes('전도 소책자') || p.tags.includes('설교론')))));
+                        } else {
+                            posts = dump.filter(p => (Array.isArray(p.subTopics) && p.subTopics.includes(name)) || (Array.isArray(p.tags) && p.tags.includes(name)));
+                        }
+                    }
+
+                    if (posts.length === 0) {
+                        const dump = await getDump();
+                        posts = dump.filter(p => (Array.isArray(p.tags) && p.tags.includes(name)) || (Array.isArray(p.subTopics) && p.subTopics.includes(name)));
                     }
 
                     posts.sort((a, b) => {

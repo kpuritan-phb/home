@@ -1762,27 +1762,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // Updated Query Logic: Use "tags" array-contains (or array-contains-any for booklets)
-            let q = db.collection("posts");
-            if (queryTag === '전도 소책자') {
-                q = q.where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"]);
-            } else if (queryTag === '모든 자료') {
-                // No tag filter, just get all (limit for safety)
-                q = q.orderBy("createdAt", "desc").limit(500);
-            } else {
-                q = q.where("tags", "array-contains", queryTag);
+            let posts = [];
+            try {
+                let q = db.collection("posts");
+                if (queryTag === '전도 소책자') {
+                    q = q.where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF"]);
+                } else if (queryTag === '모든 자료') {
+                    q = q.orderBy("createdAt", "desc").limit(500);
+                } else {
+                    q = q.where("tags", "array-contains", queryTag);
+                }
+                const snapshot = await Promise.race([
+                    q.get(),
+                    new Promise((_, r) => setTimeout(() => r(new Error('timeout')), 3500))
+                ]);
+                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+            } catch (e) {
+                console.warn("openResourceModal fetch error/timeout, using fallback:", e);
+                const dump = await getMainDump();
+                if (queryTag === '모든 자료') {
+                    posts = dump;
+                } else {
+                    posts = dump.filter(p => Array.isArray(p.tags) && (p.tags.includes(queryTag) || p.topic === queryTag));
+                }
             }
-            const snapshot = await q.get();
 
-            if (snapshot.empty) {
+            if (posts.length === 0) {
+                const dump = await getMainDump();
+                if (queryTag === '모든 자료') {
+                    posts = dump;
+                } else {
+                    posts = dump.filter(p => Array.isArray(p.tags) && (p.tags.includes(queryTag) || p.topic === queryTag));
+                }
+            }
+
+            if (posts.length === 0) {
                 listContainer.innerHTML = '<li class="no-resource-msg">아직 등록된 자료가 없습니다.</li>';
                 return;
             }
-
-            let posts = [];
-            snapshot.forEach(doc => {
-                posts.push({ id: doc.id, ...doc.data() });
-            });
 
             // Sort by manual order first, then date desc
             posts.sort((a, b) => {
@@ -2797,19 +2814,32 @@ document.addEventListener('DOMContentLoaded', () => {
         rList.innerHTML = '<li class="no-resource-msg">검색 중입니다...</li>';
 
         try {
-            const snapshot = await db.collection("posts")
-                .where('title', '>=', query)
-                .where('title', '<=', query + '\uf8ff')
-                .get();
+            let posts = [];
+            try {
+                const snapshot = await Promise.race([
+                    db.collection("posts").where('title', '>=', query).where('title', '<=', query + '\uf8ff').get(),
+                    new Promise((_, r) => setTimeout(() => r(new Error('timeout')), 3000))
+                ]);
+                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+            } catch(e) {
+                const dump = await getMainDump();
+                const qLower = query.toLowerCase();
+                posts = dump.filter(p => (p.title && p.title.toLowerCase().includes(qLower)) || (p.content && p.content.toLowerCase().includes(qLower)));
+            }
 
-            if (snapshot.empty) {
+            if (posts.length === 0) {
+                const dump = await getMainDump();
+                const qLower = query.toLowerCase();
+                posts = dump.filter(p => (p.title && p.title.toLowerCase().includes(qLower)) || (p.content && p.content.toLowerCase().includes(qLower)));
+            }
+
+            if (posts.length === 0) {
                 rList.innerHTML = '<li class="no-resource-msg">검색 결과가 없습니다.</li>';
                 return;
             }
 
             rList.innerHTML = '';
-            snapshot.forEach(doc => {
-                const post = { id: doc.id, ...doc.data() };
+            posts.forEach(post => {
                 renderSingleResource(post, rList);
             });
 
@@ -2840,12 +2870,22 @@ document.addEventListener('DOMContentLoaded', () => {
         resourceListContainer.classList.add('compact-view'); // 숲을 볼 수 있게 콤팩트하게 표시
 
         try {
-            const snapshot = await db.collection("posts")
-                .orderBy("createdAt", "desc")
-                .limit(200)
-                .get();
+            let posts = [];
+            try {
+                const snapshot = await Promise.race([
+                    db.collection("posts").orderBy("createdAt", "desc").limit(200).get(),
+                    new Promise((_, r) => setTimeout(() => r(new Error('timeout')), 3500))
+                ]);
+                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+            } catch(e) {
+                posts = await getMainDump();
+            }
 
-            if (snapshot.empty) {
+            if (!posts || posts.length === 0) {
+                posts = await getMainDump();
+            }
+
+            if (posts.length === 0) {
                 resourceListContainer.innerHTML = '<li class="no-resource-msg">최신 자료가 없습니다.</li>';
                 return;
             }
@@ -2864,14 +2904,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             const modalPosts = [];
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                const tags = data.tags || [];
+            posts.forEach(post => {
+                const tags = post.tags || [];
                 const excluded = ['성경주석', '세미나, 강의', '세미나', '강의', '신학강론', '5분 신학강론', '오분 신학 강론'];
                 if (tags.some(tag => excluded.includes(tag))) {
                     return;
                 }
-                modalPosts.push({ id: doc.id, ...data });
+                modalPosts.push(post);
             });
 
 

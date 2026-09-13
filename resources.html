@@ -2755,6 +2755,9 @@
                 if (!posts || posts.length === 0) {
                     posts = await getFallbackPosts();
                 }
+                if (!posts || posts.length === 0) {
+                    posts = window.allPostsDumpData || [];
+                }
 
                 if (type === 'recommended') {
                     const recs = posts.filter(p => p.isRecommended || p.recommended);
@@ -3650,7 +3653,7 @@
 
     <script src="bgm.js?v=1"></script>
     <script src="stats.js?v=1"></script>
-    <script src="main.js?v=20260914_all_posts_scroll_v42"></script>
+    <script src="main.js?v=20260914_resources_fix_v45"></script>
 
 
     <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">

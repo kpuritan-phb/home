@@ -98,11 +98,38 @@ window.toggleBGM = (e) => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Add specific styles if missing (shared CSS might not have everything)
+    // Forcefully remove circle background, shadow, and border from BGM button
     const style = document.createElement('style');
     style.textContent = `
+        .bgm-control, #bgm-toggle-btn, button.bgm-control, #bgm-player .bgm-control {
+            background: transparent !important;
+            background-color: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+            outline: none !important;
+            border-radius: 0 !important;
+            width: auto !important;
+            height: auto !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .bgm-control:hover, #bgm-toggle-btn:hover {
+            background: transparent !important;
+            background-color: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+            transform: scale(1.15) !important;
+        }
+        .music-icon, .music-icon i {
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
         .bgm-player.playing .music-icon {
-            color: #1a2a44;
+            color: #1a2a44 !important;
         }
     `;
     document.head.appendChild(style);

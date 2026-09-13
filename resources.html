@@ -2034,7 +2034,7 @@
 
                 const cardsContainer = secEl.querySelector('.expos-section-cards');
 
-                activeBooks.forEach(b => {
+                activeBooks.forEach((b, idx) => {
                     const seriesPosts = posts.filter(p => p.series === b.series || (!p.series && p.title?.includes(b.series)));
                     const firstWithCover = seriesPosts.find(p => p.coverUrl) || seriesPosts[0];
                     
@@ -2054,7 +2054,15 @@
 
                     const card = document.createElement('div');
                     card.className = 'sermon-book-card';
-                    card.style.cssText = 'background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04); cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; position: relative;';
+                    card.style.cssText = 'background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04); cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); flex-direction: column; position: relative;';
+                    
+                    // 8개 이상인 경우 기본 숨김
+                    if (idx >= 8) {
+                        card.style.display = 'none';
+                        card.classList.add('expos-extra-card');
+                    } else {
+                        card.style.display = 'flex';
+                    }
 
                     card.innerHTML = `
                         <div class="book-card-thumb" style="height: 190px; position: relative; overflow: hidden; background: #f8fafc;">
@@ -2104,6 +2112,36 @@
 
                     cardsContainer.appendChild(card);
                 });
+
+                // 8개 이상일 경우 '더보기' 버튼 추가
+                if (activeBooks.length > 8) {
+                    const showMoreBtnWrapper = document.createElement('div');
+                    showMoreBtnWrapper.style.cssText = 'grid-column: 1 / -1; display: flex; justify-content: center; margin-top: 15px;';
+                    showMoreBtnWrapper.innerHTML = `
+                        <button class="expos-show-more-btn" style="background: #ffffff; border: 1.5px solid #1a342a; color: #1a342a; padding: 10px 24px; border-radius: 25px; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                            <span>더 많은 ${sec.title} 전체보기 (${activeBooks.length - 8}개 더보기)</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    `;
+                    const btn = showMoreBtnWrapper.querySelector('button');
+                    btn.onclick = () => {
+                        const extraCards = secEl.querySelectorAll('.expos-extra-card');
+                        const isExpanded = btn.getAttribute('data-expanded') === 'true';
+                        if (isExpanded) {
+                            extraCards.forEach(c => c.style.display = 'none');
+                            btn.setAttribute('data-expanded', 'false');
+                            btn.querySelector('span').textContent = `더 많은 ${sec.title} 전체보기 (${activeBooks.length - 8}개 더보기)`;
+                            btn.querySelector('i').className = 'fas fa-chevron-down';
+                            secEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        } else {
+                            extraCards.forEach(c => c.style.display = 'flex');
+                            btn.setAttribute('data-expanded', 'true');
+                            btn.querySelector('span').textContent = `${sec.title} 접기`;
+                            btn.querySelector('i').className = 'fas fa-chevron-up';
+                        }
+                    };
+                    secEl.appendChild(showMoreBtnWrapper);
+                }
 
                 wrapper.appendChild(secEl);
             });

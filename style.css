@@ -5236,8 +5236,7 @@ footer {
 
 @media (max-width: 768px) {
     .hero.hero-carousel-section {
-        height: 195px;
-        min-height: 195px;
+        display: none !important;
     }
 
     .hs-content {

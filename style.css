@@ -4405,7 +4405,7 @@ footer {
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
-        gap: 0.75rem !important;
+        gap: 0.6rem !important;
         padding: 0.4rem 0.2rem 1rem 0.2rem !important;
         -webkit-overflow-scrolling: touch !important;
         touch-action: pan-x pan-y !important;
@@ -4413,10 +4413,10 @@ footer {
     }
 
     .carousel-item-wrapper {
-        flex: 0 0 150px !important;
-        width: 150px !important;
-        min-width: 150px !important;
-        max-width: 150px !important;
+        flex: 0 0 140px !important;
+        width: 140px !important;
+        min-width: 140px !important;
+        max-width: 140px !important;
         box-sizing: border-box !important;
     }
 

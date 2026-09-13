@@ -1962,12 +1962,11 @@ document.addEventListener('DOMContentLoaded', () => {
             track.dataset.dragInited = "true";
 
             let isDown = false;
-            let startX, startY;
+            let startX;
             let scrollLeft;
             let preventClick = false;
-            let isTouchMoving = false;
 
-            // --- Mouse Drag ---
+            // --- Mouse Drag (Desktop) ---
             track.addEventListener('mousedown', (e) => {
                 isDown = true;
                 startX = e.pageX - track.offsetLeft;
@@ -1984,35 +1983,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 track.scrollLeft = scrollLeft - walk;
             });
 
-            // --- Touch Drag (Mobile Swiping) ---
+            // --- Touch Drag (Mobile Native Scroll Helper) ---
+            let touchStartX = 0;
             track.addEventListener('touchstart', (e) => {
-                if (e.touches.length !== 1) return;
-                isTouchMoving = true;
-                startX = e.touches[0].pageX - track.offsetLeft;
-                startY = e.touches[0].pageY;
-                scrollLeft = track.scrollLeft;
-                preventClick = false;
-            }, { passive: true });
-
-            track.addEventListener('touchmove', (e) => {
-                if (!isTouchMoving || e.touches.length !== 1) return;
-                const currentX = e.touches[0].pageX - track.offsetLeft;
-                const currentY = e.touches[0].pageY;
-                const diffX = currentX - startX;
-                const diffY = currentY - startY;
-
-                // 가로로 이동한 거리가 세로보다 크면 스와이프로 인식
-                if (Math.abs(diffX) > Math.abs(diffY)) {
-                    if (Math.abs(diffX) > 8) {
-                        preventClick = true;
-                    }
-                    track.scrollLeft = scrollLeft - diffX;
+                if (e.touches && e.touches.length === 1) {
+                    touchStartX = e.touches[0].clientX;
+                    preventClick = false;
                 }
             }, { passive: true });
 
-            track.addEventListener('touchend', () => {
-                isTouchMoving = false;
-            });
+            track.addEventListener('touchmove', (e) => {
+                if (e.touches && e.touches.length === 1) {
+                    const diff = Math.abs(e.touches[0].clientX - touchStartX);
+                    if (diff > 10) {
+                        preventClick = true;
+                    }
+                }
+            }, { passive: true });
 
             track.addEventListener('click', (e) => {
                 if (preventClick) {

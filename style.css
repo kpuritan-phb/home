@@ -4396,24 +4396,20 @@ footer {
         box-sizing: border-box;
     }
 
-    /* 캐러셀 트랙의 경우 모바일 손가락 스위핑(좌우 터치 밀기)으로 다른 자료들이 자연스럽게 쑥쑥 넘어가도록 스크롤 스냅 및 터치감 보장 */
+    /* 캐러셀 트랙의 경우 모바일 손가락 스위핑(좌우 터치 밀기)으로 다른 자료들이 자연스럽게 쑥쑥 넘어가도록 터치감 보장 */
     .carousel-track {
         max-width: 100% !important;
-        overflow-x: auto !important;
+        width: 100% !important;
+        overflow-x: scroll !important;
         overflow-y: hidden !important;
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
         gap: 0.75rem !important;
-        padding-bottom: 0.8rem !important;
+        padding: 0.4rem 0.2rem 0.8rem 0.2rem !important;
         -webkit-overflow-scrolling: touch !important;
         touch-action: pan-x pan-y !important;
-        scroll-behavior: smooth !important;
-        scroll-snap-type: x mandatory !important;
-    }
-
-    .carousel-track > * {
-        scroll-snap-align: start !important;
+        box-sizing: border-box !important;
     }
 
     .carousel-item-wrapper {
@@ -4421,6 +4417,7 @@ footer {
         width: 150px !important;
         min-width: 150px !important;
         max-width: 150px !important;
+        box-sizing: border-box !important;
     }
 
     .carousel-title {

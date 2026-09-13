@@ -5331,29 +5331,80 @@ button, a, input, select, textarea {
         justify-content: center !important;
     }
 
-    /* 3. Mobile Grid & Card Modernization */
+    /* 3. Mobile Grid & Card Compact Modernization (Display 8+ items per screen) */
     .resource-grid,
     .books-grid,
     .booklets-grid,
     .card-grid,
     .sermon-grid,
-    .grid-container {
-        grid-template-columns: 1fr !important;
-        gap: 1.25rem !important;
+    .grid-container,
+    .recent-posts-grid,
+    .carousel-grid,
+    .grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.6rem !important;
+        padding: 0 0.2rem !important;
     }
 
     .card,
     .resource-card,
-    .book-card {
-        border-radius: 14px !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    .book-card,
+    .carousel-card,
+    .sermon-card {
+        border-radius: 10px !important;
+        padding: 0.45rem !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+        transition: transform 0.15s ease;
+        background: #ffffff !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .card-thumbnail,
+    .resource-card-thumb,
+    .book-card-cover,
+    .carousel-card-img,
+    .card img,
+    .resource-card img {
+        height: 92px !important;
+        max-height: 92px !important;
+        object-fit: cover !important;
+        border-radius: 7px !important;
+        width: 100% !important;
+    }
+
+    .card-title,
+    .resource-title,
+    .carousel-card-title,
+    .card h3,
+    .resource-card h3 {
+        font-size: 0.82rem !important;
+        line-height: 1.25 !important;
+        font-weight: 700 !important;
+        margin-top: 0.35rem !important;
+        margin-bottom: 0.2rem !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        color: #222 !important;
+    }
+
+    .card-meta,
+    .resource-author,
+    .carousel-card-meta,
+    .card .date,
+    .resource-card .date {
+        font-size: 0.72rem !important;
+        color: #888888 !important;
+        margin-top: auto !important;
     }
 
     .card:active,
     .resource-card:active,
     .book-card:active {
-        transform: scale(0.985);
+        transform: scale(0.96);
     }
 
     /* 4. Mobile Floating Controls & Safe Area Padding */

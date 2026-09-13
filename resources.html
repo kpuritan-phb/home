@@ -310,8 +310,9 @@
             }
 
             .bible-index-section {
-                padding: 10px 8px;
+                padding: 10px 6px;
                 border-radius: 10px;
+                overflow-x: hidden;
             }
 
             .bible-section-header {
@@ -324,18 +325,21 @@
             }
 
             .bible-grid {
-                grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
-                gap: 5px 4px;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 5px 3px;
+                width: 100%;
             }
 
             .bible-book-btn {
                 padding: 6px 1px;
-                font-size: 0.73rem;
-                letter-spacing: -0.5px;
-                word-break: keep-all;
+                font-size: Clamp(0.65rem, 2.7vw, 0.78rem);
+                letter-spacing: -0.6px;
+                word-break: break-all;
                 white-space: normal;
                 line-height: 1.15;
                 min-height: 32px;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
 

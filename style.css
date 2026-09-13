@@ -5274,8 +5274,8 @@ footer {
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        gap: 0.8rem;
-        padding-top: 0.5rem;
+        gap: 1rem;
+        padding-top: 0.3rem;
     }
 
     .hs-book-cover-wrap {
@@ -5290,10 +5290,10 @@ footer {
     }
 
     .hs-book-cover-img {
-        height: 110px;
-        max-width: 80px;
-        border-radius: 3px 5px 5px 3px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+        height: 135px;
+        max-width: 95px;
+        border-radius: 3px 6px 6px 3px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
     }
 
     .hs-book-text {
@@ -5302,8 +5302,8 @@ footer {
     }
 
     .hs-book-badge   { justify-content: flex-start; margin-bottom: 0.2rem; }
-    .hs-book-title   { font-size: 0.95rem !important; margin-bottom: 0.2rem !important; line-height: 1.25 !important; font-weight: 800 !important; }
-    .hs-book-author  { font-size: 0.75rem !important; margin-bottom: 0.2rem !important; color: #d4af37 !important; font-weight: 700 !important; }
+    .hs-book-title   { font-size: 1.15rem !important; margin-bottom: 0.25rem !important; line-height: 1.25 !important; font-weight: 800 !important; }
+    .hs-book-author  { font-size: 0.85rem !important; margin-bottom: 0.25rem !important; color: #d4af37 !important; font-weight: 700 !important; }
     .hs-book-tagline { display: none !important; }
     .hs-book-desc    { 
         display: -webkit-box !important; 
@@ -5311,16 +5311,16 @@ footer {
         -webkit-box-orient: vertical !important; 
         overflow: hidden !important; 
         text-overflow: ellipsis !important; 
-        font-size: 0.72rem !important; 
-        line-height: 1.35 !important; 
-        color: rgba(255, 255, 255, 0.9) !important; 
-        margin: 0.2rem 0 0.4rem 0 !important; 
+        font-size: 0.82rem !important; 
+        line-height: 1.4 !important; 
+        color: rgba(255, 255, 255, 0.92) !important; 
+        margin: 0.2rem 0 0.5rem 0 !important; 
         max-width: 100% !important; 
         text-shadow: 0 1px 4px rgba(0,0,0,0.6) !important;
     }
-    .hs-cta-btn      { font-size: 0.7rem !important; padding: 0.3rem 0.8rem !important; margin-bottom: 0.2rem !important; }
+    .hs-cta-btn      { font-size: 0.78rem !important; padding: 0.35rem 0.95rem !important; margin-bottom: 0.2rem !important; }
 
-    .hero-nav-btn { width: 24px; height: 24px; font-size: 0.65rem; z-index: 20; opacity: 0.8; }
+    .hero-nav-btn { width: 26px; height: 26px; font-size: 0.7rem; z-index: 20; opacity: 0.85; }
     .hero-prev    { left: 0.2rem; }
     .hero-next    { right: 0.2rem; }
 

@@ -220,13 +220,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Mobile Menu Toggle & Accordion ---
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-    const nav = document.querySelector('nav');
+    const nav = document.querySelector('header nav');
     const navOverlay = document.querySelector('.nav-overlay');
 
     if (mobileMenuToggle) {
-        mobileMenuToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
+        const toggleMenu = (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             if (nav) {
                 const isActive = nav.classList.toggle('active');
                 mobileMenuToggle.setAttribute('aria-expanded', isActive ? 'true' : 'false');
@@ -238,13 +240,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         icon.classList.replace('fa-times', 'fa-bars');
                     }
                 }
+                if (isActive) {
+                    document.body.style.overflow = 'hidden'; // 모바일 배경 스크롤 방지
+                } else {
+                    document.body.style.overflow = '';
+                }
             }
             if (navOverlay) navOverlay.classList.toggle('active');
-        });
+        };
+
+        mobileMenuToggle.addEventListener('click', toggleMenu);
 
         const closeMenu = () => {
             if (nav) nav.classList.remove('active');
             if (navOverlay) navOverlay.classList.remove('active');
+            document.body.style.overflow = '';
             mobileMenuToggle.setAttribute('aria-expanded', 'false');
             const icon = mobileMenuToggle.querySelector('i');
             if (icon) icon.classList.replace('fa-times', 'fa-bars');
@@ -256,23 +266,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeMenu();
             }
         });
+
+        // 네비게이션 내 링크 클릭 시 드로어 자동 닫기 (서브 메뉴 포함)
+        const navLinks = document.querySelectorAll('header nav a:not(.dropdown > a)');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    closeMenu();
+                }
+            });
+        });
     }
 
-    // 모바일 아코디언 드롭다운 토글
-    const dropdowns = document.querySelectorAll('nav ul li.dropdown');
+    // 모바일 아코디언 드롭다운 토글 개선
+    const dropdowns = document.querySelectorAll('header nav ul li.dropdown');
     dropdowns.forEach(dropdown => {
-        const link = dropdown.querySelector('a');
+        const link = dropdown.querySelector(':scope > a');
         if (link) {
             link.addEventListener('click', (e) => {
                 if (window.innerWidth <= 1024) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
+                    // 모바일에서는 화살표나 메뉴 클릭 시 아코디언 토글
                     const isOpen = dropdown.classList.contains('open');
-                    dropdowns.forEach(d => d.classList.remove('open'));
                     
-                    if (!isOpen) {
-                        dropdown.classList.add('open');
+                    // 서브메뉴 없는 경우 링크 이동 허용, 서브메뉴 있으면 토글
+                    const subMenu = dropdown.querySelector('.dropdown-content');
+                    if (subMenu) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // 다른 드롭다운 닫기
+                        dropdowns.forEach(d => {
+                            if (d !== dropdown) d.classList.remove('open');
+                        });
+                        
+                        if (!isOpen) {
+                            dropdown.classList.add('open');
+                        } else {
+                            dropdown.classList.remove('open');
+                        }
                     }
                 }
             });

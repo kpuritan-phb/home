@@ -348,15 +348,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // --- Mobile Menu Toggle & Accordion ---
+    // --- Mobile Menu Toggle & Accordion (Debounced Single Trigger) ---
+    let mobileToggleLock = false;
     window.toggleMobileMenu = (e) => {
         if (e) {
-            e.preventDefault();
-            e.stopPropagation();
+            try { e.preventDefault(); } catch (err) {}
+            try { e.stopPropagation(); } catch (err) {}
         }
+        if (mobileToggleLock) return;
+        mobileToggleLock = true;
+        setTimeout(() => { mobileToggleLock = false; }, 300);
+
         const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
         const targetNav = document.querySelector('header nav, .nav-container nav, nav');
-        const navOverlay = document.querySelector('.nav-overlay');
+        let navOverlay = document.querySelector('.nav-overlay');
+
+        if (!navOverlay) {
+            navOverlay = document.createElement('div');
+            navOverlay.className = 'nav-overlay';
+            document.body.appendChild(navOverlay);
+        }
 
         if (targetNav) {
             const isActive = targetNav.classList.toggle('active');
@@ -369,32 +380,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (isActive) {
                 document.body.style.overflow = 'hidden';
+                navOverlay.classList.add('active');
             } else {
                 document.body.style.overflow = '';
+                navOverlay.classList.remove('active');
             }
         }
-        if (navOverlay) navOverlay.classList.toggle('active');
     };
 
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-    const navOverlay = document.querySelector('.nav-overlay');
-
     if (mobileMenuToggle) {
-        let lastHandledTime = 0;
-        const handleToggle = (e) => {
-            const now = Date.now();
-            if (now - lastHandledTime < 200) return;
-            lastHandledTime = now;
-            window.toggleMobileMenu(e);
-        };
-
-        mobileMenuToggle.addEventListener('pointerdown', handleToggle);
-        mobileMenuToggle.addEventListener('click', handleToggle);
+        mobileMenuToggle.addEventListener('click', (e) => window.toggleMobileMenu(e));
 
         const closeMenu = () => {
             const targetNav = document.querySelector('header nav, .nav-container nav, nav');
             if (targetNav) targetNav.classList.remove('active');
-            const overlay = navOverlay || document.querySelector('.nav-overlay');
+            const overlay = document.querySelector('.nav-overlay');
             if (overlay) overlay.classList.remove('active');
             document.body.style.overflow = '';
             mobileMenuToggle.setAttribute('aria-expanded', 'false');
@@ -402,7 +403,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (icon) icon.className = 'fas fa-bars';
         };
 
-        if (navOverlay) navOverlay.addEventListener('click', closeMenu);
+        document.addEventListener('click', (e) => {
+            if (e.target.classList && e.target.classList.contains('nav-overlay')) {
+                closeMenu();
+            }
+        });
         document.addEventListener('click', (e) => {
             const targetNav = document.querySelector('header nav, .nav-container nav, nav');
             if (targetNav && targetNav.classList.contains('active') && !targetNav.contains(e.target) && !mobileMenuToggle.contains(e.target)) {

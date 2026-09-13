@@ -5222,7 +5222,7 @@ footer {
     .hs-book-cover-img { height: 260px; max-width: 185px; }
     .hs-content        { padding: 0 2.5rem; }
     .hs-content--book  { gap: 2rem; }
-    .hs-book-desc      { display: none; }
+    .hs-book-desc      { display: block; font-size: 0.82rem; line-height: 1.5; color: rgba(255,255,255,0.85); margin-bottom: 1rem; }
 }
 
 @media (max-width: 768px) {
@@ -5287,11 +5287,19 @@ footer {
     }
 
     .hs-book-badge   { justify-content: center; margin-bottom: 0.3rem; }
-    .hs-book-title   { font-size: 0.95rem !important; margin-bottom: 0.2rem !important; line-height: 1.3 !important; }
-    .hs-book-author  { font-size: 0.68rem !important; margin-bottom: 0.2rem !important; }
-    .hs-book-tagline { font-size: 0.7rem !important; margin-bottom: 0.4rem !important; }
-    .hs-book-desc    { display: none !important; }
-    .hs-cta-btn      { font-size: 0.68rem !important; padding: 0.38rem 0.9rem !important; margin-bottom: 0.5rem !important; }
+    .hs-book-title   { font-size: 1.15rem !important; margin-bottom: 0.3rem !important; line-height: 1.3 !important; font-weight: 800 !important; }
+    .hs-book-author  { font-size: 0.82rem !important; margin-bottom: 0.3rem !important; color: #d4af37 !important; font-weight: 700 !important; }
+    .hs-book-tagline { font-size: 0.85rem !important; margin-bottom: 0.4rem !important; color: #ffffff !important; }
+    .hs-book-desc    { 
+        display: block !important; 
+        font-size: 0.78rem !important; 
+        line-height: 1.5 !important; 
+        color: rgba(255, 255, 255, 0.9) !important; 
+        margin: 0.4rem auto 0.8rem auto !important; 
+        max-width: 90% !important; 
+        text-shadow: 0 1px 4px rgba(0,0,0,0.6) !important;
+    }
+    .hs-cta-btn      { font-size: 0.78rem !important; padding: 0.45rem 1.1rem !important; margin-bottom: 0.5rem !important; }
 
     .hero-nav-btn { width: 28px; height: 28px; font-size: 0.75rem; z-index: 20; opacity: 0.8; }
     .hero-prev    { left: 0.3rem; }

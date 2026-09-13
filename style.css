@@ -4121,31 +4121,50 @@ footer {
         display: none !important;
     }
 
-    /* 모바일 플로팅 탐색 버튼 활성화 */
+    /* 모바일 왼쪽 책갈피 탐색 탭 버튼 */
     .mobile-explore-btn {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 0.5rem;
+        gap: 5px;
         position: fixed;
-        bottom: 110px;
-        right: 20px;
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 0.8rem 1.2rem;
-        border-radius: 50px;
-        font-size: 0.95rem;
-        font-weight: 700;
-        box-shadow: 0 4px 15px rgba(11, 26, 48, 0.25);
+        top: 42%;
+        left: 0;
+        right: auto;
+        bottom: auto;
+        background: #1a342a;
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-left: none;
+        padding: 10px 6px 12px 6px;
+        border-radius: 0 10px 10px 0;
+        font-size: 0.7rem;
+        font-weight: 800;
+        box-shadow: 3px 4px 15px rgba(0, 0, 0, 0.3);
         z-index: 9999;
         cursor: pointer;
-        transition: transform 0.2s, background 0.2s;
+        transition: all 0.2s ease;
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        letter-spacing: 2px;
+    }
+
+    .mobile-explore-btn i {
+        font-size: 0.78rem;
+        color: #d4af37; /* 책갈피 금빛 아이콘 포인트 */
+        transform: rotate(90deg);
+        margin-bottom: 2px;
+    }
+
+    .mobile-explore-btn:hover {
+        padding-left: 9px;
+        background: #12251e;
     }
 
     .mobile-explore-btn:active {
-        transform: scale(0.92);
-        background: #050d18;
+        transform: scale(0.95);
+        background: #0b1713;
     }
 
     /* 모바일 사이드바 -> 바텀시트 모달 드로어 전환 (기본 100% 숨김) */

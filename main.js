@@ -2803,6 +2803,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.renderPostsToCarousels = (allPosts) => {
         if (!Array.isArray(allPosts) || allPosts.length === 0) return false;
         try {
+            window.allPosts = allPosts;
             window.isDataLoaded = true;
 
             // 1. New Arrivals (최신 업데이트 - 24개)
@@ -2837,7 +2838,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // 2. Featured Topics
+            // 2. Featured Topics (If carousel-topic exists in DOM)
             const topicTrack = document.getElementById('carousel-topic');
             if (topicTrack) {
                 topicTrack.innerHTML = '';
@@ -2913,7 +2914,12 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn("JSON Dump fetch failed:", e);
         }
 
-        // 2. Refresh with live DB data if connected
+        // 2. Fallback to global window.allPosts if available
+        if (!window.isDataLoaded && Array.isArray(window.allPosts) && window.allPosts.length > 0) {
+            window.renderPostsToCarousels(window.allPosts);
+        }
+
+        // 3. Refresh with live DB data if connected
         if (window.db) {
             try {
                 const snapshot = await window.db.collection("posts").orderBy("createdAt", "desc").limit(500).get();

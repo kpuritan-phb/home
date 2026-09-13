@@ -879,25 +879,31 @@
         .pagination {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-top: 50px;
+            align-items: center;
+            gap: 6px;
+            margin-top: 40px;
             margin-bottom: 50px;
             grid-column: 1 / -1;
+            flex-wrap: wrap;
         }
 
         .page-btn {
-            width: 40px;
-            height: 40px;
-            border: 1px solid #ddd;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 6px;
+            box-sizing: border-box;
+            border: 1px solid #e2e8f0;
             background: white;
             color: #333;
             border-radius: 50%;
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 0.88rem;
             transition: all 0.2s;
+            flex-shrink: 0;
         }
 
         .page-btn.active {
@@ -908,16 +914,34 @@
 
         .page-btn.page-nav-btn {
             width: auto;
-            min-width: 40px;
-            padding: 0 14px;
-            border-radius: 20px;
-            font-size: 0.86rem;
-            gap: 6px;
+            min-width: 36px;
+            padding: 0 10px;
+            border-radius: 18px;
+            font-size: 0.8rem;
+            gap: 4px;
         }
 
         .page-btn:hover:not(.active):not(:disabled) {
             background: #f0f0f0;
             border-color: #cbd5e0;
+        }
+
+        @media screen and (max-width: 768px) {
+            .pagination {
+                gap: 4px;
+            }
+
+            .page-btn {
+                min-width: 32px;
+                height: 32px;
+                padding: 0 4px;
+                font-size: 0.8rem;
+            }
+
+            .page-btn.page-nav-btn {
+                padding: 0 8px;
+                font-size: 0.75rem;
+            }
         }
 
         /* 성경 강의 폴더 스타일 */

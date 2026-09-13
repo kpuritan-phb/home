@@ -2869,14 +2869,18 @@
                             });
                         }
                     } else if (category === '세미나, 강의' || category === '세미나' || category === '강의') {
-                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["세미나, 강의", "세미나", "강의"]).get(), 1000);
-                        const seenIds = new Set();
-                        snap1.forEach(doc => {
-                            if (!seenIds.has(doc.id)) {
-                                posts.push({ id: doc.id, ...doc.data() });
-                                seenIds.add(doc.id);
-                            }
-                        });
+                        try {
+                            const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["세미나, 강의", "세미나", "강의"]).get(), 1000);
+                            const seenIds = new Set();
+                            snap1.forEach(doc => {
+                                if (!seenIds.has(doc.id)) {
+                                    posts.push({ id: doc.id, ...doc.data() });
+                                    seenIds.add(doc.id);
+                                }
+                            });
+                        } catch(e) {
+                            console.warn("Seminar fetch notice:", e);
+                        }
                         if (s) {
                             posts = posts.filter(p => p.series === s || (p.tags && p.tags.includes(s)));
                         }
@@ -2976,6 +2980,10 @@
                 console.error("loadCategoryItems error:", err);
                 try {
                     const dump = await getFallbackPosts();
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const s = urlParams.get('s');
+                    const b = urlParams.get('b');
+                    const subTopic = urlParams.get('subTopic');
                     const filtered = filterDumpPostsByCategory(dump, category, s, b, subTopic);
                     if (filtered && filtered.length > 0) {
                         allCurrentPosts = filtered;
@@ -2985,7 +2993,7 @@
                         return;
                     }
                 } catch(e) {}
-                grid.innerHTML = '<div class="no-results">자료를 불러오는 중에 오류가 발생했습니다.</div>';
+                grid.innerHTML = '<div class="no-results" style="padding: 2.5rem; text-align: center; color: #718096; grid-column: 1/-1;">등록된 자료가 없습니다.</div>';
             }
         }
 

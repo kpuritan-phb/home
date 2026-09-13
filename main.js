@@ -1666,22 +1666,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.openResourceModal = async (categoryName, targetSeries = null, targetPostId = null) => {
-        // DOM 요소 안전 조회
-        const modal = document.getElementById('resource-modal');
-        const listContainer = document.getElementById('resource-list-container');
-        const titleElem = document.getElementById('resource-modal-title');
-
-        if (!modal || !listContainer) {
-            console.error("Critical: Resource modal elements not found.");
+        if (targetPostId) {
+            window.location.href = `viewer.html?id=${encodeURIComponent(targetPostId)}`;
             return;
         }
-
-        // 모달 열기 (기존 함수 활용 또는 직접 제어)
-        if (window.openModal) {
-            window.openModal(modal);
-        } else {
-            modal.classList.add('show');
-        }
+        let targetUrl = 'resources.html';
+        const params = new URLSearchParams();
+        if (categoryName) params.set('cat', categoryName);
+        if (targetSeries) params.set('series', targetSeries);
+        const queryString = params.toString();
+        if (queryString) targetUrl += `?${queryString}`;
+        window.location.href = targetUrl;
+    };
 
         // 카테고리 이름 정문화 (기존 태그와의 호환성 유지)
         let queryTag = categoryName;

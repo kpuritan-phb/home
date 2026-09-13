@@ -1,77 +1,19 @@
 // --- Core Logic Inlined (Emergency Fix) ---
 window.isDataLoaded = false;
 
-// Simplified Modal Opener (Inline)
+// Simplified Page Router (No Modal)
 window.openResourceModal = (category, series, docId) => {
-    const modal = document.getElementById('resource-modal');
-    const list = document.getElementById('resource-list-container');
-    const title = document.getElementById('resource-modal-title');
-
-    if (modal && list) {
-        if (window.openModal) {
-            window.openModal(modal);
-        } else {
-            modal.classList.add('show');
-        }
-        if (title) title.textContent = (series || category) + " 자료 목록";
-        list.innerHTML = '<li class="no-resource-msg">자료를 불러오는 중입니다...</li>';
-
-        // Fetch specific resource or list
-        if (window.db) {
-            let query = window.db.collection("posts");
-            if (series) {
-                query = query.where("series", "==", series);
-            } else {
-                query = query.where("tags", "array-contains", category);
-            }
-
-            query.orderBy("createdAt", "desc").limit(20).get().then(snap => {
-                if (!snap.empty) {
-                    list.innerHTML = '';
-                    snap.forEach(doc => {
-                        const item = doc.data();
-                        const li = document.createElement('li');
-                        li.className = 'resource-item';
-
-                        // Link Check
-                        let linkHtml = '';
-                        const fileUrl = item.fileUrl || item.downloadUrl;
-                        const isPdf = fileUrl && /(?:\.|%2E)pdf($|\?|#)/i.test(fileUrl);
-
-                        if (fileUrl) {
-                            if (isPdf) {
-                                linkHtml += `<a href="${fileUrl}" target="_blank" class="download-btn"><i class="fas fa-eye"></i> 열기</a>`;
-                            } else {
-                                linkHtml += `<a href="${fileUrl}" target="_blank" class="download-btn"><i class="fas fa-file-download"></i> 다운로드</a>`;
-                            }
-                        }
-
-                        if (item.youtubeLink) linkHtml += `<a href="${item.youtubeLink}" target="_blank" class="download-btn youtube"><i class="fab fa-youtube"></i> 영상 보기</a>`;
-                        if (!linkHtml) linkHtml = `<span style="color:#999; font-size:0.8rem;">첨부 파일 없음</span>`;
-
-                        li.innerHTML = `
-                                    <div class="resource-header">
-                                        <span class="resource-category">${item.series || item.tags[0]}</span>
-                                        <span class="resource-date">${item.createdAt ? item.createdAt.toDate().toLocaleDateString() : ''}</span>
-                                    </div>
-                                    <h3 class="resource-title">${item.title}</h3>
-                                    <div class="resource-link-container">
-                                        ${linkHtml}
-                                    </div>
-                                    <div class="resource-content">${item.content || ''}</div>
-                                 `;
-                        list.appendChild(li);
-                    });
-                } else {
-                    list.innerHTML = '<li class="no-resource-msg">해당 분류에 등록된 자료가 없습니다.</li>';
-                }
-            }).catch(err => {
-                list.innerHTML = '<li class="no-resource-msg">자료 로딩 실패: ' + err.message + '</li>';
-            });
-        } else {
-            list.innerHTML = '<li class="no-resource-msg">DB 연결이 되어있지 않습니다.</li>';
-        }
+    if (docId) {
+        window.location.href = `viewer.html?id=${encodeURIComponent(docId)}`;
+        return;
     }
+    let targetUrl = 'resources.html';
+    const params = new URLSearchParams();
+    if (category) params.set('cat', category);
+    if (series) params.set('series', series);
+    const queryString = params.toString();
+    if (queryString) targetUrl += `?${queryString}`;
+    window.location.href = targetUrl;
 };
 
 window.createCarouselCard = (post, docId) => {

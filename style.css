@@ -4372,8 +4372,7 @@ footer {
     }
 
     .main-grid-item,
-    .explorer-result-card,
-    .carousel-card {
+    .explorer-result-card {
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
@@ -4394,7 +4393,7 @@ footer {
     /* 캐러셀 트랙의 경우 모바일 손가락 스위핑(좌우 터치 밀기)으로 다른 자료들이 자연스럽게 쑥쑥 넘어가도록 스크롤 스냅 및 터치감 보장 */
     .carousel-track {
         max-width: 100% !important;
-        overflow-x: auto !important;
+        overflow-x: scroll !important;
         overflow-y: hidden !important;
         display: grid !important;
         grid-template-rows: repeat(2, auto) !important;
@@ -4405,13 +4404,14 @@ footer {
         touch-action: pan-x pan-y !important;
         gap: 0.6rem 0.5rem !important;
         padding-bottom: 0.8rem !important;
+        scroll-behavior: smooth;
     }
 
     .carousel-item-wrapper {
         flex: none !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
+        width: 145px !important;
+        min-width: 145px !important;
+        max-width: 145px !important;
         scroll-snap-align: start !important;
     }
 

@@ -1958,14 +1958,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const initCarouselDrag = () => {
         const tracks = document.querySelectorAll('.carousel-track');
         tracks.forEach(track => {
-            let isDown = false;
-            let startX;
-            let scrollLeft;
-            let startTime;
-            let lastMoveTime = 0;
-            let lastX = 0;
-            let preventClick = false;
+            if (track.dataset.dragInited) return;
+            track.dataset.dragInited = "true";
 
+            let isDown = false;
+            let startX, startY;
+            let scrollLeft;
+            let preventClick = false;
+            let isTouchMoving = false;
+
+            // --- Mouse Drag ---
             track.addEventListener('mousedown', (e) => {
                 isDown = true;
                 startX = e.pageX - track.offsetLeft;
@@ -1976,11 +1978,40 @@ document.addEventListener('DOMContentLoaded', () => {
             track.addEventListener('mouseup', () => { isDown = false; });
             track.addEventListener('mousemove', (e) => {
                 if (!isDown) return;
-                e.preventDefault();
                 const x = e.pageX - track.offsetLeft;
                 const walk = (x - startX) * 1.5;
                 if (Math.abs(walk) > 5) preventClick = true;
                 track.scrollLeft = scrollLeft - walk;
+            });
+
+            // --- Touch Drag (Mobile Swiping) ---
+            track.addEventListener('touchstart', (e) => {
+                if (e.touches.length !== 1) return;
+                isTouchMoving = true;
+                startX = e.touches[0].pageX - track.offsetLeft;
+                startY = e.touches[0].pageY;
+                scrollLeft = track.scrollLeft;
+                preventClick = false;
+            }, { passive: true });
+
+            track.addEventListener('touchmove', (e) => {
+                if (!isTouchMoving || e.touches.length !== 1) return;
+                const currentX = e.touches[0].pageX - track.offsetLeft;
+                const currentY = e.touches[0].pageY;
+                const diffX = currentX - startX;
+                const diffY = currentY - startY;
+
+                // 가로로 이동한 거리가 세로보다 크면 스와이프로 인식
+                if (Math.abs(diffX) > Math.abs(diffY)) {
+                    if (Math.abs(diffX) > 8) {
+                        preventClick = true;
+                    }
+                    track.scrollLeft = scrollLeft - diffX;
+                }
+            }, { passive: true });
+
+            track.addEventListener('touchend', () => {
+                isTouchMoving = false;
             });
 
             track.addEventListener('click', (e) => {

@@ -2858,10 +2858,16 @@
                     return isMatch;
                 });
             } else if (category === '성경주석' && b) {
-                posts = posts.filter(p => p.series === b);
+                posts = posts.filter(p => {
+                    const pSeries = p.series || '';
+                    const pTitle = p.title || '';
+                    const pContent = p.content || '';
+                    const pTags = Array.isArray(p.tags) ? p.tags : [];
+                    return pSeries === b || pSeries.includes(b) || pTags.includes(b) || pTitle.includes(b) || pContent.includes(b);
+                });
                 if (s) {
                     const target = s.endsWith('장') ? s : s + '장';
-                    posts = posts.filter(p => p.title && p.title.includes(' ' + target));
+                    posts = posts.filter(p => p.title && (p.title.includes(' ' + target) || p.title.includes(target)));
                 }
             } else if (s) {
                 const cleanS = s.trim();

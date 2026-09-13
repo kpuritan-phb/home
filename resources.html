@@ -2866,8 +2866,21 @@
                     return pSeries === b || pSeries.includes(b) || pTags.includes(b) || pTitle.includes(b) || pContent.includes(b);
                 });
                 if (s) {
-                    const target = s.endsWith('장') ? s : s + '장';
-                    posts = posts.filter(p => p.title && (p.title.includes(' ' + target) || p.title.includes(target)));
+                    const numMatch = s.match(/\d+/);
+                    const chNum = numMatch ? numMatch[0] : null;
+                    posts = posts.filter(p => {
+                        const title = p.title || '';
+                        const id = p.id || '';
+                        const content = p.content || '';
+                        if (chNum) {
+                            // Extract numbers before '장'
+                            const tMatches = [...title.matchAll(/(\d+)장/g)].map(m => m[1]);
+                            const idMatches = [...id.matchAll(/(\d+)장/g)].map(m => m[1]);
+                            if (tMatches.includes(chNum) || idMatches.includes(chNum)) return true;
+                        }
+                        const target = s.endsWith('장') ? s : s + '장';
+                        return title.includes(target) || id.includes(target) || content.includes(target);
+                    });
                 }
             } else if (s) {
                 const cleanS = s.trim();
@@ -3072,8 +3085,20 @@
                             });
 
                             if (s) {
-                                const target = s.endsWith('장') ? s : s + '장';
-                                posts = posts.filter(p => p.title && (p.title.includes(' ' + target) || p.title.includes(target)));
+                                const numMatch = s.match(/\d+/);
+                                const chNum = numMatch ? numMatch[0] : null;
+                                posts = posts.filter(p => {
+                                    const title = p.title || '';
+                                    const id = p.id || '';
+                                    const content = p.content || '';
+                                    if (chNum) {
+                                        const tMatches = [...title.matchAll(/(\d+)장/g)].map(m => m[1]);
+                                        const idMatches = [...id.matchAll(/(\d+)장/g)].map(m => m[1]);
+                                        if (tMatches.includes(chNum) || idMatches.includes(chNum)) return true;
+                                    }
+                                    const target = s.endsWith('장') ? s : s + '장';
+                                    return title.includes(target) || id.includes(target) || content.includes(target);
+                                });
                             }
                         }
                     } else {

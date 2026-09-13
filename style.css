@@ -4351,23 +4351,24 @@ footer {
         box-sizing: border-box;
     }
 
-    /* 캐러셀 트랙의 경우 모바일 터치 스크롤이 되도록 유연성 확보 */
+    /* 캐러셀 트랙의 경우 모바일 터치 스크롤이 되도록 유연성 확보 (2줄 4열 형태로 한 화면에 약 8개 보이도록 조절) */
     .carousel-track {
         max-width: 100% !important;
         overflow-x: auto !important;
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
+        display: grid !important;
+        grid-template-rows: repeat(2, auto) !important;
+        grid-auto-flow: column !important;
+        grid-auto-columns: min(140px, calc(46vw - 8px)) !important;
         -webkit-overflow-scrolling: touch !important;
-        gap: 1rem !important;
-        padding-bottom: 1rem !important;
+        gap: 0.6rem 0.5rem !important;
+        padding-bottom: 0.8rem !important;
     }
 
     .carousel-item-wrapper {
-        flex: 0 0 240px !important;
-        width: 240px !important;
-        min-width: 240px !important;
-        max-width: 280px !important;
+        flex: none !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
     }
 
     .carousel-card {

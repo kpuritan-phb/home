@@ -2793,78 +2793,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Mock Data Rendering for Carousel ---
+    // --- Mock Data Rendering for Carousel (Disabled to force real data only) ---
     window.renderMockCarousels = () => {
-        const baseData = [
-            { title: "청교도 신학의 정수: 존 오웬의 성령론", cat: "청교도 신학", date: "2026.01.15", series: "" },
-            { title: "현대 교회를 위한 웨스트민스터 신앙고백 해설", cat: "신앙고백", date: "2026.01.12", series: "" },
-            { title: "고난 속의 위로: 리처드 십스의 상한 갈대", cat: "경건 서적", date: "2026.01.10", series: "" },
-            { title: "설교란 무엇인가? 마틴 로이드 존스의 설교학", cat: "설교학", date: "2026.01.08", series: "" },
-            { title: "가정 예배의 회복과 실제적인 지침", cat: "신자의 삶", date: "2026.01.05", series: "" },
-            { title: "은혜의 수단으로서의 기도", cat: "청교도 신학", date: "2026.01.03", series: "" },
-            { title: "참된 회심의 성경적 표지", cat: "회심", date: "2026.01.01", series: "" },
-            { title: "그리스도의 위격과 사역", cat: "기독론", date: "2025.12.28", series: "" },
-            { title: "영적 전쟁과 사탄의 계략", cat: "영적전쟁", date: "2025.12.25", series: "" },
-            { title: "부부의 사랑과 기독교적 혼인", cat: "그리스도인의 가정", date: "2025.12.20", series: "" },
-            { title: "세계 선교와 복음 전파의 사명", cat: "전도, 부흥, 선교", date: "2025.12.15", series: "" },
-            { title: "장로교 역사와 신조의 성립", cat: "역사 신학", date: "2025.12.10", series: "" }
-        ];
-
-        const mockData = [
-            ...baseData.map((item, index) => ({ ...item, id: `mock_new_${index}` })),
-            ...baseData.map((item, index) => ({ ...item, title: "[추천] " + item.title, id: `mock_new_ext_${index}` }))
-        ];
-
-        const mockSermons = [
-            { id: 'mock_s1', title: "요한계시록 강해 (1): 승리하신 그리스도", cat: "강해설교", date: "2026.01.01", series: "요한계시록 강해" },
-            { id: 'mock_s2', title: "로마서 강해 (12): 이신칭의의 교리", cat: "강해설교", date: "2025.12.25", series: "로마서 강해" },
-            { id: 'mock_s3', title: "산상수훈 강해 (5): 팔복의 의미", cat: "강해설교", date: "2025.12.20", series: "산상수훈 강해" },
-            { id: 'mock_s4', title: "에베소서 강해 (3): 교회란 무엇인가", cat: "강해설교", date: "2025.12.15", series: "에베소서 강해" },
-            { id: 'mock_s5', title: "시편 강해 (23): 목자되신 여호와", cat: "강해설교", date: "2025.12.10", series: "시편 강해" }
-        ];
-        
-        const extendedSermons = [
-            ...mockSermons,
-            ...mockSermons.map(s => ({ ...s, id: s.id + '_dup1' })),
-            ...mockSermons.map(s => ({ ...s, id: s.id + '_dup2' })),
-            ...mockSermons.map(s => ({ ...s, id: s.id + '_dup3' })),
-            ...mockSermons.map(s => ({ ...s, id: s.id + '_dup4' }))
-        ].slice(0, 24).sort(() => 0.5 - Math.random());
-
-        const populateTrack = (trackId, listId, data) => {
-            const track = document.getElementById(trackId);
-            const list = document.getElementById(listId);
-            if (track) {
-                track.innerHTML = '';
-                data.forEach(item => {
-                    track.appendChild(window.createCarouselCard({
-                        title: item.title,
-                        tags: [item.cat],
-                        createdAt: { toDate: () => new Date() },
-                        series: item.series,
-                        coverUrl: 'images/puritan-study.png',
-                        content: 'Mock content'
-                    }, item.id));
-                });
-            }
-            if (list) {
-                list.innerHTML = '';
-                data.slice(0, 24).forEach(item => {
-                    list.appendChild(window.createHomeListItem({
-                        title: item.title,
-                        tags: [item.cat],
-                        createdAt: new Date(),
-                        author: '청교도'
-                    }, item.id));
-                });
-            }
-        };
-
-        populateTrack('carousel-new', 'list-new', mockData);
-        const shuffledMock = [...mockData].sort(() => 0.5 - Math.random());
-        populateTrack('carousel-topic', null, shuffledMock);
-        populateTrack('carousel-sermon', 'list-sermon', extendedSermons);
-        initCarouselDrag();
+        console.log("Mock carousels disabled. Loading real posts only.");
     };
 
     window.renderPostsToCarousels = (allPosts) => {

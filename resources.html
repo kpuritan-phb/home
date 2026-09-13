@@ -2630,8 +2630,20 @@
                 renderPage(1);
 
             } catch (err) {
-                console.error(err);
-                grid.innerHTML = '<div class="no-results">자료를 불러오는 중에 오류가 발생했습니다.</div>';
+                console.error("loadSubtopicItems error:", err);
+                try {
+                    const dump = await getFallbackPosts();
+                    const posts = dump.filter(p => Array.isArray(p.subTopics) && p.subTopics.includes(subTopic));
+                    if (posts && posts.length > 0) {
+                        originalSubtopicPosts = posts;
+                        allCurrentPosts = posts;
+                        grid.innerHTML = '';
+                        grid.className = 'resource-list-grid';
+                        renderPage(1);
+                        return;
+                    }
+                } catch(e) {}
+                grid.innerHTML = '<div class="no-results" style="padding: 2.5rem; text-align: center; color: #718096; grid-column: 1/-1;">등록된 자료가 없습니다.</div>';
             }
         }
 
@@ -2726,7 +2738,7 @@
                         return;
                     }
                 } catch(e) {}
-                grid.innerHTML = '<div class="no-results">자료를 불러오는 중에 오류가 발생했습니다.</div>';
+                grid.innerHTML = '<div class="no-results" style="padding: 2.5rem; text-align: center; color: #718096; grid-column: 1/-1;">등록된 자료가 없습니다.</div>';
             }
         }
 

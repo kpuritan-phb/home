@@ -4131,13 +4131,12 @@ footer {
         display: none !important;
     }
 
-    /* 모바일 왼쪽 아이보리 미니 책갈피 탭 */
+    /* 모바일 왼쪽 아이보리 미니 책갈피 탭 (아이콘 없는 순수 텍스트 탭) */
     .mobile-explore-btn {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 3px !important;
         position: fixed !important;
         top: 42% !important;
         left: 0 !important;
@@ -4147,27 +4146,20 @@ footer {
         color: #5c4033 !important;
         border: 1px solid #e6ded3 !important;
         border-left: none !important;
-        padding: 7px 4px 8px 3px !important;
-        border-radius: 0 6px 6px 0 !important;
-        font-size: 0.6rem !important;
+        padding: 8px 4px 8px 3px !important;
+        border-radius: 0 5px 5px 0 !important;
+        font-size: 0.58rem !important;
         font-weight: 700 !important;
-        box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.08) !important;
+        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.07) !important;
         z-index: 9999 !important;
         cursor: pointer !important;
         transition: all 0.2s ease !important;
         writing-mode: vertical-rl !important;
         text-orientation: mixed !important;
-        letter-spacing: 1px !important;
+        letter-spacing: 2px !important;
         min-height: auto !important;
         height: auto !important;
         width: auto !important;
-    }
-
-    .mobile-explore-btn i {
-        font-size: 0.62rem !important;
-        color: #8c6d46 !important;
-        transform: rotate(90deg) !important;
-        margin-bottom: 1px !important;
     }
 
     .mobile-explore-btn:hover {

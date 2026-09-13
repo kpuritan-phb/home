@@ -5076,31 +5076,35 @@ footer {
     top: 50%;
     transform: translateY(-50%);
     z-index: 20;
-    background: rgba(255, 255, 255, 0.12);
+    background: transparent;
     color: rgba(255, 255, 255, 0.9);
-    border: 1.5px solid rgba(255, 255, 255, 0.25);
-    width: 48px;
-    height: 48px;
+    border: none;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    font-size: 1.1rem;
+    font-size: 0.85rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.2s;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.25s ease, background 0.25s, color 0.25s, border-color 0.25s, transform 0.2s;
+}
+
+.hero-carousel-section:hover .hero-nav-btn,
+.hero-nav-btn:hover {
+    opacity: 1;
 }
 
 .hero-nav-btn:hover {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.6);
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     color: #ffffff;
-    transform: translateY(-50%) scale(1.08);
+    transform: translateY(-50%) scale(1.05);
 }
 
-.hero-prev { left: 1.5rem; }
-.hero-next { right: 1.5rem; }
+.hero-prev { left: 1rem; }
+.hero-next { right: 1rem; }
 
 /* ── Dot indicator ── */
 .hero-dots {
@@ -5231,7 +5235,7 @@ footer {
     .hs-book-desc    { display: none !important; }
     .hs-cta-btn      { font-size: 0.85rem !important; padding: 0.55rem 1.3rem !important; margin-bottom: 0.8rem !important; }
 
-    .hero-nav-btn { width: 34px; height: 34px; font-size: 0.8rem; z-index: 20; }
+    .hero-nav-btn { width: 28px; height: 28px; font-size: 0.75rem; z-index: 20; opacity: 0.8; }
     .hero-prev    { left: 0.3rem; }
     .hero-next    { right: 0.3rem; }
 

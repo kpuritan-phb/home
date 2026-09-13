@@ -21,7 +21,7 @@
     <meta property="twitter:description" content="청교도 신학과 개혁주의 신념을 연구하고 성경적인 자료를 제공하는 한국 청교도 연구소입니다.">
     <meta property="twitter:image" content="og-image.png?v=4">
 
-    <link rel="stylesheet" href="style.css?v=20260913_bookmark_shape_v25">
+    <link rel="stylesheet" href="style.css?v=20260913_clean_card_links_v26">
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
     <link rel="icon" type="image/x-icon" href="favicon.ico?v=2">
@@ -1007,7 +1007,8 @@
                     const urlsInContent = content.match(urlRegex) || [];
                     let primaryLink = post.fileUrl || (urlsInContent.length > 0 ? urlsInContent[0] : null);
 
-                    const displayContent = content.replace(urlRegex, '<a href="$1" target="_blank" onclick="event.stopPropagation()">$1</a>');
+                    // 본문 텍스트 내에서 날것의 URL 주소는 깔끔하게 제거하여 지저분해 보이지 않게 처리
+                    const displayContent = content.replace(urlRegex, '').trim();
                     const imgId = `sidebar-exp-thumb-${post.id}`;
                     const thumbWrapId = `sidebar-exp-thumb-wrap-${post.id}`;
 
@@ -1021,9 +1022,9 @@
                                 <span>${dateText}</span>
                             </div>
                             <div class="explorer-result-title">${post.title}</div>
-                            <div class="explorer-result-desc">${displayContent}</div>
+                            ${displayContent ? `<div class="explorer-result-desc">${displayContent}</div>` : ''}
                             <div class="explorer-result-action">
-                                ${primaryLink ? '<i class="fas fa-external-link-alt"></i> 자료 열기/다운로드' : '<i class="fas fa-book-open"></i> 상세 내용 보기'}
+                                ${primaryLink ? '<i class="fas fa-external-link-alt"></i> 카드 클릭 시 자료로 바로 이동' : '<i class="fas fa-book-open"></i> 상세 내용 보기'}
                             </div>
                         </div>
                     `;

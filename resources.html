@@ -3146,10 +3146,10 @@
                     }
                     return `<p>${block.trim()}</p>`;
                 }).join('');
-                displayContent = displayContent.replace(urlRegex, '<a href="$1" target="_blank" onclick="event.stopPropagation()">$1</a>');
+                displayContent = displayContent.replace(urlRegex, '').trim();
             } else {
-                // Autolink content for display
-                displayContent = content.replace(urlRegex, '<a href="$1" target="_blank" onclick="event.stopPropagation()">$1</a>');
+                // Strip raw URLs from card description text
+                displayContent = content.replace(urlRegex, '').trim();
             }
 
             itemEl.innerHTML = `

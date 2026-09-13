@@ -36,6 +36,41 @@
         if (typeof pdfjsLib !== 'undefined') {
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
         }
+
+        // Inline Fail-Safe Mobile Menu Toggle (Runs immediately on touch/click before main.js)
+        window.toggleMobileMenu = function(e) {
+            if (e) {
+                try { if (typeof e.preventDefault === 'function') e.preventDefault(); } catch (err) {}
+                try { if (typeof e.stopPropagation === 'function') e.stopPropagation(); } catch (err) {}
+            }
+            var targetNav = document.querySelector('header nav, .nav-container nav, nav');
+            var mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+            var navOverlay = document.querySelector('.nav-overlay');
+
+            if (!navOverlay) {
+                navOverlay = document.createElement('div');
+                navOverlay.className = 'nav-overlay';
+                document.body.appendChild(navOverlay);
+            }
+
+            if (targetNav) {
+                var isActive = targetNav.classList.toggle('active');
+                if (mobileMenuToggle) {
+                    mobileMenuToggle.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+                    var icon = mobileMenuToggle.querySelector('i');
+                    if (icon) {
+                        icon.className = isActive ? 'fas fa-times' : 'fas fa-bars';
+                    }
+                }
+                if (isActive) {
+                    document.body.style.overflow = 'hidden';
+                    navOverlay.classList.add('active');
+                } else {
+                    document.body.style.overflow = '';
+                    navOverlay.classList.remove('active');
+                }
+            }
+        };
     </script>
 </head>
 
@@ -49,7 +84,7 @@
                 <span class="logo-kor">한국 청교도 연구소</span>
                 <span class="logo-since">Since 2001</span>
             </a>
-            <button class="mobile-menu-toggle" aria-label="메뉴 열기" aria-expanded="false" onclick="if(window.toggleMobileMenu) window.toggleMobileMenu(event)">
+            <button class="mobile-menu-toggle" aria-label="메뉴 열기" aria-expanded="false" onclick="window.toggleMobileMenu(event)">
                 <i class="fas fa-bars"></i>
             </button>
             <nav>

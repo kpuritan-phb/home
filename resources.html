@@ -2932,20 +2932,22 @@
                     if (category === '신학강론') {
                         try {
                             const seenIds = new Set();
-                            const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["신학강론", "5분 신학강론"]).get(), 1000);
+                            const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["신학강론", "5분 신학강론"]).get(), 1500);
                             snap1.forEach(doc => {
                                 posts.push({ id: doc.id, ...doc.data() });
                                 seenIds.add(doc.id);
                             });
 
-                            const snap2 = await fetchWithTimeout(db.collection("posts").where("otherCategory", "in", ["신학강론", "5분 신학강론"]).get(), 1000);
+                            const snap2 = await fetchWithTimeout(db.collection("posts").where("otherCategory", "in", ["신학강론", "5분 신학강론"]).get(), 1500);
                             snap2.forEach(doc => {
                                 if (!seenIds.has(doc.id)) {
                                     posts.push({ id: doc.id, ...doc.data() });
                                     seenIds.add(doc.id);
                                 }
                             });
-                        } catch(e) {}
+                        } catch(e) {
+                            console.warn("Firestore fetch error for 신학강론, fallbacking:", e);
+                        }
                     } else if (category === '설교자') {
                         try {
                             const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "설교자").get(), 1000);
@@ -3134,6 +3136,10 @@
                 if (!posts || posts.length === 0) {
                     console.warn("Firestore returned empty or errored, loading dump posts for category:", category);
                     const dump = await getFallbackPosts();
+                    posts = filterDumpPostsByCategory(dump, category, s, b, subTopic);
+                }
+                if (!posts || posts.length === 0) {
+                    const dump = window.allPostsDumpData || [];
                     posts = filterDumpPostsByCategory(dump, category, s, b, subTopic);
                 }
 
@@ -3655,7 +3661,7 @@
 
     <script src="bgm.js?v=1"></script>
     <script src="stats.js?v=1"></script>
-    <script src="main.js?v=20260914_theology_fix_v46"></script>
+    <script src="main.js?v=20260914_theology_failsafe_v47"></script>
 
 
     <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">

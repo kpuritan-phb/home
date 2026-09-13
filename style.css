@@ -1844,38 +1844,46 @@ footer {
     /* Re-enable clicks for the actual player controls */
 }
 
-.bgm-control {
+.bgm-control, #bgm-toggle-btn {
     background: transparent !important;
-    width: 44px;
-    height: 44px;
+    background-color: transparent !important;
+    width: auto !important;
+    height: auto !important;
     border-radius: 0 !important;
     cursor: pointer;
-    display: flex;
+    display: inline-flex !important;
     align-items: center;
     justify-content: center;
     box-shadow: none !important;
     transition: transform 0.2s ease;
     border: none !important;
-    padding: 0;
+    padding: 4px !important;
+    outline: none !important;
 }
 
-.bgm-control:hover {
-    transform: scale(1.15);
+.bgm-control:hover, #bgm-toggle-btn:hover {
+    transform: scale(1.15) !important;
     background: transparent !important;
+    background-color: transparent !important;
     box-shadow: none !important;
 }
 
 .music-icon {
-    color: #c99c5e;
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: #c99c5e !important;
+    font-size: 1.4rem !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     transition: all 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .bgm-player.playing .music-icon {
-    color: #1a2a44;
+    color: #1a342a !important;
 }
 
 .music-text {

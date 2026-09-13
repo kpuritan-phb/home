@@ -5407,19 +5407,66 @@ button, a, input, select, textarea {
         transform: scale(0.96);
     }
 
-    /* 4. Mobile Floating Controls & Safe Area Padding */
-    .floating-inquiry-btn {
-        bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px)) !important;
-        right: 1.2rem !important;
-        padding: 0.75rem 1.25rem !important;
-        border-radius: 50px !important;
-        font-weight: 700 !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25) !important;
+    /* 4. Mobile Newsletter & Section Flow Fix (Prevent Overlaps) */
+    .newsletter-section {
+        position: relative !important;
+        top: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+        margin: 2rem 0.5rem !important;
+        padding: 1.8rem 1.2rem !important;
+        border-radius: 16px !important;
+        background: #ffffff !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06) !important;
+        z-index: 1 !important;
+        clear: both !important;
     }
 
-    .login-trigger {
-        bottom: calc(5.2rem + env(safe-area-inset-bottom, 0px)) !important;
-        right: 1.2rem !important;
+    .newsletter-container {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 1rem !important;
+    }
+
+    .newsletter-text h2 {
+        font-size: 1.3rem !important;
+        line-height: 1.35 !important;
+        margin-bottom: 0.4rem !important;
+    }
+
+    .newsletter-text p {
+        font-size: 0.88rem !important;
+    }
+
+    .newsletter-form {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 0.6rem !important;
+    }
+
+    .newsletter-form input {
+        width: 100% !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 0.92rem !important;
+        border-radius: 10px !important;
+    }
+
+    .newsletter-form button {
+        width: 100% !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 0.92rem !important;
+        border-radius: 10px !important;
+    }
+
+    /* All Floating Buttons Hide on Mobile (Prevent Overlapping Content) */
+    .floating-inquiry-btn,
+    .floating-topic-btn,
+    .floating-btn,
+    #topic-drawer-trigger {
+        display: none !important;
     }
 
     /* 5. Mobile Sticky Audio Player Optimization */

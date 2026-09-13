@@ -250,29 +250,26 @@
         }
 
         .bible-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 12px;
+            padding: 8px 0;
         }
 
         .bible-book-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 4px;
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            color: #333;
+            display: inline-block;
+            padding: 4px 6px;
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            color: #2c3e50;
             text-decoration: none;
-            font-weight: 700;
-            font-size: 0.82rem;
+            font-weight: 600;
+            font-size: 0.88rem;
             transition: all 0.2s ease;
             cursor: pointer;
-            text-align: center;
-            word-break: keep-all;
-            min-height: 34px;
+            text-align: left;
+            white-space: nowrap;
         }
 
         .bible-book-btn span {
@@ -280,30 +277,21 @@
         }
 
         .bible-book-btn:hover {
-            border-color: var(--secondary-color);
             color: var(--secondary-color);
-            background: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.15);
-        }
-
-        @media screen and (max-width: 1200px) {
-            .bible-grid {
-                grid-template-columns: repeat(6, 1fr);
-            }
+            background: rgba(212, 175, 55, 0.1);
+            text-decoration: underline;
+            transform: none;
+            box-shadow: none;
         }
 
         @media screen and (max-width: 768px) {
             .bible-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 6px;
+                gap: 4px 8px;
             }
 
             .bible-book-btn {
-                padding: 6px 3px;
-                font-size: 0.78rem;
-                border-radius: 6px;
-                min-height: 30px;
+                padding: 3px 5px;
+                font-size: 0.82rem;
             }
         }
 

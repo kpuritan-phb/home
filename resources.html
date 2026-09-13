@@ -1179,7 +1179,7 @@
         async function ensureAuth() {
             if (!auth.currentUser) {
                 try {
-                    await auth.signInAnonymously();
+                    await fetchWithTimeout(auth.signInAnonymously(), 2000);
                     console.log("Auth session established. UID:", auth.currentUser?.uid);
                 } catch(e) {
                     console.warn("Auth initialization notice:", e);
@@ -1306,8 +1306,8 @@
         }
 
         async function init() {
-            await ensureAuth();
-            await loadSeriesCovers();
+            ensureAuth();
+            loadSeriesCovers();
             const urlParams = new URLSearchParams(window.location.search);
             const typeParam = urlParams.get('type');
             let catParam = urlParams.get('cat');

@@ -2709,30 +2709,22 @@ document.addEventListener('DOMContentLoaded', () => {
             if (carouselWrapper) carouselWrapper.style.display = 'block';
             if (btnList) {
                 btnList.classList.remove('active');
-                btnList.style.background = 'transparent';
-                btnList.style.color = '#64748b';
-                btnList.style.boxShadow = 'none';
+                btnList.removeAttribute('style');
             }
             if (btnCard) {
                 btnCard.classList.add('active');
-                btnCard.style.background = '#1a342a';
-                btnCard.style.color = '#ffffff';
-                btnCard.style.boxShadow = '0 1px 3px rgba(0,0,0,0.12)';
+                btnCard.removeAttribute('style');
             }
         } else {
             if (listWrapper) listWrapper.style.display = 'block';
             if (carouselWrapper) carouselWrapper.style.display = 'none';
             if (btnList) {
                 btnList.classList.add('active');
-                btnList.style.background = '#1a342a';
-                btnList.style.color = '#ffffff';
-                btnList.style.boxShadow = '0 1px 3px rgba(0,0,0,0.12)';
+                btnList.removeAttribute('style');
             }
             if (btnCard) {
                 btnCard.classList.remove('active');
-                btnCard.style.background = 'transparent';
-                btnCard.style.color = '#64748b';
-                btnCard.style.boxShadow = 'none';
+                btnCard.removeAttribute('style');
             }
         }
     };

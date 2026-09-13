@@ -2606,6 +2606,11 @@
                     posts = await getFallbackPosts();
                 }
 
+                if (type === 'recommended') {
+                    const recs = posts.filter(p => p.isRecommended || p.recommended);
+                    if (recs.length > 0) posts = recs;
+                }
+
                 if (posts.length === 0) {
                     grid.innerHTML = '<div class="no-results">등록된 자료가 없습니다.</div>';
                     return;
@@ -2614,15 +2619,21 @@
                 grid.innerHTML = '';
                 grid.className = 'resource-list-grid';
 
-                if (type === 'recommended') {
-                    posts = posts.filter(p => p.isRecommended || p.recommended);
-                }
-
                 allCurrentPosts = posts;
                 applySorting(allCurrentPosts, currentSortOption);
                 renderPage(1);
             } catch (err) {
                 console.error("loadAllResources error:", err);
+                try {
+                    const dump = await getFallbackPosts();
+                    if (dump && dump.length > 0) {
+                        allCurrentPosts = dump;
+                        grid.innerHTML = '';
+                        grid.className = 'resource-list-grid';
+                        renderPage(1);
+                        return;
+                    }
+                } catch(e) {}
                 grid.innerHTML = '<div class="no-results">자료를 불러오는 중에 오류가 발생했습니다.</div>';
             }
         }
@@ -2956,8 +2967,19 @@
                 renderPage(1);
 
             } catch (err) {
-                console.error(err);
-                grid.innerHTML = '<div class="no-results">오류가 발생했습니다.</div>';
+                console.error("loadCategoryItems error:", err);
+                try {
+                    const dump = await getFallbackPosts();
+                    const filtered = filterDumpPostsByCategory(dump, category, s, b, subTopic);
+                    if (filtered && filtered.length > 0) {
+                        allCurrentPosts = filtered;
+                        grid.innerHTML = '';
+                        grid.className = 'resource-list-grid';
+                        renderPage(1);
+                        return;
+                    }
+                } catch(e) {}
+                grid.innerHTML = '<div class="no-results">자료를 불러오는 중에 오류가 발생했습니다.</div>';
             }
         }
 

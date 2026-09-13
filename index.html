@@ -1396,26 +1396,24 @@
                     <div class="hs-bg" style="${bgStyle}"></div>
                     <div class="hs-overlay hs-overlay--book"></div>
                     <div class="hs-content hs-content--book">
-                        <div class="hs-card-box">
-                            <div class="hs-book-text">
-                                <div class="hs-book-badge">
-                                    <span class="hs-category">${slide.category}</span>
-                                    ${slide.badge ? `<span class="hs-badge-label">${slide.badge}</span>` : ''}
-                                </div>
-                                <h2 class="hs-book-title">${slide.title}</h2>
-                                <p class="hs-book-author">${slide.author}</p>
-                                <p class="hs-book-tagline">${slide.tagline}</p>
-                                <p class="hs-book-desc">${slide.description.replace('\n','<br>')}</p>
-                                ${slide.link ? `<a href="${slide.link}" class="hs-cta-btn" target="_blank" rel="noopener">자세히 보기 <i class="fas fa-arrow-right"></i></a>` : ''}
+                        <div class="hs-book-text">
+                            <div class="hs-book-badge">
+                                <span class="hs-category">${slide.category}</span>
+                                ${slide.badge ? `<span class="hs-badge-label">${slide.badge}</span>` : ''}
                             </div>
-                            <div class="hs-book-cover-wrap">
-                                <div class="hs-book-cover-inner">
-                                    <img src="${imgSrc}"
-                                         alt="${slide.title} 표지"
-                                         class="hs-book-cover-img"
-                                         loading="${index === 0 ? 'eager' : 'lazy'}"
-                                         decoding="async">
-                                </div>
+                            <h2 class="hs-book-title">${slide.title}</h2>
+                            <p class="hs-book-author">${slide.author}</p>
+                            <p class="hs-book-tagline">${slide.tagline}</p>
+                            <p class="hs-book-desc">${slide.description.replace('\n','<br>')}</p>
+                            ${slide.link ? `<a href="${slide.link}" class="hs-cta-btn" target="_blank" rel="noopener">자세히 보기 <i class="fas fa-arrow-right"></i></a>` : ''}
+                        </div>
+                        <div class="hs-book-cover-wrap">
+                            <div class="hs-book-cover-inner">
+                                <img src="${imgSrc}"
+                                     alt="${slide.title} 표지"
+                                     class="hs-book-cover-img"
+                                     loading="${index === 0 ? 'eager' : 'lazy'}"
+                                     decoding="async">
                             </div>
                         </div>
                     </div>`;

@@ -1966,86 +1966,22 @@ document.addEventListener('DOMContentLoaded', () => {
             let lastX = 0;
             let preventClick = false;
 
-            const handleStart = (e) => {
+            track.addEventListener('mousedown', (e) => {
                 isDown = true;
-                track.style.scrollBehavior = 'auto';
-                
-                const clientX = e.pageX || (e.touches && e.touches[0].pageX);
-                startX = clientX - track.offsetLeft;
+                startX = e.pageX - track.offsetLeft;
                 scrollLeft = track.scrollLeft;
-                startTime = Date.now();
-                lastX = clientX;
                 preventClick = false;
-            };
-
-            const handleMove = (e) => {
-                if (!isDown) return;
-                const clientX = e.pageX || (e.touches && e.touches[0].pageX);
-                const x = clientX - track.offsetLeft;
-                const walk = (x - startX);
-                
-                if (Math.abs(walk) > 5) {
-                    if (e.cancelable && e.type === 'touchmove') e.preventDefault();
-                    track.scrollLeft = scrollLeft - walk;
-                    preventClick = true;
-                }
-
-                const now = Date.now();
-                if (now - lastMoveTime > 10) {
-                    lastX = clientX;
-                    lastMoveTime = now;
-                }
-            };
-
-            const handleEnd = (e) => {
-                if (!isDown) return;
-                isDown = false;
-                track.style.scrollBehavior = 'smooth';
-
-                const card = track.querySelector('.carousel-item-wrapper') || track.querySelector('.carousel-card');
-                if (!card) return;
-
-                const cardWidth = card.offsetWidth;
-                const style = window.getComputedStyle(track);
-                const gap = parseInt(style.getPropertyValue('column-gap')) || parseInt(style.getPropertyValue('gap')) || 16;
-                const stepWidth = cardWidth + gap;
-
-                const currentScrollLeft = track.scrollLeft;
-                const duration = Date.now() - startTime;
-                const finalX = e.changedTouches ? e.changedTouches[0].pageX : (e.pageX || lastX);
-                const walk = (finalX - (startX + track.offsetLeft));
-
-                let targetScrollLeft;
-
-                if (duration < 250 && Math.abs(walk) > 30) {
-                    if (walk > 0) {
-                        targetScrollLeft = Math.floor(currentScrollLeft / stepWidth) * stepWidth;
-                    } else {
-                        targetScrollLeft = Math.ceil(currentScrollLeft / stepWidth) * stepWidth;
-                    }
-                } else {
-                    targetScrollLeft = Math.round(currentScrollLeft / stepWidth) * stepWidth;
-                }
-
-                const maxScrollLeft = track.scrollWidth - track.clientWidth;
-                targetScrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScrollLeft));
-
-                track.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
-            };
-
-            track.addEventListener('mousedown', handleStart);
-            track.addEventListener('mousemove', handleMove);
-            track.addEventListener('mouseup', handleEnd);
-            track.addEventListener('mouseleave', () => {
-                if (isDown) {
-                    isDown = false;
-                    track.style.scrollBehavior = 'smooth';
-                }
             });
-
-            track.addEventListener('touchstart', handleStart, { passive: true });
-            track.addEventListener('touchmove', handleMove, { passive: true });
-            track.addEventListener('touchend', handleEnd, { passive: true });
+            track.addEventListener('mouseleave', () => { isDown = false; });
+            track.addEventListener('mouseup', () => { isDown = false; });
+            track.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - track.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                if (Math.abs(walk) > 5) preventClick = true;
+                track.scrollLeft = scrollLeft - walk;
+            });
 
             track.addEventListener('click', (e) => {
                 if (preventClick) {

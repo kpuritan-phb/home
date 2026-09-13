@@ -2761,11 +2761,6 @@
                     if (recs.length > 0) posts = recs;
                 }
 
-                if (posts.length === 0) {
-                    grid.innerHTML = '<div class="no-results">등록된 자료가 없습니다.</div>';
-                    return;
-                }
-
                 grid.innerHTML = '';
                 grid.className = 'resource-list-grid';
 
@@ -2843,7 +2838,13 @@
                 if (category === '신학강론') return tags.includes('신학강론') || tags.includes('5분 신학강론');
                 if (category === '설교자') return tags.includes('설교자') || tags.includes('설교론');
                 if (category === '청교도 신학') return tags.includes('청교도 신학') || (typeof determineCategory === 'function' && determineCategory(p.title || '', p.content || '') !== null);
-                if (category === '전도, 부흥, 선교' || category === '전도, 선교') return tags.some(t => ['전도, 부흥, 선교', '전도, 선교', '전도', '부흥', '선교', '부흥신학'].includes(t));
+                if (category === '전도, 부흥, 선교' || category === '전도, 선교') {
+                    return (p.topic === '전도, 부흥, 선교' || p.topic === '전도, 선교' || p.topic === '전도') ||
+                           tags.some(t => ['전도, 부흥, 선교', '전도, 선교', '전도', '부흥', '선교', '부흥신학', '전도 소책자', '전도만화', '전도설교'].includes(t)) ||
+                           (p.otherCategory && (p.otherCategory.includes('전도') || p.otherCategory.includes('선교'))) ||
+                           (p.series && (p.series.includes('전도') || p.series.includes('선교'))) ||
+                           (p.title && (p.title.includes('전도') || p.title.includes('부흥') || p.title.includes('선교')));
+                }
                 if (category === '세미나, 강의' || category === '세미나' || category === '강의') return tags.some(t => ['세미나, 강의', '세미나', '강의'].includes(t)) || p.otherCategory === '세미나, 강의' || p.otherCategory === '세미나' || p.otherCategory === '강의' || (p.title && (p.title.includes('세미나') || p.title.includes('강의')));
                 return tags.includes(category);
             });
@@ -2995,31 +2996,20 @@
                             });
                         }
                     } else if (category === '전도, 부흥, 선교' || category === '전도, 선교') {
-                        const excludeKeywords = [
-                            "신론", "인간론", "기독론", "구원론", "성령론", "구원론(성령론)",
-                            "율법과 복음", "그리스도인의 생활론", "그리스도인의 가정", "교회론",
-                            "설교론", "영적전쟁", "종말론", "역사 신학", "잘못된 신학", "청교도 신학",
-                            "강해설교", "도서 목록", "전도만화", "신학강론", "성경주석", "5분 신학강론"
-                        ];
-
                         try {
-                            const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도, 선교", "전도", "부흥", "선교", "부흥신학"]).get(), 1000);
+                            const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도, 선교", "전도", "부흥", "선교", "부흥신학", "전도 소책자", "전도만화", "전도설교"]).get(), 1000);
                             const seenIds = new Set();
                             snap1.forEach(doc => {
                                 if (!seenIds.has(doc.id)) {
-                                    const data = doc.data();
-                                    const topic = data.topic || '';
-                                    const other = data.otherCategory || '';
-                                    const tags = Array.isArray(data.tags) ? data.tags : [];
-
-                                    const isOtherCategory = excludeKeywords.includes(topic) ||
-                                        excludeKeywords.includes(other) ||
-                                        tags.some(t => excludeKeywords.includes(t));
-
-                                    if (!isOtherCategory) {
-                                        posts.push({ id: doc.id, ...data });
-                                        seenIds.add(doc.id);
-                                    }
+                                    posts.push({ id: doc.id, ...doc.data() });
+                                    seenIds.add(doc.id);
+                                }
+                            });
+                            const snap2 = await fetchWithTimeout(db.collection("posts").where("topic", "==", "전도, 부흥, 선교").get(), 1000);
+                            snap2.forEach(doc => {
+                                if (!seenIds.has(doc.id)) {
+                                    posts.push({ id: doc.id, ...doc.data() });
+                                    seenIds.add(doc.id);
                                 }
                             });
                         } catch(e) {}

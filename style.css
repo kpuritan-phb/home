@@ -4142,15 +4142,15 @@ footer {
         left: 0 !important;
         right: auto !important;
         bottom: auto !important;
-        background: rgba(255, 255, 255, 0.4) !important;
-        backdrop-filter: blur(8px) !important;
-        -webkit-backdrop-filter: blur(8px) !important;
+        background: rgba(255, 255, 255, 0.35) !important;
+        backdrop-filter: blur(6px) !important;
+        -webkit-backdrop-filter: blur(6px) !important;
         color: #111111 !important;
         border: none !important;
         outline: none !important;
-        padding: 4px 2px 4px 1px !important;
-        border-radius: 0 4px 4px 0 !important;
-        font-size: 0.45rem !important;
+        padding: 2px 1px 2px 0px !important;
+        border-radius: 0 3px 3px 0 !important;
+        font-size: 0.32rem !important;
         font-weight: 800 !important;
         box-shadow: none !important;
         z-index: 9999 !important;
@@ -4158,11 +4158,13 @@ footer {
         transition: all 0.25s ease !important;
         writing-mode: vertical-rl !important;
         text-orientation: mixed !important;
-        letter-spacing: 0.5px !important;
+        letter-spacing: 0px !important;
         min-height: auto !important;
         height: auto !important;
         width: auto !important;
-        opacity: 0.75;
+        opacity: 0.65;
+        transform: scale(0.7);
+        transform-origin: left center;
     }
 
     .mobile-explore-btn:hover,

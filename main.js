@@ -3004,10 +3004,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Initial Load
+    // Initial Load & Auto Recovery
     console.log("Initializing carousels directly...");
-    window.loadMainCarousels();
-    setTimeout(window.loadMainCarousels, 300);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            window.loadMainCarousels();
+            setTimeout(window.loadMainCarousels, 500);
+        });
+    } else {
+        window.loadMainCarousels();
+        setTimeout(window.loadMainCarousels, 500);
+    }
 
     // Real Search Logic
     const searchInput = document.querySelector('.search-bar input');

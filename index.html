@@ -617,15 +617,22 @@
         console.log("Waiting for main.js?v=20260912_v1 to handle application logic...");
 
         // Auto-run regardless of DB status (for Mock fallback)
-        setTimeout(() => {
-            if (typeof window.loadMainCarousels === 'function') {
-                window.loadMainCarousels();
-            }
-        }, 500);
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (typeof window.loadMainCarousels === 'function') {
+                    window.loadMainCarousels();
+                }
+            }, 100);
+            setTimeout(() => {
+                if (typeof window.loadMainCarousels === 'function') {
+                    window.loadMainCarousels();
+                }
+            }, 800);
+        });
     </script>
     <script src="bgm.js?v=20260913_bgm_v9"></script>
     <script src="stats.js?v=1"></script>
-    <script src="main.js?v=20260913_hero_v3"></script>
+    <script src="main.js?v=20260913_hero_v4"></script>
     <script>
         // --- Theology Explorer (Monergism Sidebar Style) Script ---
         document.addEventListener('DOMContentLoaded', () => {

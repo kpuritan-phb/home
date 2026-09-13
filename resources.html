@@ -2695,16 +2695,27 @@
 
         function filterDumpPostsByCategory(dump, category, s, b, subTopic) {
             let posts = dump.filter(p => {
-                if (!Array.isArray(p.tags)) return false;
-                if (category === '신학강론') return p.tags.includes('신학강론') || p.tags.includes('5분 신학강론');
-                if (category === '설교자') return p.tags.includes('설교자') || p.tags.includes('설교론');
-                if (category === '청교도 신학') return p.tags.includes('청교도 신학');
-                if (category === '전도, 부흥, 선교' || category === '전도, 선교') return p.tags.some(t => ['전도, 부흥, 선교', '전도, 선교', '전도', '부흥', '선교', '부흥신학'].includes(t));
-                if (category === '세미나, 강의' || category === '세미나' || category === '강의') return p.tags.some(t => ['세미나, 강의', '세미나', '강의'].includes(t));
-                return p.tags.includes(category);
+                const tags = Array.isArray(p.tags) ? p.tags : [];
+                if (category === '신학강론') return tags.includes('신학강론') || tags.includes('5분 신학강론');
+                if (category === '설교자') return tags.includes('설교자') || tags.includes('설교론');
+                if (category === '청교도 신학') return tags.includes('청교도 신학') || (typeof determineCategory === 'function' && determineCategory(p.title || '', p.content || '') !== null);
+                if (category === '전도, 부흥, 선교' || category === '전도, 선교') return tags.some(t => ['전도, 부흥, 선교', '전도, 선교', '전도', '부흥', '선교', '부흥신학'].includes(t));
+                if (category === '세미나, 강의' || category === '세미나' || category === '강의') return tags.some(t => ['세미나, 강의', '세미나', '강의'].includes(t));
+                return tags.includes(category);
             });
 
-            if (category === '성경주석' && b) {
+            if (category === '청교도 신학' && s) {
+                posts = posts.filter(p => {
+                    const dbTopic = p.topic || p.subBookletTopic || p.series;
+                    const tags = Array.isArray(p.tags) ? p.tags : [];
+                    const dTopic = typeof determineCategory === 'function' ? determineCategory(p.title || '', p.content || '') : null;
+                    const isMatch = (dbTopic === s) || (tags.includes(s)) || (dTopic === s);
+                    if (s === '설교론') {
+                        return isMatch || tags.includes('설교자') || tags.includes('전도설교') || p.subTopic === '설교자' || p.subTopic === '전도설교';
+                    }
+                    return isMatch;
+                });
+            } else if (category === '성경주석' && b) {
                 posts = posts.filter(p => p.series === b);
                 if (s) {
                     const target = s.endsWith('장') ? s : s + '장';

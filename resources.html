@@ -1608,7 +1608,7 @@
             } else if (cat === '세미나, 강의' || cat === '세미나' || cat === '강의') {
                 const seminarDrop = document.getElementById('seminar-dropdown');
                 if (seminarDrop) targetDropdownLi = seminarDrop.closest('li.dropdown');
-            } else if (cat === '전도, 부흥, 선교' || cat === '전도, 선교' || cat.includes('전도') || cat.includes('부흥') || cat.includes('선교')) {
+            } else if (cat && (cat === '전도, 부흥, 선교' || cat === '전도, 선교' || cat.includes('전도') || cat.includes('부흥') || cat.includes('선교'))) {
                 const evDrop = document.getElementById('evangelism-dropdown');
                 if (evDrop) {
                     targetDropdownLi = evDrop.closest('li.dropdown');

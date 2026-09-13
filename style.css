@@ -1839,6 +1839,12 @@ footer {
     /* Let clicks pass through the container to elements below */
 }
 
+@media (max-width: 768px) {
+    .bgm-player, #bgm-player, .bgm-control, #bgm-toggle-btn {
+        display: none !important;
+    }
+}
+
 .bgm-player * {
     pointer-events: auto;
     /* Re-enable clicks for the actual player controls */

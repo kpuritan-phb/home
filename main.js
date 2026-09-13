@@ -2842,6 +2842,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         tags: [item.cat],
                         createdAt: { toDate: () => new Date() },
                         series: item.series,
+                        coverUrl: 'images/puritan-study.png',
                         content: 'Mock content'
                     }, item.id));
                 });

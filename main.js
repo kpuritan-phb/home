@@ -2901,12 +2901,18 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.loadMainCarousels = async () => {
+        // 0. Instant render if cached in window.allPostsDumpData
+        if (Array.isArray(window.allPostsDumpData) && window.allPostsDumpData.length > 0) {
+            window.renderPostsToCarousels(window.allPostsDumpData);
+        }
+
         // 1. Try all_posts_dump.json first for instant real-data display without waiting for Firestore network latency
         try {
             const resp = await fetch('all_posts_dump.json');
             if (resp.ok) {
                 const jsonPosts = await resp.json();
                 if (Array.isArray(jsonPosts) && jsonPosts.length > 0) {
+                    window.allPostsDumpData = jsonPosts;
                     window.renderPostsToCarousels(jsonPosts);
                 }
             }

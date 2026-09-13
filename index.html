@@ -646,8 +646,26 @@
         // --- Core Logic handled by main.js?v=20260912_v1 ---
         console.log("Waiting for main.js?v=20260912_v1 to handle application logic...");
 
-        // Auto-run regardless of DB status (for Mock fallback)
+        // Auto-run dump loading instantly
+        window.loadMainCarouselsImmediate = async () => {
+            try {
+                const resp = await fetch('all_posts_dump.json');
+                if (resp.ok) {
+                    const jsonPosts = await resp.json();
+                    if (Array.isArray(jsonPosts) && jsonPosts.length > 0) {
+                        window.allPostsDumpData = jsonPosts;
+                        if (typeof window.renderPostsToCarousels === 'function') {
+                            window.renderPostsToCarousels(jsonPosts);
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn("Immediate JSON Dump load error:", e);
+            }
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
+            window.loadMainCarouselsImmediate();
             setTimeout(() => {
                 if (typeof window.loadMainCarousels === 'function') {
                     window.loadMainCarousels();
@@ -662,7 +680,7 @@
     </script>
     <script src="bgm.js?v=20260913_bgm_v9"></script>
     <script src="stats.js?v=1"></script>
-    <script src="main.js?v=20260913_sermon_menu_v19"></script>
+    <script src="main.js?v=20260913_carousel_fix_v20"></script>
     <script>
         // --- Theology Explorer (Monergism Sidebar Style) Script ---
         document.addEventListener('DOMContentLoaded', () => {

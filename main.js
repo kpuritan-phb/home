@@ -432,7 +432,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
-    }
 
     // 모바일 아코디언 드롭다운 토글 개선
     const dropdowns = document.querySelectorAll('header nav ul li.dropdown');

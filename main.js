@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Mobile Menu Toggle & Accordion ---
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-    const nav = document.querySelector('header nav');
+    const nav = document.querySelector('nav-container nav, header nav, nav');
     const navOverlay = document.querySelector('.nav-overlay');
 
     if (mobileMenuToggle) {
@@ -359,8 +359,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 e.stopPropagation();
             }
-            if (nav) {
-                const isActive = nav.classList.toggle('active');
+            const targetNav = nav || document.querySelector('header nav, nav');
+            if (targetNav) {
+                const isActive = targetNav.classList.toggle('active');
                 mobileMenuToggle.setAttribute('aria-expanded', isActive ? 'true' : 'false');
                 const icon = mobileMenuToggle.querySelector('i');
                 if (icon) {
@@ -382,7 +383,8 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileMenuToggle.addEventListener('click', toggleMenu);
 
         const closeMenu = () => {
-            if (nav) nav.classList.remove('active');
+            const targetNav = nav || document.querySelector('header nav, nav');
+            if (targetNav) targetNav.classList.remove('active');
             if (navOverlay) navOverlay.classList.remove('active');
             document.body.style.overflow = '';
             mobileMenuToggle.setAttribute('aria-expanded', 'false');
@@ -392,7 +394,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (navOverlay) navOverlay.addEventListener('click', closeMenu);
         document.addEventListener('click', (e) => {
-            if (nav && !nav.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+            const targetNav = nav || document.querySelector('header nav, nav');
+            if (targetNav && !targetNav.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
                 closeMenu();
             }
         });

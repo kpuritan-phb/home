@@ -2684,23 +2684,24 @@ footer {
 /* --- Mobile Menu & Responsive --- */
 .mobile-menu-toggle {
     display: none;
-    background: none;
+    background: transparent;
     border: none;
     color: var(--primary-color);
     font-size: 1.8rem;
     cursor: pointer;
-    z-index: 2001;
-    /* Above nav and overlay */
+    z-index: 100000;
     padding: 0.5rem;
     transition: var(--transition);
     align-items: center;
     justify-content: center;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 @media screen and (max-width: 1024px) {
     .mobile-menu-toggle {
-        display: flex;
-        /* Ensure it stays visible and aligned */
+        display: flex !important;
     }
 
     .nav-container {
@@ -2741,7 +2742,7 @@ footer {
         background: var(--white);
         padding: calc(4.5rem + env(safe-area-inset-top, 0px)) 1.5rem calc(2rem + env(safe-area-inset-bottom, 0px)) 1.5rem;
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 3000;
+        z-index: 99999;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         visibility: hidden;
@@ -2751,9 +2752,10 @@ footer {
     }
 
     header nav.active {
-        transform: translateX(0);
-        visibility: visible;
-        pointer-events: all;
+        transform: translateX(0) !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        display: block !important;
     }
 
     header nav ul {

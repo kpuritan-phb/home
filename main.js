@@ -349,44 +349,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Mobile Menu Toggle & Accordion ---
+    window.toggleMobileMenu = (e) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const targetNav = document.querySelector('header nav, .nav-container nav, nav');
+        const navOverlay = document.querySelector('.nav-overlay');
+
+        if (targetNav) {
+            const isActive = targetNav.classList.toggle('active');
+            if (mobileMenuToggle) {
+                mobileMenuToggle.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+                const icon = mobileMenuToggle.querySelector('i');
+                if (icon) {
+                    icon.className = isActive ? 'fas fa-times' : 'fas fa-bars';
+                }
+            }
+            if (isActive) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+        if (navOverlay) navOverlay.classList.toggle('active');
+    };
+
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const navOverlay = document.querySelector('.nav-overlay');
 
     if (mobileMenuToggle) {
-        const toggleMenu = (e) => {
-            if (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            const targetNav = document.querySelector('header nav, .nav-container nav, nav');
-            if (targetNav) {
-                const isActive = targetNav.classList.toggle('active');
-                mobileMenuToggle.setAttribute('aria-expanded', isActive ? 'true' : 'false');
-                const icon = mobileMenuToggle.querySelector('i');
-                if (icon) {
-                    if (isActive) {
-                        icon.className = 'fas fa-times';
-                    } else {
-                        icon.className = 'fas fa-bars';
-                    }
-                }
-                if (isActive) {
-                    document.body.style.overflow = 'hidden'; // 모바일 배경 스크롤 방지
-                } else {
-                    document.body.style.overflow = '';
-                }
-            }
-            const overlay = navOverlay || document.querySelector('.nav-overlay');
-            if (overlay) overlay.classList.toggle('active');
-        };
-
-        // 모바일 터치 및 클릭 반응성 100% 보장 (pointerdown & click)
         let lastHandledTime = 0;
         const handleToggle = (e) => {
             const now = Date.now();
-            if (now - lastHandledTime < 300) return; // 중복 이벤트 방지
+            if (now - lastHandledTime < 200) return;
             lastHandledTime = now;
-            toggleMenu(e);
+            window.toggleMobileMenu(e);
         };
 
         mobileMenuToggle.addEventListener('pointerdown', handleToggle);

@@ -4334,7 +4334,7 @@ footer {
     }
 
     /* 2. 터치 타겟 최소 44px 이상 및 오터치 방지 간격 확보 */
-    button:not(.mobile-explore-btn):not(.home-view-toggle-btn), 
+    button:not(.mobile-explore-btn):not(.home-view-toggle-btn):not(.hero-dot), 
     .cta-btn, 
     .floating-inquiry-btn, 
     .carousel-nav-btn,
@@ -5138,25 +5138,50 @@ footer {
 .hero-prev { left: 1rem; }
 .hero-next { right: 1rem; }
 
-/* ── Dot indicator (오리지널 고급 슬림 알약 Dot) ── */
+/* ── Dot indicator (완벽한 원형 동그라미) ── */
 .hero-dots {
-    position: absolute;
-    bottom: 7.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 20;
-    display: flex;
-    gap: 0.55rem;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.25);
-    padding: 6px 12px;
-    border-radius: 20px;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    position: absolute !important;
+    bottom: 6.5rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 20 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 0.6rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(0, 0, 0, 0.35) !important;
+    padding: 6px 12px !important;
+    border-radius: 30px !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    writing-mode: horizontal-tb !important;
 }
 
 .hero-dot {
+    width: 8px !important;
+    height: 8px !important;
+    min-width: 8px !important;
+    min-height: 8px !important;
+    max-width: 8px !important;
+    max-height: 8px !important;
+    border-radius: 50% !important;
+    border: none !important;
+    background: rgba(255, 255, 255, 0.45) !important;
+    color: transparent !important;
+    font-size: 0 !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline-block !important;
+    transition: all 0.25s ease !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+    line-height: 1 !important;
+}
+
+.hero-dot.active {
     width: 10px !important;
     height: 10px !important;
     min-width: 10px !important;
@@ -5164,26 +5189,9 @@ footer {
     max-width: 10px !important;
     max-height: 10px !important;
     border-radius: 50% !important;
-    border: none !important;
-    background: rgba(255, 255, 255, 0.45) !important;
-    color: transparent !important;
-    font-size: 0 !important;
-    cursor: pointer;
-    padding: 0 !important;
-    margin: 0 !important;
-    display: block !important;
-    transition: all 0.3s ease !important;
-    box-sizing: border-box !important;
-}
-
-.hero-dot.active {
-    width: 30px !important;
-    height: 10px !important;
-    min-width: 30px !important;
-    border-radius: 10px !important;
     background: #ffffff !important;
     color: transparent !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35) !important;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.9) !important;
 }
 
 /* ── 고정 검색창 ── */

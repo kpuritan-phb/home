@@ -108,10 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         <i class="fas fa-book-open"></i>
                         <span>자료실</span>
                     </a>
-                    <a href="books.html" class="mobile-nav-item ${currentPath.includes('books.html') ? 'active' : ''}">
-                        <i class="fas fa-book-bookmark"></i>
-                        <span>출판도서</span>
-                    </a>
                     <button type="button" class="mobile-nav-item mobile-search-trigger-btn">
                         <i class="fas fa-search"></i>
                         <span>검색</span>

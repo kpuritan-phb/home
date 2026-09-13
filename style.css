@@ -4404,19 +4404,23 @@ footer {
         display: grid !important;
         grid-template-rows: repeat(2, auto) !important;
         grid-auto-flow: column !important;
-        grid-auto-columns: min(145px, calc(46vw - 8px)) !important;
+        grid-auto-columns: min(155px, calc(48vw - 8px)) !important;
         -webkit-overflow-scrolling: touch !important;
         touch-action: pan-x pan-y !important;
         gap: 0.6rem 0.5rem !important;
         padding-bottom: 0.8rem !important;
-        scroll-behavior: smooth;
+        scroll-behavior: smooth !important;
+        scroll-snap-type: x mandatory !important;
+    }
+
+    .carousel-track > * {
+        scroll-snap-align: start !important;
     }
 
     .carousel-item-wrapper {
         flex: none !important;
-        width: 145px !important;
-        min-width: 145px !important;
-        max-width: 145px !important;
+        width: 100% !important;
+        min-width: 0 !important;
     }
 
     .carousel-title {
@@ -5446,7 +5450,6 @@ button, a, input, select, textarea {
     .sermon-grid,
     .grid-container,
     .recent-posts-grid,
-    .carousel-grid,
     .expos-section-cards,
     .grid {
         display: grid !important;

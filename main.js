@@ -3539,9 +3539,17 @@ const DEFAULT_HERO_SLIDES = [
 
 window.getAdminHeroSlides = async function() {
     try {
-        if (window.db && typeof fetchWithTimeout === 'function') {
+        if (window.db) {
+            const safeGet = async (promise, ms = 4000) => {
+                if (typeof fetchWithTimeout === 'function') return fetchWithTimeout(promise, ms);
+                return Promise.race([
+                    promise,
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+                ]);
+            };
+
             try {
-                const snap = await fetchWithTimeout(window.db.collection('posts').doc('settings_hero_slides').get(), 4000);
+                const snap = await safeGet(window.db.collection('posts').doc('settings_hero_slides').get(), 4000);
                 if (snap && snap.exists && snap.data().slides && Array.isArray(snap.data().slides) && snap.data().slides.length > 0) {
                     const slides = snap.data().slides;
                     localStorage.setItem('kpuritan_hero_slides', JSON.stringify(slides));
@@ -3551,7 +3559,7 @@ window.getAdminHeroSlides = async function() {
                 console.warn("getAdminHeroSlides posts notice:", fsErr1);
             }
             try {
-                const snap2 = await fetchWithTimeout(window.db.collection('settings').doc('hero_slides').get(), 3000);
+                const snap2 = await safeGet(window.db.collection('settings').doc('hero_slides').get(), 3000);
                 if (snap2 && snap2.exists && snap2.data().slides && Array.isArray(snap2.data().slides) && snap2.data().slides.length > 0) {
                     const slides = snap2.data().slides;
                     localStorage.setItem('kpuritan_hero_slides', JSON.stringify(slides));

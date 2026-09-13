@@ -2855,40 +2855,24 @@ document.addEventListener('DOMContentLoaded', () => {
         initCarouselDrag();
     };
 
-    window.loadMainCarousels = async () => {
-        // Instant pre-render mock/cached data so "loading..." message disappears instantly
-        if (typeof window.renderMockCarousels === 'function') {
-            try { window.renderMockCarousels(); } catch (err) {}
-        }
-
-        // DB Check & Fallback
-        if (!window.db) {
-            return;
-        }
-
+    window.renderPostsToCarousels = (allPosts) => {
+        if (!Array.isArray(allPosts) || allPosts.length === 0) return false;
         try {
-            const snapshot = await window.db.collection("posts").orderBy("createdAt", "desc").limit(500).get();
-            if (snapshot.empty) {
-                console.log("No posts found");
-                window.renderMockCarousels();
-                return;
-            }
-
             window.isDataLoaded = true;
-            const allPosts = [];
-            snapshot.forEach(doc => allPosts.push({ id: doc.id, data: doc.data() }));
 
-            // 1. New Arrivals (4열 x 6줄 = 24개)
+            // 1. New Arrivals (최신 업데이트 - 24개)
             const newTrack = document.getElementById('carousel-new');
             const newList = document.getElementById('list-new');
             const latestIds = new Set();
+
             if (newTrack || newList) {
                 if (newTrack) newTrack.innerHTML = '';
                 if (newList) newList.innerHTML = '';
 
-                // 성경주석, 세미나, 강의 제외
+                // 성경주석, 세미나, 강의 등 제외
                 const filteredLatest = allPosts.filter(item => {
-                    const tags = item.data.tags || [];
+                    const postData = item.data || item;
+                    const tags = postData.tags || [];
                     const excluded = ['성경주석', '세미나, 강의', '세미나', '강의', '신학강론', '5분 신학강론', '오분 신학 강론'];
                     return !tags.some(tag => excluded.includes(tag));
                 });
@@ -2896,30 +2880,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 const targetPosts = filteredLatest.length > 0 ? filteredLatest : allPosts;
 
                 targetPosts.slice(0, 24).forEach(item => {
-                    latestIds.add(item.id);
-                    if (newList) newList.appendChild(window.createHomeListItem(item.data, item.id));
-                    if (newTrack) newTrack.appendChild(window.createCarouselCard(item.data, item.id));
+                    const id = item.id || item.docId || ('post_' + Math.random().toString(36).substring(2, 7));
+                    const postData = item.data || item;
+                    latestIds.add(id);
+                    if (newList && typeof window.createHomeListItem === 'function') {
+                        newList.appendChild(window.createHomeListItem(postData, id));
+                    }
+                    if (newTrack && typeof window.createCarouselCard === 'function') {
+                        newTrack.appendChild(window.createCarouselCard(postData, id));
+                    }
                 });
             }
 
-            // 2. Featured Topics (필요시)
+            // 2. Featured Topics
             const topicTrack = document.getElementById('carousel-topic');
             if (topicTrack) {
                 topicTrack.innerHTML = '';
                 const topicItems = allPosts.filter(item => {
-                    const tags = item.data.tags || [];
-                    return !tags.includes('강해') && !tags.includes('강해설교') && !tags.includes('설교') && !latestIds.has(item.id);
+                    const id = item.id || item.docId;
+                    const postData = item.data || item;
+                    const tags = postData.tags || [];
+                    return !tags.includes('강해') && !tags.includes('강해설교') && !tags.includes('설교') && !latestIds.has(id);
                 });
 
-                let displayTopics = topicItems.length >= 6 ? topicItems : allPosts.filter(item => {
-                    const tags = item.data.tags || [];
-                    return !tags.includes('강해') && !tags.includes('강해설교') && !latestIds.has(item.id);
-                });
-
+                let displayTopics = topicItems.length >= 6 ? topicItems : allPosts;
                 displayTopics = [...displayTopics].sort(() => 0.5 - Math.random());
 
                 displayTopics.slice(0, 24).forEach(item => {
-                    topicTrack.appendChild(window.createCarouselCard(item.data, item.id));
+                    const id = item.id || item.docId || ('post_' + Math.random().toString(36).substring(2, 7));
+                    const postData = item.data || item;
+                    if (typeof window.createCarouselCard === 'function') {
+                        topicTrack.appendChild(window.createCarouselCard(postData, id));
+                    }
                 });
             }
 
@@ -2930,7 +2922,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (sermonTrack) sermonTrack.innerHTML = '';
                 if (sermonList) sermonList.innerHTML = '';
 
-                let recommendedItems = allPosts.filter(item => !latestIds.has(item.id));
+                let recommendedItems = allPosts.filter(item => {
+                    const id = item.id || item.docId;
+                    return !latestIds.has(id);
+                });
                 if (recommendedItems.length < 12) {
                     recommendedItems = allPosts;
                 }
@@ -2938,14 +2933,59 @@ document.addEventListener('DOMContentLoaded', () => {
                 const shuffledRecs = [...recommendedItems].sort(() => 0.5 - Math.random());
 
                 shuffledRecs.slice(0, 24).forEach(item => {
-                    if (sermonList) sermonList.appendChild(window.createHomeListItem(item.data, item.id));
-                    if (sermonTrack) sermonTrack.appendChild(window.createCarouselCard(item.data, item.id));
+                    const id = item.id || item.docId || ('post_' + Math.random().toString(36).substring(2, 7));
+                    const postData = item.data || item;
+                    if (sermonList && typeof window.createHomeListItem === 'function') {
+                        sermonList.appendChild(window.createHomeListItem(postData, id));
+                    }
+                    if (sermonTrack && typeof window.createCarouselCard === 'function') {
+                        sermonTrack.appendChild(window.createCarouselCard(postData, id));
+                    }
                 });
             }
-            initCarouselDrag();
 
+            if (typeof initCarouselDrag === 'function') {
+                initCarouselDrag();
+            }
+            return true;
         } catch (e) {
-            console.error("Load Carousels Error:", e);
+            console.error("renderPostsToCarousels Error:", e);
+            return false;
+        }
+    };
+
+    window.loadMainCarousels = async () => {
+        // 1. Try DB first if connected
+        if (window.db) {
+            try {
+                const snapshot = await window.db.collection("posts").orderBy("createdAt", "desc").limit(500).get();
+                if (!snapshot.empty) {
+                    const allPosts = [];
+                    snapshot.forEach(doc => allPosts.push({ id: doc.id, data: doc.data() }));
+                    const success = window.renderPostsToCarousels(allPosts);
+                    if (success) return;
+                }
+            } catch (e) {
+                console.warn("DB Load failed, fallback to JSON dump:", e);
+            }
+        }
+
+        // 2. Fallback to all_posts_dump.json
+        try {
+            const resp = await fetch('all_posts_dump.json');
+            if (resp.ok) {
+                const jsonPosts = await resp.json();
+                if (Array.isArray(jsonPosts) && jsonPosts.length > 0) {
+                    const success = window.renderPostsToCarousels(jsonPosts);
+                    if (success) return;
+                }
+            }
+        } catch (e) {
+            console.warn("JSON Dump fetch failed:", e);
+        }
+
+        // 3. Fallback to mock data
+        if (typeof window.renderMockCarousels === 'function') {
             window.renderMockCarousels();
         }
     };

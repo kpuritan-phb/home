@@ -4148,9 +4148,9 @@ footer {
         color: #111111 !important;
         border: none !important;
         outline: none !important;
-        padding: 8px 4px 8px 3px !important;
-        border-radius: 0 6px 6px 0 !important;
-        font-size: 0.58rem !important;
+        padding: 4px 2px 4px 1px !important;
+        border-radius: 0 4px 4px 0 !important;
+        font-size: 0.45rem !important;
         font-weight: 800 !important;
         box-shadow: none !important;
         z-index: 9999 !important;
@@ -4158,11 +4158,11 @@ footer {
         transition: all 0.25s ease !important;
         writing-mode: vertical-rl !important;
         text-orientation: mixed !important;
-        letter-spacing: 2px !important;
+        letter-spacing: 0.5px !important;
         min-height: auto !important;
         height: auto !important;
         width: auto !important;
-        opacity: 0.82;
+        opacity: 0.75;
     }
 
     .mobile-explore-btn:hover,

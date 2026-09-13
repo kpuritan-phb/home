@@ -5240,7 +5240,8 @@ footer {
         min-height: 195px;
     }
 
-    .hs-subtitle {
+    .hs-subtitle,
+    .hs-book-badge {
         display: none !important;
     }
 

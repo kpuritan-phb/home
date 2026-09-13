@@ -1470,7 +1470,7 @@
                 loadBibleBooks();
             } else if (currentCategory === '성경주석' && bParam) {
                 const sParam = urlParams.get('s');
-                grid.style.display = sParam ? 'grid' : 'none';
+                grid.style.display = 'grid';
                 bibleWrapper.style.display = 'none';
                 chapterWrapper.style.display = 'block';
                 if (filterWrapper) filterWrapper.style.display = 'none';

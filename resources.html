@@ -1436,11 +1436,9 @@
             if (catParam === '5분 신학강론') {
                 catParam = '신학강론';
             }
-            if (catParam === '전도, 선교' || catParam === '전도, 선교' || catParam.includes('전도')) {
-                if (catParam.includes('전도') || catParam.includes('부흥') || catParam.includes('선교')) {
-                    if (!catParam.includes('소책자') && !catParam.includes('만화')) {
-                        catParam = '전도, 부흥, 선교';
-                    }
+            if (catParam && (catParam.includes('전도') || catParam.includes('부흥') || catParam.includes('선교'))) {
+                if (!catParam.includes('소책자') && !catParam.includes('만화')) {
+                    catParam = '전도, 부흥, 선교';
                 }
             }
             currentCategory = catParam;
@@ -2842,7 +2840,7 @@
                 if (category === '설교자') return tags.includes('설교자') || tags.includes('설교론');
                 if (category === '청교도 신학') return tags.includes('청교도 신학') || (typeof determineCategory === 'function' && determineCategory(p.title || '', p.content || '') !== null);
                 if (category === '전도, 부흥, 선교' || category === '전도, 선교') return tags.some(t => ['전도, 부흥, 선교', '전도, 선교', '전도', '부흥', '선교', '부흥신학'].includes(t));
-                if (category === '세미나, 강의' || category === '세미나' || category === '강의') return tags.some(t => ['세미나, 강의', '세미나', '강의'].includes(t));
+                if (category === '세미나, 강의' || category === '세미나' || category === '강의') return tags.some(t => ['세미나, 강의', '세미나', '강의'].includes(t)) || p.otherCategory === '세미나, 강의' || p.otherCategory === '세미나' || p.otherCategory === '강의' || (p.title && (p.title.includes('세미나') || p.title.includes('강의')));
                 return tags.includes(category);
             });
 
@@ -3046,9 +3044,16 @@
                         }
                     } else if (category === '세미나, 강의' || category === '세미나' || category === '강의') {
                         try {
-                            const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["세미나, 강의", "세미나", "강의"]).get(), 1000);
                             const seenIds = new Set();
+                            const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["세미나, 강의", "세미나", "강의"]).get(), 1000);
                             snap1.forEach(doc => {
+                                if (!seenIds.has(doc.id)) {
+                                    posts.push({ id: doc.id, ...doc.data() });
+                                    seenIds.add(doc.id);
+                                }
+                            });
+                            const snap2 = await fetchWithTimeout(db.collection("posts").where("otherCategory", "==", "세미나, 강의").get(), 1000);
+                            snap2.forEach(doc => {
                                 if (!seenIds.has(doc.id)) {
                                     posts.push({ id: doc.id, ...doc.data() });
                                     seenIds.add(doc.id);
@@ -3651,7 +3656,7 @@
 
     <script src="bgm.js?v=1"></script>
     <script src="stats.js?v=1"></script>
-    <script src="main.js?v=20260914_dropdown_fix_v34"></script>
+    <script src="main.js?v=20260914_all_posts_scroll_v42"></script>
 
 
     <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">

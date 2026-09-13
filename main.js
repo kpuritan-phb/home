@@ -3580,11 +3580,21 @@ window.getAdminHeroSlides = async function() {
     return DEFAULT_HERO_SLIDES;
 };
 
+window.ensureAuth = async function() {
+    if (window.auth && !window.auth.currentUser) {
+        try {
+            await window.auth.signInAnonymously();
+        } catch (e) {
+            console.warn("Auth initialization notice:", e);
+        }
+    }
+};
+
 window.saveAdminHeroSlidesList = async function(slides) {
     localStorage.setItem('kpuritan_hero_slides', JSON.stringify(slides));
     if (window.db) {
         try {
-            await ensureAuth();
+            if (window.ensureAuth) await window.ensureAuth();
             await window.db.collection('posts').doc('settings_hero_slides').set({
                 type: 'system_setting',
                 slides: slides,

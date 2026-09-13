@@ -2674,6 +2674,46 @@
             }
         }
 
+        function filterDumpPostsByCategory(dump, category, s, b, subTopic) {
+            let posts = dump.filter(p => {
+                if (!Array.isArray(p.tags)) return false;
+                if (category === '신학강론') return p.tags.includes('신학강론') || p.tags.includes('5분 신학강론');
+                if (category === '설교자') return p.tags.includes('설교자') || p.tags.includes('설교론');
+                if (category === '청교도 신학') return p.tags.includes('청교도 신학');
+                if (category === '전도, 부흥, 선교' || category === '전도, 선교') return p.tags.some(t => ['전도, 부흥, 선교', '전도, 선교', '전도', '부흥', '선교', '부흥신학'].includes(t));
+                if (category === '세미나, 강의' || category === '세미나' || category === '강의') return p.tags.some(t => ['세미나, 강의', '세미나', '강의'].includes(t));
+                return p.tags.includes(category);
+            });
+
+            if (category === '성경주석' && b) {
+                posts = posts.filter(p => p.series === b);
+                if (s) {
+                    const target = s.endsWith('장') ? s : s + '장';
+                    posts = posts.filter(p => p.title && p.title.includes(' ' + target));
+                }
+            } else if (s) {
+                const cleanS = s.trim();
+                const shortS = cleanS.replace(/\s*강해$/, '');
+                posts = posts.filter(p => {
+                    const pSeries = (p.series || '').trim();
+                    const pTitle = (p.title || '').trim();
+                    const pTags = Array.isArray(p.tags) ? p.tags : [];
+                    return pSeries === cleanS || pSeries === shortS || pSeries.includes(shortS) ||
+                           pTitle.includes(cleanS) || pTitle.includes(shortS) ||
+                           pTags.includes(cleanS);
+                });
+            }
+
+            if (subTopic) {
+                posts = posts.filter(p => {
+                    const tags = Array.isArray(p.tags) ? p.tags : [];
+                    return (p.subTopic === subTopic) || (p.series === subTopic) || tags.includes(subTopic) || (p.topic === subTopic) || (p.title && p.title.includes(subTopic));
+                });
+            }
+
+            return posts;
+        }
+
         async function loadCategoryItems(category) {
             if (category === "5분 신학강론") {
                 category = "신학강론";
@@ -2858,53 +2898,12 @@
                     console.warn("Firestore fetch timeout/error, switching to dump fallback:", e);
                     usedFallback = true;
                     const dump = await getFallbackPosts();
-                    if (category === '신학강론') {
-                        posts = dump.filter(p => Array.isArray(p.tags) && (p.tags.includes("신학강론") || p.tags.includes("5분 신학강론")));
-                    } else if (category === '설교자') {
-                        posts = dump.filter(p => Array.isArray(p.tags) && (p.tags.includes("설교자") || p.tags.includes("설교론")));
-                    } else if (category === '청교도 신학') {
-                        posts = dump.filter(p => Array.isArray(p.tags) && p.tags.includes("청교도 신학"));
-                    } else if (category === '성경주석') {
-                        posts = dump.filter(p => Array.isArray(p.tags) && p.tags.includes("성경주석"));
-                        if (b) {
-                            posts = posts.filter(p => p.series === b);
-                            if (s) {
-                                const target = s.endsWith('장') ? s : s + '장';
-                                posts = posts.filter(p => p.title && p.title.includes(' ' + target));
-                            }
-                        }
-                    } else {
-                        posts = dump.filter(p => Array.isArray(p.tags) && p.tags.includes(category));
-                        if (s) {
-                            const cleanS = s.trim();
-                            const shortS = cleanS.replace(/\s*강해$/, '');
-                            posts = posts.filter(p => {
-                                const pSeries = (p.series || '').trim();
-                                const pTitle = (p.title || '').trim();
-                                const pTags = Array.isArray(p.tags) ? p.tags : [];
-                                return pSeries === cleanS || pSeries === shortS || pSeries.includes(shortS) ||
-                                       pTitle.includes(cleanS) || pTitle.includes(shortS) ||
-                                       pTags.includes(cleanS);
-                            });
-                        }
-                    }
+                    posts = filterDumpPostsByCategory(dump, category, s, b, subTopic);
                 }
 
                 if ((!posts || posts.length === 0) && !usedFallback) {
                     const dump = await getFallbackPosts();
-                    posts = dump.filter(p => Array.isArray(p.tags) && p.tags.includes(category));
-                    if (s) {
-                        const cleanS = s.trim();
-                        const shortS = cleanS.replace(/\s*강해$/, '');
-                        posts = posts.filter(p => {
-                            const pSeries = (p.series || '').trim();
-                            const pTitle = (p.title || '').trim();
-                            const pTags = Array.isArray(p.tags) ? p.tags : [];
-                            return pSeries === cleanS || pSeries === shortS || pSeries.includes(shortS) ||
-                                   pTitle.includes(cleanS) || pTitle.includes(shortS) ||
-                                   pTags.includes(cleanS);
-                        });
-                    }
+                    posts = filterDumpPostsByCategory(dump, category, s, b, subTopic);
                 }
 
                 if (category === '강해설교') {

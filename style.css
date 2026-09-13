@@ -4131,7 +4131,7 @@ footer {
         display: none !important;
     }
 
-    /* 모바일 왼쪽 수줍고 깔끔한 세로 글라스 책갈피 (테두리 없음, 반투명 텍스트) */
+    /* 모바일 왼쪽 세로 미니 책갈피 (테두리 없음, 깔끔한 검은색 글자) */
     .mobile-explore-btn {
         display: flex !important;
         flex-direction: column !important;
@@ -4142,16 +4142,16 @@ footer {
         left: 0 !important;
         right: auto !important;
         bottom: auto !important;
-        background: rgba(255, 255, 255, 0.25) !important;
+        background: rgba(255, 255, 255, 0.4) !important;
         backdrop-filter: blur(8px) !important;
         -webkit-backdrop-filter: blur(8px) !important;
-        color: rgba(26, 52, 42, 0.55) !important;
+        color: #111111 !important;
         border: none !important;
         outline: none !important;
         padding: 8px 4px 8px 3px !important;
         border-radius: 0 6px 6px 0 !important;
         font-size: 0.58rem !important;
-        font-weight: 700 !important;
+        font-weight: 800 !important;
         box-shadow: none !important;
         z-index: 9999 !important;
         cursor: pointer !important;
@@ -4162,14 +4162,14 @@ footer {
         min-height: auto !important;
         height: auto !important;
         width: auto !important;
-        opacity: 0.7;
+        opacity: 0.82;
     }
 
     .mobile-explore-btn:hover,
     .mobile-explore-btn:active {
         opacity: 1 !important;
-        color: rgba(26, 52, 42, 0.95) !important;
-        background: rgba(255, 255, 255, 0.6) !important;
+        color: #000000 !important;
+        background: rgba(255, 255, 255, 0.75) !important;
         padding-left: 6px !important;
     }
 

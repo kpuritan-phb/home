@@ -608,7 +608,7 @@ nav ul li:hover a i {
     display: none !important;
 }
 
-/* Floating Inquiry Button (Icon only) */
+/* Floating Inquiry Button (Icon only, no circle background) */
 .floating-inquiry-btn {
     position: fixed;
     bottom: 2rem;
@@ -617,20 +617,22 @@ nav ul li:hover a i {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--secondary-color);
-    color: white;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
+    background: transparent !important;
+    color: var(--secondary-color);
+    width: auto;
+    height: auto;
+    padding: 6px;
+    border-radius: 0;
     text-decoration: none;
-    box-shadow: 0 10px 30px rgba(92, 64, 51, 0.3);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: none !important;
+    transition: all 0.3s ease;
     border: none;
     cursor: pointer;
 }
 
 .floating-inquiry-btn i {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
 }
 
 .floating-inquiry-btn span {
@@ -638,10 +640,10 @@ nav ul li:hover a i {
 }
 
 .floating-inquiry-btn:hover {
-    transform: translateY(-8px) scale(1.1);
-    background-color: var(--accent-color);
-    box-shadow: 0 15px 40px rgba(92, 64, 51, 0.4);
-    color: white;
+    transform: scale(1.15);
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--accent-color);
 }
 
 .floating-inquiry-btn:active {
@@ -652,9 +654,8 @@ nav ul li:hover a i {
     .floating-inquiry-btn {
         bottom: 1.5rem;
         right: 1.5rem;
-        padding: 0.7rem 1.4rem;
-        font-size: 0.85rem;
     }
+}
     
     .login-trigger {
         bottom: 5.5rem !important;
@@ -1844,23 +1845,24 @@ footer {
 }
 
 .bgm-control {
-    background: white;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
+    background: transparent !important;
+    width: 44px;
+    height: 44px;
+    border-radius: 0 !important;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 1px solid #eee;
+    box-shadow: none !important;
+    transition: transform 0.2s ease;
+    border: none !important;
     padding: 0;
 }
 
 .bgm-control:hover {
-    transform: translateY(-8px) scale(1.1);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    transform: scale(1.15);
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
 .music-icon {

@@ -2502,7 +2502,7 @@
                 let posts = [];
                 try {
                     let query = db.collection("posts").where("subTopics", "array-contains", subTopic);
-                    const snapshot = await fetchWithTimeout(query.get(), 4000);
+                    const snapshot = await fetchWithTimeout(query.get(), 1000);
                     snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
                 } catch (e) {
                     console.warn("loadSubtopicItems fetch timeout/error, using fallback:", e);
@@ -2731,12 +2731,12 @@
 
                 try {
                     if (category === '신학강론') {
-                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["신학강론", "5분 신학강론"]).get(), 4000);
+                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["신학강론", "5분 신학강론"]).get(), 1000);
                         snap1.forEach(doc => {
                             posts.push({ id: doc.id, ...doc.data() });
                         });
 
-                        const allSnap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 4000);
+                        const allSnap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 1000);
                         allSnap.forEach(doc => {
                             const data = doc.data();
                             const content = data.content || '';
@@ -2746,8 +2746,8 @@
                             }
                         });
                     } else if (category === '설교자') {
-                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "설교자").get(), 4000);
-                        const snap2 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "설교론").get(), 4000);
+                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "설교자").get(), 1000);
+                        const snap2 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "설교론").get(), 1000);
                         const seenIds = new Set();
                         snap1.forEach(doc => {
                             if (!seenIds.has(doc.id)) {
@@ -2762,7 +2762,7 @@
                             }
                         });
                     } else if (category === '청교도 신학') {
-                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "청교도 신학").get(), 4000);
+                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "청교도 신학").get(), 1000);
                         const seenIds = new Set();
                         snap1.forEach(doc => {
                             posts.push({ id: doc.id, ...doc.data() });
@@ -2770,7 +2770,7 @@
                         });
 
                         try {
-                            const snap2 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF", "설교론", "설교자", "전도설교"]).get(), 3000);
+                            const snap2 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF", "설교론", "설교자", "전도설교"]).get(), 1000);
                             snap2.forEach(doc => {
                                 if (!seenIds.has(doc.id)) {
                                     posts.push({ id: doc.id, ...doc.data() });
@@ -2807,7 +2807,7 @@
                             "강해설교", "도서 목록", "전도만화", "신학강론", "성경주석", "5분 신학강론"
                         ];
 
-                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도, 선교", "전도", "부흥", "선교", "부흥신학"]).get(), 4000);
+                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도, 선교", "전도", "부흥", "선교", "부흥신학"]).get(), 1000);
                         const seenIds = new Set();
                         snap1.forEach(doc => {
                             if (!seenIds.has(doc.id)) {
@@ -2850,7 +2850,7 @@
                             });
                         }
                     } else if (category === '세미나, 강의' || category === '세미나' || category === '강의') {
-                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["세미나, 강의", "세미나", "강의"]).get(), 4000);
+                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["세미나, 강의", "세미나", "강의"]).get(), 1000);
                         const seenIds = new Set();
                         snap1.forEach(doc => {
                             if (!seenIds.has(doc.id)) {

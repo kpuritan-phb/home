@@ -1584,9 +1584,9 @@
                 }
             };
 
-            fetchLatestSlides();
-            // window.db가 지연 로딩되는 경우 재시도
-            if (!window.db) {
+            if (window.db) {
+                fetchLatestSlides();
+            } else {
                 let checkCount = 0;
                 const dbTimer = setInterval(() => {
                     checkCount++;
@@ -1596,7 +1596,7 @@
                     } else if (checkCount > 10) {
                         clearInterval(dbTimer);
                     }
-                }, 500);
+                }, 300);
             }
 
             // 화살표 버튼

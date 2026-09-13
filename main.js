@@ -2967,11 +2967,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.loadMainCarousels = async () => {
-        // 0. Pre-render mock data IMMEDIATELY so "loading..." message disappears instantly on page load
-        if (typeof window.renderMockCarousels === 'function') {
-            try { window.renderMockCarousels(); } catch (err) {}
-        }
-
         // 1. Try DB first if connected
         if (window.db) {
             try {

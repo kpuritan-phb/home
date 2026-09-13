@@ -2198,7 +2198,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const targetPosts = filteredLatest.length > 0 ? filteredLatest : allPosts;
 
-                targetPosts.slice(0, 24).forEach(item => {
+                targetPosts.forEach(item => {
                     const id = item.id || item.docId || ('post_' + Math.random().toString(36).substring(2, 7));
                     const postData = item.data || item;
                     latestIds.add(id);
@@ -2225,7 +2225,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let displayTopics = topicItems.length >= 6 ? topicItems : allPosts;
                 displayTopics = [...displayTopics].sort(() => 0.5 - Math.random());
 
-                displayTopics.slice(0, 24).forEach(item => {
+                displayTopics.forEach(item => {
                     const id = item.id || item.docId || ('post_' + Math.random().toString(36).substring(2, 7));
                     const postData = item.data || item;
                     if (typeof window.createCarouselCard === 'function') {
@@ -2234,7 +2234,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // 3. Recommended Materials (추천 자료 - 24개)
+            // 3. Recommended Materials (추천 자료)
             const sermonTrack = document.getElementById('carousel-sermon');
             const sermonList = document.getElementById('list-sermon');
             if (sermonTrack || sermonList) {
@@ -2251,7 +2251,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const shuffledRecs = [...recommendedItems].sort(() => 0.5 - Math.random());
 
-                shuffledRecs.slice(0, 24).forEach(item => {
+                shuffledRecs.forEach(item => {
                     const id = item.id || item.docId || ('post_' + Math.random().toString(36).substring(2, 7));
                     const postData = item.data || item;
                     if (sermonList && typeof window.createHomeListItem === 'function') {

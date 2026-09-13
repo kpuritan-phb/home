@@ -3662,49 +3662,9 @@ footer {
     border-radius: 10px;
 }
 
-/* Sidebar Toggle Drawer Button (Monergism Inspired) */
+/* Sidebar Toggle Drawer Button (Monergism Inspired) - Hidden to prevent layout overlaps */
 .sidebar-toggle-btn {
-    position: absolute;
-    top: 50px;
-    left: 100%;
-    transform: translateX(-1px);
-    background: var(--secondary-color);
-    color: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    border-left: none;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    padding: 14px 7px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    z-index: 50;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    outline: none;
-}
-
-.sidebar-toggle-btn:hover {
-    background: #254d3e;
-    padding-left: 10px;
-}
-
-.sidebar-toggle-btn .toggle-icon {
-    font-size: 0.85rem;
-    transition: transform 0.3s;
-}
-
-.sidebar-toggle-btn .toggle-text {
-    writing-mode: vertical-lr;
-    text-orientation: mixed;
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    font-family: 'Montserrat', sans-serif;
-    white-space: nowrap;
-    text-transform: uppercase;
+    display: none !important;
 }
 
 /* Collapsed Sidebar State */
@@ -4199,17 +4159,19 @@ footer {
         border-top-right-radius: 24px;
         box-shadow: 0 -10px 30px rgba(0,0,0,0.15);
         transform: translateY(105%);
-        transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.4s;
         display: block !important;
         margin: 0;
         overflow: hidden;
         border: none;
         max-height: none;
         padding: 0;
+        visibility: hidden;
     }
 
     .explore-sidebar.mobile-open {
         transform: translateY(0);
+        visibility: visible;
     }
 
     /* 모바일 전용 헤더 */

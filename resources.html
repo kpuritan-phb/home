@@ -1313,6 +1313,7 @@
             let catParam = urlParams.get('cat');
             const bParam = urlParams.get('b');
             const searchParam = urlParams.get('search');
+            const subTopicParam = urlParams.get('subTopic');
 
             if (typeParam) currentType = typeParam;
 
@@ -1423,6 +1424,7 @@
             const s = urlParams.get('s') || "";
             const b = urlParams.get('b') || "";
             const search = urlParams.get('search') || "";
+            const subTopic = urlParams.get('subTopic') || "";
 
             if (search) {
                 if (filterWrapper) filterWrapper.style.display = 'none';

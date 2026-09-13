@@ -2593,7 +2593,7 @@
             try {
                 let posts = [];
                 try {
-                    const snap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 4000);
+                    const snap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 1000);
                     snap.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
                 } catch (e) {
                     console.warn("Firestore loadAllResources error/timeout, using fallback:", e);
@@ -2632,7 +2632,7 @@
             try {
                 let posts = [];
                 try {
-                    const snap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 4000);
+                    const snap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 1000);
                     snap.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
                 } catch (e) {
                     console.warn("Firestore search error, fallback:", e);
@@ -2868,7 +2868,7 @@
                                 renderBibleChaptersGrid(b, bookData.chapters);
                             }
                             let query = db.collection("posts").where("tags", "array-contains", "성경주석");
-                            const snapshot = await fetchWithTimeout(query.get(), 4000);
+                            const snapshot = await fetchWithTimeout(query.get(), 1000);
                             snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
 
                             posts = posts.filter(p => p.series === b);
@@ -2879,7 +2879,7 @@
                         }
                     } else {
                         let query = db.collection("posts").where("tags", "array-contains", category);
-                        const snapshot = await fetchWithTimeout(query.get(), 4000);
+                        const snapshot = await fetchWithTimeout(query.get(), 1000);
                         snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
                         if (s) {
                             const cleanS = s.trim();
@@ -3409,7 +3409,7 @@
 
     <script src="bgm.js?v=1"></script>
     <script src="stats.js?v=1"></script>
-    <script src="main.js?v=20260912_v2"></script>
+    <script src="main.js?v=20260914_dropdown_fix_v34"></script>
 
 
     <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">

@@ -4123,48 +4123,51 @@ footer {
 
     /* 모바일 왼쪽 책갈피 탐색 탭 버튼 */
     .mobile-explore-btn {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-        position: fixed;
-        top: 42%;
-        left: 0;
-        right: auto;
-        bottom: auto;
-        background: #1a342a;
-        color: #ffffff;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-left: none;
-        padding: 10px 6px 12px 6px;
-        border-radius: 0 10px 10px 0;
-        font-size: 0.7rem;
-        font-weight: 800;
-        box-shadow: 3px 4px 15px rgba(0, 0, 0, 0.3);
-        z-index: 9999;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        writing-mode: vertical-rl;
-        text-orientation: mixed;
-        letter-spacing: 2px;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 5px !important;
+        position: fixed !important;
+        top: 42% !important;
+        left: 0 !important;
+        right: auto !important;
+        bottom: auto !important;
+        background: #1a342a !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-left: none !important;
+        padding: 10px 6px 12px 6px !important;
+        border-radius: 0 10px 10px 0 !important;
+        font-size: 0.7rem !important;
+        font-weight: 800 !important;
+        box-shadow: 3px 4px 15px rgba(0, 0, 0, 0.3) !important;
+        z-index: 9999 !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        writing-mode: vertical-rl !important;
+        text-orientation: mixed !important;
+        letter-spacing: 2px !important;
+        min-height: auto !important;
+        height: auto !important;
+        width: auto !important;
     }
 
     .mobile-explore-btn i {
-        font-size: 0.78rem;
-        color: #d4af37; /* 책갈피 금빛 아이콘 포인트 */
-        transform: rotate(90deg);
-        margin-bottom: 2px;
+        font-size: 0.78rem !important;
+        color: #d4af37 !important; /* 책갈피 금빛 아이콘 포인트 */
+        transform: rotate(90deg) !important;
+        margin-bottom: 2px !important;
     }
 
     .mobile-explore-btn:hover {
-        padding-left: 9px;
-        background: #12251e;
+        padding-left: 9px !important;
+        background: #12251e !important;
     }
 
     .mobile-explore-btn:active {
-        transform: scale(0.95);
-        background: #0b1713;
+        transform: scale(0.95) !important;
+        background: #0b1713 !important;
     }
 
     /* 모바일 사이드바 -> 바텀시트 모달 드로어 전환 (기본 100% 숨김) */
@@ -4328,10 +4331,9 @@ footer {
     }
 
     /* 2. 터치 타겟 최소 44px 이상 및 오터치 방지 간격 확보 */
-    button, 
+    button:not(.mobile-explore-btn):not(.home-view-toggle-btn), 
     .cta-btn, 
     .floating-inquiry-btn, 
-    .mobile-explore-btn,
     .carousel-nav-btn,
     .sidebar-topic-item,
     .dropdown-list li a,

@@ -591,10 +591,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (e) { console.error("populateSeminarChoices error:", e); }
         };
 
-        if (typeof db !== 'undefined') {
-            populateSermonChoices();
-            populateSeminarChoices();
-        }
+        populateSermonChoices();
+        populateSeminarChoices();
 
     // --- Header Scroll Effect ---
     window.addEventListener('scroll', () => {

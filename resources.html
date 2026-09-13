@@ -2838,7 +2838,9 @@
         function filterDumpPostsByCategory(dump, category, s, b, subTopic) {
             let posts = dump.filter(p => {
                 const tags = Array.isArray(p.tags) ? p.tags : [];
-                if (category === '신학강론') return tags.includes('신학강론') || tags.includes('5분 신학강론');
+                if (category === '신학강론' || category === '5분 신학강론') {
+                    return tags.includes('신학강론') || tags.includes('5분 신학강론') || p.otherCategory === '신학강론' || p.otherCategory === '5분 신학강론' || p.topic === '신학강론' || (p.title && (p.title.includes('신학강론') || p.title.includes('강론')));
+                }
                 if (category === '설교자') return tags.includes('설교자') || tags.includes('설교론');
                 if (category === '청교도 신학') return tags.includes('청교도 신학') || (typeof determineCategory === 'function' && determineCategory(p.title || '', p.content || '') !== null);
                 if (category === '전도, 부흥, 선교' || category === '전도, 선교') {
@@ -2929,18 +2931,18 @@
                 try {
                     if (category === '신학강론') {
                         try {
+                            const seenIds = new Set();
                             const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["신학강론", "5분 신학강론"]).get(), 1000);
                             snap1.forEach(doc => {
                                 posts.push({ id: doc.id, ...doc.data() });
+                                seenIds.add(doc.id);
                             });
 
-                            const allSnap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 1000);
-                            allSnap.forEach(doc => {
-                                const data = doc.data();
-                                const content = data.content || '';
-                                const isYt = content.includes('youtube.com') || content.includes('youtu.be');
-                                if (isYt && !posts.some(p => p.id === doc.id)) {
-                                    posts.push({ id: doc.id, ...data });
+                            const snap2 = await fetchWithTimeout(db.collection("posts").where("otherCategory", "in", ["신학강론", "5분 신학강론"]).get(), 1000);
+                            snap2.forEach(doc => {
+                                if (!seenIds.has(doc.id)) {
+                                    posts.push({ id: doc.id, ...doc.data() });
+                                    seenIds.add(doc.id);
                                 }
                             });
                         } catch(e) {}
@@ -3653,7 +3655,7 @@
 
     <script src="bgm.js?v=1"></script>
     <script src="stats.js?v=1"></script>
-    <script src="main.js?v=20260914_resources_fix_v45"></script>
+    <script src="main.js?v=20260914_theology_fix_v46"></script>
 
 
     <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">

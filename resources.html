@@ -1429,7 +1429,7 @@
             const typeParam = urlParams.get('type');
             let catParam = urlParams.get('cat');
             if (catParam) {
-                try { catParam = decodeURIComponent(catParam); } catch(e) {}
+                try { catParam = decodeURIComponent(catParam.replace(/\+/g, ' ')).trim(); } catch(e) {}
             }
             const bParam = urlParams.get('b');
             const searchParam = urlParams.get('search');

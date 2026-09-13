@@ -771,6 +771,18 @@
 
         /* 3. Responsive Web Design (Media Queries) */
         @media (max-width: 1024px) {
+            html, body {
+                overflow-x: hidden !important;
+                width: 100% !important;
+                max-width: 100vw !important;
+            }
+
+            .reader-layout, .reader-grid {
+                overflow-x: hidden !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
             .reader-grid {
                 grid-template-columns: 1fr;
             }
@@ -786,10 +798,12 @@
                 width: 280px;
                 z-index: 95;
                 box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+                visibility: hidden;
             }
 
             .sidebar.open {
                 left: 0;
+                visibility: visible;
             }
 
             .close-sidebar-btn {
@@ -803,10 +817,12 @@
                 width: 320px;
                 z-index: 95;
                 box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+                visibility: hidden;
             }
 
             .widget-area.open {
                 right: 0;
+                visibility: visible;
             }
 
             .widget-header-mobile {

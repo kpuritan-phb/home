@@ -5823,5 +5823,14 @@ button, a, input, select, textarea {
     }
 }
 
+/* Global Mobile Horizontal Overflow Guard */
+@media (max-width: 768px) {
+    html, body {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+    }
+}
+
 
 

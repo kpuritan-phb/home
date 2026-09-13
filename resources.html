@@ -1312,7 +1312,7 @@
             const typeParam = urlParams.get('type');
             let catParam = urlParams.get('cat');
             const bParam = urlParams.get('b');
-            const subTopicParam = urlParams.get('subTopic');
+            const searchParam = urlParams.get('search');
 
             if (typeParam) currentType = typeParam;
 
@@ -1335,7 +1335,13 @@
             }
             updateUI();
 
-            if (currentCategory === '성경주석' && !bParam) {
+            if (searchParam) {
+                grid.style.display = 'grid';
+                bibleWrapper.style.display = 'none';
+                chapterWrapper.style.display = 'none';
+                if (filterWrapper) filterWrapper.style.display = 'none';
+                await loadSearchResults(searchParam);
+            } else if (currentCategory === '성경주석' && !bParam) {
                 grid.style.display = 'none';
                 bibleWrapper.style.display = 'block';
                 chapterWrapper.style.display = 'none';
@@ -1416,13 +1422,16 @@
             const urlParams = new URLSearchParams(window.location.search);
             const s = urlParams.get('s') || "";
             const b = urlParams.get('b') || "";
-            const subTopic = urlParams.get('subTopic') || "";
+            const search = urlParams.get('search') || "";
 
-            if (subTopic) {
-                filterWrapper.style.display = 'none';
+            if (search) {
+                if (filterWrapper) filterWrapper.style.display = 'none';
+                if (pageTitle) pageTitle.textContent = `검색 결과: "${search}"`;
+            } else if (subTopic) {
+                if (filterWrapper) filterWrapper.style.display = 'none';
                 if (pageTitle) pageTitle.textContent = `신학 주제: ${subTopic}`;
             } else if (currentCategory) {
-                filterWrapper.style.display = 'none';
+                if (filterWrapper) filterWrapper.style.display = 'none';
                 let title = currentCategory;
                 if (b) title += ` > ${b}`;
                 if (s) title += ` > ${s}`;
@@ -2575,6 +2584,55 @@
             } catch (err) {
                 console.error("loadAllResources error:", err);
                 grid.innerHTML = '<div class="no-results">자료를 불러오는 중에 오류가 발생했습니다.</div>';
+            }
+        }
+
+        async function loadSearchResults(keyword) {
+            grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 검색 중...</div>';
+            const cleanKeyword = (keyword || '').trim().toLowerCase();
+
+            try {
+                let posts = [];
+                try {
+                    const snap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 4000);
+                    snap.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                } catch (e) {
+                    console.warn("Firestore search error, fallback:", e);
+                    posts = await getFallbackPosts();
+                }
+
+                if (!posts || posts.length === 0) {
+                    posts = await getFallbackPosts();
+                }
+
+                const filtered = posts.filter(p => {
+                    const title = (p.title || '').toLowerCase();
+                    const content = (p.content || '').toLowerCase();
+                    const author = (p.author || '').toLowerCase();
+                    const series = (p.series || '').toLowerCase();
+                    const topic = (p.topic || '').toLowerCase();
+                    const tags = Array.isArray(p.tags) ? p.tags.join(' ').toLowerCase() : '';
+                    return title.includes(cleanKeyword) || content.includes(cleanKeyword) || author.includes(cleanKeyword) || series.includes(cleanKeyword) || topic.includes(cleanKeyword) || tags.includes(cleanKeyword);
+                });
+
+                grid.innerHTML = '';
+                grid.className = 'resource-list-grid';
+
+                if (filtered.length === 0) {
+                    grid.innerHTML = `<div class="no-results" style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #718096; font-size: 1.05rem;">
+                        <i class="fas fa-search" style="font-size: 2rem; color: #cbd5e0; margin-bottom: 1rem; display: block;"></i>
+                        "<strong>${keyword}</strong>" 키워드에 대한 검색 결과가 없습니다.
+                    </div>`;
+                    if (paginationEl) paginationEl.innerHTML = '';
+                    return;
+                }
+
+                allCurrentPosts = filtered;
+                applySorting(allCurrentPosts, currentSortOption);
+                renderPage(1);
+            } catch (err) {
+                console.error("loadSearchResults error:", err);
+                grid.innerHTML = '<div class="no-results">검색 도중 오류가 발생했습니다.</div>';
             }
         }
 

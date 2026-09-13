@@ -3053,21 +3053,21 @@ footer {
 }
 
 .carousel-title {
-    font-size: 1.5rem;
+    font-size: 0.95rem;
     font-weight: 800;
     color: var(--primary-color);
     letter-spacing: -0.02em;
     font-family: 'Montserrat', sans-serif;
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.5rem;
 }
 
 .carousel-title::before {
     content: '';
     display: block;
-    width: 6px;
-    height: 24px;
+    width: 3px;
+    height: 13px;
     background: var(--secondary-color);
     border-radius: 2px;
 }
@@ -4146,7 +4146,7 @@ footer {
         background: #050d18;
     }
 
-    /* 모바일 사이드바 -> 바텀시트 모달 드로어 전환 */
+    /* 모바일 사이드바 -> 바텀시트 모달 드로어 전환 (기본 100% 숨김) */
     .explore-sidebar {
         position: fixed;
         bottom: 0;
@@ -4160,18 +4160,21 @@ footer {
         box-shadow: 0 -10px 30px rgba(0,0,0,0.15);
         transform: translateY(105%);
         transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.4s;
-        display: block !important;
+        display: none !important;
         margin: 0;
         overflow: hidden;
         border: none;
         max-height: none;
         padding: 0;
         visibility: hidden;
+        pointer-events: none;
     }
 
     .explore-sidebar.mobile-open {
-        transform: translateY(0);
-        visibility: visible;
+        display: block !important;
+        transform: translateY(0) !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
     }
 
     /* 모바일 전용 헤더 */
@@ -4369,6 +4372,29 @@ footer {
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
+    }
+
+    .carousel-title {
+        font-size: 0.85rem !important;
+        gap: 0.35rem !important;
+    }
+
+    .carousel-title::before {
+        width: 3px !important;
+        height: 11px !important;
+    }
+
+    .carousel-title span {
+        font-size: 0.45em !important;
+    }
+
+    .carousel-view-all {
+        font-size: 0.72rem !important;
+    }
+
+    .home-view-toggle-btn {
+        font-size: 0.7rem !important;
+        padding: 3px 7px !important;
     }
 
     .carousel-card {

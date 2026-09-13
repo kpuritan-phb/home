@@ -2856,9 +2856,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.loadMainCarousels = async () => {
+        // Instant pre-render mock/cached data so "loading..." message disappears instantly
+        if (typeof window.renderMockCarousels === 'function') {
+            try { window.renderMockCarousels(); } catch (err) {}
+        }
+
         // DB Check & Fallback
         if (!window.db) {
-            window.renderMockCarousels();
             return;
         }
 

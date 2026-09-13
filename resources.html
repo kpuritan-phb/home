@@ -1238,20 +1238,83 @@
         let currentSortOption = localStorage.getItem('resourcesSortOption') || 'custom'; // 'custom', 'title_asc', 'title_desc', 'date_desc', 'date_asc'
 
         const BIBLE_BOOKS = [
-            { name: "창세기", chapters: 50, test: 'old' }, { name: "출애굽기", chapters: 40, test: 'old' }, { name: "레위기", chapters: 27, test: 'old' }, { name: "민수기", chapters: 36, test: 'old' }, { name: "신명기", chapters: 34, test: 'old' },
-            { name: "여호수아", chapters: 24, test: 'old' }, { name: "사사기", chapters: 21, test: 'old' }, { name: "룻기", chapters: 4, test: 'old' }, { name: "사무엘상", chapters: 31, test: 'old' }, { name: "사무엘하", chapters: 24, test: 'old' },
-            { name: "열왕기상", chapters: 22, test: 'old' }, { name: "열왕기하", chapters: 25, test: 'old' }, { name: "역대상", chapters: 29, test: 'old' }, { name: "역대하", chapters: 36, test: 'old' }, { name: "에스라", chapters: 10, test: 'old' },
-            { name: "느헤미야", chapters: 13, test: 'old' }, { name: "에스더", chapters: 10, test: 'old' }, { name: "욥기", chapters: 42, test: 'old' }, { name: "시편", chapters: 150, test: 'old' }, { name: "잠언", chapters: 31, test: 'old' },
-            { name: "전도서", chapters: 12, test: 'old' }, { name: "아가", chapters: 8, test: 'old' }, { name: "이사야", chapters: 66, test: 'old' }, { name: "예레미야", chapters: 52, test: 'old' }, { name: "예레미야 애가", chapters: 5, test: 'old' },
-            { name: "에스겔", chapters: 48, test: 'old' }, { name: "다니엘", chapters: 12, test: 'old' }, { name: "호세아", chapters: 14, test: 'old' }, { name: "요엘", chapters: 3, test: 'old' }, { name: "아모스", chapters: 9, test: 'old' },
-            { name: "오바댜", chapters: 1, test: 'old' }, { name: "요나", chapters: 4, test: 'old' }, { name: "미가", chapters: 7, test: 'old' }, { name: "나훔", chapters: 3, test: 'old' }, { name: "하박국", chapters: 3, test: 'old' },
-            { name: "스바냐", chapters: 3, test: 'old' }, { name: "학개", chapters: 2, test: 'old' }, { name: "스가랴", chapters: 14, test: 'old' }, { name: "말라기", chapters: 4, test: 'old' },
-            { name: "마태복음", chapters: 28, test: 'new' }, { name: "마가복음", chapters: 16, test: 'new' }, { name: "누가복음", chapters: 24, test: 'new' }, { name: "요한복음", chapters: 21, test: 'new' }, { name: "사도행전", chapters: 28, test: 'new' },
-            { name: "로마서", chapters: 16, test: 'new' }, { name: "고린도전서", chapters: 16, test: 'new' }, { name: "고린도후서", chapters: 13, test: 'new' }, { name: "갈라디아서", chapters: 6, test: 'new' }, { name: "에베소서", chapters: 6, test: 'new' },
-            { name: "빌립보서", chapters: 4, test: 'new' }, { name: "골로새서", chapters: 4, test: 'new' }, { name: "데살로니가전서", chapters: 5, test: 'new' }, { name: "데살로니가후서", chapters: 3, test: 'new' }, { name: "디모데전서", chapters: 6, test: 'new' },
-            { name: "디모데후서", chapters: 4, test: 'new' }, { name: "디도서", chapters: 3, test: 'new' }, { name: "빌레몬서", chapters: 1, test: 'new' }, { name: "히브리서", chapters: 13, test: 'new' }, { name: "야고보서", chapters: 5, test: 'new' },
-            { name: "베드로전서", chapters: 5, test: 'new' }, { name: "베드로후서", chapters: 3, test: 'new' }, { name: "요한1서", chapters: 5, test: 'new' }, { name: "요한2서", chapters: 1, test: 'new' }, { name: "요한3서", chapters: 1, test: 'new' },
-            { name: "유다서", chapters: 1, test: 'new' }, { name: "요한계시록", chapters: 22, test: 'new' }
+            // 구약
+            { name: "창세기", chapters: 50, test: 'old', group: '모세오경' },
+            { name: "출애굽기", chapters: 40, test: 'old', group: '모세오경' },
+            { name: "레위기", chapters: 27, test: 'old', group: '모세오경' },
+            { name: "민수기", chapters: 36, test: 'old', group: '모세오경' },
+            { name: "신명기", chapters: 34, test: 'old', group: '모세오경' },
+
+            { name: "여호수아", chapters: 24, test: 'old', group: '역사서' },
+            { name: "사사기", chapters: 21, test: 'old', group: '역사서' },
+            { name: "룻기", chapters: 4, test: 'old', group: '역사서' },
+            { name: "사무엘상", chapters: 31, test: 'old', group: '역사서' },
+            { name: "사무엘하", chapters: 24, test: 'old', group: '역사서' },
+            { name: "열왕기상", chapters: 22, test: 'old', group: '역사서' },
+            { name: "열왕기하", chapters: 25, test: 'old', group: '역사서' },
+            { name: "역대상", chapters: 29, test: 'old', group: '역사서' },
+            { name: "역대하", chapters: 36, test: 'old', group: '역사서' },
+            { name: "에스라", chapters: 10, test: 'old', group: '역사서' },
+            { name: "느헤미야", chapters: 13, test: 'old', group: '역사서' },
+            { name: "에스더", chapters: 10, test: 'old', group: '역사서' },
+
+            { name: "욥기", chapters: 42, test: 'old', group: '지혜서' },
+            { name: "시편", chapters: 150, test: 'old', group: '지혜서' },
+            { name: "잠언", chapters: 31, test: 'old', group: '지혜서' },
+            { name: "전도서", chapters: 12, test: 'old', group: '지혜서' },
+            { name: "아가", chapters: 8, test: 'old', group: '지혜서' },
+
+            { name: "이사야", chapters: 66, test: 'old', group: '대선지서' },
+            { name: "예레미야", chapters: 52, test: 'old', group: '대선지서' },
+            { name: "예레미야 애가", chapters: 5, test: 'old', group: '대선지서' },
+            { name: "에스겔", chapters: 48, test: 'old', group: '대선지서' },
+            { name: "다니엘", chapters: 12, test: 'old', group: '대선지서' },
+
+            { name: "호세아", chapters: 14, test: 'old', group: '소선지서' },
+            { name: "요엘", chapters: 3, test: 'old', group: '소선지서' },
+            { name: "아모스", chapters: 9, test: 'old', group: '소선지서' },
+            { name: "오바댜", chapters: 1, test: 'old', group: '소선지서' },
+            { name: "요나", chapters: 4, test: 'old', group: '소선지서' },
+            { name: "미가", chapters: 7, test: 'old', group: '소선지서' },
+            { name: "나훔", chapters: 3, test: 'old', group: '소선지서' },
+            { name: "하박국", chapters: 3, test: 'old', group: '소선지서' },
+            { name: "스바냐", chapters: 3, test: 'old', group: '소선지서' },
+            { name: "학개", chapters: 2, test: 'old', group: '소선지서' },
+            { name: "스가랴", chapters: 14, test: 'old', group: '소선지서' },
+            { name: "말라기", chapters: 4, test: 'old', group: '소선지서' },
+
+            // 신약
+            { name: "마태복음", chapters: 28, test: 'new', group: '복음서' },
+            { name: "마가복음", chapters: 16, test: 'new', group: '복음서' },
+            { name: "누가복음", chapters: 24, test: 'new', group: '복음서' },
+            { name: "요한복음", chapters: 21, test: 'new', group: '복음서' },
+
+            { name: "사도행전", chapters: 28, test: 'new', group: '역사서' },
+
+            { name: "로마서", chapters: 16, test: 'new', group: '바울서신' },
+            { name: "고린도전서", chapters: 16, test: 'new', group: '바울서신' },
+            { name: "고린도후서", chapters: 13, test: 'new', group: '바울서신' },
+            { name: "갈라디아서", chapters: 6, test: 'new', group: '바울서신' },
+            { name: "에베소서", chapters: 6, test: 'new', group: '바울서신' },
+            { name: "빌립보서", chapters: 4, test: 'new', group: '바울서신' },
+            { name: "골로새서", chapters: 4, test: 'new', group: '바울서신' },
+            { name: "데살로니가전서", chapters: 5, test: 'new', group: '바울서신' },
+            { name: "데살로니가후서", chapters: 3, test: 'new', group: '바울서신' },
+            { name: "디모데전서", chapters: 6, test: 'new', group: '바울서신' },
+            { name: "디모데후서", chapters: 4, test: 'new', group: '바울서신' },
+            { name: "디도서", chapters: 3, test: 'new', group: '바울서신' },
+            { name: "빌레몬서", chapters: 1, test: 'new', group: '바울서신' },
+
+            { name: "히브리서", chapters: 13, test: 'new', group: '일반서신' },
+            { name: "야고보서", chapters: 5, test: 'new', group: '일반서신' },
+            { name: "베드로전서", chapters: 5, test: 'new', group: '일반서신' },
+            { name: "베드로후서", chapters: 3, test: 'new', group: '일반서신' },
+            { name: "요한1서", chapters: 5, test: 'new', group: '일반서신' },
+            { name: "요한2서", chapters: 1, test: 'new', group: '일반서신' },
+            { name: "요한3서", chapters: 1, test: 'new', group: '일반서신' },
+            { name: "유다서", chapters: 1, test: 'new', group: '일반서신' },
+
+            { name: "요한계시록", chapters: 22, test: 'new', group: '예언서' }
         ];
 
         let currentType = 'topic'; // 'topic' or 'author'
@@ -1397,39 +1460,55 @@
             bibleWrapper.className = 'bible-index-container';
             pageTitle.textContent = '성경주석';
 
-            const oldTestament = BIBLE_BOOKS.filter(b => b.test === 'old');
-            const newTestament = BIBLE_BOOKS.filter(b => b.test === 'new');
+            const oldGroups = ['모세오경', '역사서', '지혜서', '대선지서', '소선지서'];
+            const newGroups = ['복음서', '역사서', '바울서신', '일반서신', '예언서'];
 
-            const renderBibleSection = (title, list) => {
-                const section = document.createElement('div');
-                section.className = 'bible-index-section';
-                section.innerHTML = `
-                    <div class="bible-section-header">
-                        <div class="bible-section-title">${title}</div>
+            const renderTestamentSection = (testamentTitle, groups, testamentType) => {
+                const testamentSection = document.createElement('div');
+                testamentSection.className = 'bible-testament-section';
+                testamentSection.innerHTML = `
+                    <div class="bible-main-header">
+                        <h2 class="bible-main-title">${testamentTitle}</h2>
                     </div>
-                    <div class="bible-grid"></div>
                 `;
-                const bibleGrid = section.querySelector('.bible-grid');
 
-                list.forEach(book => {
-                    const btn = document.createElement('div');
-                    btn.className = 'bible-book-btn';
-                    btn.innerHTML = `${book.name}`;
-                    btn.onclick = () => {
-                        const url = new URL(window.location);
-                        url.searchParams.set('cat', '성경주석');
-                        url.searchParams.set('b', book.name);
-                        url.searchParams.delete('s');
-                        window.history.pushState({}, '', url);
-                        init();
-                    };
-                    bibleGrid.appendChild(btn);
+                groups.forEach(groupName => {
+                    const booksInGroup = BIBLE_BOOKS.filter(b => b.test === testamentType && b.group === groupName);
+                    if (booksInGroup.length === 0) return;
+
+                    const groupSection = document.createElement('div');
+                    groupSection.className = 'bible-index-section';
+                    groupSection.style.marginBottom = '20px';
+                    groupSection.innerHTML = `
+                        <div class="bible-section-header">
+                            <div class="bible-section-title">${groupName}</div>
+                        </div>
+                        <div class="bible-grid"></div>
+                    `;
+                    const bibleGrid = groupSection.querySelector('.bible-grid');
+
+                    booksInGroup.forEach(book => {
+                        const btn = document.createElement('div');
+                        btn.className = 'bible-book-btn';
+                        btn.innerHTML = `${book.name}`;
+                        btn.onclick = () => {
+                            const url = new URL(window.location);
+                            url.searchParams.set('cat', '성경주석');
+                            url.searchParams.set('b', book.name);
+                            url.searchParams.delete('s');
+                            window.history.pushState({}, '', url);
+                            init();
+                        };
+                        bibleGrid.appendChild(btn);
+                    });
+                    testamentSection.appendChild(groupSection);
                 });
-                bibleWrapper.appendChild(section);
+
+                bibleWrapper.appendChild(testamentSection);
             };
 
-            renderBibleSection('구약 (Old Testament)', oldTestament);
-            renderBibleSection('신약 (New Testament)', newTestament);
+            renderTestamentSection('구약 (Old Testament)', oldGroups, 'old');
+            renderTestamentSection('신약 (New Testament)', newGroups, 'new');
         }
 
         function updateUI() {

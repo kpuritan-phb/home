@@ -1432,6 +1432,7 @@
                 btn.setAttribute('role', 'tab');
                 btn.setAttribute('aria-label', `슬라이드 ${i + 1}`);
                 btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+                btn.textContent = (i + 1);
                 btn.addEventListener('click', () => goTo(i));
                 container.appendChild(btn);
             });

@@ -46,6 +46,136 @@ window.deletePost = async (id) => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Mobile First Native UI Component Injector ---
+    const initMobileNativeUI = () => {
+        // 1. Mobile Bottom Navigation Dock Injection
+        if (!document.querySelector('.mobile-bottom-nav')) {
+            const currentPath = window.location.pathname.toLowerCase();
+            const urlParams = new URLSearchParams(window.location.search);
+            const isSermonPage = urlParams.get('cat') === '강해설교';
+
+            const bottomNavHtml = `
+                <nav class="mobile-bottom-nav">
+                    <a href="index.html" class="mobile-nav-item ${currentPath.endsWith('index.html') || currentPath === '/' || currentPath.endsWith('/') ? 'active' : ''}">
+                        <i class="fas fa-home"></i>
+                        <span>홈</span>
+                    </a>
+                    <a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90" class="mobile-nav-item ${isSermonPage ? 'active' : ''}">
+                        <i class="fas fa-podcast"></i>
+                        <span>강해설교</span>
+                    </a>
+                    <a href="resources.html" class="mobile-nav-item ${currentPath.includes('resources.html') && !isSermonPage ? 'active' : ''}">
+                        <i class="fas fa-book-open"></i>
+                        <span>자료실</span>
+                    </a>
+                    <a href="books.html" class="mobile-nav-item ${currentPath.includes('books.html') ? 'active' : ''}">
+                        <i class="fas fa-book-bookmark"></i>
+                        <span>출판도서</span>
+                    </a>
+                    <button type="button" class="mobile-nav-item mobile-search-trigger-btn">
+                        <i class="fas fa-search"></i>
+                        <span>검색</span>
+                    </button>
+                </nav>
+            `;
+            document.body.insertAdjacentHTML('beforeend', bottomNavHtml);
+        }
+
+        // 2. Mobile Search Modal Overlay Injection
+        if (!document.getElementById('mobile-search-overlay')) {
+            const searchModalHtml = `
+                <div class="mobile-search-overlay" id="mobile-search-overlay">
+                    <div class="mobile-search-container">
+                        <div class="mobile-search-header">
+                            <div class="mobile-search-input-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="mobile-native-search-input" placeholder="강해설교, 성경, 신학자료 검색..." autocomplete="off">
+                                <button type="button" class="mobile-search-clear-btn" id="mobile-search-clear-btn"><i class="fas fa-times-circle"></i></button>
+                            </div>
+                            <button type="button" class="mobile-search-cancel-btn" id="mobile-search-cancel-btn">취소</button>
+                        </div>
+                        <div class="mobile-search-content">
+                            <div class="mobile-search-quick-tags">
+                                <div class="quick-tags-title"><i class="fas fa-fire"></i> 자주 찾는 추천 키워드</div>
+                                <div class="quick-tags-list">
+                                    <a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90" class="quick-chip">🎙️ 강해설교</a>
+                                    <a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99" class="quick-chip">📖 청교도 신학</a>
+                                    <a href="resources.html?cat=%EB%A1%9C%EB%A9%88%EC%84%9C%20%EA%B0%95%ED%95%B4" class="quick-chip">📜 로마서 강해</a>
+                                    <a href="books.html" class="quick-chip">📚 추천 단행본</a>
+                                    <a href="booklets.html" class="quick-chip">📑 소책자 파노라마</a>
+                                    <a href="about.html" class="quick-chip">ℹ️ 연구소 소개</a>
+                                </div>
+                            </div>
+                            <div class="mobile-search-recent-results" id="mobile-search-results-list"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', searchModalHtml);
+        }
+
+        // 3. Bind Mobile Search Trigger Events
+        const overlay = document.getElementById('mobile-search-overlay');
+        const searchInput = document.getElementById('mobile-native-search-input');
+        const cancelBtn = document.getElementById('mobile-search-cancel-btn');
+        const clearBtn = document.getElementById('mobile-search-clear-btn');
+        const searchTriggers = document.querySelectorAll('.mobile-search-trigger-btn, .mobile-menu-search-icon');
+
+        const openSearch = () => {
+            if (overlay) {
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                setTimeout(() => searchInput && searchInput.focus(), 150);
+            }
+        };
+
+        const closeSearch = () => {
+            if (overlay) {
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+                if (searchInput) searchInput.value = '';
+            }
+        };
+
+        searchTriggers.forEach(btn => btn.addEventListener('click', openSearch));
+        if (cancelBtn) cancelBtn.addEventListener('click', closeSearch);
+        if (clearBtn && searchInput) {
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                searchInput.focus();
+            });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        closeSearch();
+                        window.location.href = `resources.html?search=${encodeURIComponent(query)}`;
+                    }
+                }
+            });
+        }
+
+        // 4. Mobile Smart Hide Header on Scroll Down
+        let lastScrollY = window.scrollY;
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.innerWidth <= 768 && header) {
+                const currentScrollY = window.scrollY;
+                if (currentScrollY > 70 && currentScrollY > lastScrollY) {
+                    header.classList.add('mobile-header-hidden');
+                } else {
+                    header.classList.remove('mobile-header-hidden');
+                }
+                lastScrollY = currentScrollY;
+            }
+        }, { passive: true });
+    };
+
+    initMobileNativeUI();
+
     // --- Global Variable Declarations (DOM References) ---
     const resourceModal = document.getElementById('resource-modal');
     const resourceListContainer = document.getElementById('resource-list-container');

@@ -1715,13 +1715,13 @@
                         <span style="font-size: 0.78rem; color: #4a5568; font-weight: 700;">
                             <i class="fas fa-sliders-h" style="color: #8c6d46;"></i> 보기:
                         </span>
-                        <div style="display: inline-flex; background: #edf2f7; padding: 2px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                        <div style="display: inline-flex; align-items: center; gap: 4px;">
                             <button type="button" onclick="switchViewMode('list')"
-                                style="border: none; background: ${currentViewMode === 'list' ? '#1a342a' : 'transparent'}; color: ${currentViewMode === 'list' ? '#ffffff' : '#4a5568'}; padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 0.76rem; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; box-shadow: ${currentViewMode === 'list' ? '0 1px 4px rgba(0,0,0,0.12)' : 'none'};">
+                                style="border: 1px solid ${currentViewMode === 'list' ? '#1a342a' : '#cbd5e0'}; background: ${currentViewMode === 'list' ? '#1a342a' : '#ffffff'}; color: ${currentViewMode === 'list' ? '#ffffff' : '#4a5568'}; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; transition: all 0.2s;">
                                 <i class="fas fa-list"></i> ${listText}
                             </button>
                             <button type="button" onclick="switchViewMode('grid')"
-                                style="border: none; background: ${currentViewMode === 'grid' ? '#1a342a' : 'transparent'}; color: ${currentViewMode === 'grid' ? '#ffffff' : '#4a5568'}; padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 0.76rem; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; box-shadow: ${currentViewMode === 'grid' ? '0 1px 4px rgba(0,0,0,0.12)' : 'none'};">
+                                style="border: 1px solid ${currentViewMode === 'grid' ? '#1a342a' : '#cbd5e0'}; background: ${currentViewMode === 'grid' ? '#1a342a' : '#ffffff'}; color: ${currentViewMode === 'grid' ? '#ffffff' : '#4a5568'}; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; transition: all 0.2s;">
                                 <i class="fas fa-th-large"></i> ${gridText}
                             </button>
                         </div>

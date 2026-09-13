@@ -45,6 +45,46 @@ window.deletePost = async (id) => {
     }
 };
 
+// --- Global Mobile Menu Toggle (TOP LEVEL to guarantee availability for inline onclick) ---
+let mobileToggleLock = false;
+window.toggleMobileMenu = function(e) {
+    if (e) {
+        try { if (typeof e.preventDefault === 'function') e.preventDefault(); } catch (err) {}
+        try { if (typeof e.stopPropagation === 'function') e.stopPropagation(); } catch (err) {}
+    }
+    if (mobileToggleLock) return;
+    mobileToggleLock = true;
+    setTimeout(() => { mobileToggleLock = false; }, 300);
+
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const targetNav = document.querySelector('header nav, .nav-container nav, nav');
+    let navOverlay = document.querySelector('.nav-overlay');
+
+    if (!navOverlay) {
+        navOverlay = document.createElement('div');
+        navOverlay.className = 'nav-overlay';
+        document.body.appendChild(navOverlay);
+    }
+
+    if (targetNav) {
+        const isActive = targetNav.classList.toggle('active');
+        if (mobileMenuToggle) {
+            mobileMenuToggle.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (icon) {
+                icon.className = isActive ? 'fas fa-times' : 'fas fa-bars';
+            }
+        }
+        if (isActive) {
+            document.body.style.overflow = 'hidden';
+            navOverlay.classList.add('active');
+        } else {
+            document.body.style.overflow = '';
+            navOverlay.classList.remove('active');
+        }
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- Mobile First Native UI Component Injector ---
     const initMobileNativeUI = () => {
@@ -348,46 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // --- Mobile Menu Toggle & Accordion (Debounced Single Trigger) ---
-    let mobileToggleLock = false;
-    window.toggleMobileMenu = (e) => {
-        if (e) {
-            try { e.preventDefault(); } catch (err) {}
-            try { e.stopPropagation(); } catch (err) {}
-        }
-        if (mobileToggleLock) return;
-        mobileToggleLock = true;
-        setTimeout(() => { mobileToggleLock = false; }, 300);
-
-        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-        const targetNav = document.querySelector('header nav, .nav-container nav, nav');
-        let navOverlay = document.querySelector('.nav-overlay');
-
-        if (!navOverlay) {
-            navOverlay = document.createElement('div');
-            navOverlay.className = 'nav-overlay';
-            document.body.appendChild(navOverlay);
-        }
-
-        if (targetNav) {
-            const isActive = targetNav.classList.toggle('active');
-            if (mobileMenuToggle) {
-                mobileMenuToggle.setAttribute('aria-expanded', isActive ? 'true' : 'false');
-                const icon = mobileMenuToggle.querySelector('i');
-                if (icon) {
-                    icon.className = isActive ? 'fas fa-times' : 'fas fa-bars';
-                }
-            }
-            if (isActive) {
-                document.body.style.overflow = 'hidden';
-                navOverlay.classList.add('active');
-            } else {
-                document.body.style.overflow = '';
-                navOverlay.classList.remove('active');
-            }
-        }
-    };
-
+    // --- Mobile Menu Toggle & Accordion ---
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     if (mobileMenuToggle) {
         mobileMenuToggle.addEventListener('click', (e) => window.toggleMobileMenu(e));
@@ -2965,6 +2966,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.loadMainCarousels = async () => {
+        // 0. Pre-render mock data IMMEDIATELY so "loading..." message disappears instantly on page load
+        if (typeof window.renderMockCarousels === 'function') {
+            try { window.renderMockCarousels(); } catch (err) {}
+        }
+
         // 1. Try DB first if connected
         if (window.db) {
             try {
@@ -2992,11 +2998,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (e) {
             console.warn("JSON Dump fetch failed:", e);
-        }
-
-        // 3. Fallback to mock data
-        if (typeof window.renderMockCarousels === 'function') {
-            window.renderMockCarousels();
         }
     };
 

@@ -388,33 +388,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // --- Mobile Menu Toggle & Accordion ---
-    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-    if (mobileMenuToggle) {
-        mobileMenuToggle.addEventListener('click', (e) => window.toggleMobileMenu(e));
+    // --- Mobile Menu Toggle & Accordion (Global Event Delegation) ---
+    document.addEventListener('click', (e) => {
+        const toggleBtn = e.target.closest('.mobile-menu-toggle');
+        if (toggleBtn) {
+            window.toggleMobileMenu(e);
+        }
+    });
 
-        const closeMenu = () => {
-            const targetNav = document.querySelector('header nav, .nav-container nav, nav');
-            if (targetNav) targetNav.classList.remove('active');
-            const overlay = document.querySelector('.nav-overlay');
-            if (overlay) overlay.classList.remove('active');
-            document.body.style.overflow = '';
+    const closeMenu = () => {
+        const targetNav = document.querySelector('header nav, .nav-container nav, nav');
+        if (targetNav) targetNav.classList.remove('active');
+        const overlay = document.querySelector('.nav-overlay');
+        if (overlay) overlay.classList.remove('active');
+        document.body.style.overflow = '';
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        if (mobileMenuToggle) {
             mobileMenuToggle.setAttribute('aria-expanded', 'false');
             const icon = mobileMenuToggle.querySelector('i');
             if (icon) icon.className = 'fas fa-bars';
-        };
+        }
+    };
 
-        document.addEventListener('click', (e) => {
-            if (e.target.classList && e.target.classList.contains('nav-overlay')) {
-                closeMenu();
-            }
-        });
-        document.addEventListener('click', (e) => {
-            const targetNav = document.querySelector('header nav, .nav-container nav, nav');
-            if (targetNav && targetNav.classList.contains('active') && !targetNav.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-                closeMenu();
-            }
-        });
+    document.addEventListener('click', (e) => {
+        if (e.target.classList && e.target.classList.contains('nav-overlay')) {
+            closeMenu();
+        }
+    });
+    document.addEventListener('click', (e) => {
+        const targetNav = document.querySelector('header nav, .nav-container nav, nav');
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        if (targetNav && targetNav.classList.contains('active') && !targetNav.contains(e.target) && (mobileMenuToggle && !mobileMenuToggle.contains(e.target))) {
+            closeMenu();
+        }
+    });
 
         // 네비게이션 내 링크 클릭 시 드로어 자동 닫기 (서브 메뉴 포함)
         const navLinks = document.querySelectorAll('header nav a:not(.dropdown > a)');

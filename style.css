@@ -4960,74 +4960,74 @@ footer {
 
 .hs-category {
     display: inline-block;
-    font-size: 0.8rem;
+    font-size: 0.65rem;
     font-weight: 800;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--secondary-color);
     background: rgba(255, 255, 255, 0.92);
-    padding: 0.25rem 0.75rem;
+    padding: 0.18rem 0.55rem;
     border-radius: 3px;
 }
 
 .hs-badge-label {
     display: inline-block;
-    font-size: 0.75rem;
+    font-size: 0.62rem;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.45);
-    padding: 0.2rem 0.65rem;
+    padding: 0.15rem 0.5rem;
     border-radius: 3px;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
 }
 
 .hs-book-title {
-    font-size: 2.6rem;
+    font-size: 1.7rem;
     font-weight: 900;
     color: #ffffff;
-    line-height: 1.1;
+    line-height: 1.25;
     letter-spacing: -0.02em;
-    margin: 0 0 0.6rem;
+    margin: 0 0 0.4rem;
     text-shadow: 0 3px 15px rgba(0, 0, 0, 0.5);
     font-family: 'Nanum Myeongjo', 'Noto Sans KR', serif;
 }
 
 .hs-book-author {
-    font-size: 0.9rem;
+    font-size: 0.72rem;
     color: rgba(200, 169, 110, 0.95);
     font-weight: 600;
     letter-spacing: 0.04em;
-    margin: 0 0 1rem;
+    margin: 0 0 0.5rem;
 }
 
 .hs-book-tagline {
-    font-size: 1.05rem;
+    font-size: 0.78rem;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.88);
-    margin: 0 0 0.8rem;
+    margin: 0 0 0.5rem;
     font-style: italic;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .hs-book-desc {
-    font-size: 0.92rem;
+    font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.78);
-    line-height: 1.7;
-    margin: 0 0 1.8rem;
+    line-height: 1.6;
+    margin: 0 0 1.2rem;
     text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
 }
 
 .hs-cta-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
     background: var(--secondary-color);
     color: #ffffff;
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    padding: 0.75rem 1.8rem;
-    border-radius: 6px;
+    padding: 0.45rem 1.1rem;
+    border-radius: 5px;
     letter-spacing: 0.04em;
     transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
@@ -5250,12 +5250,12 @@ footer {
         text-align: center;
     }
 
-    .hs-book-badge   { justify-content: center; margin-bottom: 0.4rem; }
-    .hs-book-title   { font-size: 1.25rem !important; margin-bottom: 0.3rem !important; line-height: 1.35 !important; }
-    .hs-book-author  { font-size: 0.85rem !important; margin-bottom: 0.3rem !important; }
-    .hs-book-tagline { font-size: 0.85rem !important; margin-bottom: 0.6rem !important; }
+    .hs-book-badge   { justify-content: center; margin-bottom: 0.3rem; }
+    .hs-book-title   { font-size: 0.95rem !important; margin-bottom: 0.2rem !important; line-height: 1.3 !important; }
+    .hs-book-author  { font-size: 0.68rem !important; margin-bottom: 0.2rem !important; }
+    .hs-book-tagline { font-size: 0.7rem !important; margin-bottom: 0.4rem !important; }
     .hs-book-desc    { display: none !important; }
-    .hs-cta-btn      { font-size: 0.85rem !important; padding: 0.55rem 1.3rem !important; margin-bottom: 0.8rem !important; }
+    .hs-cta-btn      { font-size: 0.68rem !important; padding: 0.38rem 0.9rem !important; margin-bottom: 0.5rem !important; }
 
     .hero-nav-btn { width: 28px; height: 28px; font-size: 0.75rem; z-index: 20; opacity: 0.8; }
     .hero-prev    { left: 0.3rem; }

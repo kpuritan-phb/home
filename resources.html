@@ -1678,53 +1678,57 @@
             const totalPages = Math.ceil(allCurrentPosts.length / itemsPerPage);
 
             if (!isBible || !sParam) {
+                const isMobile = (window.innerWidth <= 768);
                 const controlBar = document.createElement('div');
                 controlBar.className = 'resources-view-controls-bar';
-                controlBar.style.cssText = 'grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 12px 18px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 12px;';
+                controlBar.style.cssText = 'grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 8px;';
                 
+                const listText = isMobile ? '목록형' : '제목만 보기 (목록형)';
+                const gridText = isMobile ? '카드형' : '썸네일과 함께 보기 (카드형)';
+
                 controlBar.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                        <span style="font-size: 0.88rem; color: #4a5568; font-weight: 700;">
-                            <i class="fas fa-sliders-h" style="color: #8c6d46;"></i> 보기 방식:
+                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                        <span style="font-size: 0.78rem; color: #4a5568; font-weight: 700;">
+                            <i class="fas fa-sliders-h" style="color: #8c6d46;"></i> 보기:
                         </span>
-                        <div style="display: inline-flex; background: #edf2f7; padding: 3px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <div style="display: inline-flex; background: #edf2f7; padding: 2px; border-radius: 6px; border: 1px solid #e2e8f0;">
                             <button type="button" onclick="switchViewMode('list')"
-                                style="border: none; background: ${currentViewMode === 'list' ? '#1a342a' : 'transparent'}; color: ${currentViewMode === 'list' ? '#ffffff' : '#4a5568'}; padding: 6px 14px; border-radius: 6px; font-weight: 700; font-size: 0.84rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; box-shadow: ${currentViewMode === 'list' ? '0 2px 6px rgba(0,0,0,0.15)' : 'none'};">
-                                <i class="fas fa-list"></i> 제목만 보기 (목록형)
+                                style="border: none; background: ${currentViewMode === 'list' ? '#1a342a' : 'transparent'}; color: ${currentViewMode === 'list' ? '#ffffff' : '#4a5568'}; padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 0.76rem; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; box-shadow: ${currentViewMode === 'list' ? '0 1px 4px rgba(0,0,0,0.12)' : 'none'};">
+                                <i class="fas fa-list"></i> ${listText}
                             </button>
                             <button type="button" onclick="switchViewMode('grid')"
-                                style="border: none; background: ${currentViewMode === 'grid' ? '#1a342a' : 'transparent'}; color: ${currentViewMode === 'grid' ? '#ffffff' : '#4a5568'}; padding: 6px 14px; border-radius: 6px; font-weight: 700; font-size: 0.84rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; box-shadow: ${currentViewMode === 'grid' ? '0 2px 6px rgba(0,0,0,0.15)' : 'none'};">
-                                <i class="fas fa-th-large"></i> 썸네일과 함께 보기 (카드형)
+                                style="border: none; background: ${currentViewMode === 'grid' ? '#1a342a' : 'transparent'}; color: ${currentViewMode === 'grid' ? '#ffffff' : '#4a5568'}; padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 0.76rem; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; box-shadow: ${currentViewMode === 'grid' ? '0 1px 4px rgba(0,0,0,0.12)' : 'none'};">
+                                <i class="fas fa-th-large"></i> ${gridText}
                             </button>
                         </div>
                         ${window.isAdmin ? `
-                        <span style="font-size: 0.8rem; color: #2e7d32; background: #e8f5e9; padding: 5px 12px; border-radius: 6px; font-weight: 700; border: 1px solid #c8e6c9; display: inline-flex; align-items: center; gap: 5px; margin-left: 4px;">
-                            <i class="fas fa-arrows-alt"></i> 드래그로 순서 변경 가능 (자동 저장)
+                        <span style="font-size: 0.75rem; color: #2e7d32; background: #e8f5e9; padding: 3px 8px; border-radius: 4px; font-weight: 700; border: 1px solid #c8e6c9; display: inline-flex; align-items: center; gap: 4px;">
+                            <i class="fas fa-arrows-alt"></i> 순서 변경 (자동 저장)
                         </span>` : ''}
                     </div>
 
-                    <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
-                        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                            <span style="font-size: 0.85rem; color: #718096; font-weight: 600;">
+                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+                            <span style="font-size: 0.78rem; color: #718096; font-weight: 600;">
                                 <i class="fas fa-sort-amount-down" style="color: #8c6d46;"></i> 정렬:
                             </span>
                             <select onchange="changeSortOption(this.value)"
-                                style="padding: 6px 10px; font-size: 0.85rem; border: 1px solid #cbd5e0; border-radius: 6px; background: #fcfbf9; color: #2d3748; font-weight: 700; cursor: pointer; outline: none;">
-                                <option value="date_desc" ${currentSortOption !== 'date_asc' ? 'selected' : ''}>🕒 최신 등록순</option>
-                                <option value="date_asc" ${currentSortOption === 'date_asc' ? 'selected' : ''}>🕒 오래된 등록순</option>
+                                style="padding: 4px 8px; font-size: 0.78rem; border: 1px solid #cbd5e0; border-radius: 5px; background: #fcfbf9; color: #2d3748; font-weight: 700; cursor: pointer; outline: none;">
+                                <option value="date_desc" ${currentSortOption !== 'date_asc' ? 'selected' : ''}>최신순</option>
+                                <option value="date_asc" ${currentSortOption === 'date_asc' ? 'selected' : ''}>오래된순</option>
                             </select>
                         </div>
 
-                        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                            <span style="font-size: 0.85rem; color: #718096; font-weight: 600;">페이지당 표시:</span>
+                        <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+                            <span style="font-size: 0.78rem; color: #718096; font-weight: 600;">표시:</span>
                             <select onchange="changeItemsPerPage(this.value)"
-                                style="padding: 6px 10px; font-size: 0.85rem; border: 1px solid #cbd5e0; border-radius: 6px; background: #fcfbf9; color: #2d3748; font-weight: 700; cursor: pointer; outline: none;">
-                                <option value="5" ${itemsPerPage === 5 ? 'selected' : ''}>5개씩 보기</option>
-                                <option value="10" ${itemsPerPage === 10 ? 'selected' : ''}>10개씩 보기</option>
-                                <option value="15" ${itemsPerPage === 15 ? 'selected' : ''}>15개씩 보기</option>
-                                <option value="20" ${itemsPerPage === 20 ? 'selected' : ''}>20개씩 보기</option>
+                                style="padding: 4px 8px; font-size: 0.78rem; border: 1px solid #cbd5e0; border-radius: 5px; background: #fcfbf9; color: #2d3748; font-weight: 700; cursor: pointer; outline: none;">
+                                <option value="5" ${itemsPerPage === 5 ? 'selected' : ''}>5개씩</option>
+                                <option value="10" ${itemsPerPage === 10 ? 'selected' : ''}>10개씩</option>
+                                <option value="15" ${itemsPerPage === 15 ? 'selected' : ''}>15개씩</option>
+                                <option value="20" ${itemsPerPage === 20 ? 'selected' : ''}>20개씩</option>
                             </select>
-                            <span style="font-size: 0.82rem; color: #a0aec0; font-weight: 600; margin-left: 2px;">(총 ${allCurrentPosts.length}건)</span>
+                            <span style="font-size: 0.76rem; color: #a0aec0; font-weight: 600;">(총 ${allCurrentPosts.length}건)</span>
                         </div>
                     </div>
                 `;

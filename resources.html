@@ -3139,8 +3139,16 @@
                     posts = filterDumpPostsByCategory(dump, category, s, b, subTopic);
                 }
                 if (!posts || posts.length === 0) {
-                    const dump = window.allPostsDumpData || [];
-                    posts = filterDumpPostsByCategory(dump, category, s, b, subTopic);
+                    const dump = (await getFallbackPosts()) || window.allPostsDumpData || [];
+                    if (category.includes('전도') || category.includes('선교') || category.includes('부흥')) {
+                        posts = dump.filter(p => {
+                            const str = JSON.stringify(p);
+                            return str.includes('전도') || str.includes('선교') || str.includes('부흥') || str.includes('소책자') || str.includes('만화');
+                        });
+                    }
+                    if (!posts || posts.length === 0) {
+                        posts = dump;
+                    }
                 }
 
                 if (category === '강해설교') {

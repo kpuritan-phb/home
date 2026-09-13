@@ -2702,13 +2702,14 @@ footer {
     }
 
     .nav-container {
-        padding: 0.8rem 1rem;
-        padding-left: calc(1rem + env(safe-area-inset-left));
-        padding-right: calc(1rem + env(safe-area-inset-right));
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
+        padding: 0.6rem 1rem !important;
+        padding-left: calc(1rem + env(safe-area-inset-left)) !important;
+        padding-right: calc(1rem + env(safe-area-inset-right)) !important;
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
     }
 
     .logo {
@@ -2719,18 +2720,11 @@ footer {
 
     .mobile-menu-toggle {
         order: 2;
-        margin-left: 1rem;
+        margin-left: 0.5rem;
     }
 
     .header-right {
-        order: 3;
-        width: 100%;
-        margin-top: 0.8rem;
-    }
-
-    .search-bar {
-        max-width: 100%;
-        background: #f1f3f1;
+        display: none !important;
     }
 
     header nav {
@@ -5226,22 +5220,36 @@ footer {
     }
 
     .hs-book-badge   { justify-content: center; margin-bottom: 0.4rem; }
-    .hs-book-title   { font-size: 1.4rem; margin-bottom: 0.2rem; }
-    .hs-book-author  { font-size: 0.8rem; margin-bottom: 0.2rem; }
-    .hs-book-tagline { font-size: 0.85rem; margin-bottom: 0.5rem; }
-    .hs-book-desc    { display: none; }
-    .hs-cta-btn      { font-size: 0.85rem; padding: 0.5rem 1.2rem; }
+    .hs-book-title   { font-size: 1.25rem !important; margin-bottom: 0.3rem !important; line-height: 1.35 !important; }
+    .hs-book-author  { font-size: 0.85rem !important; margin-bottom: 0.3rem !important; }
+    .hs-book-tagline { font-size: 0.85rem !important; margin-bottom: 0.6rem !important; }
+    .hs-book-desc    { display: none !important; }
+    .hs-cta-btn      { font-size: 0.85rem !important; padding: 0.55rem 1.3rem !important; margin-bottom: 0.8rem !important; }
 
     .hero-nav-btn { width: 34px; height: 34px; font-size: 0.8rem; z-index: 20; }
     .hero-prev    { left: 0.3rem; }
     .hero-next    { right: 0.3rem; }
 
-    .hero-dots { bottom: 6.2rem; z-index: 20; }
+    /* 캐러셀 점 인디케이터 겹침 방지 하단으로 이동 */
+    .hero-dots { 
+        position: absolute !important;
+        bottom: 10px !important; 
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        z-index: 20 !important; 
+    }
 
-    .hero-search-fixed {
-        bottom: 1rem;
-        max-width: 100%;
-        padding: 0 0.8rem;
+    /* 모바일에서는 히어로 중복 검색바 및 헤더 서브 검색바 숨김 (하단 탭바 검색으로 통합) */
+    .hero-search-fixed,
+    .header-right,
+    header .search-bar {
+        display: none !important;
+    }
+
+    /* 모바일 겹치는 플로팅 주제 탐색 버튼 숨김 (하단 탭 바 통합) */
+    .floating-inquiry-btn,
+    .floating-topic-btn {
+        display: none !important;
     }
 }
 

@@ -4385,15 +4385,18 @@ footer {
         box-sizing: border-box;
     }
 
-    /* 캐러셀 트랙의 경우 모바일 터치 스크롤이 되도록 유연성 확보 (2줄 4열 형태로 한 화면에 약 8개 보이도록 조절) */
+    /* 캐러셀 트랙의 경우 모바일 손가락 스위핑(좌우 터치 밀기)으로 다른 자료들이 자연스럽게 쑥쑥 넘어가도록 스크롤 스냅 및 터치감 보장 */
     .carousel-track {
         max-width: 100% !important;
         overflow-x: auto !important;
+        overflow-y: hidden !important;
         display: grid !important;
         grid-template-rows: repeat(2, auto) !important;
         grid-auto-flow: column !important;
-        grid-auto-columns: min(140px, calc(46vw - 8px)) !important;
+        grid-auto-columns: min(145px, calc(46vw - 8px)) !important;
         -webkit-overflow-scrolling: touch !important;
+        scroll-snap-type: x mandatory !important;
+        touch-action: pan-x pan-y !important;
         gap: 0.6rem 0.5rem !important;
         padding-bottom: 0.8rem !important;
     }
@@ -4403,6 +4406,7 @@ footer {
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100% !important;
+        scroll-snap-align: start !important;
     }
 
     .carousel-title {
@@ -5438,7 +5442,6 @@ button, a, input, select, textarea {
     .card,
     .resource-card,
     .book-card,
-    .carousel-card,
     .sermon-card {
         border-radius: 10px !important;
         padding: 0.4rem !important;

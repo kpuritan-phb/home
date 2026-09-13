@@ -4393,14 +4393,14 @@ footer {
     /* 캐러셀 트랙의 경우 모바일 손가락 스위핑(좌우 터치 밀기)으로 다른 자료들이 자연스럽게 쑥쑥 넘어가도록 스크롤 스냅 및 터치감 보장 */
     .carousel-track {
         max-width: 100% !important;
-        overflow-x: scroll !important;
+        overflow-x: auto !important;
         overflow-y: hidden !important;
         display: grid !important;
         grid-template-rows: repeat(2, auto) !important;
         grid-auto-flow: column !important;
         grid-auto-columns: min(145px, calc(46vw - 8px)) !important;
         -webkit-overflow-scrolling: touch !important;
-        scroll-snap-type: x mandatory !important;
+        scroll-snap-type: x proximity !important;
         touch-action: pan-x pan-y !important;
         gap: 0.6rem 0.5rem !important;
         padding-bottom: 0.8rem !important;

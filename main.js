@@ -2045,6 +2045,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
+            track.addEventListener('touchstart', handleStart, { passive: true });
+            track.addEventListener('touchmove', handleMove, { passive: true });
+            track.addEventListener('touchend', handleEnd, { passive: true });
+
             track.addEventListener('click', (e) => {
                 if (preventClick) {
                     e.preventDefault();

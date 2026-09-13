@@ -5447,17 +5447,19 @@ button, a, input, select, textarea {
     .grid-container,
     .recent-posts-grid,
     .carousel-grid,
+    .expos-section-cards,
     .grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.55rem !important;
+        gap: 0.65rem !important;
         padding: 0 0.15rem !important;
     }
 
     .card,
     .resource-card,
     .book-card,
-    .sermon-card {
+    .sermon-card,
+    .sermon-book-card {
         border-radius: 10px !important;
         padding: 0.4rem !important;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
@@ -5474,11 +5476,13 @@ button, a, input, select, textarea {
     [id^="res-cover-wrap-"],
     .book-card-cover,
     .carousel-card-img,
+    .book-card-thumb,
     .card img,
-    .resource-card img {
-        height: 88px !important;
-        max-height: 88px !important;
-        min-height: 88px !important;
+    .resource-card img,
+    .sermon-book-card img {
+        height: 100px !important;
+        max-height: 100px !important;
+        min-height: 100px !important;
         object-fit: cover !important;
         border-radius: 6px !important;
         width: 100% !important;

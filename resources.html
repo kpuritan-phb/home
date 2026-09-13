@@ -1190,11 +1190,16 @@
 
         let dumpPostsCache = null;
         async function getFallbackPosts() {
-            if (dumpPostsCache) return dumpPostsCache;
+            if (dumpPostsCache && dumpPostsCache.length > 0) return dumpPostsCache;
+            if (window.allPostsDumpData && window.allPostsDumpData.length > 0) {
+                dumpPostsCache = window.allPostsDumpData;
+                return dumpPostsCache;
+            }
             try {
                 const resp = await fetch('all_posts_dump.json');
                 if (resp.ok) {
                     dumpPostsCache = await resp.json();
+                    window.allPostsDumpData = dumpPostsCache;
                     return dumpPostsCache;
                 }
             } catch (e) {

@@ -1311,6 +1311,7 @@
         }
 
         async function init() {
+            getFallbackPosts();
             ensureAuth();
             loadSeriesCovers();
             const urlParams = new URLSearchParams(window.location.search);

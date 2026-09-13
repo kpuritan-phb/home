@@ -4142,16 +4142,18 @@ footer {
         left: 0 !important;
         right: auto !important;
         bottom: auto !important;
-        background: rgba(255, 255, 255, 0.35) !important;
+        background: rgba(255, 255, 255, 0.5) !important;
         backdrop-filter: blur(6px) !important;
         -webkit-backdrop-filter: blur(6px) !important;
-        color: #111111 !important;
+        color: #000000 !important;
         border: none !important;
         outline: none !important;
-        padding: 2px 1px 2px 0px !important;
+        padding: 3px 2px 3px 0px !important;
         border-radius: 0 3px 3px 0 !important;
-        font-size: 0.32rem !important;
-        font-weight: 800 !important;
+        font-size: 0.36rem !important;
+        font-weight: 900 !important;
+        font-family: 'Pretendard', 'GmarketSansBold', -apple-system, sans-serif !important;
+        -webkit-text-stroke: 0.4px #000000 !important;
         box-shadow: none !important;
         z-index: 9999 !important;
         cursor: pointer !important;
@@ -4162,7 +4164,7 @@ footer {
         min-height: auto !important;
         height: auto !important;
         width: auto !important;
-        opacity: 0.65;
+        opacity: 0.85;
         transform: scale(0.7);
         transform-origin: left center;
     }

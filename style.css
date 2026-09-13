@@ -4131,53 +4131,53 @@ footer {
         display: none !important;
     }
 
-    /* 모바일 왼쪽 책갈피 탐색 탭 버튼 */
+    /* 모바일 화면 좌측 고정 책갈피(Bookmark) 탭 버튼 */
     .mobile-explore-btn {
         display: flex !important;
-        flex-direction: column !important;
+        flex-direction: row !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 5px !important;
+        gap: 6px !important;
         position: fixed !important;
-        top: 42% !important;
+        top: 35% !important;
         left: 0 !important;
         right: auto !important;
         bottom: auto !important;
         background: #1a342a !important;
         color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border: 1px solid rgba(212, 175, 55, 0.4) !important;
         border-left: none !important;
-        padding: 10px 6px 12px 6px !important;
-        border-radius: 0 10px 10px 0 !important;
-        font-size: 0.7rem !important;
-        font-weight: 800 !important;
-        box-shadow: 3px 4px 15px rgba(0, 0, 0, 0.3) !important;
+        padding: 10px 10px 10px 8px !important;
+        border-radius: 0 12px 12px 0 !important;
+        font-size: 0.8rem !important;
+        font-weight: 700 !important;
+        box-shadow: 4px 4px 18px rgba(0, 0, 0, 0.25) !important;
         z-index: 9999 !important;
         cursor: pointer !important;
-        transition: all 0.2s ease !important;
+        transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
         writing-mode: vertical-rl !important;
         text-orientation: mixed !important;
-        letter-spacing: 2px !important;
+        letter-spacing: 3px !important;
         min-height: auto !important;
         height: auto !important;
         width: auto !important;
+        opacity: 0.92;
+        touch-action: manipulation;
     }
 
     .mobile-explore-btn i {
-        font-size: 0.78rem !important;
+        font-size: 0.85rem !important;
         color: #d4af37 !important; /* 책갈피 금빛 아이콘 포인트 */
         transform: rotate(90deg) !important;
-        margin-bottom: 2px !important;
+        margin-bottom: 4px !important;
     }
 
-    .mobile-explore-btn:hover {
-        padding-left: 9px !important;
-        background: #12251e !important;
-    }
-
+    .mobile-explore-btn:hover,
     .mobile-explore-btn:active {
-        transform: scale(0.95) !important;
-        background: #0b1713 !important;
+        opacity: 1 !important;
+        padding-left: 12px !important;
+        background: #0f231b !important;
+        border-color: #d4af37 !important;
     }
 
     /* 모바일 사이드바 -> 바텀시트 모달 드로어 전환 (기본 100% 숨김) */

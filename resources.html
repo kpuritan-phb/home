@@ -2930,7 +2930,7 @@
                     posts = filterDumpPostsByCategory(dump, category, s, b, subTopic);
                 }
 
-                if ((!posts || posts.length === 0) && !usedFallback) {
+                if (!posts || posts.length === 0) {
                     const dump = await getFallbackPosts();
                     posts = filterDumpPostsByCategory(dump, category, s, b, subTopic);
                 }

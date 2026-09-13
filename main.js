@@ -2967,33 +2967,31 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.loadMainCarousels = async () => {
-        // 1. Try DB first if connected
+        // 1. Try all_posts_dump.json first for instant real-data display without waiting for Firestore network latency
+        try {
+            const resp = await fetch('all_posts_dump.json');
+            if (resp.ok) {
+                const jsonPosts = await resp.json();
+                if (Array.isArray(jsonPosts) && jsonPosts.length > 0) {
+                    window.renderPostsToCarousels(jsonPosts);
+                }
+            }
+        } catch (e) {
+            console.warn("JSON Dump fetch failed:", e);
+        }
+
+        // 2. Refresh with live DB data if connected
         if (window.db) {
             try {
                 const snapshot = await window.db.collection("posts").orderBy("createdAt", "desc").limit(500).get();
                 if (!snapshot.empty) {
                     const allPosts = [];
                     snapshot.forEach(doc => allPosts.push({ id: doc.id, data: doc.data() }));
-                    const success = window.renderPostsToCarousels(allPosts);
-                    if (success) return;
+                    window.renderPostsToCarousels(allPosts);
                 }
             } catch (e) {
-                console.warn("DB Load failed, fallback to JSON dump:", e);
+                console.warn("DB Load failed:", e);
             }
-        }
-
-        // 2. Fallback to all_posts_dump.json
-        try {
-            const resp = await fetch('all_posts_dump.json');
-            if (resp.ok) {
-                const jsonPosts = await resp.json();
-                if (Array.isArray(jsonPosts) && jsonPosts.length > 0) {
-                    const success = window.renderPostsToCarousels(jsonPosts);
-                    if (success) return;
-                }
-            }
-        } catch (e) {
-            console.warn("JSON Dump fetch failed:", e);
         }
     };
 

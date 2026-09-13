@@ -2948,7 +2948,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial Load
     console.log("Initializing carousels directly...");
-    setTimeout(loadMainCarousels, 150);
+    window.loadMainCarousels();
+    setTimeout(window.loadMainCarousels, 300);
 
     // Real Search Logic
     const searchInput = document.querySelector('.search-bar input');

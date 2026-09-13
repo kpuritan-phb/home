@@ -4131,7 +4131,7 @@ footer {
         display: none !important;
     }
 
-    /* 모바일 왼쪽 아이보리 미니 책갈피 탭 (아이콘 없는 순수 텍스트 탭) */
+    /* 모바일 왼쪽 세로 글라스(Glass) 책갈피 탭 */
     .mobile-explore-btn {
         display: flex !important;
         flex-direction: column !important;
@@ -4142,18 +4142,20 @@ footer {
         left: 0 !important;
         right: auto !important;
         bottom: auto !important;
-        background: #fcf8f2 !important;
-        color: #5c4033 !important;
-        border: 1px solid #e6ded3 !important;
+        background: rgba(255, 255, 255, 0.45) !important;
+        backdrop-filter: blur(10px) saturate(160%) !important;
+        -webkit-backdrop-filter: blur(10px) saturate(160%) !important;
+        color: #1a342a !important;
+        border: 1px solid rgba(255, 255, 255, 0.6) !important;
         border-left: none !important;
-        padding: 8px 4px 8px 3px !important;
-        border-radius: 0 5px 5px 0 !important;
-        font-size: 0.58rem !important;
-        font-weight: 700 !important;
-        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.07) !important;
+        padding: 9px 5px 9px 4px !important;
+        border-radius: 0 6px 6px 0 !important;
+        font-size: 0.6rem !important;
+        font-weight: 800 !important;
+        box-shadow: 2px 4px 14px rgba(0, 0, 0, 0.12) !important;
         z-index: 9999 !important;
         cursor: pointer !important;
-        transition: all 0.2s ease !important;
+        transition: all 0.25s ease !important;
         writing-mode: vertical-rl !important;
         text-orientation: mixed !important;
         letter-spacing: 2px !important;
@@ -4163,9 +4165,14 @@ footer {
     }
 
     .mobile-explore-btn:hover {
-        padding-left: 6px !important;
-        background: #f5eedf !important;
-        color: #1a342a !important;
+        padding-left: 7px !important;
+        background: rgba(255, 255, 255, 0.7) !important;
+        color: #0b1713 !important;
+    }
+
+    .mobile-explore-btn:active {
+        transform: scale(0.95) !important;
+        background: rgba(255, 255, 255, 0.85) !important;
     }
 
     .mobile-explore-btn:active {
@@ -5291,11 +5298,15 @@ footer {
     .hs-book-author  { font-size: 0.82rem !important; margin-bottom: 0.3rem !important; color: #d4af37 !important; font-weight: 700 !important; }
     .hs-book-tagline { font-size: 0.85rem !important; margin-bottom: 0.4rem !important; color: #ffffff !important; }
     .hs-book-desc    { 
-        display: block !important; 
+        display: -webkit-box !important; 
+        -webkit-line-clamp: 2 !important; 
+        -webkit-box-orient: vertical !important; 
+        overflow: hidden !important; 
+        text-overflow: ellipsis !important; 
         font-size: 0.78rem !important; 
-        line-height: 1.5 !important; 
+        line-height: 1.45 !important; 
         color: rgba(255, 255, 255, 0.9) !important; 
-        margin: 0.4rem auto 0.8rem auto !important; 
+        margin: 0.3rem auto 0.6rem auto !important; 
         max-width: 90% !important; 
         text-shadow: 0 1px 4px rgba(0,0,0,0.6) !important;
     }

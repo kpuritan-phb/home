@@ -506,13 +506,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const sortedSeries = Array.from(seriesSet).sort((a, b) => a.localeCompare(b, 'ko'));
 
-                if (desktopDropdown) {
-                    desktopDropdown.innerHTML = `<li><a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90">강해설교 전체</a></li>`;
-                    sortedSeries.forEach(s => {
-                        const li = document.createElement('li');
-                        li.innerHTML = `<a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90&s=${encodeURIComponent(s)}">${s}</a>`;
-                        desktopDropdown.appendChild(li);
-                    });
+                if (sortedSeries.length > 0) {
+                    if (desktopDropdown) {
+                        desktopDropdown.innerHTML = `<li><a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90" style="font-weight: 800; border-bottom: 1px dashed var(--secondary-color);">강해설교 전체보기</a></li>`;
+                        sortedSeries.forEach(s => {
+                            const li = document.createElement('li');
+                            li.innerHTML = `<a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90&s=${encodeURIComponent(s)}">${s}</a>`;
+                            desktopDropdown.appendChild(li);
+                        });
+                    }
                 }
 
                 if (mobileDropdown) {

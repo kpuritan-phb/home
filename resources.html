@@ -3052,15 +3052,28 @@
                                 renderBibleChaptersGrid(b, bookData.chapters);
                             }
                             try {
-                                let query = db.collection("posts").where("tags", "array-contains", "성경주석");
-                                const snapshot = await fetchWithTimeout(query.get(), 1000);
-                                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                                const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "성경주석").get(), 1000);
+                                snap1.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+
+                                const snap2 = await fetchWithTimeout(db.collection("posts").where("series", "==", b).get(), 1000);
+                                snap2.forEach(doc => {
+                                    if (!posts.some(p => p.id === doc.id)) {
+                                        posts.push({ id: doc.id, ...doc.data() });
+                                    }
+                                });
                             } catch(e) {}
 
-                            posts = posts.filter(p => p.series === b);
+                            posts = posts.filter(p => {
+                                const pSeries = p.series || '';
+                                const pTitle = p.title || '';
+                                const pContent = p.content || '';
+                                const pTags = Array.isArray(p.tags) ? p.tags : [];
+                                return pSeries === b || pSeries.includes(b) || pTags.includes(b) || pTitle.includes(b) || pContent.includes(b);
+                            });
+
                             if (s) {
                                 const target = s.endsWith('장') ? s : s + '장';
-                                posts = posts.filter(p => p.title && p.title.includes(' ' + target));
+                                posts = posts.filter(p => p.title && (p.title.includes(' ' + target) || p.title.includes(target)));
                             }
                         }
                     } else {

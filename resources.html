@@ -2750,45 +2750,49 @@
 
                 try {
                     if (category === '신학강론') {
-                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["신학강론", "5분 신학강론"]).get(), 1000);
-                        snap1.forEach(doc => {
-                            posts.push({ id: doc.id, ...doc.data() });
-                        });
-
-                        const allSnap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 1000);
-                        allSnap.forEach(doc => {
-                            const data = doc.data();
-                            const content = data.content || '';
-                            const isYt = content.includes('youtube.com') || content.includes('youtu.be');
-                            if (isYt && !posts.some(p => p.id === doc.id)) {
-                                posts.push({ id: doc.id, ...data });
-                            }
-                        });
-                    } else if (category === '설교자') {
-                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "설교자").get(), 1000);
-                        const snap2 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "설교론").get(), 1000);
-                        const seenIds = new Set();
-                        snap1.forEach(doc => {
-                            if (!seenIds.has(doc.id)) {
-                                posts.push({ id: doc.id, ...doc.data() });
-                                seenIds.add(doc.id);
-                            }
-                        });
-                        snap2.forEach(doc => {
-                            if (!seenIds.has(doc.id)) {
-                                posts.push({ id: doc.id, ...doc.data() });
-                                seenIds.add(doc.id);
-                            }
-                        });
-                    } else if (category === '청교도 신학') {
-                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "청교도 신학").get(), 1000);
-                        const seenIds = new Set();
-                        snap1.forEach(doc => {
-                            posts.push({ id: doc.id, ...doc.data() });
-                            seenIds.add(doc.id);
-                        });
-
                         try {
+                            const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["신학강론", "5분 신학강론"]).get(), 1000);
+                            snap1.forEach(doc => {
+                                posts.push({ id: doc.id, ...doc.data() });
+                            });
+
+                            const allSnap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 1000);
+                            allSnap.forEach(doc => {
+                                const data = doc.data();
+                                const content = data.content || '';
+                                const isYt = content.includes('youtube.com') || content.includes('youtu.be');
+                                if (isYt && !posts.some(p => p.id === doc.id)) {
+                                    posts.push({ id: doc.id, ...data });
+                                }
+                            });
+                        } catch(e) {}
+                    } else if (category === '설교자') {
+                        try {
+                            const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "설교자").get(), 1000);
+                            const snap2 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "설교론").get(), 1000);
+                            const seenIds = new Set();
+                            snap1.forEach(doc => {
+                                if (!seenIds.has(doc.id)) {
+                                    posts.push({ id: doc.id, ...doc.data() });
+                                    seenIds.add(doc.id);
+                                }
+                            });
+                            snap2.forEach(doc => {
+                                if (!seenIds.has(doc.id)) {
+                                    posts.push({ id: doc.id, ...doc.data() });
+                                    seenIds.add(doc.id);
+                                }
+                            });
+                        } catch(e) {}
+                    } else if (category === '청교도 신학') {
+                        try {
+                            const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "청교도 신학").get(), 1000);
+                            const seenIds = new Set();
+                            snap1.forEach(doc => {
+                                posts.push({ id: doc.id, ...doc.data() });
+                                seenIds.add(doc.id);
+                            });
+
                             const snap2 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF", "설교론", "설교자", "전도설교"]).get(), 1000);
                             snap2.forEach(doc => {
                                 if (!seenIds.has(doc.id)) {
@@ -2796,9 +2800,7 @@
                                     seenIds.add(doc.id);
                                 }
                             });
-                        } catch (e) {
-                            console.warn("Booklet/Sermon fetch fallback:", e);
-                        }
+                        } catch (e) {}
 
                         if (s) {
                             posts = posts.filter(p => {
@@ -2826,25 +2828,27 @@
                             "강해설교", "도서 목록", "전도만화", "신학강론", "성경주석", "5분 신학강론"
                         ];
 
-                        const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도, 선교", "전도", "부흥", "선교", "부흥신학"]).get(), 1000);
-                        const seenIds = new Set();
-                        snap1.forEach(doc => {
-                            if (!seenIds.has(doc.id)) {
-                                const data = doc.data();
-                                const topic = data.topic || '';
-                                const other = data.otherCategory || '';
-                                const tags = Array.isArray(data.tags) ? data.tags : [];
+                        try {
+                            const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도, 선교", "전도", "부흥", "선교", "부흥신학"]).get(), 1000);
+                            const seenIds = new Set();
+                            snap1.forEach(doc => {
+                                if (!seenIds.has(doc.id)) {
+                                    const data = doc.data();
+                                    const topic = data.topic || '';
+                                    const other = data.otherCategory || '';
+                                    const tags = Array.isArray(data.tags) ? data.tags : [];
 
-                                const isOtherCategory = excludeKeywords.includes(topic) ||
-                                    excludeKeywords.includes(other) ||
-                                    tags.some(t => excludeKeywords.includes(t));
+                                    const isOtherCategory = excludeKeywords.includes(topic) ||
+                                        excludeKeywords.includes(other) ||
+                                        tags.some(t => excludeKeywords.includes(t));
 
-                                if (!isOtherCategory) {
-                                    posts.push({ id: doc.id, ...data });
-                                    seenIds.add(doc.id);
+                                    if (!isOtherCategory) {
+                                        posts.push({ id: doc.id, ...data });
+                                        seenIds.add(doc.id);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        } catch(e) {}
 
                         if (s) {
                             posts = posts.filter(p => {
@@ -2878,9 +2882,7 @@
                                     seenIds.add(doc.id);
                                 }
                             });
-                        } catch(e) {
-                            console.warn("Seminar fetch notice:", e);
-                        }
+                        } catch(e) {}
                         if (s) {
                             posts = posts.filter(p => p.series === s || (p.tags && p.tags.includes(s)));
                         }
@@ -2890,9 +2892,11 @@
                             if (bookData) {
                                 renderBibleChaptersGrid(b, bookData.chapters);
                             }
-                            let query = db.collection("posts").where("tags", "array-contains", "성경주석");
-                            const snapshot = await fetchWithTimeout(query.get(), 1000);
-                            snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                            try {
+                                let query = db.collection("posts").where("tags", "array-contains", "성경주석");
+                                const snapshot = await fetchWithTimeout(query.get(), 1000);
+                                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                            } catch(e) {}
 
                             posts = posts.filter(p => p.series === b);
                             if (s) {
@@ -2901,9 +2905,11 @@
                             }
                         }
                     } else {
-                        let query = db.collection("posts").where("tags", "array-contains", category);
-                        const snapshot = await fetchWithTimeout(query.get(), 1000);
-                        snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                        try {
+                            let query = db.collection("posts").where("tags", "array-contains", category);
+                            const snapshot = await fetchWithTimeout(query.get(), 1000);
+                            snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                        } catch(e) {}
                         if (s) {
                             const cleanS = s.trim();
                             const shortS = cleanS.replace(/\s*강해$/, '');

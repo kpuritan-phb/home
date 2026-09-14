@@ -3276,12 +3276,16 @@
                     }
                 }
 
-                if (!posts || posts.length === 0) {
-                    const dump = (await getFallbackPosts()) || window.allPostsDumpData || [];
-                    if (dump && dump.length > 0) {
-                        posts = dump;
+                // ID 기준 중복 제거 및 필터링 적용
+                const uniquePosts = [];
+                const seenIds = new Set();
+                (posts || []).forEach(p => {
+                    if (p && p.id && !seenIds.has(p.id)) {
+                        seenIds.add(p.id);
+                        uniquePosts.push(p);
                     }
-                }
+                });
+                posts = uniquePosts;
 
                 if (!posts || posts.length === 0) {
                     grid.innerHTML = '<div class="no-results">등록된 자료가 없습니다.</div>';

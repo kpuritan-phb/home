@@ -3152,7 +3152,7 @@
                         if (s) {
                             const cleanS = s.trim();
                             const shortS = cleanS.replace(/\s*강해$/, '');
-                            const filtered = posts.filter(p => {
+                            posts = posts.filter(p => {
                                 const pSeries = (p.series || '').trim();
                                 const pTitle = (p.title || '').trim();
                                 const pTags = Array.isArray(p.tags) ? p.tags : [];
@@ -3160,9 +3160,6 @@
                                        pTitle.includes(cleanS) || pTitle.includes(shortS) ||
                                        pTags.includes(cleanS);
                             });
-                            if (filtered.length > 0) {
-                                posts = filtered;
-                            }
                         }
                     }
                 } catch (e) {

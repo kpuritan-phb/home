@@ -1248,18 +1248,27 @@
                 return dumpFetchPromise;
             }
             dumpFetchPromise = (async () => {
-                try {
-                    const resp = await fetch('all_posts_dump.json');
-                    if (resp.ok) {
-                        const data = await resp.json();
-                        dumpPostsCache = data;
-                        window.allPostsDumpData = data;
-                        return data;
-                    }
-                } catch (e) {
-                    console.warn("Fallback fetch failed:", e);
+                const urls = [
+                    'all_posts_dump.json',
+                    '/all_posts_dump.json',
+                    './all_posts_dump.json',
+                    'https://kpuritan-phb.github.io/home/all_posts_dump.json',
+                    'https://kpuritan.com/all_posts_dump.json'
+                ];
+                for (const u of urls) {
+                    try {
+                        const resp = await fetch(u);
+                        if (resp.ok) {
+                            const data = await resp.json();
+                            if (Array.isArray(data) && data.length > 0) {
+                                dumpPostsCache = data;
+                                window.allPostsDumpData = data;
+                                return data;
+                            }
+                        }
+                    } catch (e) {}
                 }
-                return window.allPostsDumpData || [];
+                return window.allPostsDumpData || window.allPosts || [];
             })();
             return dumpFetchPromise;
         }
@@ -2868,7 +2877,12 @@
                            (p.title && (p.title.includes('전도') || p.title.includes('부흥') || p.title.includes('선교')));
                 }
                 if (category === '세미나, 강의' || category === '세미나' || category === '강의') return tags.some(t => ['세미나, 강의', '세미나', '강의'].includes(t)) || p.otherCategory === '세미나, 강의' || p.otherCategory === '세미나' || p.otherCategory === '강의' || (p.title && (p.title.includes('세미나') || p.title.includes('강의')));
-                return tags.includes(category);
+                const catClean = (category || '').trim();
+                return tags.includes(catClean) || 
+                       p.topic === catClean || 
+                       p.otherCategory === catClean || 
+                       (p.series && p.series.includes(catClean)) || 
+                       (p.title && p.title.includes(catClean));
             });
 
             if (category === '청교도 신학' && s) {
@@ -2925,6 +2939,10 @@
                     const tags = Array.isArray(p.tags) ? p.tags : [];
                     return (p.subTopic === subTopic) || (p.series === subTopic) || tags.includes(subTopic) || (p.topic === subTopic) || (p.title && p.title.includes(subTopic));
                 });
+            }
+
+            if (!posts || posts.length === 0) {
+                posts = dump;
             }
 
             return posts;

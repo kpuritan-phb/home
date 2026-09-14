@@ -362,6 +362,41 @@ nav ul li:hover a i {
     flex-shrink: 0;
 }
 
+.header-latest-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 15px;
+    background: linear-gradient(135deg, #2b4c3f 0%, #1a342a 100%);
+    color: #f7e7ce !important;
+    border: 1px solid rgba(194, 154, 83, 0.5);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.header-latest-btn i {
+    color: #ecc94b;
+    font-size: 0.85rem;
+    transition: transform 0.25s ease;
+}
+
+.header-latest-btn:hover {
+    background: linear-gradient(135deg, #1a342a 0%, #12241d 100%);
+    border-color: #ecc94b;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(26, 52, 42, 0.25);
+}
+
+.header-latest-btn:hover i {
+    transform: scale(1.15);
+}
+
 .header-seminar-btn {
     display: inline-flex;
     align-items: center;
@@ -445,6 +480,7 @@ nav ul li:hover a i {
 }
 
 @media (max-width: 992px) {
+    .header-latest-btn,
     .header-seminar-btn {
         padding: 6px 11px;
         font-size: 0.78rem;

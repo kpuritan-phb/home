@@ -1237,26 +1237,34 @@
         ensureAuth();
 
         let dumpPostsCache = null;
+        let dumpFetchPromise = null;
         async function getFallbackPosts() {
             if (dumpPostsCache && dumpPostsCache.length > 0) return dumpPostsCache;
             if (window.allPostsDumpData && window.allPostsDumpData.length > 0) {
                 dumpPostsCache = window.allPostsDumpData;
                 return dumpPostsCache;
             }
-            try {
-                const resp = await fetch('all_posts_dump.json');
-                if (resp.ok) {
-                    dumpPostsCache = await resp.json();
-                    window.allPostsDumpData = dumpPostsCache;
-                    return dumpPostsCache;
-                }
-            } catch (e) {
-                console.warn("Fallback fetch failed:", e);
+            if (dumpFetchPromise) {
+                return dumpFetchPromise;
             }
-            return [];
+            dumpFetchPromise = (async () => {
+                try {
+                    const resp = await fetch('all_posts_dump.json');
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        dumpPostsCache = data;
+                        window.allPostsDumpData = data;
+                        return data;
+                    }
+                } catch (e) {
+                    console.warn("Fallback fetch failed:", e);
+                }
+                return window.allPostsDumpData || [];
+            })();
+            return dumpFetchPromise;
         }
 
-        function fetchWithTimeout(promise, ms = 1500) {
+        function fetchWithTimeout(promise, ms = 7000) {
             return Promise.race([
                 promise,
                 new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
@@ -2745,7 +2753,7 @@
             try {
                 let posts = [];
                 try {
-                    const snap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 1000);
+                    const snap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 5000);
                     snap.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
                 } catch (e) {
                     console.warn("Firestore loadAllResources error/timeout, using fallback:", e);
@@ -2764,16 +2772,25 @@
                     if (recs.length > 0) posts = recs;
                 }
 
+                if (!posts || posts.length === 0) {
+                    posts = await getFallbackPosts();
+                }
+
                 grid.innerHTML = '';
                 grid.className = 'resource-list-grid';
 
-                allCurrentPosts = posts;
+                allCurrentPosts = posts || [];
+                if (allCurrentPosts.length === 0) {
+                    grid.innerHTML = '<div class="no-results" style="padding: 2.5rem; text-align: center; color: #718096; grid-column: 1/-1;">등록된 자료가 없습니다.</div>';
+                    return;
+                }
+
                 applySorting(allCurrentPosts, currentSortOption);
                 renderPage(1);
             } catch (err) {
                 console.error("loadAllResources error:", err);
                 try {
-                    const dump = await getFallbackPosts();
+                    const dump = (await getFallbackPosts()) || window.allPostsDumpData || [];
                     if (dump && dump.length > 0) {
                         allCurrentPosts = dump;
                         grid.innerHTML = '';
@@ -3174,7 +3191,14 @@
                     }
                 }
 
-                if (posts.length === 0) {
+                if (!posts || posts.length === 0) {
+                    const dump = (await getFallbackPosts()) || window.allPostsDumpData || [];
+                    if (dump && dump.length > 0) {
+                        posts = dump;
+                    }
+                }
+
+                if (!posts || posts.length === 0) {
                     grid.innerHTML = '<div class="no-results">등록된 자료가 없습니다.</div>';
                     return;
                 }
@@ -3201,12 +3225,15 @@
             } catch (err) {
                 console.error("loadCategoryItems error:", err);
                 try {
-                    const dump = await getFallbackPosts();
+                    const dump = (await getFallbackPosts()) || window.allPostsDumpData || [];
                     const urlParams = new URLSearchParams(window.location.search);
                     const s = urlParams.get('s');
                     const b = urlParams.get('b');
                     const subTopic = urlParams.get('subTopic');
-                    const filtered = filterDumpPostsByCategory(dump, category, s, b, subTopic);
+                    let filtered = filterDumpPostsByCategory(dump, category, s, b, subTopic);
+                    if (!filtered || filtered.length === 0) {
+                        filtered = dump;
+                    }
                     if (filtered && filtered.length > 0) {
                         allCurrentPosts = filtered;
                         grid.innerHTML = '';

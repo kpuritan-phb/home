@@ -1120,15 +1120,15 @@
                 <ul>
                     <li><a href="about.html">연구소 소개</a></li>
                     <li class="dropdown">
-                        <a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90">강해설교 <i class="fas fa-chevron-down"></i></a>
-                        <div class="dropdown-content" id="sermon-dropdown">
+                        <a href="resources.html?cat=%EC%84%B1%EA%B2%BD">성경 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="bible-dropdown">
                             <ul class="dropdown-list">
-                                <!-- JS injected content -->
+                                <li><a href="resources.html?cat=%EC%84%B1%EA%B2%BD" style="font-weight: 800; border-bottom: 1px dashed var(--secondary-color);">성경 전체보기</a></li>
+                                <li><a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90">1. 강해설교</a></li>
+                                <li><a href="resources.html?cat=%EC%84%B1%EA%B2%BD%EC%A3%BC%EC%84%9D">2. 성경주석</a></li>
                             </ul>
                         </div>
                     </li>
-                    <li><a href="resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98">세미나, 강의</a></li>
-                    <li><a href="resources.html?cat=%EC%84%B1%EA%B2%BD%EC%A3%BC%EC%84%9D">성경주석</a></li>
                     <li class="dropdown mega-dropdown">
                         <a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99">청교도 신학 <i class="fas fa-chevron-down"></i></a>
                         <div class="dropdown-content" id="puritan-dropdown">
@@ -1154,20 +1154,21 @@
                         <a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 <i class="fas fa-chevron-down"></i></a>
                         <div class="dropdown-content" id="evangelism-dropdown">
                             <ul class="dropdown-list">
-                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 전체</a></li>
-                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%A0%84%EB%8F%84">1. 전도</a></li>
-                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EB%B6%80%ED%9D%A5">2. 부흥</a></li>
-                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90&s=%EC%84%A0%EA%B5%90">3. 선교</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90" style="font-weight: 800; border-bottom: 1px dashed var(--secondary-color);">전도, 부흥, 선교 전체</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">1. 전도, 부흥, 선교</a></li>
+                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%EB%A7%8C%ED%99%94">2. 전도만화</a></li>
                             </ul>
                         </div>
                     </li>
-                    <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%EB%A7%8C%ED%99%94">전도만화</a></li>
                     <li><a href="resources.html?cat=%EC%8B%A0%ED%95%99%EA%B0%95%EB%A1%A0">신학강론</a></li>
                     <li><a href="https://smartstore.naver.com/kpuritan_phb" target="_blank">PHB 출판사</a></li>
                     <li><a href="seminary.html">SRS 신학대학원</a></li>
                 </ul>
             </nav>
             <div class="header-right">
+                <a href="resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98" class="header-seminar-btn">
+                    <i class="fas fa-video"></i> <span>세미나 · 강의</span>
+                </a>
                 <div class="search-bar" onclick="openAllTopicsModal()" style="cursor: pointer; user-select: none;">
                     <i class="fas fa-search search-icon" style="color: var(--secondary-color);"></i>
                     <span style="padding-left: 0.5rem; font-size: 0.85rem; color: #555; font-weight: 500;">주제별 신학 검색...</span>
@@ -1503,6 +1504,9 @@
 
             if (catParam === '5분 신학강론') {
                 catParam = '신학강론';
+            }
+            if (catParam === '성경') {
+                catParam = '강해설교';
             }
             if (catParam && (catParam.includes('전도') || catParam.includes('부흥') || catParam.includes('선교'))) {
                 if (!catParam.includes('소책자') && !catParam.includes('만화')) {
@@ -2924,11 +2928,55 @@
             }
         }
 
+        function isExclusiveTheologyLecture(p) {
+            if (!p) return false;
+            const tags = Array.isArray(p.tags) ? p.tags : [];
+            const topic = (p.topic || '').trim();
+            const otherCat = (p.otherCategory || '').trim();
+            const series = (p.series || '').trim();
+            const subTopic = (p.subTopic || '').trim();
+
+            // 1. 신학강론 관련 태그/카테고리/토픽/시리즈 중 하나라도 있는지
+            const isTheology = tags.includes('신학강론') || tags.includes('5분 신학강론') ||
+                               otherCat === '신학강론' || otherCat === '5분 신학강론' ||
+                               topic === '신학강론' || topic === '5분 신학강론' ||
+                               series === '신학강론' || series === '5분 신학강론' ||
+                               (p.title && (p.title.includes('신학강론') || p.title.includes('5분 신학강론')));
+            if (!isTheology) return false;
+
+            // 2. 다른 주요 카테고리 태그가 포함되어 있다면 제외 (이중/삼중 소속)
+            const forbiddenTags = [
+                '청교도 신학', '강해설교', '성경주석', '전도, 부흥, 선교', '전도, 선교', 
+                '전도', '부흥', '선교', '부흥신학', '전도만화', '전도 소책자', '전도 소책자 PDF', 
+                '전도설교', '세미나, 강의', '세미나', '강의', '설교자', '도서 목록'
+            ];
+            if (tags.some(t => forbiddenTags.includes(t))) return false;
+
+            // 3. 청교도 신학 14대 세부 주제가 topic, tags, series, subTopic에 포함되어 있다면 제외
+            const puritanTopics = [
+                '신론', '인간론', '기독론', '구원론(성령론)', '구원론', '성령론', '교회론', '종말론',
+                '성경론', '언약신학', '그리스도인의 생활론', '그리스도인의 가정',
+                '영적전쟁', '잘못된 신학', '역사 신학', '설교론'
+            ];
+            if (puritanTopics.includes(topic)) return false;
+            if (tags.some(t => puritanTopics.includes(t))) return false;
+            if (puritanTopics.includes(series)) return false;
+            if (puritanTopics.includes(subTopic)) return false;
+
+            // 4. otherCategory가 신학강론 외의 다른 카테고리로 지정되어 있는 경우 제외
+            if (otherCat && otherCat !== '신학강론' && otherCat !== '5분 신학강론') return false;
+
+            // 5. topic이 지정되어 있고 신학강론 외의 다른 값인 경우 제외
+            if (topic && topic !== '신학강론' && topic !== '5분 신학강론') return false;
+
+            return true;
+        }
+
         function filterDumpPostsByCategory(dump, category, s, b, subTopic) {
             let posts = dump.filter(p => {
                 const tags = Array.isArray(p.tags) ? p.tags : [];
                 if (category === '신학강론' || category === '5분 신학강론') {
-                    return tags.includes('신학강론') || tags.includes('5분 신학강론') || p.otherCategory === '신학강론' || p.otherCategory === '5분 신학강론' || p.topic === '신학강론' || (p.title && (p.title.includes('신학강론') || p.title.includes('강론')));
+                    return isExclusiveTheologyLecture(p);
                 }
                 if (category === '설교자') return tags.includes('설교자') || tags.includes('설교론');
                 if (category === '청교도 신학') return tags.includes('청교도 신학') || (typeof determineCategory === 'function' && determineCategory(p.title || '', p.content || '') !== null);
@@ -3004,11 +3052,7 @@
                 });
             }
 
-            if (!posts || posts.length === 0) {
-                posts = dump;
-            }
-
-            return posts;
+            return posts || [];
         }
 
         async function loadCategoryItems(category) {
@@ -3058,6 +3102,7 @@
                         } catch(e) {
                             console.warn("Firestore fetch error for 신학강론, fallbacking:", e);
                         }
+                        posts = posts.filter(p => isExclusiveTheologyLecture(p));
                     } else if (category === '설교자') {
                         try {
                             const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "설교자").get(), 1000);

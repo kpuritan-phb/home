@@ -92,7 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!document.querySelector('.mobile-bottom-nav')) {
             const currentPath = window.location.pathname.toLowerCase();
             const urlParams = new URLSearchParams(window.location.search);
-            const isSermonPage = urlParams.get('cat') === '강해설교';
+            const isBiblePage = urlParams.get('cat') === '강해설교' || urlParams.get('cat') === '성경' || urlParams.get('cat') === '성경주석';
+            const isSeminarPage = urlParams.get('cat') === '세미나, 강의' || urlParams.get('cat') === '세미나,강의';
 
             const bottomNavHtml = `
                 <nav class="mobile-bottom-nav">
@@ -100,11 +101,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         <i class="fas fa-home"></i>
                         <span>홈</span>
                     </a>
-                    <a href="resources.html?cat=%EA%B0%95%ED%95%B4%EC%84%A4%EA%B5%90" class="mobile-nav-item ${isSermonPage ? 'active' : ''}">
-                        <i class="fas fa-podcast"></i>
-                        <span>강해설교</span>
+                    <a href="resources.html?cat=%EC%84%B1%EA%B2%BD" class="mobile-nav-item ${isBiblePage ? 'active' : ''}">
+                        <i class="fas fa-bible"></i>
+                        <span>성경</span>
                     </a>
-                    <a href="resources.html" class="mobile-nav-item ${currentPath.includes('resources.html') && !isSermonPage ? 'active' : ''}">
+                    <a href="resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98" class="mobile-nav-item ${isSeminarPage ? 'active' : ''}">
+                        <i class="fas fa-video"></i>
+                        <span>세미나</span>
+                    </a>
+                    <a href="resources.html" class="mobile-nav-item ${currentPath.includes('resources.html') && !isBiblePage && !isSeminarPage ? 'active' : ''}">
                         <i class="fas fa-book-open"></i>
                         <span>자료실</span>
                     </a>

@@ -334,6 +334,7 @@ nav ul li:hover a i {
     z-index: 1005;
 }
 
+#bible-dropdown .dropdown-list,
 #sermon-dropdown .dropdown-list,
 #seminar-dropdown .dropdown-list,
 #evangelism-dropdown .dropdown-list {
@@ -344,11 +345,110 @@ nav ul li:hover a i {
     white-space: nowrap;
 }
 
+#bible-dropdown,
 #sermon-dropdown,
 #seminar-dropdown,
 #evangelism-dropdown {
     min-width: max-content;
     max-width: 95vw;
+}
+
+/* Header Right Actions */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 1.2rem;
+    flex-shrink: 0;
+}
+
+.header-seminar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 15px;
+    background: linear-gradient(135deg, #1a342a 0%, #244638 100%);
+    color: #f7e7ce !important;
+    border: 1px solid rgba(194, 154, 83, 0.5);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.header-seminar-btn i {
+    color: #c29a53;
+    font-size: 0.85rem;
+    transition: transform 0.25s ease;
+}
+
+.header-seminar-btn:hover {
+    background: linear-gradient(135deg, #244638 0%, #2f5a48 100%);
+    border-color: #c29a53;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(26, 52, 42, 0.25);
+}
+
+.header-seminar-btn:hover i {
+    transform: scale(1.15);
+}
+
+/* Hero Search & Explore Button */
+.hero-explore-btn-wrap {
+    margin-top: 14px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.hero-explore-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: rgba(26, 52, 42, 0.88);
+    backdrop-filter: blur(8px);
+    color: #fdfbf7;
+    border: 1px solid rgba(194, 154, 83, 0.6);
+    border-radius: 30px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    text-decoration: none;
+}
+
+.hero-explore-btn i {
+    color: #c29a53;
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.hero-explore-btn:hover {
+    background: #c29a53;
+    color: #1a342a;
+    border-color: #c29a53;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(194, 154, 83, 0.4);
+}
+
+.hero-explore-btn:hover i {
+    color: #1a342a;
+    transform: scale(1.15);
+}
+
+@media (max-width: 992px) {
+    .header-seminar-btn {
+        padding: 6px 11px;
+        font-size: 0.78rem;
+    }
 }
 
 .dropdown-list {

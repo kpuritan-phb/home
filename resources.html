@@ -1294,8 +1294,9 @@
         let allCurrentPosts = [];
         let currentPage = 1;
         let isMobileScreen = window.innerWidth <= 768;
+        let currentViewMode = localStorage.getItem('resourcesViewMode') || (isMobileScreen ? 'grid' : 'list');
         let itemsPerPage = parseInt(localStorage.getItem('resourcesItemsPerPage')) || (isMobileScreen ? 8 : (currentViewMode === 'list' ? 15 : 12));
-        let currentSortOption = localStorage.getItem('resourcesSortOption') || 'custom'; // 'custom', 'title_asc', 'title_desc', 'date_desc', 'date_asc'
+        let currentSortOption = localStorage.getItem('resourcesSortOption') || 'custom';
 
         const BIBLE_BOOKS = [
             // 구약
@@ -1440,7 +1441,7 @@
         }
 
         async function init() {
-            getFallbackPosts();
+            await getFallbackPosts();
             ensureAuth();
             loadSeriesCovers();
             const urlParams = new URLSearchParams(window.location.search);
@@ -1449,6 +1450,20 @@
             if (catParam) {
                 try { catParam = decodeURIComponent(catParam.replace(/\+/g, ' ')).trim(); } catch(e) {}
             }
+            let sParam = urlParams.get('s');
+            if (sParam) {
+                try { sParam = decodeURIComponent(sParam.replace(/\+/g, ' ')).trim(); } catch(e) {}
+                if (sParam.includes('베드로') || sParam.includes('벧드로')) sParam = '베드로전서';
+                else if (sParam.includes('로마서')) sParam = '로마서';
+                else if (sParam.includes('신명기')) sParam = '신명기';
+                else if (sParam.includes('사사기')) sParam = '사사기';
+                else if (sParam.includes('누가복음')) sParam = '누가복음';
+                else if (sParam.includes('사도행전')) sParam = '사도행전';
+                else if (sParam.includes('유다서')) sParam = '유다서';
+                else if (sParam.includes('룻기')) sParam = '룻기';
+                else if (sParam.includes('천로역정')) sParam = '천로역정 강해';
+            }
+            window.normalizedSParam = sParam;
             const bParam = urlParams.get('b');
             const searchParam = urlParams.get('search');
             const subTopicParam = urlParams.get('subTopic');
@@ -1577,7 +1592,19 @@
 
         function updateUI() {
             const urlParams = new URLSearchParams(window.location.search);
-            const s = urlParams.get('s') || "";
+            let s = urlParams.get('s') || "";
+            if (s) {
+                try { s = decodeURIComponent(s.replace(/\+/g, ' ')).trim(); } catch(e) {}
+                if (s.includes('베드로') || s.includes('벧드로')) s = '베드로전서';
+                else if (s.includes('로마서')) s = '로마서';
+                else if (s.includes('신명기')) s = '신명기';
+                else if (s.includes('사사기')) s = '사사기';
+                else if (s.includes('누가복음')) s = '누가복음';
+                else if (s.includes('사도행전')) s = '사도행전';
+                else if (s.includes('유다서')) s = '유다서';
+                else if (s.includes('룻기')) s = '룻기';
+                else if (s.includes('천로역정')) s = '천로역정 강해';
+            }
             const b = urlParams.get('b') || "";
             const search = urlParams.get('search') || "";
             const subTopic = urlParams.get('subTopic') || "";
@@ -1781,7 +1808,19 @@
             const urlParams = new URLSearchParams(window.location.search);
 
             if (currentCategory === '강해설교' && urlParams.get('s')) {
-                const sVal = urlParams.get('s');
+                let sVal = urlParams.get('s');
+                if (sVal) {
+                    try { sVal = decodeURIComponent(sVal.replace(/\+/g, ' ')).trim(); } catch(e) {}
+                    if (sVal.includes('베드로') || sVal.includes('벧드로')) sVal = '베드로전서';
+                    else if (sVal.includes('로마서')) sVal = '로마서';
+                    else if (sVal.includes('신명기')) sVal = '신명기';
+                    else if (sVal.includes('사사기')) sVal = '사사기';
+                    else if (sVal.includes('누가복음')) sVal = '누가복음';
+                    else if (sVal.includes('사도행전')) sVal = '사도행전';
+                    else if (sVal.includes('유다서')) sVal = '유다서';
+                    else if (sVal.includes('룻기')) sVal = '룻기';
+                    else if (sVal.includes('천로역정')) sVal = '천로역정 강해';
+                }
                 const selectedCh = urlParams.get('ch') || "";
                 const totalSeriesCount = window.seriesTotalCount || allCurrentPosts.length;
 
@@ -2949,7 +2988,19 @@
 
             try {
                 const urlParams = new URLSearchParams(window.location.search);
-                const s = urlParams.get('s');
+                let s = urlParams.get('s');
+                if (s) {
+                    try { s = decodeURIComponent(s.replace(/\+/g, ' ')).trim(); } catch(e) {}
+                    if (s.includes('베드로') || s.includes('벧드로')) s = '베드로전서';
+                    else if (s.includes('로마서')) s = '로마서';
+                    else if (s.includes('신명기')) s = '신명기';
+                    else if (s.includes('사사기')) s = '사사기';
+                    else if (s.includes('누가복음')) s = '누가복음';
+                    else if (s.includes('사도행전')) s = '사도행전';
+                    else if (s.includes('유다서')) s = '유다서';
+                    else if (s.includes('룻기')) s = '룻기';
+                    else if (s.includes('천로역정')) s = '천로역정 강해';
+                }
                 const b = urlParams.get('b');
                 const subTopic = urlParams.get('subTopic');
 

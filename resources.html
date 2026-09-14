@@ -362,10 +362,10 @@
 
         .chapter-grid {
             display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
             background: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             border: 1px solid #f0f0f0;
@@ -373,32 +373,56 @@
 
         .chapter-btn {
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-start;
             justify-content: center;
-            padding: 10px;
+            padding: 14px 16px;
             background: #ffffff;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            font-size: 0.95rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.9rem;
             font-weight: 600;
-            color: #666;
+            color: #4a5568;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             text-decoration: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .chapter-btn .ch-name {
+            font-size: 0.73rem;
+            color: #8c6d46;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .chapter-btn .ch-num {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #1a342a;
+            letter-spacing: -0.01em;
         }
 
         .chapter-btn:hover {
-            border-color: var(--secondary-color);
-            color: var(--secondary-color);
-            background: #fff;
+            border-color: #8c6d46;
+            background: #fcfbf9;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(140,109,70,0.12);
         }
 
         .chapter-btn.active {
-            background: var(--secondary-color);
-            color: white;
-            border-color: var(--secondary-color);
-            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2);
+            background: #ffffff;
+            color: #1a342a;
+            border: 2px solid #8c6d46;
+            box-shadow: 0 4px 14px rgba(140, 109, 70, 0.18);
+        }
+        
+        .chapter-btn.active .ch-name {
+            color: #8c6d46;
+        }
+        
+        .chapter-btn.active .ch-num {
+            color: #1a342a;
         }
 
         /* Bible chapter prev/next navigation */
@@ -445,21 +469,28 @@
             color: var(--primary-color);
         }
 
-        @media screen and (max-width: 992px) {
-            .chapter-grid {
-                grid-template-columns: repeat(8, 1fr);
-            }
-        }
-
         @media screen and (max-width: 768px) {
             .chapter-grid {
-                grid-template-columns: repeat(5, 1fr);
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                padding: 14px;
+            }
+            .chapter-btn {
+                padding: 12px 14px;
+            }
+            .chapter-btn .ch-name {
+                font-size: 0.72rem;
+            }
+            .chapter-btn .ch-num {
+                font-size: 0.98rem;
             }
         }
 
         @media screen and (max-width: 480px) {
             .chapter-grid {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                padding: 10px;
             }
         }
 
@@ -3721,7 +3752,7 @@
                 const sLabel = `${i}장`;
                 const btn = document.createElement('button');
                 btn.className = `chapter-btn ${currentSub === sLabel ? 'active' : ''}`;
-                btn.textContent = `${i}`;
+                btn.innerHTML = `<span class="ch-name">${bookName}</span> <span class="ch-num">${i}장</span>`;
                 btn.onclick = () => navigateToChapter(bookName, i);
                 chapterGrid.appendChild(btn);
             }

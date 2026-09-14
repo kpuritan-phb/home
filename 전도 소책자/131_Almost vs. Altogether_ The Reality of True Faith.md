@@ -1,0 +1,8 @@
+# Almost vs. Altogether: The Reality of True Faith
+
+**저자:** 한국청교도연구소  
+**주제:** 구원론(성령론)  
+**태그:** 구원론(성령론) 전도 소책자 청교도 신학 English  
+
+---
+

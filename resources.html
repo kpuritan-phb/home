@@ -1118,7 +1118,17 @@
             </button>
             <nav>
                 <ul>
-                    <li><a href="about.html">연구소 소개</a></li>
+                    <li class="dropdown">
+                        <a href="index.html">HOME <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="home-dropdown">
+                            <ul class="dropdown-list">
+                                <li><a href="about.html">1. 연구소 소개</a></li>
+                                <li><a href="who.html">2. 섬기는 사람들</a></li>
+                                <li><a href="https://smartstore.naver.com/kpuritan_phb" target="_blank">3. PHB 출판사</a></li>
+                                <li><a href="seminary.html">4. SRS 신학대학원</a></li>
+                            </ul>
+                        </div>
+                    </li>
                     <li class="dropdown">
                         <a href="resources.html?cat=%EC%84%B1%EA%B2%BD">성경 <i class="fas fa-chevron-down"></i></a>
                         <div class="dropdown-content" id="bible-dropdown">
@@ -1137,32 +1147,25 @@
                                 <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%8B%A0%EB%A1%A0">1. 신론</a></li>
                                 <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9D%B8%EA%B0%84%EB%A1%A0">2. 인간론</a></li>
                                 <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B8%B0%EB%8F%85%EB%A1%A0">3. 기독론</a></li>
-                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%AC%EC%9B%90%EB%A1%A0%28%EC%84%B1%EB%A0%B9%EB%A1%A0%29">4. 구원론/성령론</a></li>
-                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9C%A8%EB%B2%95%EA%B3%BC%20%EB%B3%B5%EC%9D%8C">5. 율법과 복음</a></li>
-                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B7%B8%EB%A6%AC%EC%8A%A4%EB%8F%84%EC%9D%B8%EC%9D%98%20%EC%83%9D%ED%99%9C%EB%A1%A0">6. 그리스도인의 생활론</a></li>
-                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B7%B8%EB%A6%AC%EC%8A%A4%EB%8F%84%EC%9D%B8%EC%9D%98%20%EA%B0%80%EC%A0%95">7. 그리스도인의 가정</a></li>
-                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%90%ED%9A%8C%EB%A1%A0">8. 교회론</a></li>
-                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%84%A4%EA%B5%90%EB%A1%A0">9. 설교론</a></li>
-                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%98%81%EC%A0%81%EC%A0%84%EC%9F%81">10. 영적전쟁</a></li>
-                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%A2%85%EB%A7%90%EB%A1%A0">11. 종말론</a></li>
-                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%97%AD%EC%82%AC%20%EC%8B%A0%ED%95%99">12. 역사 신학</a></li>
-                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9E%98%EB%AA%BB%EB%90%9C%20%EC%8B%A0%ED%95%99">13. 잘못된 신학</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%AC%EC%9B%90%EB%A1%A0">4. 구원론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EA%B5%90%ED%9A%8C%EB%A1%A0">5. 교회론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%A2%85%EB%A7%90%EB%A1%A0">6. 종말론</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%97%AD%EC%82%AC%EC%8B%A0%ED%95%99">7. 역사신학</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9E%98%EB%AA%BB%EB%90%9C%20%EC%8B%A0%ED%95%99">8. 잘못된 신학</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">9. 전도, 부흥, 선교</a></li>
                             </ul>
                         </div>
                     </li>
                     <li class="dropdown">
-                        <a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">전도, 부흥, 선교 <i class="fas fa-chevron-down"></i></a>
-                        <div class="dropdown-content" id="evangelism-dropdown">
+                        <a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%84%A4%EA%B5%90">청교도 설교 <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content" id="puritan-sermons-dropdown">
                             <ul class="dropdown-list">
-                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90" style="font-weight: 800; border-bottom: 1px dashed var(--secondary-color);">전도, 부흥, 선교 전체</a></li>
-                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">1. 전도, 부흥, 선교</a></li>
-                                <li><a href="resources.html?cat=%EC%A0%84%EB%8F%84%EB%A7%8C%ED%99%94">2. 전도만화</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%84%A4%EA%B5%90" style="font-weight: 800; border-bottom: 1px dashed var(--secondary-color);">청교도 설교 전체보기</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%84%A4%EA%B5%90&s=%EB%B2%A0%EB%93%9C%EB%A1%9C%EC%A0%84%EC%84%9C">1. 베드로전서 강해설교</a></li>
                             </ul>
                         </div>
                     </li>
-                    <li><a href="resources.html?cat=%EC%8B%A0%ED%95%99%EA%B0%95%EB%A1%A0">신학강론</a></li>
-                    <li><a href="https://smartstore.naver.com/kpuritan_phb" target="_blank">PHB 출판사</a></li>
-                    <li><a href="seminary.html">SRS 신학대학원</a></li>
+                    <li><a href="booklets.html">전도 소책자</a></li>
                 </ul>
             </nav>
             <div class="header-right">
@@ -2928,56 +2931,79 @@
             }
         }
 
-        function isExclusiveTheologyLecture(p) {
-            if (!p) return false;
-            const tags = Array.isArray(p.tags) ? p.tags : [];
+        function matchesPuritanTopic(p, s) {
+            if (!p || !s) return true;
+            const cleanS = s.trim();
             const topic = (p.topic || '').trim();
-            const otherCat = (p.otherCategory || '').trim();
+            const subBooklet = (p.subBookletTopic || '').trim();
             const series = (p.series || '').trim();
             const subTopic = (p.subTopic || '').trim();
+            const tags = Array.isArray(p.tags) ? p.tags : [];
+            const title = (p.title || '').trim();
+            const content = (p.content || '').trim();
+            const dTopic = typeof determineCategory === 'function' ? determineCategory(title, content) : null;
 
-            // 1. 신학강론 관련 태그/카테고리/토픽/시리즈 중 하나라도 있는지
-            const isTheology = tags.includes('신학강론') || tags.includes('5분 신학강론') ||
-                               otherCat === '신학강론' || otherCat === '5분 신학강론' ||
-                               topic === '신학강론' || topic === '5분 신학강론' ||
-                               series === '신학강론' || series === '5분 신학강론' ||
-                               (p.title && (p.title.includes('신학강론') || p.title.includes('5분 신학강론')));
-            if (!isTheology) return false;
+            if (cleanS === '구원론' || cleanS === '구원론(성령론)') {
+                const salvTopics = ['구원론', '구원론(성령론)', '성령론', '율법과 복음', '율법과 은혜', '영적전쟁', '영적 전쟁'];
+                if (salvTopics.includes(topic) || salvTopics.includes(subBooklet) || salvTopics.includes(series) || salvTopics.includes(subTopic)) return true;
+                if (tags.some(t => salvTopics.includes(t))) return true;
+                if (dTopic && salvTopics.includes(dTopic)) return true;
+                if (title.includes('지옥에 떨어진다면') || title.includes('구원') || title.includes('영적 전쟁') || title.includes('영적전쟁') || title.includes('율법과 복음')) return true;
+                return false;
+            }
 
-            // 2. 다른 주요 카테고리 태그가 포함되어 있다면 제외 (이중/삼중 소속)
-            const forbiddenTags = [
-                '청교도 신학', '강해설교', '성경주석', '전도, 부흥, 선교', '전도, 선교', 
-                '전도', '부흥', '선교', '부흥신학', '전도만화', '전도 소책자', '전도 소책자 PDF', 
-                '전도설교', '세미나, 강의', '세미나', '강의', '설교자', '도서 목록'
-            ];
-            if (tags.some(t => forbiddenTags.includes(t))) return false;
+            if (cleanS === '교회론') {
+                const ecclesTopics = ['교회론', '그리스도인의 생활론', '그리스도인의 생활', '그리스도인의 삶', '그리스도인의 가정', '가족과 결혼', '설교론', '설교자', '전도설교'];
+                if (ecclesTopics.includes(topic) || ecclesTopics.includes(subBooklet) || ecclesTopics.includes(series) || ecclesTopics.includes(subTopic)) return true;
+                if (tags.some(t => ecclesTopics.includes(t))) return true;
+                if (dTopic && ecclesTopics.includes(dTopic)) return true;
+                if (title.includes('마케팅 원리') || title.includes('가정예배') || title.includes('설교') || title.includes('결혼') || title.includes('교회')) return true;
+                return false;
+            }
 
-            // 3. 청교도 신학 14대 세부 주제가 topic, tags, series, subTopic에 포함되어 있다면 제외
-            const puritanTopics = [
-                '신론', '인간론', '기독론', '구원론(성령론)', '구원론', '성령론', '교회론', '종말론',
-                '성경론', '언약신학', '그리스도인의 생활론', '그리스도인의 가정',
-                '영적전쟁', '잘못된 신학', '역사 신학', '설교론'
-            ];
-            if (puritanTopics.includes(topic)) return false;
-            if (tags.some(t => puritanTopics.includes(t))) return false;
-            if (puritanTopics.includes(series)) return false;
-            if (puritanTopics.includes(subTopic)) return false;
+            if (cleanS === '신론') {
+                if (topic === '신론' || subBooklet === '신론' || series === '신론' || subTopic === '신론' || tags.includes('신론') || dTopic === '신론') return true;
+                if (title.includes('사탄의 시험을 허락') || title.includes('미리 다 정하셨다면')) return true;
+                return false;
+            }
 
-            // 4. otherCategory가 신학강론 외의 다른 카테고리로 지정되어 있는 경우 제외
-            if (otherCat && otherCat !== '신학강론' && otherCat !== '5분 신학강론') return false;
+            if (cleanS === '역사신학' || cleanS === '역사 신학') {
+                const histTopics = ['역사신학', '역사 신학', '교회사', '청교도 역사', '종교개혁 역사'];
+                if (histTopics.includes(topic) || histTopics.includes(subBooklet) || histTopics.includes(series) || histTopics.includes(subTopic)) return true;
+                if (tags.some(t => histTopics.includes(t))) return true;
+                if (dTopic && histTopics.includes(dTopic)) return true;
+                return false;
+            }
 
-            // 5. topic이 지정되어 있고 신학강론 외의 다른 값인 경우 제외
-            if (topic && topic !== '신학강론' && topic !== '5분 신학강론') return false;
+            if (cleanS === '전도 소책자' || cleanS === '전도소책자') {
+                return (topic === '전도 소책자' || p.otherCategory === '전도 소책자' || tags.includes('전도 소책자') || tags.includes('전도 소책자 PDF') || tags.includes('전도만화'));
+            }
 
-            return true;
+            if (cleanS === '전도, 부흥, 선교 신학' || cleanS === '전도·부흥·선교 신학' || cleanS === '전도,부흥,선교 신학') {
+                const evanTopics = ['전도, 부흥, 선교', '전도, 선교', '전도', '부흥', '선교', '부흥신학', '전도설교'];
+                const isTract = (topic === '전도 소책자' || p.otherCategory === '전도 소책자' || tags.includes('전도 소책자') || tags.includes('전도 소책자 PDF') || tags.includes('전도만화'));
+                if (isTract) return false;
+                if (evanTopics.includes(topic) || evanTopics.includes(subBooklet) || evanTopics.includes(series) || evanTopics.includes(subTopic)) return true;
+                if (tags.some(t => evanTopics.includes(t))) return true;
+                if (title.includes('전도') || title.includes('부흥') || title.includes('선교')) return true;
+                return false;
+            }
+
+            if (cleanS === '전도, 부흥, 선교' || cleanS === '전도, 선교' || cleanS === '전도' || cleanS === '부흥' || cleanS === '선교') {
+                const evanTopics = ['전도, 부흥, 선교', '전도, 선교', '전도', '부흥', '선교', '부흥신학', '전도 소책자', '전도 소책자 PDF', '전도만화', '전도설교'];
+                if (evanTopics.includes(topic) || evanTopics.includes(subBooklet) || evanTopics.includes(series) || evanTopics.includes(subTopic)) return true;
+                if (tags.some(t => evanTopics.includes(t))) return true;
+                if (title.includes('전도') || title.includes('부흥') || title.includes('선교')) return true;
+                return false;
+            }
+
+            return (topic === cleanS) || (subBooklet === cleanS) || (series === cleanS) || (subTopic === cleanS) || tags.includes(cleanS) || (dTopic === cleanS) || title.includes(cleanS);
         }
 
         function filterDumpPostsByCategory(dump, category, s, b, subTopic) {
             let posts = dump.filter(p => {
                 const tags = Array.isArray(p.tags) ? p.tags : [];
-                if (category === '신학강론' || category === '5분 신학강론') {
-                    return isExclusiveTheologyLecture(p);
-                }
+                if (category === '청교도 설교') return tags.includes('청교도 설교') || tags.includes('베드로전서') || p.topic === '청교도 설교' || (p.series && p.series.includes('베드로'));
                 if (category === '설교자') return tags.includes('설교자') || tags.includes('설교론');
                 if (category === '청교도 신학') return tags.includes('청교도 신학') || (typeof determineCategory === 'function' && determineCategory(p.title || '', p.content || '') !== null);
                 if (category === '전도, 부흥, 선교' || category === '전도, 선교') {
@@ -2997,16 +3023,7 @@
             });
 
             if (category === '청교도 신학' && s) {
-                posts = posts.filter(p => {
-                    const dbTopic = p.topic || p.subBookletTopic || p.series;
-                    const tags = Array.isArray(p.tags) ? p.tags : [];
-                    const dTopic = typeof determineCategory === 'function' ? determineCategory(p.title || '', p.content || '') : null;
-                    const isMatch = (dbTopic === s) || (tags.includes(s)) || (dTopic === s);
-                    if (s === '설교론') {
-                        return isMatch || tags.includes('설교자') || tags.includes('전도설교') || p.subTopic === '설교자' || p.subTopic === '전도설교';
-                    }
-                    return isMatch;
-                });
+                posts = posts.filter(p => matchesPuritanTopic(p, s));
             } else if (category === '성경주석' && b) {
                 posts = posts.filter(p => {
                     const pSeries = p.series || '';
@@ -3056,9 +3073,6 @@
         }
 
         async function loadCategoryItems(category) {
-            if (category === "5분 신학강론") {
-                category = "신학강론";
-            }
             grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 자료를 불러오는 중...</div>';
 
             try {
@@ -3083,27 +3097,7 @@
                 let usedFallback = false;
 
                 try {
-                    if (category === '신학강론') {
-                        try {
-                            const seenIds = new Set();
-                            const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["신학강론", "5분 신학강론"]).get(), 1500);
-                            snap1.forEach(doc => {
-                                posts.push({ id: doc.id, ...doc.data() });
-                                seenIds.add(doc.id);
-                            });
-
-                            const snap2 = await fetchWithTimeout(db.collection("posts").where("otherCategory", "in", ["신학강론", "5분 신학강론"]).get(), 1500);
-                            snap2.forEach(doc => {
-                                if (!seenIds.has(doc.id)) {
-                                    posts.push({ id: doc.id, ...doc.data() });
-                                    seenIds.add(doc.id);
-                                }
-                            });
-                        } catch(e) {
-                            console.warn("Firestore fetch error for 신학강론, fallbacking:", e);
-                        }
-                        posts = posts.filter(p => isExclusiveTheologyLecture(p));
-                    } else if (category === '설교자') {
+                    if (category === '설교자') {
                         try {
                             const snap1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "설교자").get(), 1000);
                             const snap2 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "설교론").get(), 1000);
@@ -3130,7 +3124,7 @@
                                 seenIds.add(doc.id);
                             });
 
-                            const snap2 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["전도 소책자", "전도 소책자 PDF", "설교론", "설교자", "전도설교"]).get(), 1000);
+                            const snap2 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도 소책자", "전도 소책자 PDF", "설교론", "설교자", "전도설교", "구원론(성령론)", "그리스도인의 생활론", "그리스도인의 가정", "영적전쟁", "율법과 복음"]).get(), 1000);
                             snap2.forEach(doc => {
                                 if (!seenIds.has(doc.id)) {
                                     posts.push({ id: doc.id, ...doc.data() });
@@ -3140,16 +3134,7 @@
                         } catch (e) {}
 
                         if (s) {
-                            posts = posts.filter(p => {
-                                const dbTopic = p.topic || p.subBookletTopic || p.series;
-                                const tags = Array.isArray(p.tags) ? p.tags : [];
-                                const dTopic = typeof determineCategory === 'function' ? determineCategory(p.title || '', p.content || '') : null;
-                                const isMatch = (dbTopic === s) || (tags.includes(s)) || (dTopic === s);
-                                if (s === '설교론') {
-                                    return isMatch || tags.includes('설교자') || tags.includes('전도설교') || p.subTopic === '설교자' || p.subTopic === '전도설교';
-                                }
-                                return isMatch;
-                            });
+                            posts = posts.filter(p => matchesPuritanTopic(p, s));
                         }
                         if (subTopic) {
                             posts = posts.filter(p => {
@@ -3351,6 +3336,22 @@
                     if (idx > -1) {
                         const [pinned] = allCurrentPosts.splice(idx, 1);
                         allCurrentPosts.unshift(pinned);
+                    }
+                }
+
+                if (category === '청교도 신학' && s && (s.includes('전도') || s.includes('부흥') || s.includes('선교'))) {
+                    const subnavEl = document.getElementById('persistent-category-subnav');
+                    const ul = document.getElementById('subnav-list');
+                    if (subnavEl && ul) {
+                        subnavEl.style.display = 'block';
+                        const isAll = (s === '전도, 부흥, 선교' || s === '전도, 선교' || s === '전도');
+                        const isBooklets = (s === '전도 소책자' || s === '전도소책자');
+                        const isTheo = (s === '전도, 부흥, 선교 신학' || s === '전도·부흥·선교 신학' || s === '전도,부흥,선교 신학');
+                        ul.innerHTML = `
+                            <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90" class="${isAll ? 'active' : ''}">전체보기 (${allCurrentPosts.length})</a></li>
+                            <li><a href="booklets.html" class="${isBooklets ? 'active' : ''}"><i class="fas fa-file-pdf"></i> 9-1. 전도 소책자 PDF</a></li>
+                            <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90%20%EC%8B%A0%ED%95%99" class="${isTheo ? 'active' : ''}"><i class="fas fa-fire-alt"></i> 9-2. 전도·부흥·선교 신학</a></li>
+                        `;
                     }
                 }
 

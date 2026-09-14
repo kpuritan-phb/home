@@ -6041,5 +6041,444 @@ button, a, input, select, textarea {
     }
 }
 
+/* ==========================================================================
+   RED ACCENT BUTTONS (상단 헤더 및 플로팅 퀵 탐색 버튼)
+   ========================================================================== */
+.header-nav-hub-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+    color: #ffffff !important;
+    border: none;
+    border-radius: 50px;
+    padding: 7px 16px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(229, 62, 62, 0.35);
+    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    white-space: nowrap;
+    outline: none;
+    letter-spacing: -0.01em;
+}
+
+.header-nav-hub-btn:hover {
+    background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 18px rgba(229, 62, 62, 0.45);
+}
+
+.header-nav-hub-btn i {
+    font-size: 0.95rem;
+    animation: hubCompassSpin 6s linear infinite;
+}
+
+@keyframes hubCompassSpin {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(15deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Floating Red Quick Hub Button on the Right side */
+.floating-quick-hub-btn {
+    position: fixed;
+    right: 24px;
+    bottom: 90px;
+    z-index: 1490;
+    background: linear-gradient(135deg, #e53e3e 0%, #b91c1c 100%);
+    color: #ffffff;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    border-radius: 50px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    box-shadow: 0 8px 25px rgba(185, 28, 28, 0.45);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    user-select: none;
+}
+
+.floating-quick-hub-btn:hover {
+    transform: translateY(-4px) scale(1.06);
+    box-shadow: 0 12px 30px rgba(185, 28, 28, 0.6);
+    background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+}
+
+.floating-quick-hub-btn i {
+    font-size: 1.15rem;
+}
+
+@media (max-width: 768px) {
+    .floating-quick-hub-btn {
+        right: 16px;
+        bottom: 75px;
+        padding: 9px 14px;
+        font-size: 0.82rem;
+    }
+}
+
+/* ==========================================================================
+   NAVIGATION HUB MODAL (신학 & 자료 종합 탐색 모달)
+   ========================================================================== */
+.nav-hub-modal-content {
+    max-width: 1040px !important;
+    width: 94% !important;
+    max-height: 90vh;
+    border-radius: 24px !important;
+    padding: 35px 40px !important;
+    background: #ffffff !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25) !important;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.nav-hub-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid #f0ede6;
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+}
+
+.nav-hub-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fee2e2;
+    color: #dc2626;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.nav-hub-title-box h2 {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--primary-color, #0b1a30);
+    margin: 0 0 6px 0;
+    letter-spacing: -0.02em;
+}
+
+.nav-hub-title-box p {
+    font-size: 0.95rem;
+    color: #666;
+    margin: 0;
+}
+
+.nav-hub-modal-body {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+}
+
+/* Hub Modal Cards */
+.hub-modal-card {
+    background: #fdfbf7;
+    border: 1px solid #ede8e1;
+    border-radius: 16px;
+    padding: 24px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.25s ease;
+}
+
+.hub-modal-card:hover {
+    background: #ffffff;
+    border-color: #d1c7b7;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    transform: translateY(-3px);
+}
+
+.hub-modal-card.span-2 {
+    grid-column: span 2;
+    background: linear-gradient(145deg, #ffffff 0%, #faf6f0 100%);
+    border-left: 5px solid var(--primary-color, #0b1a30);
+}
+
+.hub-modal-card-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+}
+
+.hub-modal-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.hub-modal-icon.bible {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.hub-modal-icon.theology {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.hub-modal-icon.evangelism {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.hub-modal-icon.media {
+    background: #f3e8ff;
+    color: #7e22ce;
+}
+
+.hub-modal-card-top h3 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--primary-color, #0b1a30);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.hub-modal-card-top span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    color: #888;
+    font-weight: 600;
+}
+
+.hub-modal-desc {
+    font-size: 0.88rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    word-break: keep-all;
+}
+
+/* Modal Button Groups */
+.hub-modal-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.hub-modal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    background: #ffffff;
+    color: var(--primary-color, #0b1a30);
+    border: 1px solid #ddd;
+    transition: all 0.2s ease;
+}
+
+.hub-modal-btn:hover {
+    background: var(--primary-color, #0b1a30);
+    color: #ffffff;
+    border-color: var(--primary-color, #0b1a30);
+    transform: translateY(-2px);
+}
+
+.hub-modal-btn.primary {
+    background: var(--primary-color, #0b1a30);
+    color: #ffffff;
+    border-color: var(--primary-color, #0b1a30);
+}
+
+.hub-modal-btn.primary:hover {
+    background: var(--secondary-color, #5c4033);
+}
+
+.hub-modal-btn.store {
+    background: #03c75a;
+    color: #ffffff;
+    border-color: #03c75a;
+}
+
+.hub-modal-btn.store:hover {
+    background: #029b46;
+}
+
+.hub-modal-btn.full {
+    width: 100%;
+    justify-content: center;
+    background: rgba(92, 64, 51, 0.08);
+    border-color: rgba(92, 64, 51, 0.2);
+    color: var(--secondary-color, #5c4033);
+}
+
+.hub-modal-btn.full:hover {
+    background: var(--secondary-color, #5c4033);
+    color: #ffffff;
+}
+
+/* Theology Chips in Modal */
+.hub-modal-chips-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.hub-modal-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px solid #dcd6cc;
+    color: #333;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+.hub-modal-chip:hover {
+    background: var(--primary-color, #0b1a30);
+    color: #ffffff;
+    border-color: var(--primary-color, #0b1a30);
+    transform: translateY(-2px);
+}
+
+.hub-modal-chip.highlight {
+    background: #fef2f2;
+    border-color: #ef4444;
+    color: #dc2626;
+}
+
+.hub-modal-chip.highlight:hover {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+/* Expandable Chip Sub-Menu for Topic 9 */
+.hub-modal-chip-expandable {
+    position: relative;
+    display: inline-block;
+}
+
+.hub-chip-sub-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 100;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 6px;
+    min-width: 200px;
+    flex-direction: column;
+    gap: 4px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.hub-chip-sub-menu.show {
+    display: flex;
+}
+
+.hub-chip-sub-menu a {
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #333;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.hub-chip-sub-menu a:hover {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.hub-modal-theology-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed #e0dad0;
+    padding-top: 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.hub-sub-link {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--secondary-color, #5c4033);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.hub-sub-link:hover {
+    color: var(--primary-color, #0b1a30);
+    text-decoration: underline;
+}
+
+.hub-sub-link-btn {
+    background: #f4f1ea;
+    border: 1px solid #ddd;
+    color: var(--primary-color, #0b1a30);
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.hub-sub-link-btn:hover {
+    background: var(--primary-color, #0b1a30);
+    color: #ffffff;
+    border-color: var(--primary-color, #0b1a30);
+}
+
+@media (max-width: 860px) {
+    .nav-hub-modal-body {
+        grid-template-columns: 1fr;
+    }
+
+    .hub-modal-card.span-2 {
+        grid-column: span 1;
+    }
+
+    .nav-hub-modal-content {
+        padding: 25px 20px !important;
+    }
+}
+
+
+
 
 

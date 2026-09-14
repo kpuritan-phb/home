@@ -4396,16 +4396,17 @@ footer {
         box-sizing: border-box;
     }
 
-    /* 메인 페이지 캐러셀 트랙: 모바일 손가락 스위핑(가로 터치 밀기)으로 쓱쓱 넘어가는 1행 카드 스크롤 */
+    /* 메인 페이지 캐러셀 트랙: 모바일 화면에서 한 번에 2줄(2행)씩 표시하는 가로 스크롤 그리드 */
     .carousel-track {
         max-width: 100% !important;
         width: 100% !important;
         overflow-x: auto !important;
         overflow-y: hidden !important;
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        gap: 0.6rem !important;
+        display: grid !important;
+        grid-template-rows: repeat(2, 1fr) !important;
+        grid-auto-flow: column !important;
+        grid-auto-columns: 145px !important;
+        gap: 0.8rem 0.6rem !important;
         padding: 0.4rem 0.2rem 1rem 0.2rem !important;
         -webkit-overflow-scrolling: touch !important;
         touch-action: pan-x pan-y !important;
@@ -4413,10 +4414,10 @@ footer {
     }
 
     .carousel-item-wrapper {
-        flex: 0 0 140px !important;
-        width: 140px !important;
-        min-width: 140px !important;
-        max-width: 140px !important;
+        flex: none !important;
+        width: 145px !important;
+        min-width: 145px !important;
+        max-width: 145px !important;
         box-sizing: border-box !important;
     }
 

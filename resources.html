@@ -1168,7 +1168,7 @@
                 </ul>
             </nav>
             <div class="header-right">
-                <a href="resources.html" class="header-latest-btn">
+                <a href="resources.html?type=latest" class="header-latest-btn">
                     <i class="fas fa-clock"></i> <span>최신 업데이트</span>
                 </a>
                 <a href="resources.html?cat=%EC%84%B8%EB%AF%B8%EB%82%98%2C%20%EA%B0%95%EC%9D%98" class="header-seminar-btn">
@@ -1329,7 +1329,25 @@
         let isMobileScreen = window.innerWidth <= 768;
         let currentViewMode = localStorage.getItem('resourcesViewMode') || (isMobileScreen ? 'grid' : 'list');
         let itemsPerPage = parseInt(localStorage.getItem('resourcesItemsPerPage')) || (isMobileScreen ? 8 : (currentViewMode === 'list' ? 15 : 12));
-        let currentSortOption = localStorage.getItem('resourcesSortOption') || 'custom';
+        let currentSortOption = localStorage.getItem('resourcesSortOption') || 'date_desc';
+        if (currentSortOption === 'custom') currentSortOption = 'date_desc';
+
+        function getPostTimestamp(p) {
+            if (!p) return 0;
+            const d = p.createdAt || p.updatedAt;
+            if (!d) return 0;
+            if (typeof d.toMillis === 'function') return d.toMillis();
+            if (typeof d.toDate === 'function') return d.toDate().getTime();
+            if (typeof d.seconds === 'number') return d.seconds * 1000 + (d.nanoseconds ? d.nanoseconds / 1e6 : 0);
+            if (typeof d._seconds === 'number') return d._seconds * 1000 + (d._nanoseconds ? d._nanoseconds / 1e6 : 0);
+            if (typeof d === 'number') return d > 1e11 ? d : d * 1000;
+            if (typeof d === 'string') {
+                const ms = Date.parse(d);
+                if (!isNaN(ms)) return ms;
+            }
+            if (d instanceof Date) return d.getTime();
+            return 0;
+        }
 
         const BIBLE_BOOKS = [
             // 구약
@@ -1474,8 +1492,8 @@
         }
 
         async function init() {
+            await ensureAuth();
             await getFallbackPosts();
-            ensureAuth();
             loadSeriesCovers();
             const urlParams = new URLSearchParams(window.location.search);
             const typeParam = urlParams.get('type');
@@ -1502,6 +1520,10 @@
             const subTopicParam = urlParams.get('subTopic');
 
             if (typeParam) currentType = typeParam;
+            if (typeParam === 'latest' || (!catParam && !subTopicParam && !searchParam)) {
+                currentSortOption = 'date_desc';
+                localStorage.setItem('resourcesSortOption', 'date_desc');
+            }
 
             if (catParam === '5분 신학강론') {
                 catParam = '신학강론';
@@ -1762,16 +1784,18 @@
                 return;
             }
             if (sortOption === 'date_asc') {
-                postsArray.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
-            } else { // 'date_desc' (기본값)
+                postsArray.sort((a, b) => getPostTimestamp(a) - getPostTimestamp(b));
+            } else if (sortOption === 'custom' && currentCategory && currentCategory !== '강해설교') {
                 postsArray.sort((a, b) => {
                     const orderA = (a.customOrder !== undefined && a.customOrder !== null) ? a.customOrder : null;
                     const orderB = (b.customOrder !== undefined && b.customOrder !== null) ? b.customOrder : null;
                     if (orderA !== null && orderB !== null) return orderA - orderB;
                     if (orderA !== null) return -1;
                     if (orderB !== null) return 1;
-                    return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+                    return getPostTimestamp(b) - getPostTimestamp(a);
                 });
+            } else { // 'date_desc' (기본값: 최신순)
+                postsArray.sort((a, b) => getPostTimestamp(b) - getPostTimestamp(a));
             }
         }
 
@@ -2021,7 +2045,8 @@
                     const postNum = start + index + 1;
                     const author = post.author || '저자 미상';
                     const topicBadge = post.subTopic || post.series || post.topic || currentCategory || '자료';
-                    const postDate = post.createdAt ? new Date(post.createdAt.seconds * 1000).toLocaleDateString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit' }).replace(/\. /g, '.').replace(/\.$/, '') : '-';
+                    const postTs = getPostTimestamp(post);
+                    const postDate = postTs ? new Date(postTs).toLocaleDateString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit' }).replace(/\. /g, '.').replace(/\.$/, '') : '-';
 
                     const row = document.createElement('div');
                     row.className = 'resource-table-row' + (window.isAdmin ? ' admin-draggable-card' : '');
@@ -2826,12 +2851,15 @@
         }
 
         async function loadAllResources(type = 'latest') {
-            grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 자료를 불러오는 중...</div>';
+            grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> 최신 자료를 불러오는 중...</div>';
             try {
+                await ensureAuth();
                 let posts = [];
                 try {
-                    const snap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 5000);
-                    snap.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                    const snap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 10000);
+                    if (snap && !snap.empty) {
+                        snap.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                    }
                 } catch (e) {
                     console.warn("Firestore loadAllResources error/timeout, using fallback:", e);
                     posts = await getFallbackPosts();
@@ -2862,7 +2890,8 @@
                     return;
                 }
 
-                applySorting(allCurrentPosts, currentSortOption);
+                currentSortOption = 'date_desc';
+                applySorting(allCurrentPosts, 'date_desc');
                 renderPage(1);
             } catch (err) {
                 console.error("loadAllResources error:", err);
@@ -2870,6 +2899,8 @@
                     const dump = (await getFallbackPosts()) || window.allPostsDumpData || [];
                     if (dump && dump.length > 0) {
                         allCurrentPosts = dump;
+                        currentSortOption = 'date_desc';
+                        applySorting(allCurrentPosts, 'date_desc');
                         grid.innerHTML = '';
                         grid.className = 'resource-list-grid';
                         renderPage(1);
@@ -2887,7 +2918,7 @@
             try {
                 let posts = [];
                 try {
-                    const snap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 1000);
+                    const snap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 7000);
                     snap.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
                 } catch (e) {
                     console.warn("Firestore search error, fallback:", e);
@@ -3386,7 +3417,7 @@
                 if (orderA !== null && orderB !== null) return orderA - orderB;
                 if (orderA !== null) return -1;
                 if (orderB !== null) return 1;
-                return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+                return getPostTimestamp(b) - getPostTimestamp(a);
             });
         }
 

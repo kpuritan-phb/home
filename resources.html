@@ -1241,8 +1241,8 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
     </script>
 
-    <script src="data.js?v=20260912_v1"></script>
-    <script src="all_posts_dump_data.js?v=20260924_v1"></script>
+    <script src="data.js?v=20260925_v2"></script>
+    <script src="all_posts_dump_data.js?v=20260925_v2"></script>
     <script>
         // Firebase Config
         const firebaseConfig = {
@@ -1274,8 +1274,9 @@
         let dumpFetchPromise = null;
         async function getFallbackPosts() {
             if (dumpPostsCache && dumpPostsCache.length > 0) return dumpPostsCache;
-            if (window.allPostsDumpData && window.allPostsDumpData.length > 0) {
-                dumpPostsCache = window.allPostsDumpData;
+            const globalDump = window.allPostsDumpData || window.ALL_POSTS_DUMP;
+            if (globalDump && globalDump.length > 0) {
+                dumpPostsCache = globalDump;
                 return dumpPostsCache;
             }
             if (dumpFetchPromise) {
@@ -1297,12 +1298,13 @@
                             if (Array.isArray(data) && data.length > 0) {
                                 dumpPostsCache = data;
                                 window.allPostsDumpData = data;
+                                window.ALL_POSTS_DUMP = data;
                                 return data;
                             }
                         }
                     } catch (e) {}
                 }
-                return window.allPostsDumpData || window.allPosts || [];
+                return window.allPostsDumpData || window.ALL_POSTS_DUMP || window.allPosts || [];
             })();
             return dumpFetchPromise;
         }
@@ -1334,18 +1336,47 @@
 
         function getPostTimestamp(p) {
             if (!p) return 0;
-            const d = p.createdAt || p.updatedAt;
-            if (!d) return 0;
-            if (typeof d.toMillis === 'function') return d.toMillis();
-            if (typeof d.toDate === 'function') return d.toDate().getTime();
-            if (typeof d.seconds === 'number') return d.seconds * 1000 + (d.nanoseconds ? d.nanoseconds / 1e6 : 0);
-            if (typeof d._seconds === 'number') return d._seconds * 1000 + (d._nanoseconds ? d._nanoseconds / 1e6 : 0);
-            if (typeof d === 'number') return d > 1e11 ? d : d * 1000;
-            if (typeof d === 'string') {
-                const ms = Date.parse(d);
-                if (!isNaN(ms)) return ms;
+            const candidates = [p.createdAt, p.updatedAt, p.date, p.postDate];
+            for (const d of candidates) {
+                if (!d) continue;
+                if (typeof d.toMillis === 'function') {
+                    const val = d.toMillis();
+                    if (!isNaN(val) && val > 0) return val;
+                }
+                if (typeof d.toDate === 'function') {
+                    const val = d.toDate().getTime();
+                    if (!isNaN(val) && val > 0) return val;
+                }
+                if (typeof d.seconds === 'number') {
+                    const val = d.seconds * 1000 + (d.nanoseconds ? d.nanoseconds / 1e6 : 0);
+                    if (!isNaN(val) && val > 0) return val;
+                }
+                if (typeof d._seconds === 'number') {
+                    const val = d._seconds * 1000 + (d._nanoseconds ? d._nanoseconds / 1e6 : 0);
+                    if (!isNaN(val) && val > 0) return val;
+                }
+                if (typeof d === 'number') {
+                    const val = d > 1e11 ? d : d * 1000;
+                    if (!isNaN(val) && val > 0) return val;
+                }
+                if (typeof d === 'string') {
+                    const trimmed = d.trim();
+                    if (trimmed) {
+                        const normalized = trimmed.replace(/\./g, '-');
+                        const ms = Date.parse(normalized);
+                        if (!isNaN(ms) && ms > 0) return ms;
+                        const match = trimmed.match(/^(\d{4})[^\d]?(\d{1,2})[^\d]?(\d{1,2})/);
+                        if (match) {
+                            const parsed = new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3])).getTime();
+                            if (!isNaN(parsed) && parsed > 0) return parsed;
+                        }
+                    }
+                }
+                if (d instanceof Date) {
+                    const val = d.getTime();
+                    if (!isNaN(val) && val > 0) return val;
+                }
             }
-            if (d instanceof Date) return d.getTime();
             return 0;
         }
 
@@ -1775,16 +1806,27 @@
         };
 
         function applySorting(postsArray, sortOption = currentSortOption) {
-            if (currentCategory === '강해설교' && postsArray.some(p => p.order !== undefined && p.order !== null)) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isSermonSeries = currentCategory === '강해설교' && urlParams.get('s');
+
+            if (sortOption === 'date_desc') {
+                postsArray.sort((a, b) => {
+                    const diff = getPostTimestamp(b) - getPostTimestamp(a);
+                    if (diff !== 0) return diff;
+                    return (b.recent_order || b.order || 0) - (a.recent_order || a.order || 0);
+                });
+            } else if (sortOption === 'date_asc') {
+                postsArray.sort((a, b) => {
+                    const diff = getPostTimestamp(a) - getPostTimestamp(b);
+                    if (diff !== 0) return diff;
+                    return (a.order || 0) - (b.order || 0);
+                });
+            } else if (isSermonSeries && postsArray.some(p => p.order !== undefined && p.order !== null)) {
                 postsArray.sort((a, b) => {
                     const orderA = (a.order !== undefined && a.order !== null) ? a.order : ((a.customOrder !== undefined && a.customOrder !== null) ? a.customOrder : 9999);
                     const orderB = (b.order !== undefined && b.order !== null) ? b.order : ((b.customOrder !== undefined && b.customOrder !== null) ? b.customOrder : 9999);
                     return orderA - orderB;
                 });
-                return;
-            }
-            if (sortOption === 'date_asc') {
-                postsArray.sort((a, b) => getPostTimestamp(a) - getPostTimestamp(b));
             } else if (sortOption === 'custom' && currentCategory && currentCategory !== '강해설교') {
                 postsArray.sort((a, b) => {
                     const orderA = (a.customOrder !== undefined && a.customOrder !== null) ? a.customOrder : null;
@@ -1795,7 +1837,11 @@
                     return getPostTimestamp(b) - getPostTimestamp(a);
                 });
             } else { // 'date_desc' (기본값: 최신순)
-                postsArray.sort((a, b) => getPostTimestamp(b) - getPostTimestamp(a));
+                postsArray.sort((a, b) => {
+                    const diff = getPostTimestamp(b) - getPostTimestamp(a);
+                    if (diff !== 0) return diff;
+                    return (b.recent_order || b.order || 0) - (a.recent_order || a.order || 0);
+                });
             }
         }
 
@@ -1815,14 +1861,6 @@
             currentSortOption = sortVal;
             localStorage.setItem('resourcesSortOption', sortVal);
             applySorting(allCurrentPosts, sortVal);
-
-            if (window.isAdmin && sortVal === 'date_asc') {
-                allCurrentPosts.forEach((p, idx) => {
-                    p.customOrder = idx;
-                });
-                await saveAllCustomOrders();
-                showOrderToast(`'오래된 등록순'으로 순서가 저장되었습니다.`);
-            }
 
             currentPage = 1;
             renderPage(1);
@@ -2869,16 +2907,14 @@
                     posts = await getFallbackPosts();
                 }
                 if (!posts || posts.length === 0) {
-                    posts = window.allPostsDumpData || [];
+                    posts = window.allPostsDumpData || window.ALL_POSTS_DUMP || [];
                 }
+
+                posts = (posts || []).filter(p => p && p.title && p.type !== 'system_setting' && p.id !== 'settings_hero_slides');
 
                 if (type === 'recommended') {
                     const recs = posts.filter(p => p.isRecommended || p.recommended);
                     if (recs.length > 0) posts = recs;
-                }
-
-                if (!posts || posts.length === 0) {
-                    posts = await getFallbackPosts();
                 }
 
                 grid.innerHTML = '';
@@ -2896,9 +2932,10 @@
             } catch (err) {
                 console.error("loadAllResources error:", err);
                 try {
-                    const dump = (await getFallbackPosts()) || window.allPostsDumpData || [];
-                    if (dump && dump.length > 0) {
-                        allCurrentPosts = dump;
+                    const dump = (await getFallbackPosts()) || window.allPostsDumpData || window.ALL_POSTS_DUMP || [];
+                    const validPosts = (dump || []).filter(p => p && p.title && p.type !== 'system_setting' && p.id !== 'settings_hero_slides');
+                    if (validPosts && validPosts.length > 0) {
+                        allCurrentPosts = validPosts;
                         currentSortOption = 'date_desc';
                         applySorting(allCurrentPosts, 'date_desc');
                         grid.innerHTML = '';
@@ -3860,7 +3897,7 @@
 
     <script src="bgm.js?v=1"></script>
     <script src="stats.js?v=1"></script>
-    <script src="main.js?v=20260914_theology_failsafe_v47"></script>
+    <script src="main.js?v=20260925_v2"></script>
 
 
     <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">

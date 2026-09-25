@@ -1,7 +1,7 @@
 /**
  * admin-organizer.js
  * 사이트 전체 통합 비주얼 마우스 드래그 앤 드롭 폴더 분류기
- * 한국 청교도 연구소 (KPI)
+ * 한국청교도연구소 (KPI)
  */
 
 let allOrganizerPosts = [];

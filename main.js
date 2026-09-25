@@ -3037,7 +3037,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const DEFAULT_HERO_SLIDES = [
     {
         type: 'brand',
-        subtitle: '한국 청교도 연구소',
+        subtitle: '한국청교도연구소',
         title: 'KOREA PURITAN\nINSTITUTE',
         description: '청교도 신학과 개혁주의 신앙을 연구하고 성경적 자료를 제공하여\n한국교회의 갱신과 회복을 섬깁니다.',
         backgroundImage: 'hero-bg.jpg?v=2',
@@ -3383,7 +3383,7 @@ window.saveHeroSlide = async function(e, editIndex) {
         if (editIndex !== null && editIndex >= 0 && editIndex < slides.length) {
             if (slides[editIndex].type === 'brand') {
                 newSlide.type = 'brand';
-                newSlide.subtitle = category || '한국 청교도 연구소';
+                newSlide.subtitle = category || '한국청교도연구소';
             }
             slides[editIndex] = newSlide;
         } else {

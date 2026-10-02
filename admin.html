@@ -133,7 +133,7 @@
 
                     <!-- 관리자 메뉴 선택 (7단 포털) -->
                     <div class="admin-portal-grid"
-                        style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 40px; margin-top: 20px;">
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 40px; margin-top: 20px;">
                         <div class="admin-portal-card active" onclick="switchAdminTab('general')" id="tab-general"
                             style="background: #fff; padding: 20px 10px; border-radius: 12px; border: 2px solid var(--primary-color); text-align: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
                             <i class="fas fa-book"
@@ -146,7 +146,13 @@
                                 style="font-size: 1.4rem; color: var(--secondary-color); margin-bottom: 10px;"></i>
                             <h3 style="margin-bottom: 5px; font-size: 0.9rem;">강해설교</h3>
                         </div>
-                        <div class="admin-portal-card" onclick="switchAdminTab('booklet')" id="tab-booklet"
+                                                <div class="admin-portal-card" onclick="switchAdminTab('books')" id="tab-books"
+                            style="background: #fff; padding: 20px 10px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
+                            <i class="fas fa-book-open"
+                                style="font-size: 1.4rem; color: #2980b9; margin-bottom: 10px;"></i>
+                            <h3 style="margin-bottom: 5px; font-size: 0.9rem;">도서 관리</h3>
+                        </div>
+<div class="admin-portal-card" onclick="switchAdminTab('booklet')" id="tab-booklet"
                             style="background: #fff; padding: 20px 10px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.3s;">
                             <i class="fas fa-bullhorn"
                                 style="font-size: 1.4rem; color: #e67e22; margin-bottom: 10px;"></i>
@@ -306,6 +312,30 @@
                 </div>
 
                 <!-- 3. 소책자 시리즈 섹션 -->
+                                <!-- 도서 관리 섹션 -->
+                <div class="admin-tab-content" id="admin-books-section" style="display: none;">
+                    <div class="upload-form" style="background:#fff; margin-bottom:30px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                            <div>
+                                <h3 style="margin:0; font-size:1.2rem; color: #2980b9;"><i class="fas fa-book-open"></i> 도서(출판물) 관리</h3>
+                                <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">웹사이트의 도서 목록(books.html)에 노출되는 도서를 직접 등록하고 관리할 수 있습니다.</p>
+                            </div>
+                            <button onclick="window.openAddModalWithCategory('도서 목록')" class="cta-btn primary" style="margin:0; padding:10px 20px; background: #2980b9; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">
+                                <i class="fas fa-plus-circle"></i> 새 도서 등록하기
+                            </button>
+                        </div>
+                    </div>
+                    <div class="upload-form" style="background:#fff;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="margin:0; font-size:1.1rem;"><i class="fas fa-list"></i> 등록된 도서 목록</h3>
+                            <button onclick="loadAdminBooksList()" class="cta-btn" style="margin:0; padding:5px 15px; font-size:0.85rem;"><i class="fas fa-sync-alt"></i> 새로고침</button>
+                        </div>
+                        <div id="admin-books-list-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                            <p style="color:#999;">도서 목록을 불러오는 중...</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="admin-tab-content" id="admin-booklet-section" style="display: none;">
                     <div class="upload-form" style="background:#fff; margin-bottom:30px;">
                         <h3 style="margin-top:0; margin-bottom:20px; font-size:1.1rem;"><i class="fas fa-folder-plus"></i> 새 소책자 시리즈 추가</h3>

@@ -1037,6 +1037,7 @@ document.addEventListener('DOMContentLoaded', () => {
             activeCard.classList.add('active');
             let themeColor = 'var(--primary-color)';
             if (tabName === 'bible-study') themeColor = 'var(--secondary-color)';
+            if (tabName === 'books') themeColor = '#2980b9';
             if (tabName === 'booklet') themeColor = '#e67e22';
             if (tabName === 'hero-slides') themeColor = '#d69e2e';
             if (tabName === 'organizer') themeColor = '#27ae60';
@@ -1062,6 +1063,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 탭 별 데이터 로드 로직
+        if (tabName === 'books' && typeof window.loadAdminBooksList === 'function') {
+            window.loadAdminBooksList();
+        }
         if (tabName === 'bible-study') {
             loadAdminSeries('강해설교');
         }

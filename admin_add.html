@@ -198,8 +198,12 @@
                         </div>
                     </div>
                     <div class="input-group" style="margin-top: 15px;">
-                        <label>가격 (도서 전용)</label>
-                        <input type="text" id="add-price" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                        <label>가격 (도서 전용, 예: 18,000원)</label>
+                        <input type="text" id="add-price" placeholder="예: 18,000원" style="width: 100%; padding: 10px; border: 1px solid #ddd;">
+                    </div>
+                    <div class="input-group" style="margin-top: 15px;">
+                        <label>네이버 스마트스토어 구매 링크 (도서 전용)</label>
+                        <input type="url" id="add-naver-link" placeholder="예: https://smartstore.naver.com/kpuritan_phb/products/..." style="width: 100%; padding: 10px; border: 1px solid #ddd;">
                     </div>
                 </div>
 
@@ -690,6 +694,7 @@
                     order: Number(document.getElementById('add-order').value),
                     recent_order: 0,
                     price: document.getElementById('add-price').value.trim() || "",
+                    naver_link: document.getElementById('add-naver-link')?.value.trim() || "",
                     content: document.getElementById('add-content').value,
                     subTopics: finalMatchedSubtopics,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()

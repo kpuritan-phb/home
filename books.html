@@ -209,10 +209,18 @@
         </section>
 
         <div class="books-container">
-            <div class="section-title modern-flex">
+            <div class="section-title modern-flex" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px;">
                 <div class="title-text-group">
                     <h2>BOOK COLLECTION</h2>
                     <p>큐레이션된 도서 목록을 확인하고 구매 문의를 하실 수 있습니다.</p>
+                </div>
+                <div id="books-admin-bar" style="display: none;">
+                    <button onclick="window.openAddModalWithCategory('도서 목록')" class="cta-btn primary" style="padding: 10px 18px; font-size: 0.95rem; background: #2980b9; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(41, 128, 185, 0.3);">
+                        <i class="fas fa-plus-circle"></i> 새 도서 등록
+                    </button>
+                    <a href="admin.html" class="cta-btn" style="padding: 10px 15px; font-size: 0.95rem; background: #1a342a; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px;">
+                        <i class="fas fa-cog"></i> 도서 관리
+                    </a>
                 </div>
             </div>
 
@@ -292,6 +300,12 @@
         const booksHero = document.querySelector('.books-hero');
 
         async function init() {
+            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+            const adminBar = document.getElementById('books-admin-bar');
+            if (adminBar && isAdmin) {
+                adminBar.style.display = 'block';
+            }
+
             const urlParams = new URLSearchParams(window.location.search);
             const bookId = urlParams.get('id');
 
@@ -301,6 +315,11 @@
                 loadBooks();
             }
         }
+
+        // Global refresh callback for admin popup
+        window.loadAdminPosts = () => {
+            loadBooks();
+        };
 
         async function loadBooks() {
             try {
@@ -418,7 +437,17 @@
             let cleanTitle = title;
             if (cleanTitle.includes(':')) cleanTitle = cleanTitle.split(':')[1].trim();
 
+            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+            const adminControls = isAdmin ? `
+                <div class="book-admin-controls" style="position: absolute; top: 12px; right: 12px; z-index: 10; display: flex; gap: 6px;" onclick="event.stopPropagation();">
+                    <button onclick="event.stopPropagation(); window.openEditModal('${book.id}')" style="background: rgba(255,255,255,0.95); border: 1px solid #cbd5e1; border-radius: 6px; width: 34px; height: 34px; cursor: pointer; color: #2980b9; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15);" title="도서 수정"><i class="fas fa-edit"></i></button>
+                    <button onclick="event.stopPropagation(); if(confirm('이 도서를 삭제하시겠습니까?')) { db.collection('posts').doc('${book.id}').delete().then(() => { alert('삭제되었습니다.'); loadBooks(); }); }" style="background: rgba(255,255,255,0.95); border: 1px solid #fca5a5; border-radius: 6px; width: 34px; height: 34px; cursor: pointer; color: #ef4444; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15);" title="도서 삭제"><i class="fas fa-trash"></i></button>
+                </div>
+            ` : '';
+
+            card.style.position = 'relative';
             card.innerHTML = `
+                ${adminControls}
                 <div class="book-cover-wrapper">
                     <img src="${thumbUrl}" alt="${title}" onerror="this.src='images/puritan-study.png'">
                 </div>
@@ -488,6 +517,11 @@
                     </div>
                     ${contentText.trim() ? `<div class="book-detail-description">${contentText.replace(/(https?:\/\/[^\s]+)/g, '').trim()}</div>` : ''}
                     <div class="book-detail-actions" style="display: flex; flex-direction: column; gap: 12px;">
+                        ${localStorage.getItem('isAdmin') === 'true' ? `
+                            <button onclick="window.openEditModal('${book.id}')" style="padding: 0.9rem 1.5rem; background: #2980b9; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem;">
+                                <i class="fas fa-edit"></i> 도서 정보 수정하기 (관리자)
+                            </button>
+                        ` : ''}
                         <a href="${book.naver_link || 'https://smartstore.naver.com/kpuritan_phb'}" target="_blank" 
                            onclick="if(window.Stats) window.Stats.track('click', { id: 'book_${book.id}', type: 'naver_store_redirect', title: '${title.replace(/'/g, "\\'")}' });"
                            class="book-buy-btn" style="padding: 1.2rem 2rem; font-size: 1.1rem; border:none; cursor:pointer; width: 100%; background: #22cc00; display: flex; align-items: center; justify-content: center; gap: 10px; color: white; text-decoration: none; font-weight: 700;">

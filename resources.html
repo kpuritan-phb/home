@@ -1153,7 +1153,7 @@
                                 <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%97%AD%EC%82%AC%EC%8B%A0%ED%95%99">7. 역사신학</a></li>
                                 <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%9E%98%EB%AA%BB%EB%90%9C%20%EC%8B%A0%ED%95%99">8. 잘못된 신학</a></li>
                                 <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90">9. 전도, 부흥, 선교</a></li>
-                                <li><a href="booklets.html">10. 전도만화</a></li>
+                                <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%A0%84%EB%8F%84%EB%A7%8C%ED%99%94">10. 전도만화</a></li>
                             </ul>
                         </div>
                     </li>
@@ -3068,8 +3068,12 @@
                 return false;
             }
 
+            if (cleanS === '전도만화') {
+                return (p.otherCategory === '전도만화' || tags.includes('전도만화') || title.includes('만화'));
+            }
+
             if (cleanS === '전도 소책자' || cleanS === '전도소책자') {
-                return (topic === '전도 소책자' || p.otherCategory === '전도 소책자' || tags.includes('전도 소책자') || tags.includes('전도 소책자 PDF') || tags.includes('전도만화'));
+                return (topic === '전도 소책자' || p.otherCategory === '전도 소책자' || tags.includes('전도 소책자') || tags.includes('전도 소책자 PDF'));
             }
 
             if (cleanS === '전도, 부흥, 선교 신학' || cleanS === '전도·부흥·선교 신학' || cleanS === '전도,부흥,선교 신학') {
@@ -3098,7 +3102,7 @@
                 const tags = Array.isArray(p.tags) ? p.tags : [];
                 if (category === '청교도 설교') return tags.includes('청교도 설교') || tags.includes('베드로전서') || p.topic === '청교도 설교' || (p.series && p.series.includes('베드로'));
                 if (category === '설교자') return tags.includes('설교자') || tags.includes('설교론');
-                if (category === '청교도 신학') return tags.includes('청교도 신학') || (typeof determineCategory === 'function' && determineCategory(p.title || '', p.content || '') !== null);
+                if (category === '청교도 신학') return tags.includes('청교도 신학') || tags.includes('전도만화') || p.otherCategory === '전도만화' || (typeof determineCategory === 'function' && determineCategory(p.title || '', p.content || '') !== null);
                 if (category === '전도, 부흥, 선교' || category === '전도, 선교') {
                     return (p.topic === '전도, 부흥, 선교' || p.topic === '전도, 선교' || p.topic === '전도') ||
                            tags.some(t => ['전도, 부흥, 선교', '전도, 선교', '전도', '부흥', '선교', '부흥신학', '전도 소책자', '전도만화', '전도설교'].includes(t)) ||
@@ -3217,13 +3221,32 @@
                                 seenIds.add(doc.id);
                             });
 
-                            const snap2 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도 소책자", "전도 소책자 PDF", "설교론", "설교자", "전도설교", "구원론(성령론)", "그리스도인의 생활론", "그리스도인의 가정", "영적전쟁", "율법과 복음"]).get(), 1000);
+                            const snap2 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains-any", ["전도, 부흥, 선교", "전도 소책자", "전도 소책자 PDF", "설교론", "설교자", "전도설교", "구원론(성령론)", "그리스도인의 생활론", "그리스도인의 가정", "영적전쟁"]).get(), 1000);
                             snap2.forEach(doc => {
                                 if (!seenIds.has(doc.id)) {
                                     posts.push({ id: doc.id, ...doc.data() });
                                     seenIds.add(doc.id);
                                 }
                             });
+
+                            if (s === '전도만화') {
+                                try {
+                                    const snapManga1 = await fetchWithTimeout(db.collection("posts").where("tags", "array-contains", "전도만화").get(), 1000);
+                                    snapManga1.forEach(doc => {
+                                        if (!seenIds.has(doc.id)) {
+                                            posts.push({ id: doc.id, ...doc.data() });
+                                            seenIds.add(doc.id);
+                                        }
+                                    });
+                                    const snapManga2 = await fetchWithTimeout(db.collection("posts").where("otherCategory", "==", "전도만화").get(), 1000);
+                                    snapManga2.forEach(doc => {
+                                        if (!seenIds.has(doc.id)) {
+                                            posts.push({ id: doc.id, ...doc.data() });
+                                            seenIds.add(doc.id);
+                                        }
+                                    });
+                                } catch(e) {}
+                            }
                         } catch (e) {}
 
                         if (s) {
@@ -3432,7 +3455,7 @@
                     }
                 }
 
-                if (category === '청교도 신학' && s && (s.includes('전도') || s.includes('부흥') || s.includes('선교'))) {
+                if (category === '청교도 신학' && s && s !== '전도만화' && (s.includes('전도') || s.includes('부흥') || s.includes('선교'))) {
                     const subnavEl = document.getElementById('persistent-category-subnav');
                     const ul = document.getElementById('subnav-list');
                     if (subnavEl && ul) {
@@ -3446,6 +3469,9 @@
                             <li><a href="resources.html?cat=%EC%B2%AD%EA%B5%90%EB%8F%84%20%EC%8B%A0%ED%95%99&s=%EC%A0%84%EB%8F%84%2C%20%EB%B6%80%ED%9D%A5%2C%20%EC%84%A0%EA%B5%90%20%EC%8B%A0%ED%95%99" class="${isTheo ? 'active' : ''}"><i class="fas fa-fire-alt"></i> 9-2. 전도·부흥·선교 신학</a></li>
                         `;
                     }
+                } else {
+                    const subnavEl = document.getElementById('persistent-category-subnav');
+                    if (subnavEl) subnavEl.style.display = 'none';
                 }
 
                 renderPage(1);

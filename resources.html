@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>자료 목록 | 한국청교도연구소</title>
-    <link rel="stylesheet" href="style.css?v=20260914_mobile_2col_grid_v38">
+    <link rel="stylesheet" href="style.css?v=20261002_v1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
     <style>
@@ -1183,6 +1183,13 @@
             <div class="hero-content">
                 <h1 id="page-title">모든 자료</h1>
                 <p>청교도 신학과 개혁주의 신앙의 정수를 만나보세요.</p>
+                <div class="main-search-wrapper" style="margin: 1.2rem auto 0; max-width: 580px;">
+                    <form onsubmit="event.preventDefault(); const q = document.getElementById('resources-search-input').value.trim(); if(q){ window.location.href='resources.html?search=' + encodeURIComponent(q); }" class="main-search-box">
+                        <i class="fas fa-search main-search-icon"></i>
+                        <input type="text" id="resources-search-input" placeholder="신학 주제, 설교, 도서 검색..." autocomplete="off">
+                        <button type="submit" id="resources-search-btn" aria-label="검색"><i class="fas fa-search"></i> 검색</button>
+                    </form>
+                </div>
             </div>
         </section>
 
@@ -1581,6 +1588,8 @@
             updateUI();
 
             if (searchParam) {
+                const sInput = document.getElementById('resources-search-input');
+                if (sInput) sInput.value = searchParam;
                 grid.style.display = 'grid';
                 bibleWrapper.style.display = 'none';
                 chapterWrapper.style.display = 'none';
@@ -2955,18 +2964,30 @@
             try {
                 let posts = [];
                 try {
-                    const snap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(1000).get(), 7000);
-                    snap.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                    const snap = await fetchWithTimeout(db.collection("posts").orderBy("createdAt", "desc").limit(3000).get(), 7000);
+                    if (snap && !snap.empty) {
+                        snap.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                    }
                 } catch (e) {
                     console.warn("Firestore search error, fallback:", e);
                     posts = await getFallbackPosts();
                 }
 
-                if (!posts || posts.length === 0) {
-                    posts = await getFallbackPosts();
+                if (!posts || posts.length < 1500) {
+                    const fallback = await getFallbackPosts();
+                    if (fallback && fallback.length > (posts ? posts.length : 0)) {
+                        const idSet = new Set((posts || []).map(p => p.id));
+                        (posts || []).forEach(p => idSet.add(p.id));
+                        fallback.forEach(fp => {
+                            if (!idSet.has(fp.id)) {
+                                if (!posts) posts = [];
+                                posts.push(fp);
+                            }
+                        });
+                    }
                 }
 
-                const filtered = posts.filter(p => {
+                const filtered = (posts || []).filter(p => {
                     const title = (p.title || '').toLowerCase();
                     const content = (p.content || '').toLowerCase();
                     const author = (p.author || '').toLowerCase();
@@ -2989,7 +3010,8 @@
                 }
 
                 allCurrentPosts = filtered;
-                applySorting(allCurrentPosts, currentSortOption);
+                currentSortOption = 'date_desc';
+                applySorting(allCurrentPosts, 'date_desc');
                 renderPage(1);
             } catch (err) {
                 console.error("loadSearchResults error:", err);
@@ -3897,7 +3919,7 @@
 
     <script src="bgm.js?v=1"></script>
     <script src="stats.js?v=1"></script>
-    <script src="main.js?v=20260925_v2"></script>
+    <script src="main.js?v=20261002_v1"></script>
 
 
     <a href="mailto:kpuritan.phb@gmail.com" class="floating-inquiry-btn">

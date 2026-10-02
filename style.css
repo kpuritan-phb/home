@@ -937,7 +937,8 @@ nav ul li:hover a i {
     margin-right: 0.6rem;
 }
 
-#main-search-input {
+#main-search-input,
+#resources-search-input {
     flex: 1;
     border: none;
     background: transparent;
@@ -949,12 +950,14 @@ nav ul li:hover a i {
 }
 
 @media (min-width: 768px) {
-    #main-search-input {
+    #main-search-input,
+    #resources-search-input {
         font-size: 1.1rem;
     }
 }
 
-#main-search-btn {
+#main-search-btn,
+#resources-search-btn {
     background: var(--primary-color);
     color: var(--white);
     border: none;
@@ -971,14 +974,16 @@ nav ul li:hover a i {
 }
 
 @media (min-width: 768px) {
-    #main-search-btn {
+    #main-search-btn,
+    #resources-search-btn {
         padding: 0 2rem;
         height: 48px;
         font-size: 1rem;
     }
 }
 
-#main-search-btn:hover {
+#main-search-btn:hover,
+#resources-search-btn:hover {
     background: var(--secondary-color);
 }
 

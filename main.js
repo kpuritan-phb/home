@@ -276,22 +276,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const query = mainSearchInput.value.trim();
         if (!query) {
             alert('검색어를 입력해 주세요.');
+            mainSearchInput.focus();
             return;
         }
         
-        // 상세 주제별 검색 모달 열기
-        if (typeof window.openAllTopicsModal === 'function') {
-            window.openAllTopicsModal();
-            
-            // 모달 내 검색창 엘리먼트 찾기
-            const modalSearchInput = document.getElementById('modal-search-input');
-            if (modalSearchInput) {
-                modalSearchInput.value = query;
-                // input 이벤트 트리거해서 모달 내 필터링 작동시키기
-                const event = new Event('input', { bubbles: true });
-                modalSearchInput.dispatchEvent(event);
-            }
-        }
+        // 전체 자료 통합 검색 페이지로 바로 이동
+        window.location.href = `resources.html?search=${encodeURIComponent(query)}`;
     };
     
     if (mainSearchBtn) {

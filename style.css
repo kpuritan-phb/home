@@ -184,6 +184,7 @@ header.scrolled .nav-container {
     line-height: normal;
     /* Reset tight line-height */
     flex-shrink: 0;
+    margin-right: clamp(2rem, 3.5vw, 4.5rem);
 }
 
 .logo-eng {
@@ -246,7 +247,7 @@ nav {
 nav > ul {
     display: flex;
     list-style: none;
-    gap: clamp(0.5rem, 1vw, 1.3rem);
+    gap: clamp(0.7rem, 1.3vw, 1.8rem);
     justify-content: flex-end;
     align-items: center;
 }
@@ -2835,6 +2836,7 @@ footer {
         flex: 1;
         align-items: flex-start;
         text-align: left;
+        margin-right: 0 !important;
     }
 
     .mobile-menu-toggle {
